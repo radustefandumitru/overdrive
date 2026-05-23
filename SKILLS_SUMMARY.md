@@ -8,7 +8,7 @@ Yes, after install and restart/reload. Claude Code, Codex, Gemini CLI, Antigravi
 
 They do not need to manually link each skill. The only manual step is restarting/reloading the app or opening a fresh session so the runtime re-indexes the skill list. Some skills still need external tools or auth before their workflows can execute, such as Banana, Obsidian CLI, Defuddle, Playwright CLI, Composio/connect, and logged-in app connectors.
 
-This kit is now upstream-first and target-aware: normal installs pull third-party skills from their original GitHub repos or official npm installers, then install only into selected/detected targets using a non-destructive conflict policy. Bundled snapshots are a private/offline fallback only.
+This kit is now upstream-first, pinned by default, and target-aware: normal installs pull third-party skills from verified GitHub refs or pinned official npm installers, then install only into selected/detected targets using a non-destructive conflict policy. Bundled snapshots are a private/offline fallback only.
 
 ## Source Families
 
@@ -290,7 +290,7 @@ This kit is now upstream-first and target-aware: normal installs pull third-part
 
 | Skill | What it does | How to use it | Installed roots |
 |---|---|---|---|
-| `playwright-cli` | Official Playwright agent/CLI skill for real-browser navigation, form filling, snapshots, screenshots, data extraction, and UI-flow debugging. | Prefer this for browser proof, screenshots, snapshots, and UI flow debugging. Installed/updated through `@playwright/cli@latest`. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
+| `playwright-cli` | Official Playwright agent/CLI skill for real-browser navigation, form filling, snapshots, screenshots, data extraction, and UI-flow debugging. | Prefer this for browser proof, screenshots, snapshots, and UI flow debugging. Installed/updated through the pinned `@playwright/cli` package in `VERIFIED_SOURCES.md`. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 | `playwright` | Legacy wrapper skill for Playwright-style browser automation if already present. | Fallback only; prefer `playwright-cli` when both are available. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 
 ### Skills CLI / skills.sh
@@ -316,9 +316,11 @@ This kit is now upstream-first and target-aware: normal installs pull third-part
 
 ## Updating
 
-- Run `./update.sh` from a cloned repo to pull the latest AgenticSupercharge setup, refresh AgenticSupercharge-managed skills from upstream sources, and verify the install.
-- Run `./update.sh --all-skills` to refresh every matching skill from upstream sources with timestamped backups for replaced folders.
+- Run `./update.sh` from a cloned repo to pull the latest AgenticSupercharge setup, refresh AgenticSupercharge-managed skills from verified pinned sources, and verify the install.
+- Run `./update.sh --all-skills` to refresh every matching skill from verified pinned sources with timestamped backups for replaced folders.
+- Add `--allow-upstream-drift` only when you intentionally want tracking branches and latest package installers.
 - Run `npx -y github:radustefandumitru/AgenticSupercharge update-skills` when using the GitHub `npx` path; add `--all-skills` for the backup-and-replace refresh.
+- Run `./uninstall.sh --dry-run` to preview removing only AgenticSupercharge-marked skill folders and managed instruction blocks.
 
 ## Manual Dependencies
 

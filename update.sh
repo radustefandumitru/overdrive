@@ -10,16 +10,17 @@ AgenticSupercharge updater
 Default:
   ./update.sh
     1. Pulls the latest AgenticSupercharge repo version when run from a git clone.
-    2. Updates AgenticSupercharge-managed skills from upstream official sources.
+    2. Updates AgenticSupercharge-managed skills from verified pinned sources.
     3. Runs verify.sh.
 
 Options:
-  --all-skills                 Refresh all matching skills from upstream sources using backup-and-replace.
+  --all-skills                 Refresh all matching skills from verified pinned sources using backup-and-replace.
   --managed-only               Default. Update only AgenticSupercharge-managed skills.
   --kit-only                   Update this AgenticSupercharge repo/package only.
   --skills-only                Update installed skills only; skip git self-update.
   --dry-run                    Preview without writing files.
   --no-verify                  Skip verify.sh after updating skills.
+  --allow-upstream-drift       Use tracking refs/latest packages instead of verified pins.
   --allow-dirty-self-update    Allow git pull even if this repo has uncommitted changes.
 
 Any other options are passed through to the skills updater, for example:
@@ -85,10 +86,10 @@ fi
 
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then
   if [[ "$ALL_SKILLS" -eq 1 ]]; then
-    echo "Updating all matching skills from approved upstream sources with timestamped backups..."
+    echo "Updating all matching skills from verified pinned sources with timestamped backups..."
     AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" update-skills --all-skills "${SKILL_ARGS[@]}"
   else
-    echo "Updating AgenticSupercharge-managed skills from approved upstream sources..."
+    echo "Updating AgenticSupercharge-managed skills from verified pinned sources..."
     AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" update-skills "${SKILL_ARGS[@]}"
   fi
   echo

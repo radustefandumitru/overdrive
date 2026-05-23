@@ -36,16 +36,16 @@ Cursor custom skills belong in `~/.cursor/skills` globally or `.cursor/skills` l
 
 ## Quick Start
 
+Preview directly from GitHub without changing anything:
+
+```bash
+npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
+```
+
 Install directly from GitHub with `npx`:
 
 ```bash
 npx -y github:radustefandumitru/AgenticSupercharge
-```
-
-Preview first without changing anything:
-
-```bash
-npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
 ```
 
 Or clone the repo:
@@ -53,6 +53,7 @@ Or clone the repo:
 ```bash
 git clone https://github.com/radustefandumitru/AgenticSupercharge.git
 cd AgenticSupercharge
+./install.sh --dry-run
 ./install.sh
 ./verify.sh
 ```
@@ -130,7 +131,7 @@ Update the setup and managed skills:
 ./update.sh
 ```
 
-By default, `./update.sh` pulls the latest AgenticSupercharge repo version when you are using a git clone, then updates AgenticSupercharge-managed skills from their upstream sources, then runs `./verify.sh`.
+By default, `./update.sh` pulls the latest AgenticSupercharge repo version when you are using a git clone, then updates AgenticSupercharge-managed skills from verified pinned sources, then runs `./verify.sh`.
 
 Refresh all matching skills from upstream sources:
 
@@ -160,6 +161,21 @@ npx -y github:radustefandumitru/AgenticSupercharge update-skills --all-skills
 ```
 
 With `npx`, the package is fetched from GitHub each time, so the command itself is already using the latest published AgenticSupercharge version.
+
+Opt into live upstream branches and latest package installers:
+
+```bash
+./update.sh --allow-upstream-drift
+```
+
+Default installs use the pinned refs and package versions listed in `VERIFIED_SOURCES.md`. `--allow-upstream-drift` intentionally follows each source's tracking branch or latest package and can install content that this release has not verified yet.
+
+Uninstall only AgenticSupercharge-managed folders and instruction blocks:
+
+```bash
+./uninstall.sh --dry-run
+./uninstall.sh
+```
 
 Verify the current installation:
 
@@ -258,29 +274,31 @@ The script:
 1. Asks whether to install locally or globally, unless flags already specify it.
 2. For global installs, detects installed coding agents or lets you choose exact targets.
 3. Explains target paths and conflict policy.
-4. Pulls approved upstream skills from `manifest.json`.
+4. Pulls verified pinned upstream skills from `manifest.json`, unless `--allow-upstream-drift` is used.
 5. Installs local AgenticSupercharge skills from `skills/`.
 6. Runs official installer-backed sources such as GSD and Playwright CLI when applicable.
 7. Copies skills into selected roots using the chosen conflict policy.
 8. Writes `.agentic-supercharge.json` markers into managed skill folders.
 9. Upserts managed instruction blocks into `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` where relevant.
-10. Writes `sources.lock.json` after real installs with source metadata and install results.
+10. Writes `sources.lock.json` after real installs with source metadata, pin/drift mode, and install results.
 
 `verify.sh` checks expected skills, YAML frontmatter, managed instruction blocks, forbidden bulk automation folders, broken symlinks, router smoke prompts, and non-Claude GSD path leakage.
 
 `update.sh` uses the same installer core:
 
-- `./update.sh` updates the cloned AgenticSupercharge repo with `git pull --ff-only`, then refreshes AgenticSupercharge-managed skill folders using `replace-managed-only`.
+- `./update.sh` updates the cloned AgenticSupercharge repo with `git pull --ff-only`, then refreshes AgenticSupercharge-managed skill folders using verified pinned sources and `replace-managed-only`.
 - `./update.sh --all-skills` refreshes all matching skills from upstream sources using `backup-and-replace`.
+- `./update.sh --allow-upstream-drift` opts into tracking branches and latest package installers.
 - `./update.sh --dry-run` previews both the kit update and skill refresh without changing files.
 - `./update.sh --kit-only` updates only the installer/docs/local skills repo.
 - `./update.sh --skills-only` skips the git self-update and refreshes installed skills only.
+- `./uninstall.sh` removes only folders containing `.agentic-supercharge.json` and strips only managed instruction blocks.
 
 ## Verification Status
 
 Current local verification for this public package has passed:
 
-- shell syntax checks for `install.sh`, `verify.sh`, and `update.sh`
+- shell syntax checks for `install.sh`, `verify.sh`, `update.sh`, and `uninstall.sh`
 - Node syntax checks for `lib/installer.js` and `bin/agentic-supercharge.js`
 - `./verify.sh`
 - global install dry-run with detected targets
@@ -288,7 +306,7 @@ Current local verification for this public package has passed:
 - local `npx` command dry-runs for install and `update-skills`
 - `npm pack --dry-run`
 - local project install dry-run
-- `npm pack --dry-run`
+- uninstall dry-run
 - public zip exclusion checks for bundled snapshots, lock metadata, tarballs, `.DS_Store`, and private source material
 - simple secret-pattern scan across the public package contents
 
@@ -296,9 +314,9 @@ This is not a formal third-party security audit. Treat it as a project-level san
 
 ## Public-Safe Distribution Model
 
-Public installs are upstream-first. The repo contains the installer, manifest, router, local public-safe skills, docs, and attribution. Third-party skills are pulled from their original GitHub repositories or official npm installers.
+Public installs are upstream-first but pinned by default. The repo contains the installer, manifest, router, local public-safe skills, docs, and attribution. Third-party skills are pulled from their original GitHub repositories or official npm installers at verified refs/package versions unless the user opts into `--allow-upstream-drift`.
 
-The private/offline zip can include bundled snapshots for convenience, but public GitHub sharing should avoid republishing third-party skill snapshots unless licenses have been reviewed.
+The private/offline zip can include bundled snapshots for convenience, but do not share that private zip publicly unless every bundled upstream license and redistribution term has been reviewed. Public GitHub sharing should avoid republishing third-party skill snapshots.
 
 ## What This Will Never Copy
 
@@ -342,7 +360,7 @@ Where it can hurt:
 - If an agent loads the whole catalogue, it becomes context bloat. The value depends on routing restraint.
 - It does not magically make a weak prompt, broken codebase, or missing product judgment good.
 - Some skills depend on external tools, current docs, paid APIs, or authenticated connectors that are not included.
-- Upstream skill repos can change. Public installs intentionally pull from upstream, so users should read `manifest.json` and run `--dry-run`.
+- Upstream skill repos can change. Default installs use verified pins, while `--allow-upstream-drift` intentionally follows upstream changes, so users should read `manifest.json`, `VERIFIED_SOURCES.md`, and run `--dry-run`.
 - There is no benchmark suite proving a fixed percentage improvement in output quality. The claim is practical and structural: better task-specific instructions usually improve agent behavior when applied narrowly.
 
 My opinion: this is not just a "superskill" blob. The router, non-destructive installer, source attribution, and verification flow make it more useful than a pile of Markdown dumped into context. The main risk is misuse: if someone treats every skill as always-on context, it becomes noisy. Used as designed, it should improve agent output quality on the kinds of work this kit targets.
@@ -383,6 +401,14 @@ cd AgenticSupercharge
 Share as a zip by distributing the public zip generated from this folder. The public zip excludes bundled third-party snapshots, lockfiles with local install metadata, `.DS_Store`, tarballs, and private source material.
 
 See `PUBLISHING.md` for the full public-sharing checklist.
+
+## Security And Source Verification
+
+- `SECURITY.md` explains how to report vulnerabilities privately through GitHub.
+- `VERIFIED_SOURCES.md` lists the pinned commits and package versions used by default.
+- `CHANGELOG.md` tracks release-level changes.
+- `SKILLS_TLDR.md` is the compact skill map; `SKILLS_SUMMARY.md` is the deep reference.
+- `AGENTS_OPENAI_YAML.md` explains the lightweight `agents/openai.yaml` metadata files included with local skills.
 
 ## Contributing
 

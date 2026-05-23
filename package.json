@@ -18,18 +18,25 @@
     "MCP_AND_CONNECTORS.md",
     "THIRD_PARTY_NOTICES.md",
     "SKILLS_SUMMARY.md",
+    "SKILLS_TLDR.md",
     "SOCIAL_POSTS.md",
+    "SECURITY.md",
+    "VERIFIED_SOURCES.md",
+    "AGENTS_OPENAI_YAML.md",
+    "CHANGELOG.md",
     "LICENSE",
     "install.sh",
     "verify.sh",
-    "update.sh"
+    "update.sh",
+    "uninstall.sh"
   ],
   "scripts": {
     "check": "node --check lib/installer.js && node --check bin/agentic-supercharge.js",
     "dry-run": "node bin/agentic-supercharge.js --dry-run",
     "verify": "node bin/agentic-supercharge.js verify",
     "self-update": "node bin/agentic-supercharge.js self-update",
-    "update-skills": "node bin/agentic-supercharge.js update-skills"
+    "update-skills": "node bin/agentic-supercharge.js update-skills",
+    "uninstall": "node bin/agentic-supercharge.js uninstall"
   },
   "engines": {
     "node": ">=18"

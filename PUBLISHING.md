@@ -23,6 +23,7 @@ The public framing should be:
 - AgenticSupercharge is a curated installer and router.
 - Original creators keep credit for their work.
 - The installer pulls approved sources from upstream repos or official installers.
+- Default installs use verified pinned source refs and package versions from `VERIFIED_SOURCES.md`.
 - Local skills authored for this kit are paraphrased, attributed, and public-safe.
 - Context7 guidance is included as the public-standard MCP recommendation.
 - Other MCPs/connectors are intentionally left to each user's own runtime and projects.
@@ -51,11 +52,12 @@ git push -u origin main
 Before pushing, run:
 
 ```bash
-bash -n install.sh verify.sh update.sh
+bash -n install.sh verify.sh update.sh uninstall.sh
 node --check lib/installer.js
 node --check bin/agentic-supercharge.js
 ./install.sh --dry-run
 ./install.sh --list-targets
+./uninstall.sh --dry-run
 npm pack --dry-run
 ```
 
@@ -66,6 +68,7 @@ Clone:
 ```bash
 git clone https://github.com/radustefandumitru/AgenticSupercharge.git
 cd AgenticSupercharge
+./install.sh --dry-run
 ./install.sh
 ```
 
@@ -129,6 +132,19 @@ npx -y github:radustefandumitru/AgenticSupercharge update-skills
 npx -y github:radustefandumitru/AgenticSupercharge update-skills --all-skills
 ```
 
+Use live upstream branches/latest packages only when intentionally reviewing fresh upstream changes:
+
+```bash
+./update.sh --allow-upstream-drift
+```
+
+Safe uninstall:
+
+```bash
+./uninstall.sh --dry-run
+./uninstall.sh
+```
+
 ## Zip Builds
 
 Public zip:
@@ -154,6 +170,19 @@ zip -r ai-skill-setup.zip ai-skill-setup \
   -x 'ai-skill-setup/**/.DS_Store' \
   -x 'ai-skill-setup/agentic-supercharge-*.tgz' \
   -x 'ai-skill-setup/sources.lock.json'
+```
+
+The private/offline zip may include bundled third-party snapshots. Do not attach it to a public release or share it broadly unless redistribution rights for every bundled source have been reviewed.
+
+## Release Checklist
+
+For `v0.1.0`:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+gh release create v0.1.0 ../ai-skill-setup-public.zip --title "AgenticSupercharge v0.1.0" --notes-file CHANGELOG.md
+gh repo edit radustefandumitru/AgenticSupercharge --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
 ```
 
 ## Attribution Notes

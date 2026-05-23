@@ -2,6 +2,7 @@
   "version": 3,
   "name": "agentic-supercharge",
   "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
+  "schemaDescription": "Schema version 3 uses verified pinned source refs/packages by default, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, and router smoke checks.",
   "installRoots": [
     "$HOME/.claude/skills",
     "$HOME/.codex/skills",
@@ -65,7 +66,8 @@
     {
       "id": "taste-skill",
       "repo": "https://github.com/Leonxlnx/taste-skill.git",
-      "ref": "main",
+      "ref": "c8075169cd63d1430bbf492dd4ddd478ea9fa4da",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/taste-skill",
@@ -120,7 +122,8 @@
     {
       "id": "impeccable",
       "repo": "https://github.com/pbakaus/impeccable.git",
-      "ref": "main",
+      "ref": "84135db0e6bdd58d22828f7bc8331cae7bde3e7f",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skill",
@@ -131,7 +134,8 @@
     {
       "id": "emil-skill",
       "repo": "https://github.com/emilkowalski/skill.git",
-      "ref": "main",
+      "ref": "ecf66bbd1fb33c25332b6b0e454d08049978284c",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/emil-design-eng",
@@ -142,7 +146,8 @@
     {
       "id": "modern-web-guidance",
       "repo": "https://github.com/GoogleChrome/modern-web-guidance.git",
-      "ref": "main",
+      "ref": "65d7f20ac85517a362107ce89b7be7f905105fd3",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/modern-web-guidance",
@@ -157,7 +162,8 @@
     {
       "id": "remotion-skills",
       "repo": "https://github.com/remotion-dev/skills.git",
-      "ref": "main",
+      "ref": "277510e78245ac0fa275d7cb6520d52e0ac2e212",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/remotion",
@@ -168,7 +174,8 @@
     {
       "id": "context-engineering",
       "repo": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering.git",
-      "ref": "main",
+      "ref": "61f38ffc0ff3ae83adcf2fe011f3b751105add6d",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/advanced-evaluation",
@@ -231,7 +238,8 @@
     {
       "id": "marketing-skills",
       "repo": "https://github.com/coreyhaines31/marketingskills.git",
-      "ref": "main",
+      "ref": "0f39e12b76457c3463a7eba1d22c658de5886b8b",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/ab-testing",
@@ -398,7 +406,8 @@
     {
       "id": "stop-slop",
       "repo": "https://github.com/hardikpandya/stop-slop.git",
-      "ref": "main",
+      "ref": "8da1f030185bdfe8471220585162991eaeb970e9",
+      "trackingRef": "main",
       "includes": [
         {
           "from": ".",
@@ -409,7 +418,8 @@
     {
       "id": "banana-claude",
       "repo": "https://github.com/AgriciDaniel/banana-claude.git",
-      "ref": "main",
+      "ref": "a4b5a7e4f592029886a379496cf29980fb6b8824",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/banana",
@@ -420,7 +430,8 @@
     {
       "id": "obsidian-skills",
       "repo": "https://github.com/kepano/obsidian-skills.git",
-      "ref": "main",
+      "ref": "ac9398734fe719565809f7a6048b05c36b1ca38f",
+      "trackingRef": "main",
       "includes": [
         {
           "from": "skills/obsidian-markdown",
@@ -447,7 +458,8 @@
     {
       "id": "awesome-claude-skills-curated",
       "repo": "https://github.com/ComposioHQ/awesome-claude-skills.git",
-      "ref": "master",
+      "ref": "92568c1edaff1bde5371154f036d959346c145a8",
+      "trackingRef": "master",
       "includes": [
         {
           "from": "artifacts-builder",
@@ -689,7 +701,8 @@
     {
       "id": "gsd-official",
       "type": "gsd-npm-installer",
-      "package": "get-shit-done-cc@latest",
+      "package": "get-shit-done-cc@1.42.3",
+      "trackingPackage": "get-shit-done-cc@latest",
       "repo": "https://github.com/gsd-build/get-shit-done.git",
       "skills": [
         "gsd-add-tests",
@@ -803,7 +816,8 @@
     {
       "id": "playwright-cli-official",
       "type": "playwright-cli-installer",
-      "package": "@playwright/cli@latest",
+      "package": "@playwright/cli@0.1.13",
+      "trackingPackage": "@playwright/cli@latest",
       "repo": "https://github.com/microsoft/playwright-cli.git",
       "skills": [
         "playwright-cli"
