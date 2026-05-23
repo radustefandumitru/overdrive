@@ -6,9 +6,7 @@ The goal is simple: increase the quality of what your agents produce by giving t
 
 It does not replace your agent. It gives the agent a better toolbox.
 
-Personal note from Stefan: I am giving my personal coding-agent setup away to the community for free because I want to see what people build with it. If it helps you ship something, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). The project is open source, feedback is welcome, and contributors are invited to help make it better.
-
-Support link: coming soon. For open-source projects, the cleanest options are usually GitHub Sponsors, Ko-fi, or Buy Me a Coffee; I will add a live link here once the support page is set up.
+Personal note from Stefan: I am giving my personal coding-agent setup away to the community for free because I want to see what people build with it. If it helps you ship something, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). The project is open source, feedback is welcome, and contributors are invited to help make it better. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
 
 ## What You Get
 
