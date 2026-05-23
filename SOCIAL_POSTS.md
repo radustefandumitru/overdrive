@@ -1,6 +1,8 @@
 # Social Post Drafts
 
-Replace `YOUR_GITHUB_URL` with the published repo URL before posting.
+Repo URL: https://github.com/radustefandumitru/AgenticSupercharge
+
+Support link: add your live GitHub Sponsors, Ko-fi, or Buy Me a Coffee link before posting if you want to include one.
 
 ## Creator Credits
 
@@ -27,14 +29,21 @@ Use GitHub links for the canonical source. Only include Reddit usernames when th
 - I made AgenticSupercharge: a Skill Router + installer for Claude Code, Codex, Gemini, Antigravity, and Cursor
 - Curated AI agent skills setup for vibe coders, with a router so agents pick the right skill
 - I made an upstream-pulling agent skill installer/router, with full credit to the original creators
+- I am giving away my personal AI coding-agent setup for free
 
 **Post**
+
+I am giving away my personal AI coding-agent setup for free because I am curious to see what people build with it.
+
+If you use it, tag me or send feedback on Reddit: u/StefanDumitru. The project is open source, contributors are welcome, and I would love help making the routing/setup better over time.
+
+Optional support link: add your GitHub Sponsors, Ko-fi, or Buy Me a Coffee link here once it is live.
 
 I kept seeing great Claude/Codex/agent skills scattered across GitHub, Reddit, and X, but the setup was messy if you are not already deep in the skills ecosystem.
 
 So I put together AgenticSupercharge: a portable installer + `skill-router` that pulls a curated set of skills from the original upstream repos/installers into Claude Code, Codex, Gemini CLI, Antigravity, Cursor, project-local roots, and shared `.agents`.
 
-Repo: YOUR_GITHUB_URL
+Repo: https://github.com/radustefandumitru/AgenticSupercharge
 
 What it does:
 
@@ -45,6 +54,7 @@ What it does:
 - Keeps context bloat down by routing to 1-3 relevant skills instead of loading everything.
 - Adds guardrails: external app actions require approval, Obsidian vault edits should use snapshots/git, and Impeccable should ask before broad font/hierarchy changes.
 - Includes `install.sh --dry-run`, `verify.sh`, `update.sh`, a lockfile, `.gitignore` for private bundled snapshots, and a human-readable skills summary.
+- Was built and iterated on using this same setup, including the installer, router, docs, verification, and packaging workflow.
 
 The rough routing logic:
 
@@ -71,10 +81,14 @@ Credit where it belongs: I did not create the underlying skills. This is a curat
 
 Please star/support the original repos if you use this. My goal is not to take credit for the skills, but to make discovery, installation, updating, and routing easier for vibe coders/builders who do not have time to research every individual skill.
 
+Honest caveat: this is useful only if the agent routes selectively. If an agent loads every skill every time, it becomes context bloat. The point of the router is to keep the agent to the smallest useful set, usually 1-3 skills.
+
+Verification status: the current package passes shell/Node syntax checks, dry-run install checks, npm package dry-run, zip exclusion checks, secret-pattern scans, and `./verify.sh`. That is not a formal third-party security audit, so review scripts before running any installer from the internet.
+
 Install flow:
 
 ```bash
-git clone YOUR_GITHUB_URL
+git clone https://github.com/radustefandumitru/AgenticSupercharge.git
 cd AgenticSupercharge
 ./install.sh --dry-run
 ./install.sh
@@ -92,15 +106,21 @@ Then restart Claude Code, Codex, Gemini CLI, Antigravity, or Cursor.
 
 I would love feedback on the routing rules, especially from people using multiple agents/IDEs together.
 
+- Stefan / u/StefanDumitru
+
 ## X / Twitter Thread
 
 **Post 1**
+
+I am giving away my personal AI coding-agent setup for free.
 
 I built AgenticSupercharge, a portable AI skill setup for Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and project-local installs.
 
 It pulls a curated set of agent skills from upstream + installs a `skill-router` that helps the agent choose the right skill instead of loading a giant pile of context.
 
-Repo: YOUR_GITHUB_URL
+Repo: https://github.com/radustefandumitru/AgenticSupercharge
+
+Feedback welcome. Tag me if you build something with it.
 
 **Post 2**
 
@@ -154,7 +174,7 @@ Please star/support the originals.
 Install:
 
 ```bash
-git clone YOUR_GITHUB_URL
+git clone https://github.com/radustefandumitru/AgenticSupercharge.git
 cd AgenticSupercharge
 ./install.sh --dry-run
 ./install.sh
@@ -172,7 +192,11 @@ Then restart Claude Code, Codex, Gemini CLI, Antigravity, or Cursor.
 
 External actions are approval-gated. Obsidian vault edits should use snapshots/git.
 
+It passed my local verification checks, but review scripts before running any installer from the internet.
+
 **Short single-post version**
+
+I am giving away my personal AI coding-agent setup for free.
 
 I built AgenticSupercharge, a portable AI skill setup for Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project installs.
 
@@ -182,4 +206,6 @@ Includes Taste, Impeccable, Emil, GSD, Context Engineering, MarketingSkills, Sto
 
 All credit to the original creators. This is an installer/router to make discovery easier for builders.
 
-Repo: YOUR_GITHUB_URL
+Repo: https://github.com/radustefandumitru/AgenticSupercharge
+
+Feedback: u/StefanDumitru

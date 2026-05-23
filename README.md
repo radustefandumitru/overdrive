@@ -6,6 +6,10 @@ The goal is simple: increase the quality of what your agents produce by giving t
 
 It does not replace your agent. It gives the agent a better toolbox.
 
+Personal note from Stefan: I am giving my personal coding-agent setup away to the community for free because I want to see what people build with it. If it helps you ship something, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). The project is open source, feedback is welcome, and contributors are invited to help make it better.
+
+Support link: coming soon. For open-source projects, the cleanest options are usually GitHub Sponsors, Ko-fi, or Buy Me a Coffee; I will add a live link here once the support page is set up.
+
 ## What You Get
 
 - A curated skill library for frontend design, app development, animation, SEO, copywriting, product work, context engineering, project planning, browser validation, image/video workflows, and useful automation.
@@ -14,6 +18,8 @@ It does not replace your agent. It gives the agent a better toolbox.
 - A non-destructive installer that can install globally across the agent tools you actually have, or locally into one project.
 - Public-safe custom skills added on top of the upstream projects: fluid animation guidance, Emil-style animation polish, and Jack Roberts inspired premium 3D/scroll website workflows.
 - Verification scripts, conflict handling, source attribution, and sharing-safe packaging for GitHub or zip distribution.
+
+This repository was also built and iterated on using this same setup. In other words, AgenticSupercharge has been used on its own installer, routing, documentation, verification, and publishing workflow.
 
 ## Supported Agents
 
@@ -233,6 +239,21 @@ The script:
 
 `verify.sh` checks expected skills, YAML frontmatter, managed instruction blocks, forbidden bulk automation folders, broken symlinks, router smoke prompts, and non-Claude GSD path leakage.
 
+## Verification Status
+
+Current local verification for this public package has passed:
+
+- shell syntax checks for `install.sh`, `verify.sh`, and `update.sh`
+- Node syntax checks for `lib/installer.js` and `bin/agentic-supercharge.js`
+- `./verify.sh`
+- global install dry-run with detected targets
+- local project install dry-run
+- `npm pack --dry-run`
+- public zip exclusion checks for bundled snapshots, lock metadata, tarballs, `.DS_Store`, and private source material
+- simple secret-pattern scan across the public package contents
+
+This is not a formal third-party security audit. Treat it as a project-level sanity check, then review the scripts yourself before running any installer from the internet.
+
 ## Public-Safe Distribution Model
 
 Public installs are upstream-first. The repo contains the installer, manifest, router, local public-safe skills, docs, and attribution. Third-party skills are pulled from their original GitHub repositories or official npm installers.
@@ -264,6 +285,29 @@ If skills do not show up:
 If a tool is not detected but you want to prepare its folders manually, choose it manually and use `--force-targets`.
 
 If a skill needs an external tool, install that tool separately. Examples include Playwright CLI, Obsidian CLI, Defuddle, Banana/Gemini image tooling, or authenticated app connectors.
+
+## Honest Assessment
+
+Short answer: yes, this can be genuinely useful, but only when the router stays selective.
+
+Where it adds value:
+
+- It saves setup time by turning scattered high-quality skills into one repeatable install flow.
+- It gives agents domain-specific taste and checklists for tasks where generic coding-agent behavior is often weak: frontend polish, animation, SEO, copy, project planning, browser validation, and long-running context management.
+- It improves consistency across tools because Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project roots can all receive the same skill set and global guidance.
+- It makes skill use less annoying because `skill-router` asks the agent to choose 1-3 relevant skills instead of expecting the user to name every skill manually.
+
+Where it can hurt:
+
+- If an agent loads the whole catalogue, it becomes context bloat. The value depends on routing restraint.
+- It does not magically make a weak prompt, broken codebase, or missing product judgment good.
+- Some skills depend on external tools, current docs, paid APIs, or authenticated connectors that are not included.
+- Upstream skill repos can change. Public installs intentionally pull from upstream, so users should read `manifest.json` and run `--dry-run`.
+- There is no benchmark suite proving a fixed percentage improvement in output quality. The claim is practical and structural: better task-specific instructions usually improve agent behavior when applied narrowly.
+
+My opinion: this is not just a "superskill" blob. The router, non-destructive installer, source attribution, and verification flow make it more useful than a pile of Markdown dumped into context. The main risk is misuse: if someone treats every skill as always-on context, it becomes noisy. Used as designed, it should improve agent output quality on the kinds of work this kit targets.
+
+- Codex, GPT-5-based coding agent, high reasoning effort, May 23, 2026
 
 ## Repository Map
 
