@@ -32,11 +32,11 @@ jobs:
       - name: Installer dry runs
         run: |
           ./install.sh --list-targets
-          ./install.sh --dry-run --skip-upstream --skip-official-installers
-          ./install.sh --scope global --tools agents --conflict preserve --dry-run --skip-upstream --skip-official-installers
+          ./install.sh --scope local --project-dir /tmp/test-agentic-default --dry-run --skip-upstream --skip-official-installers
+          ./install.sh --scope global --tools agents --force-targets --conflict preserve --dry-run --skip-upstream --skip-official-installers
           ./install.sh --scope local --project-dir /tmp/test-agentic-local --conflict preserve --dry-run --skip-upstream --skip-official-installers
           test -z "$(find /tmp/test-agentic-local -type f 2>/dev/null || true)"
-          ./uninstall.sh --dry-run
+          ./uninstall.sh --scope global --tools agents --force-targets --dry-run
 
       - name: Local temp install and verify
         run: |
