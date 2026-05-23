@@ -48,7 +48,9 @@ Scan and install for available coding agents
 
 That is the recommended default. It checks your machine and installs only for detected tools. You can also choose exact targets manually if you want to skip a detected tool or prepare a config folder for a tool you plan to install.
 
-Detection checks common CLI commands, app/config folders, and existing skill roots. Gemini CLI is treated separately from Antigravity: a real `gemini` command or existing `~/.gemini/skills` root counts as Gemini CLI, while Antigravity uses `~/.gemini/config/skills`.
+Detection checks common CLI commands, installed apps, and active agent skill roots where appropriate. Gemini CLI is treated separately from Antigravity: a real `gemini` command or existing `~/.gemini/skills` root counts as Gemini CLI, while Antigravity uses `~/.gemini/config/skills`.
+
+Cursor is auto-detected only when the Cursor app or CLI is present. A leftover `~/.cursor` folder by itself does not count as an installed Cursor target, because app uninstalls can leave config folders behind. If you want to prepare Cursor skills before installing Cursor, choose Cursor manually and use `--force-targets`.
 
 | Target | Global skills path | Global instruction path |
 |---|---|---|
