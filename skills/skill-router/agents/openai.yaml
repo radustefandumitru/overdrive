@@ -1,0 +1,7 @@
+interface:
+  display_name: "Skill Router"
+  short_description: "Choose the right installed skill"
+  default_prompt: "Use $skill-router to choose the best installed skill sequence for this task."
+
+policy:
+  allow_implicit_invocation: true

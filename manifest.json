@@ -1,0 +1,814 @@
+{
+  "version": 3,
+  "name": "agentic-supercharge",
+  "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
+  "installRoots": [
+    "$HOME/.claude/skills",
+    "$HOME/.codex/skills",
+    "$HOME/.agents/skills",
+    "$HOME/.gemini/skills",
+    "$HOME/.gemini/config/skills",
+    "$HOME/.cursor/skills"
+  ],
+  "globalInstructionFiles": [
+    {
+      "runtime": "claude-code",
+      "from": "global-instructions/CLAUDE.md",
+      "to": "$HOME/.claude/CLAUDE.md",
+      "description": "Claude Code global user instructions"
+    },
+    {
+      "runtime": "codex",
+      "from": "global-instructions/AGENTS.md",
+      "to": "$HOME/.codex/AGENTS.md",
+      "description": "Codex global AGENTS.md instructions"
+    },
+    {
+      "runtime": "gemini-antigravity",
+      "from": "global-instructions/GEMINI.md",
+      "to": "$HOME/.gemini/GEMINI.md",
+      "description": "Gemini CLI and Antigravity global instructions"
+    }
+  ],
+  "rootPolicies": {
+    "claudeOnlySkills": [],
+    "rootSkillSkips": [
+      {
+        "rootSuffix": "/.gemini/skills",
+        "skills": [
+          "gsd-surface",
+          "gsd-ultraplan-phase"
+        ],
+        "reason": "The official GSD Gemini CLI install does not currently expose these helper/beta skills in ~/.gemini/skills; Antigravity's ~/.gemini/config/skills root does."
+      }
+    ]
+  },
+  "exclusions": {
+    "forbiddenSkillNames": [
+      "googledrive-automation",
+      "google-drive-automation",
+      "google_drive-automation"
+    ],
+    "forbiddenPathFragments": [
+      "composio-skills",
+      "googledrive-automation",
+      "google-drive-automation",
+      "google_drive-automation"
+    ],
+    "notes": [
+      "Do not bulk-install Composio's massive composio-skills automation tree.",
+      "Do not copy secrets, auth sessions, API keys, OAuth state, or MCP credentials.",
+      "Install GSD through its official runtime-aware installer; do not hand-copy stale GSD snapshots by default."
+    ]
+  },
+  "sources": [
+    {
+      "id": "taste-skill",
+      "repo": "https://github.com/Leonxlnx/taste-skill.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/taste-skill",
+          "to": "design-taste-frontend"
+        },
+        {
+          "from": "skills/gpt-tasteskill",
+          "to": "gpt-taste"
+        },
+        {
+          "from": "skills/brandkit",
+          "to": "brandkit"
+        },
+        {
+          "from": "skills/image-to-code-skill",
+          "to": "image-to-code"
+        },
+        {
+          "from": "skills/imagegen-frontend-mobile",
+          "to": "imagegen-frontend-mobile"
+        },
+        {
+          "from": "skills/imagegen-frontend-web",
+          "to": "imagegen-frontend-web"
+        },
+        {
+          "from": "skills/redesign-skill",
+          "to": "redesign-existing-projects"
+        },
+        {
+          "from": "skills/stitch-skill",
+          "to": "stitch-design-taste"
+        },
+        {
+          "from": "skills/minimalist-skill",
+          "to": "minimalist-ui"
+        },
+        {
+          "from": "skills/brutalist-skill",
+          "to": "industrial-brutalist-ui"
+        },
+        {
+          "from": "skills/soft-skill",
+          "to": "high-end-visual-design"
+        },
+        {
+          "from": "skills/output-skill",
+          "to": "full-output-enforcement"
+        }
+      ]
+    },
+    {
+      "id": "impeccable",
+      "repo": "https://github.com/pbakaus/impeccable.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skill",
+          "to": "impeccable"
+        }
+      ]
+    },
+    {
+      "id": "emil-skill",
+      "repo": "https://github.com/emilkowalski/skill.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/emil-design-eng",
+          "to": "emil-design-eng"
+        }
+      ]
+    },
+    {
+      "id": "modern-web-guidance",
+      "repo": "https://github.com/GoogleChrome/modern-web-guidance.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/modern-web-guidance",
+          "to": "modern-web-guidance"
+        },
+        {
+          "from": "skills/chrome-extensions",
+          "to": "chrome-extensions"
+        }
+      ]
+    },
+    {
+      "id": "remotion-skills",
+      "repo": "https://github.com/remotion-dev/skills.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/remotion",
+          "to": "remotion-best-practices"
+        }
+      ]
+    },
+    {
+      "id": "context-engineering",
+      "repo": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/advanced-evaluation",
+          "to": "advanced-evaluation"
+        },
+        {
+          "from": "skills/bdi-mental-states",
+          "to": "bdi-mental-states"
+        },
+        {
+          "from": "skills/context-compression",
+          "to": "context-compression"
+        },
+        {
+          "from": "skills/context-degradation",
+          "to": "context-degradation"
+        },
+        {
+          "from": "skills/context-fundamentals",
+          "to": "context-fundamentals"
+        },
+        {
+          "from": "skills/context-optimization",
+          "to": "context-optimization"
+        },
+        {
+          "from": "skills/evaluation",
+          "to": "evaluation"
+        },
+        {
+          "from": "skills/filesystem-context",
+          "to": "filesystem-context"
+        },
+        {
+          "from": "skills/hosted-agents",
+          "to": "hosted-agents"
+        },
+        {
+          "from": "skills/latent-briefing",
+          "to": "latent-briefing"
+        },
+        {
+          "from": "skills/memory-systems",
+          "to": "memory-systems"
+        },
+        {
+          "from": "skills/multi-agent-patterns",
+          "to": "multi-agent-patterns"
+        },
+        {
+          "from": "skills/project-development",
+          "to": "project-development"
+        },
+        {
+          "from": "skills/tool-design",
+          "to": "tool-design"
+        }
+      ]
+    },
+    {
+      "id": "marketing-skills",
+      "repo": "https://github.com/coreyhaines31/marketingskills.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/ab-testing",
+          "to": "ab-testing"
+        },
+        {
+          "from": "skills/ad-creative",
+          "to": "ad-creative"
+        },
+        {
+          "from": "skills/ads",
+          "to": "ads"
+        },
+        {
+          "from": "skills/ai-seo",
+          "to": "ai-seo"
+        },
+        {
+          "from": "skills/analytics",
+          "to": "analytics"
+        },
+        {
+          "from": "skills/aso",
+          "to": "aso"
+        },
+        {
+          "from": "skills/churn-prevention",
+          "to": "churn-prevention"
+        },
+        {
+          "from": "skills/co-marketing",
+          "to": "co-marketing"
+        },
+        {
+          "from": "skills/cold-email",
+          "to": "cold-email"
+        },
+        {
+          "from": "skills/community-marketing",
+          "to": "community-marketing"
+        },
+        {
+          "from": "skills/competitor-profiling",
+          "to": "competitor-profiling"
+        },
+        {
+          "from": "skills/competitors",
+          "to": "competitors"
+        },
+        {
+          "from": "skills/content-strategy",
+          "to": "content-strategy"
+        },
+        {
+          "from": "skills/copy-editing",
+          "to": "copy-editing"
+        },
+        {
+          "from": "skills/copywriting",
+          "to": "copywriting"
+        },
+        {
+          "from": "skills/cro",
+          "to": "cro"
+        },
+        {
+          "from": "skills/customer-research",
+          "to": "customer-research"
+        },
+        {
+          "from": "skills/directory-submissions",
+          "to": "directory-submissions"
+        },
+        {
+          "from": "skills/emails",
+          "to": "emails"
+        },
+        {
+          "from": "skills/free-tools",
+          "to": "free-tools"
+        },
+        {
+          "from": "skills/image",
+          "to": "image"
+        },
+        {
+          "from": "skills/launch",
+          "to": "launch"
+        },
+        {
+          "from": "skills/lead-magnets",
+          "to": "lead-magnets"
+        },
+        {
+          "from": "skills/marketing-ideas",
+          "to": "marketing-ideas"
+        },
+        {
+          "from": "skills/marketing-psychology",
+          "to": "marketing-psychology"
+        },
+        {
+          "from": "skills/onboarding",
+          "to": "onboarding"
+        },
+        {
+          "from": "skills/paywalls",
+          "to": "paywalls"
+        },
+        {
+          "from": "skills/popups",
+          "to": "popups"
+        },
+        {
+          "from": "skills/pricing",
+          "to": "pricing"
+        },
+        {
+          "from": "skills/product-marketing",
+          "to": "product-marketing"
+        },
+        {
+          "from": "skills/programmatic-seo",
+          "to": "programmatic-seo"
+        },
+        {
+          "from": "skills/referrals",
+          "to": "referrals"
+        },
+        {
+          "from": "skills/revops",
+          "to": "revops"
+        },
+        {
+          "from": "skills/sales-enablement",
+          "to": "sales-enablement"
+        },
+        {
+          "from": "skills/schema",
+          "to": "schema"
+        },
+        {
+          "from": "skills/seo-audit",
+          "to": "seo-audit"
+        },
+        {
+          "from": "skills/signup",
+          "to": "signup"
+        },
+        {
+          "from": "skills/site-architecture",
+          "to": "site-architecture"
+        },
+        {
+          "from": "skills/social",
+          "to": "social"
+        },
+        {
+          "from": "skills/video",
+          "to": "video"
+        }
+      ]
+    },
+    {
+      "id": "stop-slop",
+      "repo": "https://github.com/hardikpandya/stop-slop.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": ".",
+          "to": "stop-slop"
+        }
+      ]
+    },
+    {
+      "id": "banana-claude",
+      "repo": "https://github.com/AgriciDaniel/banana-claude.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/banana",
+          "to": "banana"
+        }
+      ]
+    },
+    {
+      "id": "obsidian-skills",
+      "repo": "https://github.com/kepano/obsidian-skills.git",
+      "ref": "main",
+      "includes": [
+        {
+          "from": "skills/obsidian-markdown",
+          "to": "obsidian-markdown"
+        },
+        {
+          "from": "skills/obsidian-bases",
+          "to": "obsidian-bases"
+        },
+        {
+          "from": "skills/json-canvas",
+          "to": "json-canvas"
+        },
+        {
+          "from": "skills/obsidian-cli",
+          "to": "obsidian-cli"
+        },
+        {
+          "from": "skills/defuddle",
+          "to": "defuddle"
+        }
+      ]
+    },
+    {
+      "id": "awesome-claude-skills-curated",
+      "repo": "https://github.com/ComposioHQ/awesome-claude-skills.git",
+      "ref": "master",
+      "includes": [
+        {
+          "from": "artifacts-builder",
+          "to": "artifacts-builder"
+        },
+        {
+          "from": "changelog-generator",
+          "to": "changelog-generator"
+        },
+        {
+          "from": "competitive-ads-extractor",
+          "to": "competitive-ads-extractor"
+        },
+        {
+          "from": "connect",
+          "to": "connect"
+        },
+        {
+          "from": "connect-apps",
+          "to": "connect-apps"
+        },
+        {
+          "from": "content-research-writer",
+          "to": "content-research-writer"
+        },
+        {
+          "from": "developer-growth-analysis",
+          "to": "developer-growth-analysis"
+        },
+        {
+          "from": "domain-name-brainstormer",
+          "to": "domain-name-brainstormer"
+        },
+        {
+          "from": "file-organizer",
+          "to": "file-organizer"
+        },
+        {
+          "from": "image-enhancer",
+          "to": "image-enhancer"
+        },
+        {
+          "from": "internal-comms",
+          "to": "internal-comms"
+        },
+        {
+          "from": "invoice-organizer",
+          "to": "invoice-organizer"
+        },
+        {
+          "from": "langsmith-fetch",
+          "to": "langsmith-fetch"
+        },
+        {
+          "from": "lead-research-assistant",
+          "to": "lead-research-assistant"
+        },
+        {
+          "from": "mcp-builder",
+          "to": "mcp-builder"
+        },
+        {
+          "from": "meeting-insights-analyzer",
+          "to": "meeting-insights-analyzer"
+        },
+        {
+          "from": "raffle-winner-picker",
+          "to": "raffle-winner-picker"
+        },
+        {
+          "from": "skill-share",
+          "to": "skill-share"
+        },
+        {
+          "from": "slack-gif-creator",
+          "to": "slack-gif-creator"
+        },
+        {
+          "from": "tailored-resume-generator",
+          "to": "tailored-resume-generator"
+        },
+        {
+          "from": "theme-factory",
+          "to": "theme-factory"
+        },
+        {
+          "from": "twitter-algorithm-optimizer",
+          "to": "twitter-algorithm-optimizer"
+        },
+        {
+          "from": "video-downloader",
+          "to": "video-downloader"
+        }
+      ]
+    }
+  ],
+  "smokeChecks": [
+    {
+      "prompt": "Build a premium landing page",
+      "expected": [
+        "design-taste-frontend",
+        "emil-design-eng",
+        "playwright-cli"
+      ]
+    },
+    {
+      "prompt": "Make this swipeable drawer feel fluid and natural",
+      "expected": [
+        "fluid-animations",
+        "emil-design-eng"
+      ]
+    },
+    {
+      "prompt": "Make this popover animation feel smoother and less sluggish",
+      "expected": [
+        "emil-animation-polish",
+        "emil-design-eng"
+      ]
+    },
+    {
+      "prompt": "Polish this existing dashboard",
+      "expected": [
+        "impeccable",
+        "emil-design-eng",
+        "playwright-cli"
+      ]
+    },
+    {
+      "prompt": "Plan phase 2 of this project and keep context lean",
+      "expected": [
+        "gsd-plan-phase",
+        "context-compression"
+      ]
+    },
+    {
+      "prompt": "Write launch emails that do not sound like AI",
+      "expected": [
+        "emails",
+        "copywriting",
+        "stop-slop"
+      ]
+    },
+    {
+      "prompt": "Generate a product hero image",
+      "expected": [
+        "banana"
+      ]
+    },
+    {
+      "prompt": "Build a Jack Roberts style 3D scroll website",
+      "expected": [
+        "jack-premium-site-system",
+        "jack-scroll-3d-sites",
+        "playwright-cli"
+      ]
+    },
+    {
+      "prompt": "Create scroll-stop prompts for an assembled and exploded product video",
+      "expected": [
+        "jack-scroll-asset-prompts",
+        "banana"
+      ]
+    },
+    {
+      "prompt": "Research this business website and competitors before rebuilding it",
+      "expected": [
+        "jack-website-intelligence",
+        "design-taste-frontend"
+      ]
+    },
+    {
+      "prompt": "SEO audit this animated landing page before Vercel launch",
+      "expected": [
+        "jack-seo-launch-audit",
+        "playwright-cli"
+      ]
+    },
+    {
+      "prompt": "Create an Obsidian note with wikilinks and callouts",
+      "expected": [
+        "obsidian-markdown"
+      ]
+    },
+    {
+      "prompt": "Build an Obsidian Base and canvas map",
+      "expected": [
+        "obsidian-bases",
+        "json-canvas"
+      ]
+    },
+    {
+      "prompt": "Post this to Slack",
+      "expected": [
+        "connect-apps",
+        "approval"
+      ]
+    }
+  ],
+  "localSkills": [
+    {
+      "from": "skills/skill-router",
+      "to": "skill-router"
+    },
+    {
+      "from": "skills/fluid-animations",
+      "to": "fluid-animations"
+    },
+    {
+      "from": "skills/emil-animation-polish",
+      "to": "emil-animation-polish"
+    },
+    {
+      "from": "skills/jack-premium-site-system",
+      "to": "jack-premium-site-system"
+    },
+    {
+      "from": "skills/jack-website-intelligence",
+      "to": "jack-website-intelligence"
+    },
+    {
+      "from": "skills/jack-scroll-asset-prompts",
+      "to": "jack-scroll-asset-prompts"
+    },
+    {
+      "from": "skills/jack-scroll-3d-sites",
+      "to": "jack-scroll-3d-sites"
+    },
+    {
+      "from": "skills/jack-seo-launch-audit",
+      "to": "jack-seo-launch-audit"
+    }
+  ],
+  "bundled": {
+    "path": "bundled/skills",
+    "enabledByDefault": false,
+    "note": "Private/offline fallback only. Public installs should pull from upstream sources and the local router."
+  },
+  "officialInstallers": [
+    {
+      "id": "gsd-official",
+      "type": "gsd-npm-installer",
+      "package": "get-shit-done-cc@latest",
+      "repo": "https://github.com/gsd-build/get-shit-done.git",
+      "skills": [
+        "gsd-add-tests",
+        "gsd-ai-integration-phase",
+        "gsd-audit-fix",
+        "gsd-audit-milestone",
+        "gsd-audit-uat",
+        "gsd-autonomous",
+        "gsd-capture",
+        "gsd-cleanup",
+        "gsd-code-review",
+        "gsd-complete-milestone",
+        "gsd-config",
+        "gsd-debug",
+        "gsd-discuss-phase",
+        "gsd-docs-update",
+        "gsd-eval-review",
+        "gsd-execute-phase",
+        "gsd-explore",
+        "gsd-extract-learnings",
+        "gsd-fast",
+        "gsd-forensics",
+        "gsd-graphify",
+        "gsd-health",
+        "gsd-help",
+        "gsd-import",
+        "gsd-inbox",
+        "gsd-ingest-docs",
+        "gsd-manager",
+        "gsd-map-codebase",
+        "gsd-milestone-summary",
+        "gsd-mvp-phase",
+        "gsd-new-milestone",
+        "gsd-new-project",
+        "gsd-ns-context",
+        "gsd-ns-ideate",
+        "gsd-ns-manage",
+        "gsd-ns-project",
+        "gsd-ns-review",
+        "gsd-ns-workflow",
+        "gsd-pause-work",
+        "gsd-phase",
+        "gsd-plan-phase",
+        "gsd-plan-review-convergence",
+        "gsd-pr-branch",
+        "gsd-profile-user",
+        "gsd-progress",
+        "gsd-quick",
+        "gsd-resume-work",
+        "gsd-review",
+        "gsd-review-backlog",
+        "gsd-secure-phase",
+        "gsd-settings",
+        "gsd-ship",
+        "gsd-sketch",
+        "gsd-spec-phase",
+        "gsd-spike",
+        "gsd-stats",
+        "gsd-surface",
+        "gsd-thread",
+        "gsd-ui-phase",
+        "gsd-ui-review",
+        "gsd-ultraplan-phase",
+        "gsd-undo",
+        "gsd-update",
+        "gsd-validate-phase",
+        "gsd-verify-work",
+        "gsd-workspace",
+        "gsd-workstreams"
+      ],
+      "runtimeInstalls": [
+        {
+          "runtime": "claude",
+          "configDir": "$HOME/.claude",
+          "args": [
+            "--claude",
+            "--global",
+            "--profile=full"
+          ]
+        },
+        {
+          "runtime": "codex",
+          "configDir": "$HOME/.codex",
+          "args": [
+            "--codex",
+            "--global",
+            "--profile=full"
+          ]
+        },
+        {
+          "runtime": "gemini",
+          "configDir": "$HOME/.gemini",
+          "args": [
+            "--gemini",
+            "--global",
+            "--profile=full"
+          ]
+        },
+        {
+          "runtime": "antigravity",
+          "configDir": "$HOME/.gemini/config",
+          "args": [
+            "--antigravity",
+            "--global",
+            "--profile=full"
+          ]
+        }
+      ],
+      "notes": "Runs the official GSD npm installer for runtime-specific files, then mirrors GSD skills into ~/.agents/skills."
+    },
+    {
+      "id": "playwright-cli-official",
+      "type": "playwright-cli-installer",
+      "package": "@playwright/cli@latest",
+      "repo": "https://github.com/microsoft/playwright-cli.git",
+      "skills": [
+        "playwright-cli"
+      ],
+      "notes": "Runs the official Playwright CLI skill installer in a temporary workspace and copies the generated playwright-cli skill into each configured root."
+    }
+  ]
+}

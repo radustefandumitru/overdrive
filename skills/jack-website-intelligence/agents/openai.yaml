@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jack Website Intelligence"
+  short_description: "Brand and competitor research for premium sites"
+  default_prompt: "Use $jack-website-intelligence to research the brand, competitors, and build brief before designing the site."

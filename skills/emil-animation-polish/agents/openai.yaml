@@ -1,0 +1,4 @@
+interface:
+  display_name: "Emil Animation Polish"
+  short_description: "Tasteful web animation and easing polish"
+  default_prompt: "Use $emil-animation-polish to audit and improve web UI animation details."

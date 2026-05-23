@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jack Scroll Asset Prompts"
+  short_description: "Prompt start, end, and transition assets"
+  default_prompt: "Use $jack-scroll-asset-prompts to create coordinated prompts for a scroll-stopping website asset."

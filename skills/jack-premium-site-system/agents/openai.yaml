@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jack Premium Site System"
+  short_description: "End-to-end premium 3D website workflow"
+  default_prompt: "Use $jack-premium-site-system to plan and build a Jack Roberts inspired premium scroll website."

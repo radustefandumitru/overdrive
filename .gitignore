@@ -1,0 +1,9 @@
+.DS_Store
+ai-skill-setup.zip
+agentic-supercharge-*.tgz
+package-lock.json
+sources.lock.json
+
+# Private/offline snapshot fallback. Public installs should pull from upstream
+# through manifest.json and official installers.
+bundled/skills/

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jack SEO Launch Audit"
+  short_description: "SEO and launch audit for premium sites"
+  default_prompt: "Use $jack-seo-launch-audit to prepare a premium animated website for SEO and launch."

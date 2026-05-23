@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fluid Animations"
+  short_description: "Natural spring and gesture motion guidance"
+  default_prompt: "Use $fluid-animations to implement natural, interruptible UI motion and gesture interactions."
