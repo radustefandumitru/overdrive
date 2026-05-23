@@ -1,6 +1,6 @@
 {
   "name": "agentic-supercharge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Safe interactive installer for portable AI coding-agent skills across Claude Code, Codex, Gemini, Antigravity, Cursor, and local projects.",
   "license": "MIT",
   "bin": {

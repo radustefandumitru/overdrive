@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Also use when the user asks which installed skill to use, when multiple installed skills might apply, or before frontend/design, UI animation/gesture motion, GSD/project planning, context management, marketing/copy, Obsidian/vault/notes, external app actions, browser automation, image generation, Remotion/video, Chrome extension, or skill-management tasks where routing between installed skills matters. Advisory only: choose and invoke/load the best existing skill(s); skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill to use.
+description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Also use when the user asks which installed skill to use, when multiple installed skills might apply, or before frontend/design, UI animation/gesture motion, documentation/spec/proposal writing, MCP server development, Slack GIF/emoji creation, GSD/project planning, context management, marketing/copy, Obsidian/vault/notes, external app actions, browser automation, image generation, Remotion/video, Chrome extension, or skill-management tasks where routing between installed skills matters. Advisory only: choose and invoke/load the best existing skill(s); skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill to use.
 ---
 
 # Skill Router
@@ -32,10 +32,15 @@ Use this skill to choose the right installed skill or skill sequence without loa
 8. Use Corey Haines marketing skills for SEO, CRO, copywriting, launches, pricing, ads, customer research, and growth strategy. Add `stop-slop` for public-facing prose, emails, landing copy, blog posts, social posts, and any "make this sound human" request.
 9. Use `banana` for image-generation requests when its Claude Code/Gemini setup is available. In runtimes without Banana/API setup, route to the native image tool or ask for setup.
 10. Use Kepano's Obsidian skills for vault notes, Obsidian Flavored Markdown, wikilinks, callouts, properties/frontmatter, Bases, JSON Canvas, Obsidian CLI, and Defuddle clean web-to-markdown extraction. Before editing a real vault, prefer a git/snapshot/version-history safety point.
-11. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
-12. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
-13. Use `find-skills` only when the user wants to discover or install new skills.
-14. Keep context small: route to 1-3 skills, state the order, and load only the reference needed for the conflict.
+11. Use Anthropic example skills for their narrow official domains:
+   - `brand-guidelines` only when Anthropic branding, colors, typography, or company style guidelines are explicitly requested or appropriate.
+   - `doc-coauthoring` for substantial docs, proposals, PRDs, RFCs, technical specs, and decision docs.
+   - `mcp-builder` for MCP server design, tool schemas, API/service integrations, and MCP evaluation. Use Context7/current docs for SDK specifics.
+   - `slack-gif-creator` for Slack-ready GIFs, animated emoji, and short workspace reaction loops. Approval-gate any actual Slack upload/post.
+12. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
+13. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
+14. Use `find-skills` only when the user wants to discover or install new skills.
+15. Keep context small: route to 1-3 skills, state the order, and load only the reference needed for the conflict.
 
 ## Reference Routing
 

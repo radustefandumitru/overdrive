@@ -1,8 +1,8 @@
 {
-  "version": 3,
+  "version": 4,
   "name": "agentic-supercharge",
   "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
-  "schemaDescription": "Schema version 3 uses verified pinned source refs/packages by default, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, and router smoke checks.",
+  "schemaDescription": "Schema version 4 keeps verified pinned source refs/packages by default, adds the official Anthropic example skills source, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, and router smoke checks.",
   "installRoots": [
     "$HOME/.claude/skills",
     "$HOME/.codex/skills",
@@ -456,6 +456,30 @@
       ]
     },
     {
+      "id": "anthropic-example-skills",
+      "repo": "https://github.com/anthropics/skills.git",
+      "ref": "690f15cac7f7b4c055c5ab109c79ed9259934081",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/brand-guidelines",
+          "to": "brand-guidelines"
+        },
+        {
+          "from": "skills/doc-coauthoring",
+          "to": "doc-coauthoring"
+        },
+        {
+          "from": "skills/mcp-builder",
+          "to": "mcp-builder"
+        },
+        {
+          "from": "skills/slack-gif-creator",
+          "to": "slack-gif-creator"
+        }
+      ]
+    },
+    {
       "id": "awesome-claude-skills-curated",
       "repo": "https://github.com/ComposioHQ/awesome-claude-skills.git",
       "ref": "92568c1edaff1bde5371154f036d959346c145a8",
@@ -518,10 +542,6 @@
           "to": "lead-research-assistant"
         },
         {
-          "from": "mcp-builder",
-          "to": "mcp-builder"
-        },
-        {
           "from": "meeting-insights-analyzer",
           "to": "meeting-insights-analyzer"
         },
@@ -532,10 +552,6 @@
         {
           "from": "skill-share",
           "to": "skill-share"
-        },
-        {
-          "from": "slack-gif-creator",
-          "to": "slack-gif-creator"
         },
         {
           "from": "tailored-resume-generator",
@@ -655,6 +671,30 @@
       "expected": [
         "connect-apps",
         "approval"
+      ]
+    },
+    {
+      "prompt": "Apply Anthropic brand guidelines to this artifact",
+      "expected": [
+        "brand-guidelines"
+      ]
+    },
+    {
+      "prompt": "Co-author a technical spec with me",
+      "expected": [
+        "doc-coauthoring"
+      ]
+    },
+    {
+      "prompt": "Build a high-quality MCP server for this API",
+      "expected": [
+        "mcp-builder"
+      ]
+    },
+    {
+      "prompt": "Create a Slack emoji GIF",
+      "expected": [
+        "slack-gif-creator"
       ]
     }
   ],

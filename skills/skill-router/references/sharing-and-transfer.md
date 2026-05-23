@@ -27,6 +27,7 @@ Antigravity uses the `.gemini` config convention for its agent shell. Even when 
 ## What Transfers
 
 - Public skill folders and bundled `SKILL.md` instructions.
+- Pinned upstream skill sources, including the selected Anthropic example skills from `anthropics/skills`.
 - `skill-router` and its references.
 - Local public-safe skills such as `fluid-animations`, `emil-animation-polish`, and the `jack-*` premium 3D website workflow skills.
 - Managed global instruction templates in `global-instructions/`, including an explicit default instruction to consult `skill-router` as a lightweight preflight for non-trivial requests, with user-named skill overrides.

@@ -176,12 +176,12 @@ The private/offline zip may include bundled third-party snapshots. Do not attach
 
 ## Release Checklist
 
-For `v0.1.0`:
+For a new release, replace `vX.Y.Z` with the package version in `package.json`:
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
-gh release create v0.1.0 ../ai-skill-setup-public.zip --title "AgenticSupercharge v0.1.0" --notes-file CHANGELOG.md
+git tag vX.Y.Z
+git push origin vX.Y.Z
+gh release create vX.Y.Z ../ai-skill-setup-public.zip --title "AgenticSupercharge vX.Y.Z" --notes-file CHANGELOG.md
 gh repo edit radustefandumitru/AgenticSupercharge --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
 ```
 

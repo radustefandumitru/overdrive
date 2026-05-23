@@ -16,6 +16,7 @@ Verified on: 2026-05-23
 | Stop Slop | Git | `8da1f030185bdfe8471220585162991eaeb970e9` | `main` | https://github.com/hardikpandya/stop-slop |
 | Banana Claude | Git | `a4b5a7e4f592029886a379496cf29980fb6b8824` | `main` | https://github.com/AgriciDaniel/banana-claude |
 | Obsidian Skills | Git | `ac9398734fe719565809f7a6048b05c36b1ca38f` | `main` | https://github.com/kepano/obsidian-skills |
+| Anthropic example skills | Git | `690f15cac7f7b4c055c5ab109c79ed9259934081` | `main` | https://github.com/anthropics/skills |
 | Composio Awesome Claude Skills | Git | `92568c1edaff1bde5371154f036d959346c145a8` | `master` | https://github.com/ComposioHQ/awesome-claude-skills |
 | GSD official installer | npm | `get-shit-done-cc@1.42.3` | `get-shit-done-cc@latest` | https://github.com/gsd-build/get-shit-done |
 | Playwright CLI installer | npm | `@playwright/cli@0.1.13` | `@playwright/cli@latest` | https://github.com/microsoft/playwright-cli |

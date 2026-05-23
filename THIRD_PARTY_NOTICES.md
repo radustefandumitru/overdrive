@@ -17,6 +17,7 @@ License detection below is based on GitHub repository metadata checked during ki
 | Stop Slop | https://github.com/hardikpandya/stop-slop | MIT | Installed from approved upstream path |
 | Banana Claude | https://github.com/AgriciDaniel/banana-claude | MIT | Installed from approved upstream path |
 | Obsidian Skills | https://github.com/kepano/obsidian-skills | MIT | Installed from approved upstream paths |
+| Anthropic example skills | https://github.com/anthropics/skills | Mixed / review upstream notices | Installed from approved upstream paths for `brand-guidelines`, `doc-coauthoring`, `mcp-builder`, and `slack-gif-creator`; review Anthropic's upstream README and notices before public redistribution of bundled copies. |
 | Composio Awesome Claude Skills | https://github.com/ComposioHQ/awesome-claude-skills | No GitHub license detected | Only curated subset installed; review before public redistribution |
 | Remotion Skills | https://github.com/remotion-dev/skills | No GitHub license detected | Installed from approved upstream path; review before public redistribution |
 | Playwright CLI | https://github.com/microsoft/playwright-cli | Apache-2.0 | Installed/updated through the official `@playwright/cli` skill installer, pinned by default in `VERIFIED_SOURCES.md` |

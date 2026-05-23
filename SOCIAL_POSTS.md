@@ -17,6 +17,7 @@ Use GitHub links for the canonical source. Only include Reddit usernames when th
 - Stop Slop by Hardik Pandya: [GitHub](https://github.com/hardikpandya/stop-slop), site from skill metadata: [hvpandya.com](https://hvpandya.com). No reliable Reddit/X account found.
 - Banana Claude by AgriciDaniel: [GitHub](https://github.com/AgriciDaniel/banana-claude). No reliable Reddit/X account found.
 - Obsidian Skills by Steph Ango / Kepano: [GitHub](https://github.com/kepano/obsidian-skills), Reddit: [u/kepano](https://www.reddit.com/user/kepano/), X: [@kepano](https://x.com/kepano).
+- Anthropic example skills: [GitHub](https://github.com/anthropics/skills), [skills docs](https://support.claude.com/en/articles/12512180-using-skills-in-claude). Includes `brand-guidelines`, `doc-coauthoring`, `mcp-builder`, and `slack-gif-creator`.
 - Composio Awesome Claude Skills: [GitHub](https://github.com/ComposioHQ/awesome-claude-skills), [site](https://composio.dev).
 - Remotion Skills: [GitHub](https://github.com/remotion-dev/skills), [site](https://www.remotion.dev).
 - Playwright CLI skill: [docs](https://playwright.dev/agent-cli/skills), [GitHub](https://github.com/microsoft/playwright-cli).
@@ -94,6 +95,7 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 > - [Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance) by Google Chrome
 > - [Playwright CLI](https://github.com/microsoft/playwright-cli) by Microsoft, installed via the official installer
 > - [Remotion skills](https://github.com/remotion-dev/skills) by Remotion
+> - [Anthropic example skills](https://github.com/anthropics/skills) for brand guidelines, doc co-authoring, MCP building, and Slack GIF creation
 > - [Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) by Composio (curated subset)
 > - Global instruction templates adapted from [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)
 >
@@ -290,7 +292,7 @@ It also routes:
 
 Important: I did not create the underlying skills.
 
-This is a curated installer + router around great work by Leon Lin/LeonxInx, Paul Bakaus, Emil Kowalski, Lex Christopherson/TACHES/gsd-build, Muratcan Koylan, Corey Haines, Hardik Pandya, AgriciDaniel, Steph Ango/Kepano, ComposioHQ, Remotion, Playwright, and Chrome's Modern Web Guidance team.
+This is a curated installer + router around great work by Leon Lin/LeonxInx, Paul Bakaus, Emil Kowalski, Lex Christopherson/TACHES/gsd-build, Muratcan Koylan, Corey Haines, Hardik Pandya, AgriciDaniel, Steph Ango/Kepano, Anthropic, ComposioHQ, Remotion, Playwright, and Chrome's Modern Web Guidance team.
 
 Please star/support the originals.
 

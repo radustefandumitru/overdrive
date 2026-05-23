@@ -218,10 +218,14 @@ You can trigger skills in two ways:
 | 3D scroll websites and animated landing pages | `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit` |
 | Long-running project execution | GSD project workflow skills plus context engineering when needed |
 | Marketing, SEO, launch, copy, CRO | Corey Haines MarketingSkills plus Stop Slop for final voice polish |
+| Documentation, proposals, and specs | Anthropic `doc-coauthoring`, GSD docs skills when tied to project execution |
+| Brand-specific artifacts | Anthropic `brand-guidelines`, Taste `brandkit`, Impeccable for final design polish |
+| MCP server authoring | Anthropic `mcp-builder` plus Context7/current MCP docs when needed |
 | Current library/API docs | Context7 guidance in the global instruction templates |
 | Browser checks and screenshots | Playwright CLI skill |
 | Images, assets, and video workflows | Banana Claude, Remotion skills, marketing video skills |
 | Obsidian vaults and knowledge work | Kepano Obsidian skills |
+| Slack GIFs and emoji animations | Anthropic `slack-gif-creator` |
 | External app actions | Curated Composio/connect-style skills, approval-gated |
 
 ## Skills Added By This Kit
@@ -255,6 +259,7 @@ AgenticSupercharge is a curated installer/router. Most skills come from other cr
 | [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop) | Removes common AI writing tells from public prose. |
 | [AgriciDaniel / Banana Claude](https://github.com/AgriciDaniel/banana-claude) | Image-generation creative direction workflows. |
 | [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [Obsidian](https://obsidian.md), and [Obsidian Help](https://help.obsidian.md) | Obsidian Markdown, Bases, JSON Canvas, Obsidian CLI, and Defuddle workflows. |
+| [Anthropic / Skills](https://github.com/anthropics/skills) | Official example skills for brand guidelines, doc co-authoring, MCP server development, and Slack GIF creation. |
 | [ComposioHQ / Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) and [composio.dev](https://composio.dev) | Curated utility/action skills. External actions remain approval-gated. |
 | [Remotion skills](https://github.com/remotion-dev/skills) and [remotion.dev](https://www.remotion.dev) | Programmatic video, React animation, captions, audio, and Remotion best practices. |
 | [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli) and [Playwright](https://playwright.dev) | Browser automation, screenshots, snapshots, UI flow checks, data extraction, and frontend validation. |
