@@ -2,10 +2,10 @@
 
 Use the standalone installer kit instead of copying personal app folders.
 
-Default local kit:
+Default local kit shape:
 
 ```bash
-/Users/stefan/Desktop/Codex Skills Setup/ai-skill-setup
+AgenticSupercharge/
 ```
 
 ## Recommended Flow
@@ -44,7 +44,7 @@ Antigravity uses the `.gemini` config convention for its agent shell. Even when 
 - MCP server config, connector auth, database URLs, service-role keys, browser profiles, or personal app sessions.
 - Google Drive, Slack, email, calendar, or Composio account auth.
 - Any app connector state that should remain personal.
-- Jack Roberts raw source materials in `/Users/stefan/Desktop/Codex Skills Setup/jack roberts skills`, including PDFs, zips, templates, prompts, and downloaded skill text.
+- Jack Roberts raw source materials from the private local research folder, including PDFs, zips, templates, prompts, and downloaded skill text.
 
 ## Global Instruction Files
 

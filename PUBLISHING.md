@@ -29,7 +29,7 @@ The public framing should be:
 
 ## Publish Commands
 
-From `/Users/stefan/Desktop/Codex Skills Setup/ai-skill-setup`:
+From your local AgenticSupercharge checkout:
 
 ```bash
 git init
@@ -121,7 +121,7 @@ Update previously managed skill folders only:
 Public zip:
 
 ```bash
-cd "/Users/stefan/Desktop/Codex Skills Setup"
+cd /path/to/the/folder-that-contains-ai-skill-setup
 zip -r ai-skill-setup-public.zip ai-skill-setup \
   -x 'ai-skill-setup/bundled/skills/*' \
   -x 'ai-skill-setup/.git/*' \
@@ -134,7 +134,7 @@ zip -r ai-skill-setup-public.zip ai-skill-setup \
 Private/offline zip:
 
 ```bash
-cd "/Users/stefan/Desktop/Codex Skills Setup"
+cd /path/to/the/folder-that-contains-ai-skill-setup
 zip -r ai-skill-setup.zip ai-skill-setup \
   -x 'ai-skill-setup/.git/*' \
   -x 'ai-skill-setup/.DS_Store' \
