@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.2 - 2026-05-23
+
+- Fixed manual global target selection so `--tools cursor` no longer implicitly includes the shared `.agents` root.
+- Kept auto target selection limited to detected roots, including `.agents` only when that root already exists.
+
 ## v0.1.1 - 2026-05-23
 
 - Added the pinned official `anthropics/skills` source for `brand-guidelines`, `doc-coauthoring`, `mcp-builder`, and `slack-gif-creator`.
