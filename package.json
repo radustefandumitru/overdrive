@@ -27,7 +27,9 @@
   "scripts": {
     "check": "node --check lib/installer.js && node --check bin/agentic-supercharge.js",
     "dry-run": "node bin/agentic-supercharge.js --dry-run",
-    "verify": "node bin/agentic-supercharge.js verify"
+    "verify": "node bin/agentic-supercharge.js verify",
+    "self-update": "node bin/agentic-supercharge.js self-update",
+    "update-skills": "node bin/agentic-supercharge.js update-skills"
   },
   "engines": {
     "node": ">=18"

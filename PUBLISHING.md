@@ -110,10 +110,23 @@ Local project install:
 ./install.sh --scope local --project-dir . --conflict preserve
 ```
 
-Update previously managed skill folders only:
+Update cloned kit plus previously managed skills:
 
 ```bash
 ./update.sh
+```
+
+Refresh all matching skills from upstream with timestamped backups:
+
+```bash
+./update.sh --all-skills
+```
+
+GitHub `npx` update path:
+
+```bash
+npx -y github:radustefandumitru/AgenticSupercharge update-skills
+npx -y github:radustefandumitru/AgenticSupercharge update-skills --all-skills
 ```
 
 ## Zip Builds

@@ -314,6 +314,12 @@ This kit is now upstream-first and target-aware: normal installs pull third-part
 5. Restart Claude Code, Codex, Gemini CLI, and Antigravity.
 6. Sign in or configure only the external tools you actually intend to use.
 
+## Updating
+
+- Run `./update.sh` from a cloned repo to pull the latest AgenticSupercharge setup, refresh AgenticSupercharge-managed skills from upstream sources, and verify the install.
+- Run `./update.sh --all-skills` to refresh every matching skill from upstream sources with timestamped backups for replaced folders.
+- Run `npx -y github:radustefandumitru/AgenticSupercharge update-skills` when using the GitHub `npx` path; add `--all-skills` for the backup-and-replace refresh.
+
 ## Manual Dependencies
 
 - Banana Claude may need Google/Gemini API setup.

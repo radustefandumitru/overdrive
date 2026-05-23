@@ -53,7 +53,7 @@ What it does:
 - Adds a `skill-router` skill that tells the agent which skill to use when multiple skills could apply.
 - Keeps context bloat down by routing to 1-3 relevant skills instead of loading everything.
 - Adds guardrails: external app actions require approval, Obsidian vault edits should use snapshots/git, and Impeccable should ask before broad font/hierarchy changes.
-- Includes `install.sh --dry-run`, `verify.sh`, `update.sh`, a lockfile, `.gitignore` for private bundled snapshots, and a human-readable skills summary.
+- Includes `install.sh --dry-run`, `verify.sh`, `update.sh`, `update.sh --all-skills`, a lockfile, `.gitignore` for private bundled snapshots, and a human-readable skills summary.
 - Was built and iterated on using this same setup, including the installer, router, docs, verification, and packaging workflow.
 
 The rough routing logic:
@@ -132,7 +132,7 @@ This setup gives you:
 - installer
 - dry run
 - verifier
-- update script for previously managed skills
+- update script for the setup itself, managed skills, or all matching skills with backups
 - non-destructive default conflict policy
 - Cursor support
 - local/global install modes

@@ -124,11 +124,42 @@ Local project install:
 ./install.sh --scope local --project-dir . --conflict preserve
 ```
 
-Update only previously managed folders:
+Update the setup and managed skills:
 
 ```bash
 ./update.sh
 ```
+
+By default, `./update.sh` pulls the latest AgenticSupercharge repo version when you are using a git clone, then updates AgenticSupercharge-managed skills from their upstream sources, then runs `./verify.sh`.
+
+Refresh all matching skills from upstream sources:
+
+```bash
+./update.sh --all-skills
+```
+
+`--all-skills` uses `backup-and-replace`, so matching existing skill folders are moved into `~/.agentic-supercharge/backups/...` before replacement. Use this when you want every skill in the setup refreshed to the latest official upstream version, including folders that were installed before AgenticSupercharge markers existed.
+
+Update only the AgenticSupercharge repo/package:
+
+```bash
+./update.sh --kit-only
+```
+
+Update only installed skills:
+
+```bash
+./update.sh --skills-only
+```
+
+GitHub `npx` update path:
+
+```bash
+npx -y github:radustefandumitru/AgenticSupercharge update-skills
+npx -y github:radustefandumitru/AgenticSupercharge update-skills --all-skills
+```
+
+With `npx`, the package is fetched from GitHub each time, so the command itself is already using the latest published AgenticSupercharge version.
 
 Verify the current installation:
 
@@ -237,6 +268,14 @@ The script:
 
 `verify.sh` checks expected skills, YAML frontmatter, managed instruction blocks, forbidden bulk automation folders, broken symlinks, router smoke prompts, and non-Claude GSD path leakage.
 
+`update.sh` uses the same installer core:
+
+- `./update.sh` updates the cloned AgenticSupercharge repo with `git pull --ff-only`, then refreshes AgenticSupercharge-managed skill folders using `replace-managed-only`.
+- `./update.sh --all-skills` refreshes all matching skills from upstream sources using `backup-and-replace`.
+- `./update.sh --dry-run` previews both the kit update and skill refresh without changing files.
+- `./update.sh --kit-only` updates only the installer/docs/local skills repo.
+- `./update.sh --skills-only` skips the git self-update and refreshes installed skills only.
+
 ## Verification Status
 
 Current local verification for this public package has passed:
@@ -245,6 +284,9 @@ Current local verification for this public package has passed:
 - Node syntax checks for `lib/installer.js` and `bin/agentic-supercharge.js`
 - `./verify.sh`
 - global install dry-run with detected targets
+- updater dry-runs for managed-only and `--all-skills` refreshes
+- local `npx` command dry-runs for install and `update-skills`
+- `npm pack --dry-run`
 - local project install dry-run
 - `npm pack --dry-run`
 - public zip exclusion checks for bundled snapshots, lock metadata, tarballs, `.DS_Store`, and private source material
