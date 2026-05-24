@@ -2,7 +2,7 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-05-23
+Verified on: 2026-05-24
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|
@@ -17,6 +17,8 @@ Verified on: 2026-05-23
 | Banana Claude | Git | `a4b5a7e4f592029886a379496cf29980fb6b8824` | `main` | https://github.com/AgriciDaniel/banana-claude |
 | Obsidian Skills | Git | `ac9398734fe719565809f7a6048b05c36b1ca38f` | `main` | https://github.com/kepano/obsidian-skills |
 | Anthropic example skills | Git | `690f15cac7f7b4c055c5ab109c79ed9259934081` | `main` | https://github.com/anthropics/skills |
+| OpenAI Skills Catalog | Git | `b0401f07213a66414d84a65cb50c1d226f99485a` | `main` | https://github.com/openai/skills |
+| Vercel Labs Skills | Git | `e4243fbf7d9398722024f62850ece90fa0d5c693` | `main` | https://github.com/vercel-labs/skills |
 | Composio Awesome Claude Skills | Git | `92568c1edaff1bde5371154f036d959346c145a8` | `master` | https://github.com/ComposioHQ/awesome-claude-skills |
 | GSD official installer | npm | `get-shit-done-cc@1.42.3` | `get-shit-done-cc@latest` | https://github.com/gsd-build/get-shit-done |
 | Playwright CLI installer | npm | `@playwright/cli@0.1.13` | `@playwright/cli@latest` | https://github.com/microsoft/playwright-cli |

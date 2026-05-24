@@ -18,6 +18,8 @@ License detection below is based on GitHub repository metadata checked during ki
 | Banana Claude | https://github.com/AgriciDaniel/banana-claude | MIT | Installed from approved upstream path |
 | Obsidian Skills | https://github.com/kepano/obsidian-skills | MIT | Installed from approved upstream paths |
 | Anthropic example skills | https://github.com/anthropics/skills | Mixed / review upstream notices | Installed from approved upstream paths for `brand-guidelines`, `doc-coauthoring`, `mcp-builder`, and `slack-gif-creator`; review Anthropic's upstream README and notices before public redistribution of bundled copies. |
+| OpenAI Skills Catalog | https://github.com/openai/skills | Per-skill license; `playwright` includes Apache-2.0 license and Microsoft notice | Installed from approved upstream path for `playwright`. |
+| Vercel Labs Skills | https://github.com/vercel-labs/skills | No root license detected | Installed from approved upstream path for `find-skills`; review before public redistribution. |
 | Composio Awesome Claude Skills | https://github.com/ComposioHQ/awesome-claude-skills | No GitHub license detected | Only curated subset installed; review before public redistribution |
 | Remotion Skills | https://github.com/remotion-dev/skills | No GitHub license detected | Installed from approved upstream path; review before public redistribution |
 | Playwright CLI | https://github.com/microsoft/playwright-cli | Apache-2.0 | Installed/updated through the official `@playwright/cli` skill installer, pinned by default in `VERIFIED_SOURCES.md` |

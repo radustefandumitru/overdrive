@@ -42,7 +42,7 @@ This catalog lists each unique user/global skill once across the five target roo
 |---|---|---|---|
 | `banana` | AI image generation Creative Director powered by Google Gemini Nano Banana models. Use this skill for ANY request involving image creation, editing, visual asset production, or creative direction. Triggers on: generate an image, create a photo, edit this picture, design a logo, make a banner, visual for my anything, and all /banana commands. Handles text-to-image, image editing, multi-turn creative sessions, batch workflows, and brand presets. | User asks to generate or improve images and Banana setup is available | May need API/MCP setup; fallback to native image tool elsewhere |
 | `playwright-cli` | Official Playwright CLI skill for browser automation, snapshots, screenshots, UI-flow debugging, browser sessions, tracing, videos, and Playwright test workflows. | Real browser validation or automation is needed | Installed from the official `@playwright/cli` skill installer |
-| `playwright` | Legacy/local wrapper for `playwright-cli` if present on this machine. | Fallback when `playwright-cli` is unavailable but the wrapper exists | Prefer `playwright-cli` for public/shared installs |
+| `playwright` | OpenAI curated wrapper for `playwright-cli` with a bundled script and local reference guides. | Fallback/complement for browser automation when the OpenAI wrapper is explicitly useful | Prefer `playwright-cli` for normal browser validation; installed from pinned `openai/skills` source |
 | `remotion-best-practices` | Best practices for Remotion - Video creation in React | Task directly matches this skill domain |  |
 
 ## Skill Management, Writing, and Output Control
@@ -50,7 +50,7 @@ This catalog lists each unique user/global skill once across the five target roo
 | Skill | Purpose | Use when | Notes |
 |---|---|---|---|
 | `doc-coauthoring` | Structured workflow for co-authoring documentation, proposals, technical specs, decision docs, PRDs, RFCs, and similar substantial written artifacts through context gathering, iterative refinement, and reader testing. | User wants to write, draft, structure, or improve documentation, proposals, specs, PRDs, RFCs, decision docs, or substantial project docs | Good for collaborative writing; pair with GSD docs skills when the document belongs to a planned implementation phase |
-| `find-skills` | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill. | Task directly matches this skill domain |  |
+| `find-skills` | Vercel Labs discovery workflow for finding and installing agent skills using the Skills CLI and skills.sh. | User asks to find, compare, install, or extend skills | Do not run broad skill discovery for ordinary coding tasks |
 | `full-output-enforcement` | Overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits cleanly. Apply to any task requiring exhaustive, unabridged output. | Task directly matches this skill domain |  |
 | `stop-slop` | Remove AI writing patterns from prose. Use when drafting, editing, or reviewing text to eliminate predictable AI tells. | Public prose should sound human and avoid AI tells | stop-slop |
 

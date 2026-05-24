@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.3 - 2026-05-24
+
+- Added pinned official sources for Vercel Labs `find-skills` and OpenAI `playwright`.
+- Restored drifted local `playwright` copies to the upstream OpenAI skill instead of keeping local path edits.
+- Fixed an official Superpowers plugin cache drift by restoring its deleted `AGENTS.md` symlink.
+- Narrowed non-Claude path sanitization to generated runtime files so unrelated upstream skills stay byte-for-byte original apart from AgenticSupercharge marker files.
+- Documented the official GSD Gemini CLI layout: commands/agents under `~/.gemini`, with Antigravity `SKILL.md` folders under `~/.gemini/config/skills`.
+
 ## v0.1.2 - 2026-05-23
 
 - Fixed manual global target selection so `--tools cursor` no longer implicitly includes the shared `.agents` root.

@@ -26,16 +26,19 @@ This kit is now upstream-first, pinned by default, and target-aware: normal inst
 | Banana Claude by AgriciDaniel | [GitHub](https://github.com/AgriciDaniel/banana-claude) | None found | Image-generation creative director workflows around Gemini/Nano Banana style image generation. (1 skills) |
 | Obsidian Skills by Kepano | [GitHub](https://github.com/kepano/obsidian-skills) | [obsidian.md](https://obsidian.md), [help.obsidian.md](https://help.obsidian.md) | Obsidian Markdown, Bases, JSON Canvas, Obsidian CLI, and Defuddle web-to-markdown extraction. (5 skills) |
 | Anthropic example skills | [GitHub](https://github.com/anthropics/skills) | [Anthropic skills docs](https://support.claude.com/en/articles/12512180-using-skills-in-claude) | Official example skills for brand guidelines, doc co-authoring, MCP server building, and Slack GIF creation. (4 skills) |
+| OpenAI Skills Catalog | [GitHub](https://github.com/openai/skills) | [Using skills in Codex](https://developers.openai.com/codex/skills) | OpenAI curated `playwright` wrapper skill for browser automation through Playwright CLI. (1 skills) |
+| Vercel Labs Skills | [GitHub](https://github.com/vercel-labs/skills) | [skills.sh](https://skills.sh) | `find-skills` discovery workflow for finding and installing additional agent skills. (1 skills) |
 | ComposioHQ Awesome Claude Skills curated subset | [GitHub](https://github.com/ComposioHQ/awesome-claude-skills) | [composio.dev](https://composio.dev) | Curated action/utility skills. External app actions are approval-gated and may require auth/connectors. (21 skills) |
 | Remotion skills | [GitHub](https://github.com/remotion-dev/skills) | [www.remotion.dev](https://www.remotion.dev) | Best practices for building programmatic videos, animations, captions, audio, and compositions in Remotion/React. (1 skills) |
 | Playwright CLI skill | [GitHub](https://github.com/microsoft/playwright-cli) | [playwright.dev/agent-cli/skills](https://playwright.dev/agent-cli/skills) | Browser automation, screenshots, snapshots, UI flow checks, data extraction, and frontend validation. Installed/updated through the official @playwright/cli installer. (1 skills) |
-| Skills CLI / skills.sh | Local / none found | [skills.sh](https://skills.sh) | Discovery helper for finding and installing additional agent skills. (1 skills) |
+| Skills CLI / skills.sh | [Vercel Labs Skills](https://github.com/vercel-labs/skills) | [skills.sh](https://skills.sh) | Discovery helper for finding and installing additional agent skills. (1 skills) |
 | Full output enforcement local skill | Local / none found | None found | Local enforcement skill for complete, unabridged output when truncation would be harmful. (1 skills) |
 
 ## How The Skills Work Together
 
 - Start with `skill-router` as the default lightweight preflight for non-trivial requests; it should pick 1-3 relevant skills rather than loading everything.
 - Global/project instructions add always-on behavior across Claude Code, Codex, Gemini CLI, Antigravity, and local project agents: think before coding, keep solutions simple, make surgical changes, verify against explicit goals, consult `skill-router` before non-trivial work, and use Context7 for current docs when it fits the task.
+- GSD/Superpowers follows its official runtime layout. Gemini CLI receives GSD commands and agents under `~/.gemini/commands` and `~/.gemini/agents`; Antigravity receives the GSD `SKILL.md` folders under `~/.gemini/config/skills`.
 - Frontend/design: Taste gives visual direction, Emil handles broad motion/feel, Emil Animation Polish handles CSS transition/easing details, Fluid Animations handles spring/gesture/direct-manipulation behavior, Modern Web Guidance checks current platform APIs, Playwright verifies in browser, and Impeccable does final polish with user feedback before broad hierarchy/font changes.
 - Premium 3D website workflows: Jack Roberts inspired local skills handle brand/competitor intelligence, scroll-stop image/video prompts, scroll-driven video/frame-sequence implementation, SEO/launch audits, and full workflow orchestration. They treat Firecrawl, GitHub, Vercel, image/video tools, and browser connectors as optional user-configured tools.
 - Project work: GSD owns planning/execution/verification state; Context Engineering is added only when token budget, context degradation, memory, tools, or multi-agent boundaries are the problem.
@@ -300,13 +303,13 @@ This kit is now upstream-first, pinned by default, and target-aware: normal inst
 | Skill | What it does | How to use it | Installed roots |
 |---|---|---|---|
 | `playwright-cli` | Official Playwright agent/CLI skill for real-browser navigation, form filling, snapshots, screenshots, data extraction, and UI-flow debugging. | Prefer this for browser proof, screenshots, snapshots, and UI flow debugging. Installed/updated through the pinned `@playwright/cli` package in `VERIFIED_SOURCES.md`. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
-| `playwright` | Legacy wrapper skill for Playwright-style browser automation if already present. | Fallback only; prefer `playwright-cli` when both are available. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
+| `playwright` | OpenAI curated wrapper skill for Playwright-style browser automation using a bundled wrapper script and local reference guides. | Fallback or complement to `playwright-cli`; prefer `playwright-cli` for public/shared installs unless the OpenAI wrapper is explicitly useful. Installed from the pinned `openai/skills` source. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 
 ### Skills CLI / skills.sh
 
 | Skill | What it does | How to use it | Installed roots |
 |---|---|---|---|
-| `find-skills` | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill. | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that ... | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
+| `find-skills` | Vercel Labs discovery workflow for finding and installing agent skills with the Skills CLI and skills.sh. | Use only when the user asks to find, compare, install, or extend skills; do not run broad discovery as part of ordinary coding tasks. Installed from the pinned `vercel-labs/skills` source. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 
 ### Full output enforcement local skill
 

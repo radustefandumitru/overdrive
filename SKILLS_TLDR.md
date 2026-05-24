@@ -13,7 +13,8 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Brand-specific artifacts | `brand-guidelines` | `brandkit` for new visual identity boards; `impeccable` for final polish |
 | MCP server development | `mcp-builder` | Context7/current MCP SDK docs when implementation details matter |
 | Current docs or APIs | Context7 guidance in global instructions | `modern-web-guidance` for browser/platform decisions |
-| Browser validation | `playwright-cli` | screenshots, snapshots, responsive checks, UI flow checks |
+| Browser validation | `playwright-cli` | OpenAI `playwright` wrapper as fallback; screenshots, snapshots, responsive checks, UI flow checks |
+| Discover more skills | `find-skills` | only when the user asks to find, compare, or install additional skills |
 | Obsidian vault work | Kepano Obsidian skills | `json-canvas`, `obsidian-bases`, `defuddle` |
 | Image/video workflows | `banana`, Remotion skills | approval-gated external tools where configured |
 | Slack GIF or emoji animation | `slack-gif-creator` | Banana/image tooling only if a custom source image is needed |

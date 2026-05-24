@@ -1,8 +1,8 @@
 {
-  "version": 4,
+  "version": 5,
   "name": "agentic-supercharge",
   "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
-  "schemaDescription": "Schema version 4 keeps verified pinned source refs/packages by default, adds the official Anthropic example skills source, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, and router smoke checks.",
+  "schemaDescription": "Schema version 5 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, and router smoke checks.",
   "installRoots": [
     "$HOME/.claude/skills",
     "$HOME/.codex/skills",
@@ -37,10 +37,75 @@
       {
         "rootSuffix": "/.gemini/skills",
         "skills": [
+          "gsd-add-tests",
+          "gsd-ai-integration-phase",
+          "gsd-audit-fix",
+          "gsd-audit-milestone",
+          "gsd-audit-uat",
+          "gsd-autonomous",
+          "gsd-capture",
+          "gsd-cleanup",
+          "gsd-code-review",
+          "gsd-complete-milestone",
+          "gsd-config",
+          "gsd-debug",
+          "gsd-discuss-phase",
+          "gsd-docs-update",
+          "gsd-eval-review",
+          "gsd-execute-phase",
+          "gsd-explore",
+          "gsd-extract-learnings",
+          "gsd-fast",
+          "gsd-forensics",
+          "gsd-graphify",
+          "gsd-health",
+          "gsd-help",
+          "gsd-import",
+          "gsd-inbox",
+          "gsd-ingest-docs",
+          "gsd-manager",
+          "gsd-map-codebase",
+          "gsd-milestone-summary",
+          "gsd-mvp-phase",
+          "gsd-new-milestone",
+          "gsd-new-project",
+          "gsd-ns-context",
+          "gsd-ns-ideate",
+          "gsd-ns-manage",
+          "gsd-ns-project",
+          "gsd-ns-review",
+          "gsd-ns-workflow",
+          "gsd-pause-work",
+          "gsd-phase",
+          "gsd-plan-phase",
+          "gsd-plan-review-convergence",
+          "gsd-pr-branch",
+          "gsd-profile-user",
+          "gsd-progress",
+          "gsd-quick",
+          "gsd-resume-work",
+          "gsd-review",
+          "gsd-review-backlog",
+          "gsd-secure-phase",
+          "gsd-settings",
+          "gsd-ship",
+          "gsd-sketch",
+          "gsd-spec-phase",
+          "gsd-spike",
+          "gsd-stats",
           "gsd-surface",
-          "gsd-ultraplan-phase"
+          "gsd-thread",
+          "gsd-ui-phase",
+          "gsd-ui-review",
+          "gsd-ultraplan-phase",
+          "gsd-undo",
+          "gsd-update",
+          "gsd-validate-phase",
+          "gsd-verify-work",
+          "gsd-workspace",
+          "gsd-workstreams"
         ],
-        "reason": "The official GSD Gemini CLI install does not currently expose these helper/beta skills in ~/.gemini/skills; Antigravity's ~/.gemini/config/skills root does."
+        "reason": "The official GSD Gemini CLI installer exposes GSD as commands and agents under ~/.gemini/commands and ~/.gemini/agents, not as SKILL.md folders in ~/.gemini/skills. Antigravity receives the GSD SKILL.md folders under ~/.gemini/config/skills."
       }
     ]
   },
@@ -480,6 +545,30 @@
       ]
     },
     {
+      "id": "openai-skills-curated",
+      "repo": "https://github.com/openai/skills.git",
+      "ref": "b0401f07213a66414d84a65cb50c1d226f99485a",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/.curated/playwright",
+          "to": "playwright"
+        }
+      ]
+    },
+    {
+      "id": "vercel-labs-skills",
+      "repo": "https://github.com/vercel-labs/skills.git",
+      "ref": "e4243fbf7d9398722024f62850ece90fa0d5c693",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/find-skills",
+          "to": "find-skills"
+        }
+      ]
+    },
+    {
       "id": "awesome-claude-skills-curated",
       "repo": "https://github.com/ComposioHQ/awesome-claude-skills.git",
       "ref": "92568c1edaff1bde5371154f036d959346c145a8",
@@ -695,6 +784,18 @@
       "prompt": "Create a Slack emoji GIF",
       "expected": [
         "slack-gif-creator"
+      ]
+    },
+    {
+      "prompt": "Find a skill for React performance",
+      "expected": [
+        "find-skills"
+      ]
+    },
+    {
+      "prompt": "Use the OpenAI Playwright wrapper skill",
+      "expected": [
+        "playwright"
       ]
     }
   ],

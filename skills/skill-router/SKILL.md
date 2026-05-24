@@ -28,6 +28,7 @@ Use this skill to choose the right installed skill or skill sequence without loa
 6. Add implementation support skills only when the task needs them:
    - `modern-web-guidance` for modern HTML/CSS/browser APIs, accessibility, forms, dialogs, popovers, performance, and Baseline compatibility.
    - `playwright-cli` for official Playwright CLI browser validation, screenshots, snapshots, flows, data extraction, and debugging.
+   - `playwright` only as the pinned OpenAI wrapper/fallback when that specific wrapper is useful; otherwise prefer `playwright-cli`.
 7. Use GSD for stateful project planning, phased execution, verification, and persistent `.planning/` workflows. Add Context Engineering skills only when context quality, compression, multi-agent architecture, memory, tool design, or evaluation is the problem.
 8. Use Corey Haines marketing skills for SEO, CRO, copywriting, launches, pricing, ads, customer research, and growth strategy. Add `stop-slop` for public-facing prose, emails, landing copy, blog posts, social posts, and any "make this sound human" request.
 9. Use `banana` for image-generation requests when its Claude Code/Gemini setup is available. In runtimes without Banana/API setup, route to the native image tool or ask for setup.
@@ -39,7 +40,7 @@ Use this skill to choose the right installed skill or skill sequence without loa
    - `slack-gif-creator` for Slack-ready GIFs, animated emoji, and short workspace reaction loops. Approval-gate any actual Slack upload/post.
 12. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
 13. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
-14. Use `find-skills` only when the user wants to discover or install new skills.
+14. Use Vercel Labs `find-skills` only when the user wants to discover, compare, or install new skills. Do not run broad skill discovery for normal implementation tasks.
 15. Keep context small: route to 1-3 skills, state the order, and load only the reference needed for the conflict.
 
 ## Reference Routing

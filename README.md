@@ -34,6 +34,8 @@ Antigravity uses the `.gemini` convention for its agent shell. Even if you run C
 
 Cursor custom skills belong in `~/.cursor/skills` globally or `.cursor/skills` locally. This installer does not write to `~/.cursor/skills-cursor`.
 
+GSD/Superpowers uses its official runtime layout for Gemini CLI: Gemini gets GSD commands and agents under `~/.gemini/commands` and `~/.gemini/agents`, while Antigravity gets GSD `SKILL.md` folders under `~/.gemini/config/skills`.
+
 ## Quick Start
 
 Preview directly from GitHub without changing anything:
@@ -222,7 +224,8 @@ You can trigger skills in two ways:
 | Brand-specific artifacts | Anthropic `brand-guidelines`, Taste `brandkit`, Impeccable for final design polish |
 | MCP server authoring | Anthropic `mcp-builder` plus Context7/current MCP docs when needed |
 | Current library/API docs | Context7 guidance in the global instruction templates |
-| Browser checks and screenshots | Playwright CLI skill |
+| Browser checks and screenshots | Microsoft `playwright-cli` skill, OpenAI `playwright` wrapper as fallback |
+| Skill discovery and extension | Vercel Labs `find-skills`, used only when you ask to discover/install more skills |
 | Images, assets, and video workflows | Banana Claude, Remotion skills, marketing video skills |
 | Obsidian vaults and knowledge work | Kepano Obsidian skills |
 | Slack GIFs and emoji animations | Anthropic `slack-gif-creator` |
@@ -260,10 +263,11 @@ AgenticSupercharge is a curated installer/router. Most skills come from other cr
 | [AgriciDaniel / Banana Claude](https://github.com/AgriciDaniel/banana-claude) | Image-generation creative direction workflows. |
 | [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [Obsidian](https://obsidian.md), and [Obsidian Help](https://help.obsidian.md) | Obsidian Markdown, Bases, JSON Canvas, Obsidian CLI, and Defuddle workflows. |
 | [Anthropic / Skills](https://github.com/anthropics/skills) | Official example skills for brand guidelines, doc co-authoring, MCP server development, and Slack GIF creation. |
+| [OpenAI / Skills](https://github.com/openai/skills) | OpenAI curated `playwright` browser-automation wrapper skill. |
+| [Vercel Labs / Skills](https://github.com/vercel-labs/skills) and [skills.sh](https://skills.sh) | `find-skills` discovery workflow for finding and installing additional agent skills. |
 | [ComposioHQ / Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) and [composio.dev](https://composio.dev) | Curated utility/action skills. External actions remain approval-gated. |
 | [Remotion skills](https://github.com/remotion-dev/skills) and [remotion.dev](https://www.remotion.dev) | Programmatic video, React animation, captions, audio, and Remotion best practices. |
 | [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli) and [Playwright](https://playwright.dev) | Browser automation, screenshots, snapshots, UI flow checks, data extraction, and frontend validation. |
-| [skills.sh](https://skills.sh) | Discovery helper for finding and installing additional agent skills. |
 | [Apple Developer: Designing Fluid Interfaces](https://developer.apple.com/videos/play/wwdc2018/803/) | Reference inspiration for the local `fluid-animations` skill. |
 | [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50) | Public workflow inspiration for the local premium 3D/scroll website skills. |
 | [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | Karpathy-inspired coding-agent instruction patterns adapted into the global templates. |
