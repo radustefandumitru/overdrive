@@ -20,7 +20,6 @@ Verified on: 2026-05-24
 | OpenAI Skills Catalog | Git | `b0401f07213a66414d84a65cb50c1d226f99485a` | `main` | https://github.com/openai/skills |
 | Vercel Labs Skills | Git | `e4243fbf7d9398722024f62850ece90fa0d5c693` | `main` | https://github.com/vercel-labs/skills |
 | Composio Awesome Claude Skills | Git | `92568c1edaff1bde5371154f036d959346c145a8` | `master` | https://github.com/ComposioHQ/awesome-claude-skills |
-| GSD official installer | npm | `get-shit-done-cc@1.42.3` | `get-shit-done-cc@latest` | https://github.com/gsd-build/get-shit-done |
 | Playwright CLI installer | npm | `@playwright/cli@0.1.13` | `@playwright/cli@latest` | https://github.com/microsoft/playwright-cli |
 
 `sources.lock.json` records the exact refs, commits, packages, and install decisions for real local installs. It is intentionally ignored and excluded from public packages.

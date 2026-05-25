@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Also use when the user asks which installed skill to use, when multiple installed skills might apply, or before frontend/design, UI animation/gesture motion, documentation/spec/proposal writing, MCP server development, Slack GIF/emoji creation, GSD/project planning, context management, marketing/copy, Obsidian/vault/notes, external app actions, browser automation, image generation, Remotion/video, Chrome extension, or skill-management tasks where routing between installed skills matters. Advisory only: choose and invoke/load the best existing skill(s); skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill to use.
+description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Also use when the user asks which installed skill to use, when multiple installed skills might apply, or before frontend/design, UI animation/gesture motion, documentation/spec/proposal writing, MCP server development, Slack GIF/emoji creation, context management, marketing/copy, Obsidian/vault/notes, external app actions, browser automation, image generation, Remotion/video, Chrome extension, or skill-management tasks where routing between installed skills matters. Advisory only: choose and invoke/load the best existing skill(s); skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill to use.
 ---
 
 # Skill Router
@@ -29,7 +29,7 @@ Use this skill to choose the right installed skill or skill sequence without loa
    - `modern-web-guidance` for modern HTML/CSS/browser APIs, accessibility, forms, dialogs, popovers, performance, and Baseline compatibility.
    - `playwright-cli` for official Playwright CLI browser validation, screenshots, snapshots, flows, data extraction, and debugging.
    - `playwright` only as the pinned OpenAI wrapper/fallback when that specific wrapper is useful; otherwise prefer `playwright-cli`.
-7. Use GSD for stateful project planning, phased execution, verification, and persistent `.planning/` workflows. Add Context Engineering skills only when context quality, compression, multi-agent architecture, memory, tool design, or evaluation is the problem.
+7. Use Context Engineering skills when context quality, compression, multi-agent architecture, memory, tool design, long-thread continuity, or evaluation is the problem.
 8. Use Corey Haines marketing skills for SEO, CRO, copywriting, launches, pricing, ads, customer research, and growth strategy. Add `stop-slop` for public-facing prose, emails, landing copy, blog posts, social posts, and any "make this sound human" request.
 9. Use `banana` for image-generation requests when its Claude Code/Gemini setup is available. In runtimes without Banana/API setup, route to the native image tool or ask for setup.
 10. Use Kepano's Obsidian skills for vault notes, Obsidian Flavored Markdown, wikilinks, callouts, properties/frontmatter, Bases, JSON Canvas, Obsidian CLI, and Defuddle clean web-to-markdown extraction. Before editing a real vault, prefer a git/snapshot/version-history safety point.
@@ -46,7 +46,6 @@ Use this skill to choose the right installed skill or skill sequence without loa
 ## Reference Routing
 
 - Read `references/frontend-design-routing.md` for frontend, product UI, landing page, brand, motion, image-first, or visual-quality conflicts.
-- Read `references/gsd-routing.md` for GSD command selection and project orchestration.
 - Read `references/compatibility-audit.md` for source, platform, overlap, context-bloat, and approval-risk notes.
 - Read `references/sharing-and-transfer.md` when asked how to move this setup to another machine or teammate.
 - Read `references/catalog.md` for broad inventory, non-design routing, or when the user asks what every skill is for.
@@ -71,6 +70,5 @@ When routing is only a setup step before doing work, briefly name the chosen ski
 - Do not choose generic/Anthropic-style design guidance ahead of Taste skills, `emil-design-eng`, or `impeccable` for visual taste unless the user explicitly requests it.
 - Do not let `impeccable` make broad font/hierarchy/identity changes without user feedback unless the user explicitly asks the agent to decide.
 - Do not use `full-output-enforcement` unless the user needs complete unabridged output or previous output was truncated.
-- Do not use GSD skills outside runtimes where the official GSD installer exposes them.
 - Do not use external action skills without approval.
 - Do not assume a shared setup includes MCP credentials, OAuth state, API keys, or personal connector sessions.

@@ -34,7 +34,6 @@ Antigravity uses the `.gemini` convention for its agent shell. Even if you run C
 
 Cursor custom skills belong in `~/.cursor/skills` globally or `.cursor/skills` locally. This installer does not write to `~/.cursor/skills-cursor`.
 
-GSD/Superpowers uses its official runtime layout for Gemini CLI: Gemini gets GSD commands and agents under `~/.gemini/commands` and `~/.gemini/agents`, while Antigravity gets GSD `SKILL.md` folders under `~/.gemini/config/skills`.
 
 ## Quick Start
 
@@ -218,9 +217,7 @@ You can trigger skills in two ways:
 | Premium frontend/UI work | Taste Skill, Emil design engineering, Impeccable, Modern Web Guidance, Playwright CLI |
 | Smooth animation and gestures | `fluid-animations`, `emil-animation-polish`, Emil design engineering |
 | 3D scroll websites and animated landing pages | `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit` |
-| Long-running project execution | GSD project workflow skills plus context engineering when needed |
 | Marketing, SEO, launch, copy, CRO | Corey Haines MarketingSkills plus Stop Slop for final voice polish |
-| Documentation, proposals, and specs | Anthropic `doc-coauthoring`, GSD docs skills when tied to project execution |
 | Brand-specific artifacts | Anthropic `brand-guidelines`, Taste `brandkit`, Impeccable for final design polish |
 | MCP server authoring | Anthropic `mcp-builder` plus Context7/current MCP docs when needed |
 | Current library/API docs | Context7 guidance in the global instruction templates |
@@ -256,7 +253,6 @@ AgenticSupercharge is a curated installer/router. Most skills come from other cr
 | [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable) and [impeccable.style](https://impeccable.style/docs/) | UI critique, polish, spacing, typography, accessibility, and frontend quality checks. |
 | [Emil Kowalski](https://emilkowal.ski) and [emilkowalski/skill](https://github.com/emilkowalski/skill) | Design-engineering guidance for interaction feel, animation, easing, and component polish. |
 | [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance) | Current web platform guidance for HTML, CSS, browser APIs, Baseline, accessibility, performance, and Chrome extensions. |
-| [GSD / get-shit-done](https://github.com/gsd-build/get-shit-done) and [gsd.build](https://gsd.build) | Planning, execution, milestones, verification, reviews, and persistent project state. |
 | [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) | Context compression, context degradation, memory, evaluation, tool design, hosted agents, and multi-agent patterns. |
 | [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills) | SEO, CRO, copywriting, launch, pricing, ads, customer research, onboarding, referrals, analytics, and growth work. |
 | [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop) | Removes common AI writing tells from public prose. |
@@ -285,13 +281,12 @@ The script:
 3. Explains target paths and conflict policy.
 4. Pulls verified pinned upstream skills from `manifest.json`, unless `--allow-upstream-drift` is used.
 5. Installs local AgenticSupercharge skills from `skills/`.
-6. Runs official installer-backed sources such as GSD and Playwright CLI when applicable.
+6. Runs official installer-backed sources such as Playwright CLI when applicable.
 7. Copies skills into selected roots using the chosen conflict policy.
 8. Writes `.agentic-supercharge.json` markers into managed skill folders.
 9. Upserts managed instruction blocks into `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` where relevant.
 10. Writes `sources.lock.json` after real installs with source metadata, pin/drift mode, and install results.
 
-`verify.sh` checks expected skills, YAML frontmatter, managed instruction blocks, forbidden bulk automation folders, broken symlinks, router smoke prompts, and non-Claude GSD path leakage.
 
 `update.sh` uses the same installer core:
 

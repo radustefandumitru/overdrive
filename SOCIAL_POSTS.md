@@ -11,7 +11,6 @@ Use GitHub links for the canonical source. Only include Reddit usernames when th
 - Taste Skill by Leon Lin / LeonxInx: [GitHub](https://github.com/Leonxlnx/taste-skill), [site](https://www.tasteskill.dev), X: [@LexnLin](https://x.com/LexnLin), project X: [@_TasteSkill](https://x.com/_TasteSkill). No reliable Reddit username found.
 - Impeccable by Paul Bakaus: [GitHub](https://github.com/pbakaus/impeccable), [docs](https://impeccable.style/docs/), X: [@pbakaus](https://x.com/pbakaus). No reliable Reddit username found.
 - Emil Kowalski skill: [GitHub](https://github.com/emilkowalski/skill), [site](https://emilkowal.ski/skill), [animations.dev](https://animations.dev), X: [@emilkowalski](https://x.com/emilkowalski). No reliable Reddit username found.
-- GSD by Lex Christopherson / TACHES: [GitHub](https://github.com/gsd-build/get-shit-done), legacy GitHub: [@glittercowboy](https://github.com/glittercowboy), [site](https://gsd.build), Reddit: [u/officialtaches](https://www.reddit.com/user/officialtaches/), X: [@official_taches](https://x.com/official_taches).
 - Agent Skills for Context Engineering by Muratcan Koylan: [GitHub](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering). No reliable Reddit/X account found beyond GitHub.
 - MarketingSkills by Corey Haines: [GitHub](https://github.com/coreyhaines31/marketingskills), GitHub profile lists X: [@coreyhainesco](https://x.com/coreyhainesco). No reliable Reddit username found.
 - Stop Slop by Hardik Pandya: [GitHub](https://github.com/hardikpandya/stop-slop), site from skill metadata: [hvpandya.com](https://hvpandya.com). No reliable Reddit/X account found.
@@ -61,11 +60,9 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 - ⭐ I keep installing the same 10 community skills across Claude Code, Codex, and Cursor. I finally wrote an installer that does it for me.
 - AgenticSupercharge: a non-destructive installer for the best community skills, with a router so agents pick the right one
 - After collecting agent skills from GitHub for months, I built an installer that pulls them all from upstream with attribution
-- I built an installer that adds Taste, Impeccable, Emil's skill, GSD, Stop Slop, and 50+ more across all my coding agents
 
 ### Main Post (works in r/ClaudeAI, r/ClaudeCode, r/AnthropicAI, r/AI_Agents)
 
-> For the past few weeks I've been collecting Claude Code / Codex skills from GitHub and X — Taste Skill, Impeccable, Emil Kowalski's skill, GSD, Stop Slop, Banana Claude, Kepano's Obsidian skills, Corey Haines' marketing pack, Muratcan's context-engineering bundle, and a bunch more. Every one of these is better than what I could write myself.
 >
 > The annoying part was the setup. Each repo lives in a different place, each coding agent wants skills in a different folder (`~/.claude/skills`, `~/.codex/skills`, `~/.gemini/skills`, `~/.gemini/config/skills`, `~/.cursor/skills`), keeping them updated is manual, and there's no good way to do it without clobbering whatever you already had.
 >
@@ -88,7 +85,6 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 > - [Taste Skill](https://github.com/Leonxlnx/taste-skill) by Leon Lin
 > - [Impeccable](https://github.com/pbakaus/impeccable) by Paul Bakaus
 > - [Emil Kowalski's skill](https://github.com/emilkowalski/skill) — this one alone is worth installing
-> - [GSD / get-shit-done](https://github.com/gsd-build/get-shit-done) by Lex Christopherson / TACHES, installed via their official installer
 > - [Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) by Muratcan Koylan
 > - [MarketingSkills](https://github.com/coreyhaines31/marketingskills) by Corey Haines
 > - [Stop Slop](https://github.com/hardikpandya/stop-slop) by Hardik Pandya
@@ -151,7 +147,6 @@ Lead with the Cursor-specific angle.
 >
 > Same install ships across Claude Code, Codex, Gemini CLI, Antigravity, and shared `.agents` if you have any of those too.
 >
-> It pulls a curated set of community skills from verified pinned upstream refs (Taste Skill by Leon Lin, Impeccable by Paul Bakaus, Emil Kowalski's design-engineering skill, Corey Haines' marketing pack, Kepano's Obsidian skills, GSD via its official installer, plus a few more). Everything is attributed to the original creators in `THIRD_PARTY_NOTICES.md` — please star the original repos if you use them.
 >
 > Repo: https://github.com/radustefandumitru/AgenticSupercharge
 >
@@ -169,7 +164,6 @@ Tell the build story.
 
 > **AgenticSupercharge** — I curated my favorite Claude/Codex/Cursor skills into one safe installer
 >
-> I kept saving great agent skills I found on GitHub (Taste, Impeccable, Emil Kowalski's skill, GSD, Stop Slop, Banana Claude, Kepano's Obsidian pack, Corey Haines' marketing skills, Muratcan's context-engineering bundle, and more). Every new machine I had to set up, I'd spend an hour cloning each repo and copying SKILL.md files into the right folders for each coding agent.
 >
 > So I built an installer that does it for me, then ended up adding:
 >
@@ -191,7 +185,6 @@ Tell the build story.
 
 Lean into the identity.
 
-> If you're vibe coding with Claude Code, Codex, Gemini CLI, Antigravity, or Cursor — there are some seriously good community skills floating around GitHub and X that change how your agent actually behaves. Taste Skill for visual direction, Emil Kowalski's skill for animation feel, Impeccable for final polish, GSD for project planning, Stop Slop for getting rid of "It's not just X, it's Y" writing. The list goes on.
 >
 > The annoying part is each one lives in a different repo and each tool wants them in a different folder. I built **AgenticSupercharge** to pull them all from upstream and install them safely across whichever coding agents you have. Adds a `skill-router` so your agent picks 1-3 relevant skills per task instead of loading the whole pile.
 >
@@ -199,7 +192,6 @@ Lean into the identity.
 > - [Leon Lin / Taste Skill](https://github.com/Leonxlnx/taste-skill)
 > - [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable)
 > - [Emil Kowalski](https://github.com/emilkowalski/skill)
-> - [Lex Christopherson / TACHES / GSD](https://github.com/gsd-build/get-shit-done)
 > - [Muratcan Koylan / Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)
 > - [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills)
 > - [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop)
@@ -284,7 +276,6 @@ The design stack is opinionated:
 
 It also routes:
 
-- GSD through its official installer for planning/execution/verification
 - Context Engineering for token/context/memory issues
 - MarketingSkills for SEO/CRO/copy/ads/launch/pricing
 - Stop Slop for human-sounding writing
@@ -296,7 +287,6 @@ It also routes:
 
 Important: I did not create the underlying skills.
 
-This is a curated installer + router around great work by Leon Lin/LeonxInx, Paul Bakaus, Emil Kowalski, Lex Christopherson/TACHES/gsd-build, Muratcan Koylan, Corey Haines, Hardik Pandya, AgriciDaniel, Steph Ango/Kepano, Anthropic, OpenAI, Vercel Labs, ComposioHQ, Remotion, Playwright, and Chrome's Modern Web Guidance team.
 
 Please star/support the originals.
 
@@ -333,7 +323,6 @@ I built AgenticSupercharge, a portable AI skill setup for Claude Code, Codex, Ge
 
 It pulls a curated set of high-quality skills from upstream plus a `skill-router` so agents choose the right skill without loading unnecessary context.
 
-Includes Taste, Impeccable, Emil, GSD, Context Engineering, MarketingSkills, Stop Slop, Banana Claude, Obsidian Skills, Remotion, Playwright, and more.
 
 All credit to the original creators. This is an installer/router to make discovery easier for builders.
 

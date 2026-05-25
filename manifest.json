@@ -33,81 +33,7 @@
   ],
   "rootPolicies": {
     "claudeOnlySkills": [],
-    "rootSkillSkips": [
-      {
-        "rootSuffix": "/.gemini/skills",
-        "skills": [
-          "gsd-add-tests",
-          "gsd-ai-integration-phase",
-          "gsd-audit-fix",
-          "gsd-audit-milestone",
-          "gsd-audit-uat",
-          "gsd-autonomous",
-          "gsd-capture",
-          "gsd-cleanup",
-          "gsd-code-review",
-          "gsd-complete-milestone",
-          "gsd-config",
-          "gsd-debug",
-          "gsd-discuss-phase",
-          "gsd-docs-update",
-          "gsd-eval-review",
-          "gsd-execute-phase",
-          "gsd-explore",
-          "gsd-extract-learnings",
-          "gsd-fast",
-          "gsd-forensics",
-          "gsd-graphify",
-          "gsd-health",
-          "gsd-help",
-          "gsd-import",
-          "gsd-inbox",
-          "gsd-ingest-docs",
-          "gsd-manager",
-          "gsd-map-codebase",
-          "gsd-milestone-summary",
-          "gsd-mvp-phase",
-          "gsd-new-milestone",
-          "gsd-new-project",
-          "gsd-ns-context",
-          "gsd-ns-ideate",
-          "gsd-ns-manage",
-          "gsd-ns-project",
-          "gsd-ns-review",
-          "gsd-ns-workflow",
-          "gsd-pause-work",
-          "gsd-phase",
-          "gsd-plan-phase",
-          "gsd-plan-review-convergence",
-          "gsd-pr-branch",
-          "gsd-profile-user",
-          "gsd-progress",
-          "gsd-quick",
-          "gsd-resume-work",
-          "gsd-review",
-          "gsd-review-backlog",
-          "gsd-secure-phase",
-          "gsd-settings",
-          "gsd-ship",
-          "gsd-sketch",
-          "gsd-spec-phase",
-          "gsd-spike",
-          "gsd-stats",
-          "gsd-surface",
-          "gsd-thread",
-          "gsd-ui-phase",
-          "gsd-ui-review",
-          "gsd-ultraplan-phase",
-          "gsd-undo",
-          "gsd-update",
-          "gsd-validate-phase",
-          "gsd-verify-work",
-          "gsd-workspace",
-          "gsd-workstreams"
-        ],
-        "reason": "The official GSD Gemini CLI installer exposes GSD as commands and agents under ~/.gemini/commands and ~/.gemini/agents, not as SKILL.md folders in ~/.gemini/skills. Antigravity receives the GSD SKILL.md folders under ~/.gemini/config/skills."
-      }
-    ]
+    "rootSkillSkips": []
   },
   "exclusions": {
     "forbiddenSkillNames": [
@@ -123,8 +49,7 @@
     ],
     "notes": [
       "Do not bulk-install Composio's massive composio-skills automation tree.",
-      "Do not copy secrets, auth sessions, API keys, OAuth state, or MCP credentials.",
-      "Install GSD through its official runtime-aware installer; do not hand-copy stale GSD snapshots by default."
+      "Do not copy secrets, auth sessions, API keys, OAuth state, or MCP credentials."
     ]
   },
   "sources": [
@@ -693,13 +618,6 @@
       ]
     },
     {
-      "prompt": "Plan phase 2 of this project and keep context lean",
-      "expected": [
-        "gsd-plan-phase",
-        "context-compression"
-      ]
-    },
-    {
       "prompt": "Write launch emails that do not sound like AI",
       "expected": [
         "emails",
@@ -839,121 +757,6 @@
     "note": "Private/offline fallback only. Public installs should pull from upstream sources and the local router."
   },
   "officialInstallers": [
-    {
-      "id": "gsd-official",
-      "type": "gsd-npm-installer",
-      "package": "get-shit-done-cc@1.42.3",
-      "trackingPackage": "get-shit-done-cc@latest",
-      "repo": "https://github.com/gsd-build/get-shit-done.git",
-      "skills": [
-        "gsd-add-tests",
-        "gsd-ai-integration-phase",
-        "gsd-audit-fix",
-        "gsd-audit-milestone",
-        "gsd-audit-uat",
-        "gsd-autonomous",
-        "gsd-capture",
-        "gsd-cleanup",
-        "gsd-code-review",
-        "gsd-complete-milestone",
-        "gsd-config",
-        "gsd-debug",
-        "gsd-discuss-phase",
-        "gsd-docs-update",
-        "gsd-eval-review",
-        "gsd-execute-phase",
-        "gsd-explore",
-        "gsd-extract-learnings",
-        "gsd-fast",
-        "gsd-forensics",
-        "gsd-graphify",
-        "gsd-health",
-        "gsd-help",
-        "gsd-import",
-        "gsd-inbox",
-        "gsd-ingest-docs",
-        "gsd-manager",
-        "gsd-map-codebase",
-        "gsd-milestone-summary",
-        "gsd-mvp-phase",
-        "gsd-new-milestone",
-        "gsd-new-project",
-        "gsd-ns-context",
-        "gsd-ns-ideate",
-        "gsd-ns-manage",
-        "gsd-ns-project",
-        "gsd-ns-review",
-        "gsd-ns-workflow",
-        "gsd-pause-work",
-        "gsd-phase",
-        "gsd-plan-phase",
-        "gsd-plan-review-convergence",
-        "gsd-pr-branch",
-        "gsd-profile-user",
-        "gsd-progress",
-        "gsd-quick",
-        "gsd-resume-work",
-        "gsd-review",
-        "gsd-review-backlog",
-        "gsd-secure-phase",
-        "gsd-settings",
-        "gsd-ship",
-        "gsd-sketch",
-        "gsd-spec-phase",
-        "gsd-spike",
-        "gsd-stats",
-        "gsd-surface",
-        "gsd-thread",
-        "gsd-ui-phase",
-        "gsd-ui-review",
-        "gsd-ultraplan-phase",
-        "gsd-undo",
-        "gsd-update",
-        "gsd-validate-phase",
-        "gsd-verify-work",
-        "gsd-workspace",
-        "gsd-workstreams"
-      ],
-      "runtimeInstalls": [
-        {
-          "runtime": "claude",
-          "configDir": "$HOME/.claude",
-          "args": [
-            "--claude",
-            "--global",
-            "--profile=full"
-          ]
-        },
-        {
-          "runtime": "codex",
-          "configDir": "$HOME/.codex",
-          "args": [
-            "--codex",
-            "--global",
-            "--profile=full"
-          ]
-        },
-        {
-          "runtime": "gemini",
-          "configDir": "$HOME/.gemini",
-          "args": [
-            "--gemini",
-            "--global",
-            "--profile=full"
-          ]
-        },
-        {
-          "runtime": "antigravity",
-          "configDir": "$HOME/.gemini/config",
-          "args": [
-            "--antigravity",
-            "--global",
-            "--profile=full"
-          ]
-        }
-      ],
-      "notes": "Runs the official GSD npm installer for runtime-specific files, then mirrors GSD skills into ~/.agents/skills."
-    },
     {
       "id": "playwright-cli-official",
       "type": "playwright-cli-installer",

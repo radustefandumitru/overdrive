@@ -1,12 +1,17 @@
 # Changelog
 
+## v0.1.4 - 2026-05-25
+
+### Removed
+
+- Quarantined the GSD integration after the upstream relocation from gsd-build/get-shit-done to open-gsd/get-shit-done-redux following a community governance change; the keep, replace, fork, or custom workflow decision is deferred to a later release.
+
 ## v0.1.3 - 2026-05-24
 
 - Added pinned official sources for Vercel Labs `find-skills` and OpenAI `playwright`.
 - Restored drifted local `playwright` copies to the upstream OpenAI skill instead of keeping local path edits.
 - Fixed an official Superpowers plugin cache drift by restoring its deleted `AGENTS.md` symlink.
 - Narrowed non-Claude path sanitization to generated runtime files so unrelated upstream skills stay byte-for-byte original apart from AgenticSupercharge marker files.
-- Documented the official GSD Gemini CLI layout: commands/agents under `~/.gemini`, with Antigravity `SKILL.md` folders under `~/.gemini/config/skills`.
 
 ## v0.1.2 - 2026-05-23
 

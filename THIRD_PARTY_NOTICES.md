@@ -11,7 +11,6 @@ License detection below is based on GitHub repository metadata checked during ki
 | Taste Skill | https://github.com/Leonxlnx/taste-skill | MIT | Installed from approved upstream paths |
 | Impeccable | https://github.com/pbakaus/impeccable | Apache-2.0 | Installed from approved upstream path |
 | Emil Kowalski skill | https://github.com/emilkowalski/skill | No GitHub license detected | Review before public redistribution of bundled copy |
-| GSD / get-shit-done | https://github.com/gsd-build/get-shit-done | MIT | Installed/updated through the official `get-shit-done-cc` npm installer, pinned by default in `VERIFIED_SOURCES.md` |
 | Agent Skills for Context Engineering | https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering | MIT | Installed from approved upstream paths |
 | MarketingSkills | https://github.com/coreyhaines31/marketingskills | MIT | Installed from approved upstream paths |
 | Stop Slop | https://github.com/hardikpandya/stop-slop | MIT | Installed from approved upstream path |
