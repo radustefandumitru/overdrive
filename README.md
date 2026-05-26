@@ -1,25 +1,36 @@
 # AgenticSupercharge
 
-AgenticSupercharge is a safe installer and routing layer for AI coding-agent skills. It installs a curated skill library across Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents` workflows, then teaches those agents to choose the right skill for the task instead of loading everything into context.
+AgenticSupercharge is an open-source skill pack and installer for AI coding agents.
 
-The aim is practical: better agent output for web and app development, frontend polish, animations, SEO, product work, launch prep, research, security review, browser validation, and project planning.
+It gives Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project agents a shared library of specialist skills for web/app development, frontend polish, animation, SEO, research, product work, security review, launch prep, and browser validation.
 
-I built this as my own daily coding-agent setup and am releasing it free for the community. If you build something with it, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). Contributions are welcome. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+Think of it as two things:
 
-## What It Gives You
+- **A toolbox:** curated skills that teach agents how to handle specific kinds of work.
+- **A bouncer:** a `skill-router` that helps the agent pick the right skills for the current task instead of loading everything into context.
 
-- One installer for a large, curated skill library.
-- Global or project-local installs.
-- Automatic target detection for the coding agents on your Mac.
-- A `skill-router` that keeps context small by selecting only the relevant skills.
-- Non-destructive installs by default, with marker files and safe conflict handling.
-- Verified pinned upstream sources by default, with an explicit opt-in for live upstream drift.
-- Consistency checks and a router benchmark pack for maintainers who want to measure routing quality.
-- Public-safe attribution and documentation for the original skill creators.
+The goal is simple: better outputs from coding agents, with less manual prompting.
+
+I built this as my own daily AI coding-agent setup and am releasing it free for the community. If you build something with it, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). Contributions are welcome. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+
+## Why Use It?
+
+Most AI coding agents are powerful, but they often need repeated guidance:
+
+- "Make this less generic."
+- "Use better UI taste."
+- "Check accessibility."
+- "Use current docs."
+- "Run a browser test."
+- "Think through the launch/security/SEO implications."
+
+AgenticSupercharge packages those recurring instructions into reusable skills and installs them where your agents can find them.
+
+You keep prompting normally. For non-trivial work, the agent checks the router, loads the smallest useful skill set, and proceeds with more relevant guidance.
 
 ## Quick Start
 
-Preview the install without changing anything:
+Preview first. This shows what would be installed without changing files:
 
 ```bash
 npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
@@ -40,25 +51,25 @@ cd AgenticSupercharge
 ./install.sh
 ```
 
-Restart or reload your coding agent after installing so it re-indexes the skill folders.
+After installing, restart or reload your coding agent so it re-indexes the skill folders.
 
-## How You Use It
+## What Changes After Install?
 
-After install, you keep prompting your coding agent normally.
+You do not need to memorize every skill.
 
-Example:
+Example prompt:
 
 ```text
 Build a premium Next.js landing page with smooth scroll-based animation and run a browser check.
 ```
 
-The global instructions ask the agent to run a lightweight skill check for non-trivial work. The router might select:
+The global instructions tell the agent to do a lightweight skill check. The router might choose:
 
 ```text
 design-taste-frontend -> emil-design-eng -> fluid-animations -> playwright-cli
 ```
 
-That is the core idea: install broad capability, load narrow context.
+Then the agent uses those skills while doing the work.
 
 You can also name a skill directly:
 
@@ -68,76 +79,54 @@ Use jack-scroll-3d-sites for the hero section.
 
 When you name a skill, your explicit choice wins for that part of the task.
 
+## What You Get
+
+The current manifest contains 120 unique skills.
+
+| Area | What it helps with |
+|---|---|
+| Frontend quality | Better layouts, typography, spacing, component feel, responsive behavior, and anti-generic UI direction. |
+| Animation | Smooth transitions, spring-like motion, gesture feel, scroll animation, reduced-motion support, and practical browser implementation. |
+| 3D/scroll websites | Brand research, AI asset prompts, video/frame-sequence scroll experiences, SEO, and launch checks. |
+| Product and planning | Clarifying vague requests, splitting complex work into phases, launch readiness, app onboarding, and product strategy. |
+| Marketing and growth | SEO, CRO, copywriting, pricing, ads, lifecycle, onboarding, launch planning, and human-sounding copy cleanup. |
+| Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
+| Browser validation | Playwright-based screenshots, flow checks, responsive checks, and browser debugging. |
+| Knowledge work | Obsidian workflows, docs, specs, MCP building, recent research, and context-management skills. |
+
+For a compact map of the whole library, see [`SKILLS_TLDR.md`](SKILLS_TLDR.md). For the full inventory, see [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md).
+
 ## How It Works
 
-Agent skills are folders with a `SKILL.md` file. Coding agents read those folders from known skill roots such as `~/.claude/skills`, `~/.codex/skills`, `~/.gemini/skills`, or `.cursor/skills`.
+AgenticSupercharge has four main parts.
 
-AgenticSupercharge does three things:
+### 1. Skills
 
-1. Installs selected skills into the right global or local folders.
-2. Adds small managed instruction blocks to `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` where supported.
-3. Uses `skill-router` as a preflight layer so agents pick only the skills that fit the request.
+Skills are folders containing a `SKILL.md` file. A skill is a focused playbook for one kind of work.
 
-The router is advisory. It does not run a separate service. It is a skill that helps the agent decide what to load next.
+Examples:
 
-## What It Installs
+- `design-taste-frontend` for higher-quality UI direction.
+- `fluid-animations` for natural, interruptible, Apple-style motion.
+- `jack-scroll-3d-sites` for scroll-driven animated sites.
+- `security-review` for non-Claude security audits.
+- `pre-launch-checklist` for release readiness.
 
-The current manifest contains 120 unique skills for a full target root.
+### 2. Skill Router
 
-| Category | Count | Purpose |
-|---|---:|---|
-| AgenticSupercharge local skills | 12 | Routing, planning, security, launch readiness, animation, and 3D website workflows |
-| Upstream GitHub skills | 107 | Curated skills from verified public repos |
-| Installer-backed skills | 1 | `playwright-cli` from the pinned official npm installer |
-| Managed instruction templates | 3 | Global guidance blocks for Claude, Codex, Gemini, and Antigravity-style agents |
+`skill-router` is the bouncer.
 
-Claude Code receives one fewer local skill because AgenticSupercharge skips the portable `security-review` skill there and prefers Claude Code's native `/security-review`.
+It is not a background daemon, model, or external service. It is a routing skill with rules, examples, and a catalog. It helps the agent decide which specialist skills are worth loading for the current request.
 
-On the reference macOS install, a full skill root is about 22 MB. A five-root global install mirrors the library across multiple agents and uses roughly 110 MB before caches.
+The router is designed to keep context small. For simple tasks, it should stay quiet. For complex tasks, it should pick the useful skills and explain the sequence briefly.
 
-## Skill Coverage
+As of v0.3, the router does not improve itself automatically. The repo includes consistency checks and a router benchmark so maintainers can test and improve it over time.
 
-| Work you want done | Skills likely to help |
-|---|---|
-| Premium frontend/UI work | Taste Skill, Emil design engineering, Impeccable, Modern Web Guidance, Playwright CLI |
-| Smooth animations and gestures | `fluid-animations`, `emil-animation-polish`, Emil design engineering |
-| 3D scroll websites and animated landing pages | `jack-premium-site-system`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit` |
-| Multi-file planning and implementation | `clarify-and-plan`, `planning-first` |
-| Security review and hardening | Claude Code `/security-review`, or portable `security-review` on other agents |
-| Launch readiness | `pre-launch-checklist`, marketing, SEO, browser validation |
-| SEO, copy, CRO, onboarding, launches | Corey Haines MarketingSkills plus Stop Slop |
-| Recent community or market research | `last30days` |
-| Questionnaire onboarding flows | `app-onboarding-questionnaire` |
-| Obsidian and knowledge work | Kepano Obsidian skills |
-| Browser validation and screenshots | Microsoft `playwright-cli`, OpenAI `playwright` wrapper |
-| MCP server authoring | Anthropic `mcp-builder` plus current docs through Context7 |
-| Image and video workflows | Banana Claude, Remotion skills, marketing video skills |
-| Slack GIFs and emoji animations | Anthropic `slack-gif-creator` |
+This same router is included in the public install. It is not only for the maintainer's local machine.
 
-For the full skill inventory, see [`SKILLS_TLDR.md`](SKILLS_TLDR.md) and [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md).
+### 3. Installer
 
-## AgenticSupercharge Skills
-
-These are the local skills added by this kit on top of upstream sources:
-
-| Skill | What it does |
-|---|---|
-| `skill-router` | Routes each non-trivial request to the smallest useful skill set. |
-| `clarify-and-plan` | Turns broad or ambiguous requests into options, assumptions, tradeoffs, and a first phase. |
-| `planning-first` | Provides a portable Explore -> Plan -> Implement -> Verify workflow for non-Claude agents. |
-| `security-review` | Portable security audit workflow for Codex, Gemini, Antigravity, Cursor, and shared `.agents`. |
-| `pre-launch-checklist` | Checks product readiness before a SaaS, app, client site, or public launch. |
-| `fluid-animations` | Apple-inspired interaction guidance for springs, gestures, interruptible motion, and reduced-motion support. |
-| `emil-animation-polish` | Practical web animation polish for easing, transitions, touch feedback, popovers, and motion audits. |
-| `jack-premium-site-system` | Orchestrates brand research, scroll assets, animated site build, SEO, and optional launch. |
-| `jack-website-intelligence` | Turns brand and competitor research into a build brief. |
-| `jack-scroll-asset-prompts` | Creates start-frame, end-frame, and video transition prompts for scroll-stop assets. |
-| `jack-scroll-3d-sites` | Guides video-on-scroll, frame sequences, GSAP/Framer Motion/Three.js choices, and browser validation. |
-| `jack-seo-launch-audit` | Checks metadata, structured data, responsive behavior, performance, and launch readiness. |
-
-The Jack Roberts inspired skills are rewritten from public workflow ideas and do not redistribute his raw PDFs, zips, templates, prompts, course material, downloaded resource folders, or private community content.
-
-## Supported Agents
+The installer copies skills into the folders used by each supported tool.
 
 | Agent/tool | Global skill root | Instruction file |
 |---|---|---|
@@ -152,19 +141,40 @@ Antigravity uses the `.gemini` convention for its agent shell. Even if you run C
 
 Cursor personal skills belong in `~/.cursor/skills`. This installer does not write to Cursor's reserved `~/.cursor/skills-cursor` folder.
 
+### 4. Verification
+
+The project includes checks for:
+
+- Manifest/source consistency.
+- Skill metadata.
+- Router coverage.
+- Public zip safety.
+- Installer dry-runs.
+- Pinned source references.
+
+Maintainers can run:
+
+```bash
+npm run consistency
+npm run eval:router
+./verify.sh
+```
+
+The v0.3 eval pack is a test bench, not a magic score. It helps compare routed prompts against plain prompts and catch obvious routing drift.
+
 ## Install Modes
 
-| Mode | What happens |
-|---|---|
-| Global install | Installs into detected or selected agent roots on your Mac. Use this when you want the skills in every project. |
-| Local project install | Adds `.agents/skills`, `.cursor/skills`, `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` to one project. Use this when a repo should carry its own setup. |
-| Dry run | Shows exactly what would happen without writing files. Use this first. |
+| Mode | Use it when | What happens |
+|---|---|---|
+| Global install | You want these skills available in all projects. | Installs into detected or selected agent roots on your Mac. |
+| Local project install | You want one repo to carry its own AI setup. | Adds project-local skills and instruction files such as `.agents/skills`, `.cursor/skills`, `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md`. |
+| Dry run | You want to inspect changes first. | Prints the install plan without writing files. |
 
 The installer auto-detects installed agents for global installs. You can also choose targets manually.
 
 ## Safety Model
 
-AgenticSupercharge defaults to `preserve`.
+AgenticSupercharge is non-destructive by default.
 
 | Policy | Behavior |
 |---|---|
@@ -175,28 +185,58 @@ AgenticSupercharge defaults to `preserve`.
 
 Managed skill folders receive a `.agentic-supercharge.json` marker. Managed instruction blocks are delimited and updated in place, preserving user content outside those blocks.
 
-## Update And Uninstall
-
-Update a cloned install:
-
-```bash
-./update.sh
-```
-
-Check for available updates without applying them:
-
-```bash
-./check-updates.sh
-```
-
-Uninstall only AgenticSupercharge-managed folders and instruction blocks:
+Uninstall removes only AgenticSupercharge-managed folders and instruction blocks:
 
 ```bash
 ./uninstall.sh --dry-run
 ./uninstall.sh
 ```
 
-GitHub `npx` users can re-run the install command to fetch the latest published repository state.
+## Updates
+
+There are two kinds of updates.
+
+### AgenticSupercharge Updates
+
+These update this installer, router, local skills, docs, checks, and verified source pins.
+
+If you installed from a git clone:
+
+```bash
+./check-updates.sh
+./update.sh
+```
+
+`./check-updates.sh` reports available updates without changing anything. `./update.sh` applies the latest AgenticSupercharge release state and refreshes managed skills from verified pinned sources.
+
+If you installed with GitHub `npx`, re-run:
+
+```bash
+npx -y github:radustefandumitru/AgenticSupercharge
+```
+
+### Upstream Skill Updates
+
+Many skills come from external creators. By default, AgenticSupercharge installs verified pinned commits and exact package versions. This is safer than silently pulling whatever changed upstream today.
+
+When an original creator updates their repo, users do **not** automatically receive that unreviewed upstream change by default.
+
+The normal path is:
+
+1. Upstream creator updates their skill.
+2. AgenticSupercharge maintainer checks the change.
+3. `manifest.json` and [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) are updated with a new verified pin.
+4. Users run the normal update command.
+
+Power users can intentionally follow live upstream branches or latest packages:
+
+```bash
+./update.sh --skills-only --allow-upstream-drift
+```
+
+That is flexible, but less safe. It may install content this release has not verified.
+
+There are no push notifications. Install, verify, and update commands may print passive update notices when they detect newer versions, and maintainers can run `./check-updates.sh` whenever they want to check manually.
 
 ## Requirements
 
@@ -217,30 +257,36 @@ This installer does not copy or publish:
 - GitHub, Vercel, Supabase, Firecrawl, Google, Claude, Codex, Gemini, Antigravity, Cursor, or other account credentials.
 - Private course/community material or raw third-party resource downloads.
 
-Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are documented as optional user/project setup in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md).
+Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are optional user/project setup and are documented in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md).
 
-## Source Verification
+## What This Is Not
 
-Default installs use verified pinned Git commits and pinned package versions. Users can intentionally follow live upstream branches with `--allow-upstream-drift`, but that installs content this release has not verified.
+AgenticSupercharge is not:
 
-See:
+- A replacement for clear requirements, tests, or code review.
+- A promise that every model output becomes better.
+- A background service watching your machine.
+- A system that uploads your private files or credentials.
+- A live auto-sync to every upstream skill repo by default.
 
-- [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) for pinned refs and package versions.
-- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for attribution and license notes.
-- [`SECURITY.md`](SECURITY.md) for vulnerability reporting.
-- [`CHANGELOG.md`](CHANGELOG.md) for release history.
+It is a curated, installable skill layer. It works best when the router stays selective and the agent still verifies its work.
 
-## Quality Checks
+## Documentation
 
-For maintainers and contributors:
+Most users only need this README and [`SKILLS_TLDR.md`](SKILLS_TLDR.md).
 
-```bash
-npm run consistency
-npm run eval:router
-./verify.sh
-```
+Power-user and maintainer docs:
 
-The v0.3 eval pack validates router coverage and provides a repeatable manual benchmark protocol. It helps test whether routed prompts produce better, more specialized outputs than plain prompts without pretending the benchmark has already proved a universal quality lift.
+| File | Purpose |
+|---|---|
+| [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md) | Full human-readable skill inventory. |
+| [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
+| [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
+| [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
+| [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) | Pinned source refs used by default. |
+| [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Attribution, licenses, and redistribution notes. |
+| [`SECURITY.md`](SECURITY.md) | Security policy and vulnerability reporting. |
+| [`PUBLISHING.md`](PUBLISHING.md) | Maintainer release checklist. |
 
 ## Credits
 
@@ -250,33 +296,22 @@ Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-## Agent Review
+## Honest Assessment
 
-Stefan asked his coding agent to give a blunt assessment of whether this project is useful or just context bloat.
+Stefan asked his coding agent to review the project bluntly and say whether it is useful or just context bloat.
 
-My assessment: AgenticSupercharge is useful when the router stays selective. The value comes from combining pinned sources, non-destructive install behavior, source attribution, and task-specific routing. It can hurt if an agent loads the whole catalogue for every prompt, or if a user expects skills to replace product judgment, tests, or clear requirements. The v0.3 eval pack gives the project a way to measure router quality, but it does not yet prove a universal output-quality lift. The stronger claim is narrower: good task-specific instructions, applied only when relevant, usually improve agent behavior on the work this kit targets.
+My assessment: AgenticSupercharge is useful when the router stays selective. The value comes from combining pinned sources, safe install behavior, source attribution, and task-specific routing. It can become harmful if an agent loads the whole catalog for every prompt, or if users expect skills to replace product judgment, tests, or clear requirements. The v0.3 benchmark gives the project a way to measure routing quality, but it does not yet prove a universal output-quality lift. The honest claim is narrower: good task-specific instructions, applied only when relevant, usually improve agent behavior on the work this kit targets.
 
 Codex, GPT-5-based coding agent, high reasoning effort.
 
-## Documentation Map
-
-| File | Purpose |
-|---|---|
-| [`SKILLS_TLDR.md`](SKILLS_TLDR.md) | Compact skill map. |
-| [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md) | Full human-readable skill inventory. |
-| [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
-| [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
-| [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
-| [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) | Pinned source refs used by default. |
-| [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Attribution, licenses, and redistribution notes. |
-| [`PUBLISHING.md`](PUBLISHING.md) | Maintainer packaging and release checklist. |
-
 ## Contributing
 
-Contributions are welcome. Keep the repo safe, small, and attribution-heavy:
+Contributions are welcome. Please keep the repo safe, small, and attribution-heavy:
 
 - Prefer upstream installs over copied third-party snapshots.
 - Add new skills through `manifest.json` or public-safe local skills.
 - Credit original creators with links.
 - Do not include secrets, OAuth state, MCP configs, browser profiles, private course material, or account-specific setup.
 - Run `./verify.sh` before publishing changes.
+
+Project note: AgenticSupercharge is being used to improve AgenticSupercharge. The README, router checks, and quality passes are produced with the same setup installed locally.
