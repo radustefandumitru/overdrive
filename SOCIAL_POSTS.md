@@ -4,6 +4,31 @@ Repo URL: https://github.com/radustefandumitru/AgenticSupercharge
 
 Support link: https://buymeacoffee.com/stefandumitru
 
+## v0.2.0 Announcement Notes
+
+Short version:
+
+> AgenticSupercharge v0.2.0 is out.
+>
+> This release makes the setup less like a pile of skills and more like an actual working agent layer:
+>
+> - sharper `skill-router` rules
+> - `clarify-and-plan` for ambiguous tasks
+> - `planning-first` for complex non-Claude coding work
+> - portable `security-review` for Codex/Cursor/Gemini/Antigravity
+> - `pre-launch-checklist` for apps/SaaS/landing pages before shipping
+> - `last30days` for recent community research
+> - app onboarding questionnaire skill
+> - `./check-updates.sh`
+> - context-budget reminder in global instructions
+> - optional MCP/voice/Obsidian setup docs
+>
+> Still free, open source, macOS-first, and non-destructive by default.
+>
+> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+
+Tone to keep: grateful, attribution-heavy, and honest that this improves output only when the router stays selective.
+
 ## Creator Credits
 
 Use GitHub links for the canonical source. Only include Reddit usernames when they were visible in source material; do not guess.
@@ -16,7 +41,10 @@ Use GitHub links for the canonical source. Only include Reddit usernames when th
 - Stop Slop by Hardik Pandya: [GitHub](https://github.com/hardikpandya/stop-slop), site from skill metadata: [hvpandya.com](https://hvpandya.com). No reliable Reddit/X account found.
 - Banana Claude by AgriciDaniel: [GitHub](https://github.com/AgriciDaniel/banana-claude). No reliable Reddit/X account found.
 - Obsidian Skills by Steph Ango / Kepano: [GitHub](https://github.com/kepano/obsidian-skills), Reddit: [u/kepano](https://www.reddit.com/user/kepano/), X: [@kepano](https://x.com/kepano).
+- Last30Days by Matt Van Horn: [GitHub](https://github.com/mvanhorn/last30days-skill), X/GitHub links available in upstream docs.
+- App Onboarding Questionnaire by Adam Lyttle: [GitHub](https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire).
 - Anthropic example skills: [GitHub](https://github.com/anthropics/skills), [skills docs](https://support.claude.com/en/articles/12512180-using-skills-in-claude). Includes `brand-guidelines`, `doc-coauthoring`, `mcp-builder`, and `slack-gif-creator`.
+- Anthropic Claude Code Security Review: [GitHub](https://github.com/anthropics/claude-code-security-review). The portable non-Claude `security-review` skill is adapted from this MIT-licensed template.
 - OpenAI Skills Catalog: [GitHub](https://github.com/openai/skills). Includes the curated `playwright` wrapper skill in this setup.
 - Vercel Labs Skills / skills.sh: [GitHub](https://github.com/vercel-labs/skills), [skills.sh](https://skills.sh). Includes `find-skills` in this setup.
 - Composio Awesome Claude Skills: [GitHub](https://github.com/ComposioHQ/awesome-claude-skills), [site](https://composio.dev).

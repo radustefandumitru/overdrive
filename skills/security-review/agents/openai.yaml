@@ -1,0 +1,4 @@
+interface:
+  display_name: "Security Review"
+  short_description: "High-confidence security audit workflow"
+  default_prompt: "Use $security-review to audit this code for concrete security vulnerabilities."

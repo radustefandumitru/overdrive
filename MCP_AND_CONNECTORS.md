@@ -22,6 +22,35 @@ Examples:
 - A Jack Roberts style 3D website workflow may use `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, or `jack-seo-launch-audit`. Firecrawl, GitHub, Vercel, image/video generation services, and browser connectors are optional personal/project tools, not required public kit assumptions.
 - A repository or database task may use a connector if the recipient has configured one, but the public kit should not assume which connector or project exists.
 
+## Recommended Optional MCPs
+
+These are not installed or required by AgenticSupercharge. Add them only when your own runtime, accounts, and permissions make sense. Keep tokens in environment variables or the host's secure auth flow, never in a repo.
+
+| Optional MCP | Good for | Example config | Auth needed | Agents |
+|---|---|---|---|---|
+| GitHub MCP | Repository search, issues, PRs, Actions, releases, Dependabot/code-security context, and repo operations. | Remote server hosts can point to `https://api.githubcopilot.com/mcp/`. Local Docker fallback: `{"mcpServers":{"github":{"command":"docker","args":["run","-i","--rm","-e","GITHUB_PERSONAL_ACCESS_TOKEN","ghcr.io/github/github-mcp-server"],"env":{"GITHUB_PERSONAL_ACCESS_TOKEN":"${GITHUB_PERSONAL_ACCESS_TOKEN}","GITHUB_READ_ONLY":"1"}}}}` | GitHub OAuth for supported remote hosts, or a PAT in `GITHUB_PERSONAL_ACCESS_TOKEN` for local Docker. Prefer read-only/toolset scoping first. | Claude Code, Cursor, VS Code/Copilot, and other remote/local MCP-capable hosts; support varies by host. |
+| Supabase MCP | Development database inspection, migrations, logs, advisors, edge functions, project URL/keys, and generated types. | Hosted remote: `{"mcpServers":{"supabase":{"type":"http","url":"https://mcp.supabase.com/mcp"}}}`. Claude Code project command: `claude mcp add --scope project --transport http supabase "https://mcp.supabase.com/mcp"` | Browser OAuth for hosted MCP when supported; PAT/header-based auth only for CI or unsupported clients. Do not connect this to production data without a deliberate safety review. | Claude Code and other HTTP MCP-capable clients; host support varies. |
+| Vercel MCP | Vercel project/account MCP access and deployed MCP server connection setup. | CLI setup: `vercel mcp` for global account config or `vercel mcp --project` for a linked project. Remote hosted Vercel MCP can also be added with `npx add-mcp https://mcp.vercel.com` where supported. | Vercel login or `VERCEL_TOKEN` if using CLI automation. Scope tokens narrowly. | Vercel CLI-supported MCP clients; Cursor/Codex/Claude support depends on host config. |
+| Firecrawl MCP | Website scraping, crawl-to-markdown, brand/site extraction, and research workflows. | Local stdio example: `{"mcpServers":{"firecrawl":{"command":"npx","args":["-y","firecrawl-mcp"],"env":{"FIRECRAWL_API_KEY":"${FIRECRAWL_API_KEY}"}}}}` | Firecrawl API key in `FIRECRAWL_API_KEY`. | Local MCP-capable hosts such as Claude Code, Cursor, Codex, Gemini/Antigravity where configured. |
+| Playwright MCP | Browser operation through an MCP server: screenshots, navigation, forms, debugging, and browser context control. | Headless stdio example: `{"mcpServers":{"playwright":{"command":"npx","args":["@playwright/mcp@latest","--headless"]}}}`. Standalone HTTP: run `npx @playwright/mcp@latest --port 8931`, then configure `{"mcpServers":{"playwright":{"url":"http://localhost:8931/mcp"}}}`. | Usually no account auth; requires Node and browsers. | Local MCP-capable hosts. AgenticSupercharge already includes `playwright-cli`, so this is optional extra browser tooling. |
+
+References: GitHub MCP server docs, Supabase MCP docs, Vercel MCP docs, Firecrawl MCP docs, and Playwright MCP docs should be checked before copying a snippet into a real project because host config formats change.
+
+## Recommended Optional External Tools
+
+| Tool | Good for | Setup note |
+|---|---|---|
+| Superwhisper | High-quality system-wide dictation into any coding-agent text field. | Paid macOS app; grant microphone permissions in System Settings. |
+| Spokenly | Voice dictation with useful Claude Code integration options. | Paid app; optional MCP features depend on the user's own setup. |
+| Whisper Dictation | Local/system dictation workflow for users who prefer Whisper-backed transcription. | May require local model download and mic permissions. |
+| VoiceMode + local Whisper | Free DIY voice pipeline. | Requires Python, ffmpeg, a local Whisper model, and more manual setup; not part of the default installer. |
+| Obsidian CLI | Running Obsidian vault operations, plugin/theme workflows, screenshots, and DOM inspection. | Install according to the `obsidian-cli` skill/upstream Obsidian CLI instructions; keep vaults backed up or under version control before broad edits. |
+| Defuddle | Clean web-page-to-markdown extraction for notes and research. | Install the Defuddle CLI before using the `defuddle` skill. |
+
+## Security Review Integration
+
+For deep security review on real PRs, consider Anthropic's official `anthropics/claude-code-security-review` GitHub Action. The local `security-review` skill provides similar in-IDE analysis for non-Claude agents, but the GitHub Action is better for diff-aware PR comments and CI integration.
+
 ## Sharing Rule
 
 When sharing this setup publicly or with friends, share:

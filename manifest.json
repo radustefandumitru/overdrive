@@ -33,7 +33,15 @@
   ],
   "rootPolicies": {
     "claudeOnlySkills": [],
-    "rootSkillSkips": []
+    "rootSkillSkips": [
+      {
+        "rootSuffix": "/.claude/skills",
+        "skills": [
+          "security-review"
+        ],
+        "reason": "Claude Code has a native /security-review command; the portable security-review skill is installed for non-Claude runtimes."
+      }
+    ]
   },
   "exclusions": {
     "forbiddenSkillNames": [
@@ -56,7 +64,7 @@
     {
       "id": "taste-skill",
       "repo": "https://github.com/Leonxlnx/taste-skill.git",
-      "ref": "c8075169cd63d1430bbf492dd4ddd478ea9fa4da",
+      "ref": "339afcbf575daeaa61ee89646b3ba8912b308c39",
       "trackingRef": "main",
       "includes": [
         {
@@ -420,7 +428,7 @@
     {
       "id": "obsidian-skills",
       "repo": "https://github.com/kepano/obsidian-skills.git",
-      "ref": "ac9398734fe719565809f7a6048b05c36b1ca38f",
+      "ref": "553ef99aa3306dd23f268e1ba9af752577684f69",
       "trackingRef": "main",
       "includes": [
         {
@@ -442,6 +450,30 @@
         {
           "from": "skills/defuddle",
           "to": "defuddle"
+        }
+      ]
+    },
+    {
+      "id": "last30days-skill",
+      "repo": "https://github.com/mvanhorn/last30days-skill.git",
+      "ref": "1e03af19e0ad435ee6d227a3593b0c6e5d2ecbe8",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/last30days",
+          "to": "last30days"
+        }
+      ]
+    },
+    {
+      "id": "app-onboarding-questionnaire",
+      "repo": "https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire.git",
+      "ref": "5bc4786d80f2c23de60b3ba02773e919ed8fd091",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": ".",
+          "to": "app-onboarding-questionnaire"
         }
       ]
     },
@@ -693,6 +725,43 @@
       ]
     },
     {
+      "prompt": "This request is broad; help me clarify options and plan phase one",
+      "expected": [
+        "clarify-and-plan"
+      ]
+    },
+    {
+      "prompt": "Refactor this feature across several files with a plan before editing",
+      "expected": [
+        "planning-first",
+        "clarify-and-plan"
+      ]
+    },
+    {
+      "prompt": "Security review this PR for vulnerabilities",
+      "expected": [
+        "security-review"
+      ]
+    },
+    {
+      "prompt": "What has the React community been saying over the last 30 days?",
+      "expected": [
+        "last30days"
+      ]
+    },
+    {
+      "prompt": "Design a questionnaire onboarding flow for my subscription app",
+      "expected": [
+        "app-onboarding-questionnaire"
+      ]
+    },
+    {
+      "prompt": "Run a pre-launch checklist before I ship this SaaS",
+      "expected": [
+        "pre-launch-checklist"
+      ]
+    },
+    {
       "prompt": "Build a high-quality MCP server for this API",
       "expected": [
         "mcp-builder"
@@ -729,6 +798,22 @@
     {
       "from": "skills/emil-animation-polish",
       "to": "emil-animation-polish"
+    },
+    {
+      "from": "skills/clarify-and-plan",
+      "to": "clarify-and-plan"
+    },
+    {
+      "from": "skills/planning-first",
+      "to": "planning-first"
+    },
+    {
+      "from": "skills/security-review",
+      "to": "security-review"
+    },
+    {
+      "from": "skills/pre-launch-checklist",
+      "to": "pre-launch-checklist"
     },
     {
       "from": "skills/jack-premium-site-system",

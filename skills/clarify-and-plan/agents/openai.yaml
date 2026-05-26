@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clarify And Plan"
+  short_description: "Clarify ambiguity and phase complex work"
+  default_prompt: "Use $clarify-and-plan to clarify assumptions, compare options, and plan the first phase."

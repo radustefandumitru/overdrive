@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.2.0 - 2026-05-26
+
+- Added local skills: `clarify-and-plan`, `planning-first`, portable non-Claude `security-review`, and `pre-launch-checklist`.
+- Added pinned upstream sources for `mvanhorn/last30days-skill` and `adamlyttleapps/claude-skill-app-onboarding-questionnaire`.
+- Optimized `skill-router` with sharper trigger rules, a "Resolving Trigger Overlap" section, new catalog rows, routing trace examples, and smoke checks for every new skill.
+- Strengthened global instruction templates with explicit options/tradeoff guidance, phased-work confirmation, Claude planning workflow notes, and a user-consent context-budget reminder.
+- Added `agentic-supercharge check-updates` and `./check-updates.sh`, plus passive update notices during install/verify.
+- Expanded optional MCP and external-tool documentation for GitHub, Supabase, Vercel, Firecrawl, Playwright MCP, voice dictation, Obsidian CLI, and Defuddle while keeping Context7 as the only default MCP recommendation.
+- Added `docs/skill-readiness.md` to document which skills are plug-and-play and which need optional external setup.
+- Updated README, SKILLS summaries, verified sources, third-party notices, publishing docs, and social post notes for the v0.2.0 workflow additions.
+- Clarified that Anthropic example skills come from the public `anthropics/skills` repository, not Claude Code's bundled internal commands.
+- Refreshed the verified Taste Skill pin to `339afcbf575daeaa61ee89646b3ba8912b308c39` before release.
+
 ## v0.1.4 - 2026-05-25
 
 ### Removed

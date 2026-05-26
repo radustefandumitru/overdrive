@@ -6,7 +6,9 @@ The goal is simple: increase the quality of what your agents produce by giving t
 
 It does not replace your agent. It gives the agent a better toolbox.
 
-Personal note from Stefan: I am giving my personal coding-agent setup away to the community for free because I want to see what people build with it. If it helps you ship something, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). The project is open source, feedback is welcome, and contributors are invited to help make it better. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+Personal note from Stefan: I built this for myself as the system I actually use day to day to design, code, and ship web and mobile apps. It is optimized for one-person teams running one-person startups, but it is versatile enough that I hope it helps with things I have not planned for. I am giving my personal coding-agent setup away to the community for free because I want to see what people build with it. If it helps you ship something, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). The project is open source, feedback is welcome, and contributors are invited to help make it better. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+
+What's new: see [`CHANGELOG.md`](CHANGELOG.md) for release-by-release updates.
 
 ## What You Get
 
@@ -14,10 +16,25 @@ Personal note from Stefan: I am giving my personal coding-agent setup away to th
 - A `skill-router` that tells agents to do a lightweight skill check before non-trivial work, then load only the smallest useful skill set.
 - Global instruction templates for `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md`, adapted from Karpathy-style coding-agent guidance.
 - A non-destructive installer that can install globally across the agent tools you actually have, or locally into one project.
-- Public-safe custom skills added on top of the upstream projects: fluid animation guidance, Emil-style animation polish, and Jack Roberts inspired premium 3D/scroll website workflows.
+- Public-safe custom skills added on top of the upstream projects: clarification/planning, planning-first execution, portable security review, pre-launch readiness, fluid animation guidance, Emil-style animation polish, and Jack Roberts inspired premium 3D/scroll website workflows.
 - Verification scripts, conflict handling, source attribution, and sharing-safe packaging for GitHub or zip distribution.
 
 This repository was also built and iterated on using this same setup. In other words, AgenticSupercharge has been used on its own installer, routing, documentation, verification, and publishing workflow.
+
+## What You'll Install
+
+The v0.2.0 manifest installs 120 unique skills in a full target root:
+
+| Category | Count | Notes |
+|---|---:|---|
+| AgenticSupercharge local skills | 12 | Router, planning, security, launch, animation, and Jack-style website workflow skills |
+| Upstream GitHub skills | 107 | Pulled from verified pinned refs by default |
+| Official installer-backed skills | 1 | `playwright-cli` from the pinned official npm installer |
+| Managed instruction templates | 3 | `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` blocks where supported |
+
+Claude Code receives one fewer local skill because `security-review` is skipped there in favor of Claude Code's native `/security-review`.
+
+On this v0.2.0 macOS reference install, each full global skill root is about 22 MB. A five-root install mirrors the same library across Claude Code, Codex, Gemini CLI, Antigravity, and shared `.agents`, so total disk use is roughly 110 MB before caches. The public install path pulls third-party skills from upstream and does not include private/offline snapshots.
 
 ## Supported Agents
 
@@ -64,6 +81,7 @@ Restart or reload your coding agents after installing so they re-index the skill
 ## Requirements
 
 - macOS-first setup. The installer targets the standard macOS global folders used by these tools.
+- Windows support is planned but not released. Linux may work for local installs, but it is not tested as part of this release.
 - Node.js/npm for the GitHub `npx` path and upstream npm-backed installers.
 - Git for normal upstream installs from the original skill repositories.
 - A supported coding agent installed if you want global auto-detection. Local project installs work without global agents.
@@ -132,7 +150,14 @@ Update the setup and managed skills:
 ./update.sh
 ```
 
-By default, `./update.sh` pulls the latest AgenticSupercharge repo version when you are using a git clone, then updates AgenticSupercharge-managed skills from verified pinned sources, then runs `./verify.sh`.
+Check whether a newer AgenticSupercharge release or upstream skill update is available without applying it:
+
+```bash
+./check-updates.sh
+npx -y github:radustefandumitru/AgenticSupercharge check-updates
+```
+
+By default, `./update.sh` pulls the latest AgenticSupercharge repo version in a git clone, refreshes AgenticSupercharge-managed skills from verified pins, then runs `./verify.sh`.
 
 Refresh all matching skills from upstream sources:
 
@@ -140,7 +165,7 @@ Refresh all matching skills from upstream sources:
 ./update.sh --all-skills
 ```
 
-`--all-skills` uses `backup-and-replace`, so matching existing skill folders are moved into `~/.agentic-supercharge/backups/...` before replacement. Use this when you want every skill in the setup refreshed to the latest official upstream version, including folders that were installed before AgenticSupercharge markers existed.
+`--all-skills` uses `backup-and-replace`, moving matching folders into `~/.agentic-supercharge/backups/...` before replacement.
 
 Update only the AgenticSupercharge repo/package:
 
@@ -210,10 +235,20 @@ You can trigger skills in two ways:
 - Ask normally. Example: "Build a premium Next.js landing page with smooth animations." The router should pick design, motion, modern web, and browser-validation skills.
 - Name a skill explicitly. Example: "Use `jack-scroll-3d-sites` for this section." Explicit user choice wins for that part of the task.
 
+## Planning Workflows
+
+Claude Code should prefer native planning/review commands such as `/model opusplan`, `/ultraplan`, `/security-review`, and `/code-review` when available. Codex, Cursor, Gemini CLI, Antigravity, shared `.agents`, and local project installs route complex multi-file work through `clarify-and-plan` and `planning-first`.
+
 ## What The Skills Help With
 
 | Task | Typical skill path |
 |---|---|
+| Ambiguous or broad implementation request | `clarify-and-plan`, then the relevant domain skill |
+| Multi-file coding work on non-Claude agents | `planning-first`, then implementation/verification skills |
+| Security review or hardening | Claude Code `/security-review`; otherwise portable `security-review` |
+| Recent community or market research | `last30days` |
+| App questionnaire onboarding | `app-onboarding-questionnaire`, then frontend/design implementation skills |
+| Product launch readiness | `pre-launch-checklist`, plus `security-review`, marketing, SEO, or browser checks when relevant |
 | Premium frontend/UI work | Taste Skill, Emil design engineering, Impeccable, Modern Web Guidance, Playwright CLI |
 | Smooth animation and gestures | `fluid-animations`, `emil-animation-polish`, Emil design engineering |
 | 3D scroll websites and animated landing pages | `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit` |
@@ -233,6 +268,10 @@ You can trigger skills in two ways:
 These are the public-safe AgenticSupercharge additions layered on top of the upstream skills:
 
 - `skill-router`: the routing layer that helps agents choose the smallest useful skill set.
+- `clarify-and-plan`: ambiguity handling, assumptions, options, tradeoffs, and phased planning.
+- `planning-first`: portable Explore -> Plan -> Implement -> Verify workflow for complex non-Claude coding tasks.
+- `security-review`: portable security audit skill for non-Claude runtimes, adapted from Anthropic's MIT `claude-code-security-review` template. Claude Code should prefer its native `/security-review`.
+- `pre-launch-checklist`: product/app/SaaS launch readiness across security, scale, billing, analytics, monitoring, privacy, rollback, support, launch day, and first-week follow-up.
 - `fluid-animations`: Apple-inspired guidance for direct manipulation, springs, velocity, rubberbanding, interruptible motion, and reduced-motion-safe tactile UI. Inspired by Apple's WWDC 2018 session [Designing Fluid Interfaces](https://developer.apple.com/videos/play/wwdc2018/803/).
 - `emil-animation-polish`: practical web animation polish for easing, timing, hover/touch feedback, popovers, CSS transitions, and motion audits. Inspired by [Emil Kowalski](https://emilkowal.ski), [animations.dev](https://animations.dev), and the public references listed in `THIRD_PARTY_NOTICES.md`.
 - `jack-premium-site-system`: end-to-end orchestrator for premium brand-led websites, scroll assets, animated sections, SEO, and optional launch.
@@ -258,7 +297,10 @@ AgenticSupercharge is a curated installer/router. Most skills come from other cr
 | [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop) | Removes common AI writing tells from public prose. |
 | [AgriciDaniel / Banana Claude](https://github.com/AgriciDaniel/banana-claude) | Image-generation creative direction workflows. |
 | [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [Obsidian](https://obsidian.md), and [Obsidian Help](https://help.obsidian.md) | Obsidian Markdown, Bases, JSON Canvas, Obsidian CLI, and Defuddle workflows. |
+| [Matt Van Horn / last30days-skill](https://github.com/mvanhorn/last30days-skill) | Recent community/social/web research over the last 30 days. |
+| [Adam Lyttle / App Onboarding Questionnaire](https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire) | Questionnaire-style onboarding strategy and implementation workflow for apps. |
 | [Anthropic / Skills](https://github.com/anthropics/skills) | Official example skills for brand guidelines, doc co-authoring, MCP server development, and Slack GIF creation. |
+| [Anthropic / Claude Code Security Review](https://github.com/anthropics/claude-code-security-review) | MIT security-review template adapted into the portable non-Claude `security-review` skill. |
 | [OpenAI / Skills](https://github.com/openai/skills) | OpenAI curated `playwright` browser-automation wrapper skill. |
 | [Vercel Labs / Skills](https://github.com/vercel-labs/skills) and [skills.sh](https://skills.sh) | `find-skills` discovery workflow for finding and installing additional agent skills. |
 | [ComposioHQ / Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) and [composio.dev](https://composio.dev) | Curated utility/action skills. External actions remain approval-gated. |
@@ -274,19 +316,7 @@ See `THIRD_PARTY_NOTICES.md` for license notes and redistribution guidance.
 
 `install.sh` is a shell wrapper around the shared Node installer in `bin/agentic-supercharge.js` and `lib/installer.js`. The same core runs for shell installs, zip installs, and GitHub `npx` installs.
 
-The script:
-
-1. Asks whether to install locally or globally, unless flags already specify it.
-2. For global installs, detects installed coding agents or lets you choose exact targets.
-3. Explains target paths and conflict policy.
-4. Pulls verified pinned upstream skills from `manifest.json`, unless `--allow-upstream-drift` is used.
-5. Installs local AgenticSupercharge skills from `skills/`.
-6. Runs official installer-backed sources such as Playwright CLI when applicable.
-7. Copies skills into selected roots using the chosen conflict policy.
-8. Writes `.agentic-supercharge.json` markers into managed skill folders.
-9. Upserts managed instruction blocks into `CLAUDE.md`, `AGENTS.md`, and `GEMINI.md` where relevant.
-10. Writes `sources.lock.json` after real installs with source metadata, pin/drift mode, and install results.
-
+The installer asks local vs global, detects or accepts target agents, explains target paths and conflict policy, pulls verified pinned upstream skills, installs the local AgenticSupercharge skills, runs installer-backed sources such as Playwright CLI, copies skills into selected roots, writes `.agentic-supercharge.json` markers, safely upserts managed instruction blocks, records `sources.lock.json`, and prints passive update notices when newer verified sources are available.
 
 `update.sh` uses the same installer core:
 
@@ -296,23 +326,12 @@ The script:
 - `./update.sh --dry-run` previews both the kit update and skill refresh without changing files.
 - `./update.sh --kit-only` updates only the installer/docs/local skills repo.
 - `./update.sh --skills-only` skips the git self-update and refreshes installed skills only.
+- `./check-updates.sh` checks for a newer kit release and upstream tracking-ref changes without applying anything.
 - `./uninstall.sh` removes only folders containing `.agentic-supercharge.json` and strips only managed instruction blocks.
 
 ## Verification Status
 
-Current local verification for this public package has passed:
-
-- shell syntax checks for `install.sh`, `verify.sh`, `update.sh`, and `uninstall.sh`
-- Node syntax checks for `lib/installer.js` and `bin/agentic-supercharge.js`
-- `./verify.sh`
-- global install dry-run with detected targets
-- updater dry-runs for managed-only and `--all-skills` refreshes
-- local `npx` command dry-runs for install and `update-skills`
-- `npm pack --dry-run`
-- local project install dry-run
-- uninstall dry-run
-- public zip exclusion checks for bundled snapshots, lock metadata, tarballs, `.DS_Store`, and private source material
-- simple secret-pattern scan across the public package contents
+Current local verification for this public package has passed shell and Node syntax checks, `./verify.sh`, global and local installer dry-runs, uninstall dry-run, `npm pack --dry-run`, local `npx` package dry-runs, public zip exclusion checks, and a simple secret-pattern scan across public package contents.
 
 This is not a formal third-party security audit. Treat it as a project-level sanity check, then review the scripts yourself before running any installer from the internet.
 
@@ -335,6 +354,18 @@ The installer does not copy or publish:
 
 Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are intentionally left to each user and project.
 
+For optional GitHub, Supabase, Vercel, Firecrawl, Playwright MCP, voice input, Obsidian CLI, or Defuddle setup, see `MCP_AND_CONNECTORS.md`. These are documented as opt-in extras and are not installed by default.
+
+## Voice Input
+
+Voice is intentionally documentation-only in this release, not a skill.
+
+Claude Code users can try the built-in `/voice` command. Codex, Cursor, Gemini CLI, and Antigravity users should use a system-level dictation app such as Superwhisper, Spokenly, Whisper Dictation, or a DIY VoiceMode plus local Whisper setup. On macOS, microphone permissions live under System Settings -> Privacy & Security -> Microphone.
+
+## Obsidian Workflows
+
+Kepano's Obsidian skills cover Obsidian Markdown, Bases, JSON Canvas, CLI vault operations, and Defuddle clean web extraction. `obsidian-markdown`, `obsidian-bases`, and `json-canvas` can help with files directly. `obsidian-cli` needs Obsidian open and the `obsidian` CLI available; `defuddle` needs the Defuddle CLI. Before broad edits to a real vault, make a git commit, vault snapshot, or Obsidian Sync/version-history checkpoint.
+
 ## Troubleshooting
 
 If skills do not show up:
@@ -356,6 +387,7 @@ Where it adds value:
 
 - It saves setup time by turning scattered high-quality skills into one repeatable install flow.
 - It gives agents domain-specific taste and checklists for tasks where generic coding-agent behavior is often weak: frontend polish, animation, SEO, copy, project planning, browser validation, and long-running context management.
+- It adds explicit planning, security, launch-readiness, recent-research, and onboarding workflows without making them always-on.
 - It improves consistency across tools because Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project roots can all receive the same skill set and global guidance.
 - It makes skill use less annoying because `skill-router` asks the agent to choose 1-3 relevant skills instead of expecting the user to name every skill manually.
 
@@ -384,6 +416,7 @@ My opinion: this is not just a "superskill" blob. The router, non-destructive in
 | `THIRD_PARTY_NOTICES.md` | Attribution, licenses, and redistribution notes. |
 | `MCP_AND_CONNECTORS.md` | Public guidance for Context7 and optional user-specific connectors. |
 | `PUBLISHING.md` | Checklist for publishing and packaging safely. |
+| `docs/skill-readiness.md` | Plug-and-play audit and optional dependency map. |
 | `bundled/skills/` | Private/offline fallback snapshots, excluded from public zip by default. |
 
 ## Publishing And Sharing
@@ -413,6 +446,7 @@ See `PUBLISHING.md` for the full public-sharing checklist.
 - `CHANGELOG.md` tracks release-level changes.
 - `SKILLS_TLDR.md` is the compact skill map; `SKILLS_SUMMARY.md` is the deep reference.
 - `AGENTS_OPENAI_YAML.md` explains the lightweight `agents/openai.yaml` metadata files included with local skills.
+- `docs/skill-readiness.md` summarizes which skills work immediately and which need optional external setup.
 
 ## Contributing
 

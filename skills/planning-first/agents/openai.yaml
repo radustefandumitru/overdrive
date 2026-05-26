@@ -1,0 +1,4 @@
+interface:
+  display_name: "Planning First"
+  short_description: "Explore, plan, implement, then verify"
+  default_prompt: "Use $planning-first to handle a complex coding task with an explicit plan and verification checkpoints."

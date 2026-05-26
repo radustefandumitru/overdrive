@@ -10,6 +10,7 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - Do not silently choose an interpretation when the request is ambiguous.
 - State important assumptions briefly before relying on them.
 - Ask when uncertainty would materially change the implementation.
+- When multiple viable approaches exist, present 2-3 options with tradeoffs and recommend one.
 - Surface tradeoffs and push back when a simpler or safer approach exists.
 - Stop and name confusion instead of coding around it.
 
@@ -35,7 +36,14 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - For bugs, prefer a failing reproduction or test before the fix when practical.
 - For refactors, preserve behavior and verify before and after when practical.
 - For multi-step work, use a short plan with verification points.
+- For complex phased work, break the work into explicit phases and confirm phase 1 before starting phase 2 when the next phase materially changes scope, architecture, data, auth, publishing, or irreversible state.
 - Keep looping until the stated goal is verified or a real blocker is named.
+
+## Planning Workflows
+
+- For multi-step coding work in Claude Code, prefer `/model opusplan`; for complex multi-system tasks, use `/ultraplan`. Do not use these for trivial one-line fixes or factual questions.
+- When Claude Code native review commands are available, use `/security-review` for security audits and `/code-review` for general code review.
+- For Codex, Cursor, Gemini CLI, Antigravity, shared `.agents`, or project-local agents, use the `planning-first` skill for complex multi-file work when no native planning mode is available.
 
 ## Context7 Documentation
 
@@ -53,4 +61,12 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - For tiny factual answers, casual conversation, or obvious one-command requests, skip visible routing unless a matching skill is clearly useful.
 - Do not load the full skill catalog by default. Load only the smallest useful skill set.
 - Keep global context small. Put project facts in project files and detailed workflows in skills.
+
+## Context Budget
+
+- Monitor remaining context as work progresses. When estimated remaining context drops below about 40% of the model window, or earlier if large tool outputs are accumulating, surface a brief in-chat choice: compact prior conversation with `context-compression`, start a fresh session with a handoff file, or continue as-is.
+- If the user chooses compact, invoke `context-compression`, then restate the active goal and verification checkpoints in 2-3 lines.
+- If the user chooses a fresh session, write a short handoff file with the active goal, key decisions, files touched, and next steps.
+- If the user chooses to continue, proceed normally and do not re-prompt unless context grows substantially further, such as past roughly 75% used.
+- Never compress silently. Compression loses detail, so the user should always consent.
 <!-- ai-skill-setup:global-guidelines:end -->

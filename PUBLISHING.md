@@ -52,11 +52,12 @@ git push -u origin main
 Before pushing, run:
 
 ```bash
-bash -n install.sh verify.sh update.sh uninstall.sh
+bash -n install.sh verify.sh check-updates.sh update.sh uninstall.sh
 node --check lib/installer.js
 node --check bin/agentic-supercharge.js
 ./install.sh --dry-run
 ./install.sh --list-targets
+./check-updates.sh
 ./uninstall.sh --dry-run
 npm pack --dry-run
 ```
@@ -123,6 +124,12 @@ Refresh all matching skills from upstream with timestamped backups:
 
 ```bash
 ./update.sh --all-skills
+```
+
+Check for a newer kit release or upstream skill tracking refs without applying changes:
+
+```bash
+./check-updates.sh
 ```
 
 GitHub `npx` update path:
@@ -194,4 +201,6 @@ For the local public-safe skills:
 - Fluid Animations is based on Apple's WWDC 2018 fluid interface guidance, paraphrased for coding agents.
 - Emil Animation Polish is based on Emil Kowalski's public writing and animation lessons, paraphrased and attributed.
 - Jack Roberts inspired website skills are based on the user-provided public video/resource workflow, paraphrased and attributed. They do not redistribute raw resource downloads.
+- Clarify And Plan, Planning First, and Pre-Launch Checklist are original AgenticSupercharge workflow skills, with the global planning guidance inspired by Karpathy-style coding-agent principles.
+- Security Review is adapted from Anthropic's MIT-licensed `anthropics/claude-code-security-review` template for non-Claude runtimes.
 - Karpathy-inspired global guidance is adapted behavior guidance, not a claim of authorship over Andrej Karpathy's writing or the `multica-ai/andrej-karpathy-skills` repo.

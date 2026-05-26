@@ -1,0 +1,24 @@
+# Routing Trace Examples
+
+These examples are for maintainers checking whether `skill-router` remains selective as the catalog grows. The router should usually pick 1-3 skills, then load only the chosen skill bodies.
+
+| Prompt | Expected route | Why |
+|---|---|---|
+| "Build me a premium Next.js landing page with smooth animation." | `design-taste-frontend` -> `emil-design-eng` -> `playwright-cli` | Frontend quality is the main task; browser validation proves the result. |
+| "This product drawer should feel physical when I drag and release it." | `fluid-animations` -> `emil-design-eng` | Gesture velocity, springs, interruption, and snap behavior are fluid-animation territory. |
+| "This popover animation feels sluggish." | `emil-animation-polish` -> `emil-design-eng` | Practical easing, duration, hover/touch, and origin-aware polish. |
+| "Refactor this auth flow across the app, but first tell me the safest plan." | `clarify-and-plan` -> `planning-first` -> `security-review` if auth risk is material | Ambiguous multi-file work needs assumptions and phases before implementation; auth may need a security pass. |
+| "Security review this PR for vulnerabilities." | Claude Code: native `/security-review`; other agents: `security-review` | Avoid loading both the native command and the portable skill. |
+| "What has the React community been saying about server components in the last 30 days?" | `last30days` | Time-boxed community/recent sentiment research. |
+| "Design a questionnaire onboarding flow for my subscription app." | `app-onboarding-questionnaire` -> design/frontend skill only after strategy | The onboarding sequence comes before implementation polish. |
+| "Run a launch checklist before I ship this SaaS." | `pre-launch-checklist` -> `security-review` or marketing skills only if needed | Broad product/business launch readiness, not just SEO. |
+| "SEO audit this 3D scroll website before Vercel." | `jack-seo-launch-audit` -> `playwright-cli` | Animated-site SEO/performance launch checks fit the Jack workflow. |
+| "Find me a new skill for React performance work." | `find-skills` | Skill discovery is different from routing among installed skills. |
+| "Create an Obsidian note with wikilinks and callouts." | `obsidian-markdown` | Exact domain skill; snapshot/vault safety before broad edits. |
+| "This thread is huge, compact it into a handoff." | `context-compression` | User explicitly requested compaction, so the lossy step is approved. |
+
+## Collision Notes
+
+- `clarify-and-plan` answers "what should we do and what are the options?" while `planning-first` answers "how do we execute this complex coding task safely?"
+- `pre-launch-checklist` is for product and operational launch readiness. `jack-seo-launch-audit` is for technical/SEO launch checks on animated premium websites.
+- `last30days` is for recent community discourse. Context7 is still the default for current official library/API documentation.

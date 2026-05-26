@@ -23,6 +23,10 @@ Options:
   --allow-upstream-drift       Use tracking refs/latest packages instead of verified pins.
   --allow-dirty-self-update    Allow git pull even if this repo has uncommitted changes.
 
+Manual check:
+  ./check-updates.sh
+    Reports whether a newer kit release or upstream tracking ref is available without applying changes.
+
 Any other options are passed through to the skills updater, for example:
   ./update.sh --all-skills --tools claude,codex
   ./update.sh --skills-only --scope local --project-dir .
@@ -77,6 +81,29 @@ while [[ $# -gt 0 ]]; do
   esac
   shift
 done
+
+if [[ "$SKIP_KIT" -eq 0 && "$DRY_RUN" -eq 0 && -t 0 && -t 1 ]]; then
+  set +e
+  CHECK_OUTPUT="$(AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" check-updates 2>/dev/null)"
+  CHECK_STATUS=$?
+  set -e
+  if [[ "$CHECK_STATUS" -eq 1 && "$CHECK_OUTPUT" == *"A newer AgenticSupercharge version is available"* ]]; then
+    echo "$CHECK_OUTPUT"
+    read -r -p "Apply now? [y/N] " APPLY_NOW
+    case "$APPLY_NOW" in
+      y|Y|yes|YES)
+        ;;
+      *)
+        echo "No changes made."
+        exit 0
+        ;;
+    esac
+    echo
+  elif [[ "$CHECK_STATUS" -eq 1 ]]; then
+    echo "$CHECK_OUTPUT"
+    echo
+  fi
+fi
 
 if [[ "$SKIP_KIT" -eq 0 ]]; then
   echo "Updating AgenticSupercharge itself..."

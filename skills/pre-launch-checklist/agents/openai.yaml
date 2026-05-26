@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pre-Launch Checklist"
+  short_description: "Launch readiness for apps and SaaS"
+  default_prompt: "Use $pre-launch-checklist to audit this product before launch."
