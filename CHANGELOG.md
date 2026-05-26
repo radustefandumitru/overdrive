@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.3.0 - 2026-05-26
+
+- Added dependency-free repo consistency checks for manifest counts, local skill metadata, source pins, smoke checks, docs, package contents, verified sources, third-party notices, and router catalog coverage.
+- Added a lightweight `skill-router` benchmark pack with control/routed prompts, expected skills, and manual scoring rubrics across frontend, motion, planning, security, research, premium site, launch, copy, knowledge-work, agent-infra, and media tasks.
+- Added `docs/evaluation.md` to explain what the benchmark does and does not prove, plus a fair manual scoring protocol for comparing routed vs non-routed outputs.
+- Wired consistency and router benchmark checks into `npm run check`, `npm run verify`, `./verify.sh`, CI, README, and publishing docs.
 - Reduced installer noise by making temporary Git source checkouts quiet during normal and dry-run installs.
 - Improved the no-targets error message to explain `--force-targets` for intentionally creating undetected target folders.
 - Tightened public docs by fixing the Taste Skill attribution typo, moving `full-output-enforcement` under its real upstream source, and removing maintainer social-post drafts from npm/GitHub `npx` and zip payloads.

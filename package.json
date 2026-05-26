@@ -1,6 +1,6 @@
 {
   "name": "agentic-supercharge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Safe interactive installer for portable AI coding-agent skills across Claude Code, Codex, Gemini, Antigravity, Cursor, and local projects.",
   "license": "MIT",
   "bin": {
@@ -9,6 +9,8 @@
   "files": [
     "bin/",
     "lib/",
+    "scripts/",
+    "evals/",
     "skills/",
     "global-instructions/",
     "docs/",
@@ -32,9 +34,11 @@
     "uninstall.sh"
   ],
   "scripts": {
-    "check": "node --check lib/installer.js && node --check bin/agentic-supercharge.js",
+    "check": "node --check lib/installer.js && node --check bin/agentic-supercharge.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js",
+    "consistency": "node scripts/check-consistency.js",
+    "eval:router": "node scripts/evaluate-router.js",
     "dry-run": "node bin/agentic-supercharge.js --dry-run",
-    "verify": "node bin/agentic-supercharge.js verify",
+    "verify": "node bin/agentic-supercharge.js verify && npm run consistency && npm run eval:router",
     "check-updates": "node bin/agentic-supercharge.js check-updates",
     "self-update": "node bin/agentic-supercharge.js self-update",
     "update-skills": "node bin/agentic-supercharge.js update-skills",

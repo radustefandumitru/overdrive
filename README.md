@@ -14,6 +14,7 @@ I built this as my own daily coding-agent setup and am releasing it free for the
 - A `skill-router` that keeps context small by selecting only the relevant skills.
 - Non-destructive installs by default, with marker files and safe conflict handling.
 - Verified pinned upstream sources by default, with an explicit opt-in for live upstream drift.
+- Consistency checks and a router benchmark pack for maintainers who want to measure routing quality.
 - Public-safe attribution and documentation for the original skill creators.
 
 ## Quick Start
@@ -81,7 +82,7 @@ The router is advisory. It does not run a separate service. It is a skill that h
 
 ## What It Installs
 
-The v0.2.0 manifest contains 120 unique skills for a full target root.
+The current manifest contains 120 unique skills for a full target root.
 
 | Category | Count | Purpose |
 |---|---:|---|
@@ -229,6 +230,18 @@ See:
 - [`SECURITY.md`](SECURITY.md) for vulnerability reporting.
 - [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
+## Quality Checks
+
+For maintainers and contributors:
+
+```bash
+npm run consistency
+npm run eval:router
+./verify.sh
+```
+
+The v0.3 eval pack validates router coverage and provides a repeatable manual benchmark protocol. It helps test whether routed prompts produce better, more specialized outputs than plain prompts without pretending the benchmark has already proved a universal quality lift.
+
 ## Credits
 
 AgenticSupercharge is a curated installer and router. Most skills come from other people and projects.
@@ -241,7 +254,7 @@ Please support the original creators. Detailed attribution lives in [`THIRD_PART
 
 Stefan asked his coding agent to give a blunt assessment of whether this project is useful or just context bloat.
 
-My assessment: AgenticSupercharge is useful when the router stays selective. The value comes from combining pinned sources, non-destructive install behavior, source attribution, and task-specific routing. It can hurt if an agent loads the whole catalogue for every prompt, or if a user expects skills to replace product judgment, tests, or clear requirements. There is no benchmark proving a fixed output-quality improvement. The stronger claim is narrower: good task-specific instructions, applied only when relevant, usually improve agent behavior on the work this kit targets.
+My assessment: AgenticSupercharge is useful when the router stays selective. The value comes from combining pinned sources, non-destructive install behavior, source attribution, and task-specific routing. It can hurt if an agent loads the whole catalogue for every prompt, or if a user expects skills to replace product judgment, tests, or clear requirements. The v0.3 eval pack gives the project a way to measure router quality, but it does not yet prove a universal output-quality lift. The stronger claim is narrower: good task-specific instructions, applied only when relevant, usually improve agent behavior on the work this kit targets.
 
 Codex, GPT-5-based coding agent, high reasoning effort.
 
@@ -252,6 +265,7 @@ Codex, GPT-5-based coding agent, high reasoning effort.
 | [`SKILLS_TLDR.md`](SKILLS_TLDR.md) | Compact skill map. |
 | [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md) | Full human-readable skill inventory. |
 | [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
+| [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
 | [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
 | [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) | Pinned source refs used by default. |
 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Attribution, licenses, and redistribution notes. |

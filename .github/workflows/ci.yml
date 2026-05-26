@@ -19,12 +19,19 @@ jobs:
           node-version: 20
 
       - name: Shell syntax
-        run: bash -n install.sh verify.sh update.sh uninstall.sh
+        run: bash -n install.sh verify.sh check-updates.sh update.sh uninstall.sh
 
       - name: Node syntax
         run: |
           node --check lib/installer.js
           node --check bin/agentic-supercharge.js
+          node --check scripts/check-consistency.js
+          node --check scripts/evaluate-router.js
+
+      - name: Consistency and router benchmark checks
+        run: |
+          npm run consistency
+          npm run eval:router
 
       - name: Package dry run
         run: npm pack --dry-run

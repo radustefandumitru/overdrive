@@ -4,7 +4,7 @@ AgenticSupercharge is plug-and-play for installation: the installer can place sk
 
 ## Default Install Summary
 
-- Unique skills in the v0.2.0 manifest: 120
+- Unique skills in the current manifest: 120
 - Locally authored AgenticSupercharge skills: 12
 - Upstream GitHub-sourced skills: 107
 - Official installer-backed skills: 1 (`playwright-cli`)

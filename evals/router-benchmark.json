@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "name": "AgenticSupercharge router benchmark",
+  "description": "A lightweight benchmark pack for checking whether skill-router selects useful, narrow skill sets across common AgenticSupercharge tasks.",
+  "scoring": {
+    "scale": "0-2 per rubric item",
+    "manualProtocol": "Run each controlPrompt and routedPrompt in fresh sessions with the same model, same repository state, and same available tools. Score the outputs blind where practical. This file validates routing coverage; it does not claim automatic output-quality proof by itself.",
+    "scoreMeanings": {
+      "0": "Missing, unsafe, or actively harmful.",
+      "1": "Partially useful but incomplete, generic, or weakly verified.",
+      "2": "Strong, specific, scoped, and verified for the task."
+    }
+  },
+  "cases": [
+    {
+      "id": "premium-frontend-landing-page",
+      "category": "frontend-design",
+      "prompt": "Build a premium Next.js landing page for a developer-tool startup with polished interactions and verify it in a browser.",
+      "controlPrompt": "Build a premium Next.js landing page for a developer-tool startup with polished interactions and verify it in a browser.",
+      "routedPrompt": "Use skill-router first, then build a premium Next.js landing page for a developer-tool startup with polished interactions and verify it in a browser.",
+      "expectedSkills": ["design-taste-frontend", "emil-design-eng", "playwright-cli"],
+      "rubric": [
+        "Chooses a concrete visual direction instead of generic SaaS defaults.",
+        "Builds the actual usable page rather than a marketing explanation.",
+        "Includes interaction polish such as hover, focus, responsive, and motion states.",
+        "Uses real browser validation or clearly explains why it could not run.",
+        "Keeps the implementation scoped to the requested page."
+      ]
+    },
+    {
+      "id": "fluid-mobile-drawer",
+      "category": "motion",
+      "prompt": "Make this mobile drawer feel fluid, interruptible, and natural when dragged or flicked.",
+      "controlPrompt": "Make this mobile drawer feel fluid, interruptible, and natural when dragged or flicked.",
+      "routedPrompt": "Use skill-router first, then make this mobile drawer feel fluid, interruptible, and natural when dragged or flicked.",
+      "expectedSkills": ["fluid-animations", "emil-design-eng"],
+      "rubric": [
+        "Identifies gesture velocity, snap points, interruptibility, and reduced-motion concerns.",
+        "Uses spring or physically plausible motion instead of only duration/easing tweaks.",
+        "Preserves accessibility and keyboard/touch behavior.",
+        "Avoids over-animating unrelated UI."
+      ]
+    },
+    {
+      "id": "web-popover-animation-polish",
+      "category": "motion",
+      "prompt": "This popover animation feels sluggish and cheap. Tune it so it feels crisp on web.",
+      "controlPrompt": "This popover animation feels sluggish and cheap. Tune it so it feels crisp on web.",
+      "routedPrompt": "Use skill-router first, then tune this sluggish popover animation so it feels crisp on web.",
+      "expectedSkills": ["emil-animation-polish", "emil-design-eng"],
+      "rubric": [
+        "Separates web easing/duration polish from gesture-heavy fluid animation.",
+        "Considers transform origin, opacity, scale, timing, and focus behavior.",
+        "Keeps motion subtle enough for repeated product use.",
+        "Includes reduced-motion handling."
+      ]
+    },
+    {
+      "id": "multi-file-refactor",
+      "category": "planning",
+      "prompt": "Refactor this checkout flow across several files, but keep behavior identical and verify it.",
+      "controlPrompt": "Refactor this checkout flow across several files, but keep behavior identical and verify it.",
+      "routedPrompt": "Use skill-router first, then refactor this checkout flow across several files while preserving behavior and verification.",
+      "expectedSkills": ["planning-first", "clarify-and-plan"],
+      "rubric": [
+        "Inspects the existing code before editing.",
+        "States the refactor boundary and behavior-preservation criteria.",
+        "Uses a short implementation plan with verification checkpoints.",
+        "Avoids unrelated cleanup or broad rewrites."
+      ]
+    },
+    {
+      "id": "ambiguous-app-feature",
+      "category": "planning",
+      "prompt": "Add a smarter onboarding thing to my app.",
+      "controlPrompt": "Add a smarter onboarding thing to my app.",
+      "routedPrompt": "Use skill-router first, then handle this ambiguous request: add a smarter onboarding thing to my app.",
+      "expectedSkills": ["clarify-and-plan", "app-onboarding-questionnaire"],
+      "rubric": [
+        "Does not silently assume what smarter onboarding means.",
+        "Offers concrete options or asks focused questions when necessary.",
+        "Recognizes questionnaire onboarding as a likely domain.",
+        "Keeps the first implementation phase small and testable."
+      ]
+    },
+    {
+      "id": "security-review-pr",
+      "category": "security",
+      "prompt": "Security review this PR for auth, XSS, injection, secrets, and supply-chain issues.",
+      "controlPrompt": "Security review this PR for auth, XSS, injection, secrets, and supply-chain issues.",
+      "routedPrompt": "Use skill-router first, then security review this PR for auth, XSS, injection, secrets, and supply-chain issues.",
+      "expectedSkills": ["security-review"],
+      "rubric": [
+        "Prioritizes concrete vulnerabilities over style commentary.",
+        "Checks auth/authz, injection, XSS, secrets, and dependency risk.",
+        "Uses file and line references where possible.",
+        "Distinguishes confirmed findings from residual risks."
+      ]
+    },
+    {
+      "id": "recent-react-sentiment",
+      "category": "research",
+      "prompt": "What has the React community been saying about server components over the last 30 days?",
+      "controlPrompt": "What has the React community been saying about server components over the last 30 days?",
+      "routedPrompt": "Use skill-router first, then research what the React community has been saying about server components over the last 30 days.",
+      "expectedSkills": ["last30days"],
+      "rubric": [
+        "Treats the request as time-boxed recent community research.",
+        "Separates community sentiment from official documentation.",
+        "Cites sources and dates when browsing is available.",
+        "Avoids stale claims presented as current."
+      ]
+    },
+    {
+      "id": "jack-scroll-site-build",
+      "category": "premium-sites",
+      "prompt": "Create a Jack Roberts style 3D scroll website for a moving company with an animated van hero and SEO-ready pages.",
+      "controlPrompt": "Create a Jack Roberts style 3D scroll website for a moving company with an animated van hero and SEO-ready pages.",
+      "routedPrompt": "Use skill-router first, then create a Jack Roberts style 3D scroll website for a moving company with an animated van hero and SEO-ready pages.",
+      "expectedSkills": ["jack-premium-site-system", "jack-scroll-3d-sites", "jack-seo-launch-audit"],
+      "rubric": [
+        "Breaks the work into brand research, asset prompts, scroll implementation, SEO, and launch checks.",
+        "Treats external tools such as image/video generators, Firecrawl, GitHub, and Vercel as optional.",
+        "Avoids copying a real client site too closely or making unsupported brand claims.",
+        "Includes performance, mobile, reduced-motion, and browser validation."
+      ]
+    },
+    {
+      "id": "scroll-asset-prompts",
+      "category": "premium-sites",
+      "prompt": "Create start-frame, exploded end-frame, and video transition prompts for a product scroll-stop hero.",
+      "controlPrompt": "Create start-frame, exploded end-frame, and video transition prompts for a product scroll-stop hero.",
+      "routedPrompt": "Use skill-router first, then create start-frame, exploded end-frame, and video transition prompts for a product scroll-stop hero.",
+      "expectedSkills": ["jack-scroll-asset-prompts", "banana"],
+      "rubric": [
+        "Creates coordinated prompts where start, end, and transition match.",
+        "Includes constraints for clean edges, consistent lighting, and brand fit.",
+        "Separates prompt writing from actual image/video generation.",
+        "Gives iteration guidance instead of promising a perfect first output."
+      ]
+    },
+    {
+      "id": "launch-readiness-saas",
+      "category": "launch",
+      "prompt": "Run a pre-launch checklist for this SaaS before I share it publicly.",
+      "controlPrompt": "Run a pre-launch checklist for this SaaS before I share it publicly.",
+      "routedPrompt": "Use skill-router first, then run a pre-launch checklist for this SaaS before I share it publicly.",
+      "expectedSkills": ["pre-launch-checklist", "security-review"],
+      "rubric": [
+        "Covers readiness beyond code: monitoring, billing, support, privacy, rollback, and analytics.",
+        "Identifies security and privacy items without overloading unrelated skills.",
+        "Prioritizes blockers vs nice-to-haves.",
+        "Produces an actionable launch-day or first-week plan."
+      ]
+    },
+    {
+      "id": "human-launch-email",
+      "category": "marketing-copy",
+      "prompt": "Write launch emails for my product that do not sound like AI.",
+      "controlPrompt": "Write launch emails for my product that do not sound like AI.",
+      "routedPrompt": "Use skill-router first, then write launch emails for my product that do not sound like AI.",
+      "expectedSkills": ["emails", "copywriting", "stop-slop"],
+      "rubric": [
+        "Uses product/audience context or asks for missing essentials.",
+        "Writes concrete, non-generic email copy.",
+        "Removes obvious AI phrasing and over-polished filler.",
+        "Includes useful variants or subject lines without bloating the answer."
+      ]
+    },
+    {
+      "id": "obsidian-research-note",
+      "category": "knowledge-work",
+      "prompt": "Turn this research into an Obsidian note with wikilinks, callouts, and useful frontmatter.",
+      "controlPrompt": "Turn this research into an Obsidian note with wikilinks, callouts, and useful frontmatter.",
+      "routedPrompt": "Use skill-router first, then turn this research into an Obsidian note with wikilinks, callouts, and useful frontmatter.",
+      "expectedSkills": ["obsidian-markdown"],
+      "rubric": [
+        "Uses Obsidian-flavored Markdown rather than generic Markdown only.",
+        "Adds appropriate wikilinks, callouts, aliases, tags, and properties.",
+        "Preserves the original meaning and source context.",
+        "Warns before broad edits to a real vault."
+      ]
+    },
+    {
+      "id": "mcp-server-build",
+      "category": "agent-infra",
+      "prompt": "Build a high-quality MCP server for this API and use current SDK docs.",
+      "controlPrompt": "Build a high-quality MCP server for this API and use current SDK docs.",
+      "routedPrompt": "Use skill-router first, then build a high-quality MCP server for this API and use current SDK docs.",
+      "expectedSkills": ["mcp-builder", "modern-web-guidance"],
+      "rubric": [
+        "Recognizes MCP server design as the core task.",
+        "Uses current official SDK documentation where available.",
+        "Designs narrow, typed tools with clear schemas and error behavior.",
+        "Avoids exposing credentials or making live-service changes without approval."
+      ]
+    },
+    {
+      "id": "slack-gif",
+      "category": "media",
+      "prompt": "Create a Slack-ready animated emoji GIF for a team launch celebration.",
+      "controlPrompt": "Create a Slack-ready animated emoji GIF for a team launch celebration.",
+      "routedPrompt": "Use skill-router first, then create a Slack-ready animated emoji GIF for a team launch celebration.",
+      "expectedSkills": ["slack-gif-creator"],
+      "rubric": [
+        "Uses Slack-specific constraints for file size, dimensions, and loop length.",
+        "Designs a simple readable animation that works at small sizes.",
+        "Validates or describes validation steps for the final GIF.",
+        "Approval-gates any upload or posting action."
+      ]
+    }
+  ]
+}

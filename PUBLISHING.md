@@ -55,6 +55,8 @@ Before pushing, run:
 bash -n install.sh verify.sh check-updates.sh update.sh uninstall.sh
 node --check lib/installer.js
 node --check bin/agentic-supercharge.js
+npm run consistency
+npm run eval:router
 ./install.sh --dry-run
 ./install.sh --list-targets
 ./check-updates.sh

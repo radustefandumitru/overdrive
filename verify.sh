@@ -9,3 +9,5 @@ if ! command -v node >/dev/null 2>&1; then
 fi
 
 AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" verify "$@"
+node "$KIT_DIR/scripts/check-consistency.js"
+node "$KIT_DIR/scripts/evaluate-router.js"
