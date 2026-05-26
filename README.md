@@ -148,7 +148,7 @@ The project includes checks for:
 - Manifest/source consistency.
 - Skill metadata.
 - Router coverage.
-- Public zip safety.
+- Release archive safety.
 - Installer dry-runs.
 - Pinned source references.
 

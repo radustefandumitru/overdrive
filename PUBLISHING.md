@@ -1,6 +1,6 @@
 # Publishing AgenticSupercharge
 
-This kit is designed to be published as a public GitHub repo and installed from clone, zip, or GitHub `npx`.
+This kit is designed to be published as a public GitHub repo and installed from clone, release archive, or GitHub `npx`.
 
 Public repo:
 
@@ -12,7 +12,7 @@ Publish the installer, manifest, local AgenticSupercharge skills, global instruc
 
 Do not publish:
 
-- `bundled/skills` unless every upstream license has been reviewed and redistribution is allowed.
+- Raw/private skill snapshots or vendored third-party copies unless every upstream license has been reviewed and redistribution is allowed.
 - API keys, OAuth tokens, MCP configs with credentials, service-role keys, database URLs, browser profiles, cookies, or app sessions.
 - Jack Roberts raw PDFs, zips, templates, downloaded folders, prompts, private community/course material, or copied third-party skill text.
 - Personal account state for GitHub, Vercel, Supabase, Firecrawl, Google, Claude, Codex, Gemini, Antigravity, Cursor, or any other service.
@@ -88,7 +88,7 @@ npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
 npx -y github:radustefandumitru/AgenticSupercharge
 ```
 
-Zip:
+Release archive:
 
 ```bash
 unzip AgenticSupercharge.zip
@@ -154,36 +154,25 @@ Safe uninstall:
 ./uninstall.sh
 ```
 
-## Zip Builds
+## Release Archive
 
-Public zip:
-
-```bash
-cd /path/to/the/folder-that-contains-ai-skill-setup
-zip -r ai-skill-setup-public.zip ai-skill-setup \
-  -x 'ai-skill-setup/bundled/skills/*' \
-  -x 'ai-skill-setup/.git/*' \
-  -x 'ai-skill-setup/.DS_Store' \
-  -x 'ai-skill-setup/**/.DS_Store' \
-  -x 'ai-skill-setup/agentic-supercharge-*.tgz' \
-  -x 'ai-skill-setup/sources.lock.json' \
-  -x 'ai-skill-setup/SOCIAL_POSTS.md'
-```
-
-Private/offline zip:
+The public GitHub repo is the source of truth. If you need a zip for upload, review, or release assets, build one from committed files instead of zipping the working tree:
 
 ```bash
-cd /path/to/the/folder-that-contains-ai-skill-setup
-zip -r ai-skill-setup.zip ai-skill-setup \
-  -x 'ai-skill-setup/.git/*' \
-  -x 'ai-skill-setup/.DS_Store' \
-  -x 'ai-skill-setup/**/.DS_Store' \
-  -x 'ai-skill-setup/agentic-supercharge-*.tgz' \
-  -x 'ai-skill-setup/sources.lock.json' \
-  -x 'ai-skill-setup/SOCIAL_POSTS.md'
+cd /path/to/AgenticSupercharge
+git archive --format=zip --output ../AgenticSupercharge.zip --prefix=AgenticSupercharge/ HEAD
 ```
 
-The private/offline zip may include bundled third-party snapshots. Do not attach it to a public release or share it broadly unless redistribution rights for every bundled source have been reviewed.
+Quickly inspect the archive before sharing it:
+
+```bash
+if unzip -l ../AgenticSupercharge.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|agentic-supercharge-.*\\.tgz|SOCIAL_POSTS\\.md"; then
+  echo "Unexpected file found"
+  exit 1
+fi
+```
+
+Expected result: no matches from the inspection command.
 
 ## Release Checklist
 
@@ -192,7 +181,7 @@ For a new release, replace `vX.Y.Z` with the package version in `package.json`:
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
-gh release create vX.Y.Z ../ai-skill-setup-public.zip --title "AgenticSupercharge vX.Y.Z" --notes-file CHANGELOG.md
+gh release create vX.Y.Z ../AgenticSupercharge.zip --title "AgenticSupercharge vX.Y.Z" --notes-file CHANGELOG.md
 gh repo edit radustefandumitru/AgenticSupercharge --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
 ```
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Removed the private/offline bundled zip workflow and simplified distribution around the GitHub repo plus one public release archive.
+
 ## v0.3.0 - 2026-05-26
 
 - Added dependency-free repo consistency checks for manifest counts, local skill metadata, source pins, smoke checks, docs, package contents, verified sources, third-party notices, and router catalog coverage.

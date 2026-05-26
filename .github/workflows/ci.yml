@@ -53,7 +53,7 @@ jobs:
       - name: Secret and local-path scan
         run: |
           ! rg -n "/Users/stefan|Codex Skills Setup|xserpentgaming|stefandumitru2002" . \
-            -g '!sources.lock.json' -g '!bundled/skills/**' -g '!.git/**'
+            -g '!sources.lock.json' -g '!.git/**'
           ! rg -n "gho_[A-Za-z0-9_]+|sk-[A-Za-z0-9_-]{20,}|BEGIN [A-Z ]*PRIVATE KEY|service_role[_-]?key\\s*[:=]|api[_-]?key\\s*[:=]\\s*['\"][A-Za-z0-9]|Bearer [A-Za-z0-9]{20,}" -S . \
-            -g '!sources.lock.json' -g '!bundled/skills/**' -g '!.git/**'
+            -g '!sources.lock.json' -g '!.git/**'
           test -z "$(find . -maxdepth 6 \( -name '.env*' -o -name '.mcp.json' -o -name 'credentials.json' -o -name 'token.json' -o -name '*.key' -o -name '*oauth*' -o -name 'cookies*' \) -not -path './.git/*')"

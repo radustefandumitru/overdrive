@@ -2,7 +2,7 @@
 
 AgenticSupercharge v0.3 adds lightweight maintainer checks for two things:
 
-- The repo stays internally consistent as skills, docs, zips, and installer metadata change.
+- The repo stays internally consistent as skills, docs, release archives, and installer metadata change.
 - The `skill-router` can be evaluated against repeatable prompts instead of judged only by vibes.
 
 These checks are intentionally small and dependency-free. They do not call paid model APIs and they do not claim that every routed answer will be better. They make the project easier to test, review, and improve.

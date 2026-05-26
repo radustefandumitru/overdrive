@@ -4,7 +4,7 @@ This setup is a curated installer/router. Most skills are created by other peopl
 
 ## License Notes
 
-License detection below is based on GitHub repository metadata checked during kit preparation. Review upstream licenses before public redistribution, especially if publishing bundled copies of third-party skills.
+License detection below is based on GitHub repository metadata checked during kit preparation. This public repo does not vendor third-party skill snapshots; it installs verified pinned upstream sources instead. Review upstream licenses before adding any vendored copies in a future release.
 
 | Source | Repository | Detected license | Notes |
 |---|---|---|---|
@@ -38,4 +38,4 @@ License detection below is based on GitHub repository metadata checked during ki
 
 For a public GitHub repo, the safest approach is to publish the installer, manifest, router, docs, and attribution, and let the installer pull third-party skills from their upstream repositories or official npm installers.
 
-If you publish or broadly share `bundled/skills`, make sure you are comfortable redistributing those files and preserving any required license notices. A private zip shared with a close teammate is lower risk than a public repo that republishes every bundled skill, but it is still third-party redistribution.
+Do not add raw private course material, local account state, copied community downloads, or vendored third-party skill snapshots unless the redistribution rights and required notices have been reviewed first.

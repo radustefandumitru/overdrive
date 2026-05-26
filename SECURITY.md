@@ -23,7 +23,7 @@ Out of scope:
 
 - Bugs or malicious content in upstream third-party skill repositories
 - Personal MCP configs, API keys, OAuth sessions, browser profiles, or local tool credentials
-- User-modified forks or private bundled snapshots not present in the public repository
+- User-modified forks or private local snapshots not present in the public repository
 
 ## Security Model
 

@@ -836,11 +836,6 @@
       "to": "jack-seo-launch-audit"
     }
   ],
-  "bundled": {
-    "path": "bundled/skills",
-    "enabledByDefault": false,
-    "note": "Private/offline fallback only. Public installs should pull from upstream sources and the local router."
-  },
   "officialInstallers": [
     {
       "id": "playwright-cli-official",

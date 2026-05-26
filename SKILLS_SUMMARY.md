@@ -8,7 +8,7 @@ Yes, after install and restart/reload. Claude Code, Codex, Gemini CLI, Antigravi
 
 They do not need to manually link each skill. The only manual step is restarting/reloading the app or opening a fresh session so the runtime re-indexes the skill list. Some skills still need external tools or auth before their workflows can execute, such as Banana, Last30Days paid/social sources, Obsidian CLI, Defuddle, Playwright CLI, Composio/connect, and logged-in app connectors. See `docs/skill-readiness.md` for the plug-and-play audit.
 
-This kit is now upstream-first, pinned by default, and target-aware: normal installs pull third-party skills from verified GitHub refs or pinned official npm installers, then install only into selected/detected targets using a non-destructive conflict policy. Bundled snapshots are a private/offline fallback only.
+This kit is upstream-first, pinned by default, and target-aware: normal installs pull third-party skills from verified GitHub refs or pinned official npm installers, then install only into selected/detected targets using a non-destructive conflict policy. Public releases do not ship vendored third-party skill snapshots.
 
 ## Source Families
 
