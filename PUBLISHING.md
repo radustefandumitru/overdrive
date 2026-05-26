@@ -164,7 +164,8 @@ zip -r ai-skill-setup-public.zip ai-skill-setup \
   -x 'ai-skill-setup/.DS_Store' \
   -x 'ai-skill-setup/**/.DS_Store' \
   -x 'ai-skill-setup/agentic-supercharge-*.tgz' \
-  -x 'ai-skill-setup/sources.lock.json'
+  -x 'ai-skill-setup/sources.lock.json' \
+  -x 'ai-skill-setup/SOCIAL_POSTS.md'
 ```
 
 Private/offline zip:
@@ -176,7 +177,8 @@ zip -r ai-skill-setup.zip ai-skill-setup \
   -x 'ai-skill-setup/.DS_Store' \
   -x 'ai-skill-setup/**/.DS_Store' \
   -x 'ai-skill-setup/agentic-supercharge-*.tgz' \
-  -x 'ai-skill-setup/sources.lock.json'
+  -x 'ai-skill-setup/sources.lock.json' \
+  -x 'ai-skill-setup/SOCIAL_POSTS.md'
 ```
 
 The private/offline zip may include bundled third-party snapshots. Do not attach it to a public release or share it broadly unless redistribution rights for every bundled source have been reviewed.

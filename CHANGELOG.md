@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Reduced installer noise by making temporary Git source checkouts quiet during normal and dry-run installs.
+- Improved the no-targets error message to explain `--force-targets` for intentionally creating undetected target folders.
+- Tightened public docs by fixing the Taste Skill attribution typo, moving `full-output-enforcement` under its real upstream source, and removing maintainer social-post drafts from npm/GitHub `npx` and zip payloads.
+
 ## v0.2.0 - 2026-05-26
 
 - Added local skills: `clarify-and-plan`, `planning-first`, portable non-Claude `security-review`, and `pre-launch-checklist`.

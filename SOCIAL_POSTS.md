@@ -33,7 +33,7 @@ Tone to keep: grateful, attribution-heavy, and honest that this improves output 
 
 Use GitHub links for the canonical source. Only include Reddit usernames when they were visible in source material; do not guess.
 
-- Taste Skill by Leon Lin / LeonxInx: [GitHub](https://github.com/Leonxlnx/taste-skill), [site](https://www.tasteskill.dev), X: [@LexnLin](https://x.com/LexnLin), project X: [@_TasteSkill](https://x.com/_TasteSkill). No reliable Reddit username found.
+- Taste Skill by Leon Lin / Leonxlnx: [GitHub](https://github.com/Leonxlnx/taste-skill), [site](https://www.tasteskill.dev), X: [@LexnLin](https://x.com/LexnLin), project X: [@_TasteSkill](https://x.com/_TasteSkill). No reliable Reddit username found.
 - Impeccable by Paul Bakaus: [GitHub](https://github.com/pbakaus/impeccable), [docs](https://impeccable.style/docs/), X: [@pbakaus](https://x.com/pbakaus). No reliable Reddit username found.
 - Emil Kowalski skill: [GitHub](https://github.com/emilkowalski/skill), [site](https://emilkowal.ski/skill), [animations.dev](https://animations.dev), X: [@emilkowalski](https://x.com/emilkowalski). No reliable Reddit username found.
 - Agent Skills for Context Engineering by Muratcan Koylan: [GitHub](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering). No reliable Reddit/X account found beyond GitHub.
@@ -127,15 +127,15 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 > - [Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) by Composio (curated subset)
 > - Global instruction templates adapted from [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)
 >
-> The only skills in this repo I actually wrote are three small public-safe ones: `fluid-animations` (Apple-style direct manipulation, springs, gestures, rubberbanding), `emil-animation-polish` (practical CSS easing/timing audits), and `jack-*` (a premium 3D scroll-website workflow paraphrased from Jack Roberts' public YouTube teaching). All three are paraphrased and attributed in `THIRD_PARTY_NOTICES.md`.
+> The skills I added on top are the routing and workflow layer: `skill-router`, `clarify-and-plan`, `planning-first`, portable non-Claude `security-review`, `pre-launch-checklist`, `fluid-animations`, `emil-animation-polish`, and the `jack-*` premium 3D scroll-website workflow. The source-inspired ones are paraphrased and attributed in `THIRD_PARTY_NOTICES.md`; the installer still pulls the large third-party library from the original upstream repos.
 >
 > **Honest caveats** (because Reddit will ask anyway)
 >
-> - This only helps if the router stays selective. If your agent dumps all 60 skills into context, you'll get worse output, not better. The router exists exactly to prevent that, but it's still a learned behavior, not a guarantee.
+> - This only helps if the router stays selective. If your agent dumps all 120 skills into context, you'll get worse output, not better. The router exists exactly to prevent that, but it's still a learned behavior, not a guarantee.
 > - No benchmarks. The bet is structural: better task-specific instructions, applied narrowly, usually improve agent behavior on those tasks. I haven't measured this against a baseline.
 > - macOS-first. The detection code targets common Mac app/CLI paths. It might work on Linux but I haven't tested.
 > - Default installs use verified pinned commits/package versions. You can opt into live upstream branches/latest packages with `--allow-upstream-drift`, but that is intentionally less conservative.
-> - I had Claude Opus do a full security and behavior audit of the repo, then used the findings for the v0.1.0 remediation pass. The important supply-chain, uninstall, dry-run, and public-safety fixes are now part of the release.
+> - I had Claude Opus do a full security and behavior audit of the repo, then used the findings for the early remediation pass. The important supply-chain, uninstall, dry-run, and public-safety fixes are now part of the release.
 >
 > **Install**
 >

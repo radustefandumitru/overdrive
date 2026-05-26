@@ -33,7 +33,6 @@ This kit is now upstream-first, pinned by default, and target-aware: normal inst
 | Remotion skills | [GitHub](https://github.com/remotion-dev/skills) | [www.remotion.dev](https://www.remotion.dev) | Best practices for building programmatic videos, animations, captions, audio, and compositions in Remotion/React. (1 skills) |
 | Playwright CLI skill | [GitHub](https://github.com/microsoft/playwright-cli) | [playwright.dev/agent-cli/skills](https://playwright.dev/agent-cli/skills) | Browser automation, screenshots, snapshots, UI flow checks, data extraction, and frontend validation. Installed/updated through the official @playwright/cli installer. (1 skills) |
 | Skills CLI / skills.sh | [Vercel Labs Skills](https://github.com/vercel-labs/skills) | [skills.sh](https://skills.sh) | Discovery helper for finding and installing additional agent skills. (1 skills) |
-| Full output enforcement local skill | Local / none found | None found | Local enforcement skill for complete, unabridged output when truncation would be harmful. (1 skills) |
 
 ## How The Skills Work Together
 
@@ -70,12 +69,13 @@ This kit is now upstream-first, pinned by default, and target-aware: normal inst
 | `jack-scroll-3d-sites` | Scroll-driven video/frame-sequence website implementation guidance, including FFmpeg frame extraction, canvas/video scrub patterns, GSAP/Framer Motion/Three.js choices, mobile fallbacks, and browser validation. | Use for 3D scroll websites, video-on-scroll, image-sequence canvas sections, and Apple-style scrollytelling builds. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 | `jack-seo-launch-audit` | SEO, metadata, structured data, internal links, responsiveness, performance, reduced-motion, and launch readiness checks for premium animated sites. | Use after a site build or before GitHub/Vercel/public launch. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 
-### Taste Skill by LeonxInx
+### Taste Skill by Leonxlnx
 
 | Skill | What it does | How to use it | Installed roots |
 |---|---|---|---|
 | `brandkit` | Premium brand-kit image generation skill for creating high-end brand-guidelines boards, logo systems, identity decks, and visual-world presentations. Trained for minimalist, cinematic, editorial, dark-tech, luxury, cultural, security, gaming, developer-tool, and consumer-app brand systems. Optimized for intentional logo concepting, refined composition, sparse typography, strong symbolic meaning, premium mockups, art-directed imagery, and flexible grid layouts. | Premium brand-kit image generation skill for creating high-end brand-guidelines boards, logo systems, identity decks, and visual-world pr... | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 | `design-taste-frontend` | Senior UI/UX Engineer. Architect digital interfaces overriding default LLM biases. Enforces metric-based rules, strict component architecture, CSS hardware acceleration, and balanced design engineering. | Default for frontend/web visual direction and anti-generic layouts. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
+| `full-output-enforcement` | Overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits cleanly. Apply to any task requiring exhaustive, unabridged output. | Use only when the user needs complete unabridged output or a previous output was truncated. Do not use for normal concise tasks. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 | `gpt-taste` | Elite UX/UI & Advanced GSAP Motion Engineer. Enforces Python-driven true randomization for layout variance, strict AIDA page structure, wide editorial typography (bans 6-line wraps), gapless bento grids, strict GSAP ScrollTriggers (pinning, stacking, scrubbing), inline micro-images, and massive section spacing. | Elite UX/UI & Advanced GSAP Motion Engineer. Enforces Python-driven true randomization for layout variance, strict AIDA page structure, w... | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 | `high-end-visual-design` | Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a website feel expensive. Blocks all the common defaults that make AI designs look cheap or generic. | Teaches the AI to design like a high-end agency. Defines the exact fonts, spacing, shadows, card structures, and animations that make a w... | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 | `image-to-code` | Elite website image-to-code skill for Codex. For visually important web tasks, it must first generate the design image(s) itself, deeply analyze them, then implement the website to match them as closely as possible. In Codex, it must prefer large, readable, section-specific images instead of tiny compressed boards, generate fresh standalone images for sections or detail views instead of cropping old ones, avoid lazy under-generation, avoid cards-inside-cards-inside-cards UI, and keep the hero clean, spacious, readable, and visible on a small laptop. | Elite website image-to-code skill for Codex. For visually important web tasks, it must first generate the design image(s) itself, deeply ... | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
@@ -244,12 +244,6 @@ This kit is now upstream-first, pinned by default, and target-aware: normal inst
 | Skill | What it does | How to use it | Installed roots |
 |---|---|---|---|
 | `find-skills` | Vercel Labs discovery workflow for finding and installing agent skills with the Skills CLI and skills.sh. | Use only when the user asks to find, compare, install, or extend skills; do not run broad discovery as part of ordinary coding tasks. Installed from the pinned `vercel-labs/skills` source. | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
-
-### Full output enforcement local skill
-
-| Skill | What it does | How to use it | Installed roots |
-|---|---|---|---|
-| `full-output-enforcement` | Overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits cleanly. Apply to any task requiring exhaustive, unabridged output. | Overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits c... | ~/.claude/skills<br>~/.codex/skills<br>~/.agents/skills<br>~/.gemini/skills<br>~/.gemini/config/skills |
 
 ## Onboarding Checklist
 
