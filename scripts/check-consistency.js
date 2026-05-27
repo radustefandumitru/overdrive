@@ -94,9 +94,10 @@ const allowedExpectedTerms = new Set(['approval']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.3.0 or newer', isAtLeastVersion(pkg.version, '0.3.0'), `found ${pkg.version}`);
-check('manifest schema version is 5', manifest.version === 5, `found ${manifest.version}`);
-check('manifest schema description mentions version 5', /version 5/i.test(manifest.schemaDescription || ''));
+check('package version is 0.4.0 or newer', isAtLeastVersion(pkg.version, '0.4.0'), `found ${pkg.version}`);
+check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
+check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
+check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
 check('manifest has 12 local skills', skills.local.length === 12, `found ${skills.local.length}`);
 check('manifest has 107 upstream GitHub skills', skills.source.length === 107, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
@@ -175,6 +176,7 @@ check('package files exclude SOCIAL_POSTS.md', !packageFiles.has('SOCIAL_POSTS.m
 const readme = read('README.md');
 check('README says current manifest contains 120 unique skills', /current manifest contains 120 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
+check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
 check('README agent review mentions the v0.3 eval pack', /v0\.3.*eval pack/i.test(readme));
 
 const skillReadiness = read('docs/skill-readiness.md');
@@ -210,6 +212,8 @@ for (const sourceEntry of manifest.sources || []) {
 const routerSkill = read('skills/skill-router/SKILL.md');
 const routerCatalog = read('skills/skill-router/references/catalog.md');
 check('skill-router links routing trace examples', /routing-trace-examples\.md/.test(routerSkill));
+check('skill-router allows flexible skill sequences', /no hard cap/i.test(routerSkill) || /as many skills/i.test(routerSkill));
+check('skill-router mentions AS-Workflow route trace helper', /routes\.jsonl/.test(routerSkill));
 for (const skillName of skills.local) {
   check(`router catalog lists local skill ${skillName}`, routerCatalog.includes(`\`${skillName}\``));
 }

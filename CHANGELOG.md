@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## v0.4.0 - 2026-05-27
+
+- Added AS-Workflow, a lightweight local project-state layer backed by a gitignored `.agenticsupercharge/` folder for project state, decisions, file hashes, route traces, reports, active work, and handoff checkpoints.
+- Added persistent runtime installation under `~/.agentic-supercharge/runtime/current/` plus a managed CLI shim so hooks do not depend on temporary `npx` folders or disposable clones.
+- Added workflow commands: `status`, `doctor`, `resync`, `checkpoint`, and `route`.
+- Added non-blocking AS-Workflow hook integration for supported runtimes, with Claude slash commands and Cursor rule fallback where appropriate.
+- Updated global instruction templates and `skill-router` to use flexible phased skill selection instead of a hard 1-3 skill cap.
+- Added AS-Workflow documentation and archive safety checks while keeping raw GSD material out of the public package.
 - Removed the private/offline bundled zip workflow and simplified distribution around the GitHub repo plus one public release archive.
 
 ## v0.3.0 - 2026-05-26

@@ -10,6 +10,8 @@ They do not need to manually link each skill. The only manual step is restarting
 
 This kit is upstream-first, pinned by default, and target-aware: normal installs pull third-party skills from verified GitHub refs or pinned official npm installers, then install only into selected/detected targets using a non-destructive conflict policy. Public releases do not ship vendored third-party skill snapshots.
 
+AS-Workflow is the non-skill project-state layer added in v0.4. It creates a local, gitignored `.agenticsupercharge/` folder for active work, decisions, file hashes, route traces, reports, and handoffs. Skills teach the agent how to do work; AS-Workflow helps it remember what is happening in a specific project.
+
 ## Source Families
 
 | Source | GitHub | Website/docs | What it adds |
@@ -36,7 +38,8 @@ This kit is upstream-first, pinned by default, and target-aware: normal installs
 
 ## How The Skills Work Together
 
-- Start with `skill-router` as the default lightweight preflight for non-trivial requests; it should pick 1-3 relevant skills rather than loading everything.
+- Start with `skill-router` as the default lightweight preflight for non-trivial requests; it should pick the minimum relevant skill sequence rather than loading everything. Complex tasks can use more skills when phased clearly.
+- Use AS-Workflow as local project memory when `.agenticsupercharge/` exists: read only the state or active work that helps the task, and use `status`, `doctor`, `resync`, or `checkpoint` when continuation/health/handoff matters.
 - Global/project instructions add always-on behavior across Claude Code, Codex, Gemini CLI, Antigravity, and local project agents: think before coding, keep solutions simple, make surgical changes, verify against explicit goals, consult `skill-router` before non-trivial work, and use Context7 for current docs when it fits the task.
 - Clarification and planning: `clarify-and-plan` handles ambiguity, assumptions, options, and phase boundaries. `planning-first` wraps complex non-Claude coding work in Explore -> Plan -> Implement -> Verify. Claude Code users can prefer native `/model opusplan` and `/ultraplan`.
 - Security and launch: Claude Code should use native `/security-review`; other agents use the portable `security-review` skill. `pre-launch-checklist` covers product/business launch readiness and pairs with focused security, SEO, marketing, or browser checks.

@@ -1,6 +1,6 @@
 # Routing Trace Examples
 
-These examples are for maintainers checking whether `skill-router` remains selective as the catalog grows. The router should usually pick 1-3 skills, then load only the chosen skill bodies.
+These examples are for maintainers checking whether `skill-router` remains selective as the catalog grows. The router should pick the minimum sufficient skill sequence, then load only the chosen skill bodies. Complex tasks can use more skills when they are phased and each skill has a clear job.
 
 | Prompt | Expected route | Why |
 |---|---|---|
@@ -16,6 +16,16 @@ These examples are for maintainers checking whether `skill-router` remains selec
 | "Find me a new skill for React performance work." | `find-skills` | Skill discovery is different from routing among installed skills. |
 | "Create an Obsidian note with wikilinks and callouts." | `obsidian-markdown` | Exact domain skill; snapshot/vault safety before broad edits. |
 | "This thread is huge, compact it into a handoff." | `context-compression` | User explicitly requested compaction, so the lossy step is approved. |
+
+## AS-Workflow Route Trace
+
+When `.agenticsupercharge/` exists and the runtime command is available, keep route traces terse:
+
+```bash
+agentic-supercharge route --skills "planning-first,design-taste-frontend,playwright-cli" --reason "multi-file UI implementation with browser validation"
+```
+
+This appends one JSONL entry to `.agenticsupercharge/routes.jsonl`. It is optional and should never block the task.
 
 ## Collision Notes
 

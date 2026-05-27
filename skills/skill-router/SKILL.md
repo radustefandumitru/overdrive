@@ -1,6 +1,6 @@
 ---
 name: skill-router
-description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Route ambiguous or multi-phase work to clarify-and-plan/planning-first; frontend/design/motion to Taste/Emil/fluid/playwright; security audits to security-review; recent online research to last30days; app questionnaire onboarding to app-onboarding-questionnaire; launch readiness to pre-launch-checklist. Also route docs/specs, MCP servers, Slack GIFs, context compression, marketing/copy, Obsidian, external app actions, browser automation, image generation, Remotion/video, Chrome extensions, and skill discovery. Advisory only: choose 1-3 useful skills and skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill.
+description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Route ambiguous or multi-phase work to clarify-and-plan/planning-first; frontend/design/motion to Taste/Emil/fluid/playwright; security audits to security-review; recent online research to last30days; app questionnaire onboarding to app-onboarding-questionnaire; launch readiness to pre-launch-checklist. Also route docs/specs, MCP servers, Slack GIFs, context compression, marketing/copy, Obsidian, external app actions, browser automation, image generation, Remotion/video, Chrome extensions, and skill discovery. Advisory only: choose the smallest useful skill sequence, with no hard cap for genuinely complex work, and skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill.
 ---
 
 # Skill Router
@@ -47,7 +47,10 @@ Use this skill to choose the right installed skill or skill sequence without loa
 18. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
 19. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
 20. Use Vercel Labs `find-skills` only when the user wants to discover, compare, or install new skills. Do not run broad skill discovery for normal implementation tasks.
-21. Keep context small: route to 1-3 skills, state the order, and load only the reference needed for the conflict.
+21. Keep context small: route to the minimum sufficient skill sequence, state the order, and load only the reference needed for the conflict. There is no hard cap: genuinely complex tasks may use more skills when they are phased and each skill has a clear job.
+22. If `.agenticsupercharge/` exists and the runtime command is available, append a short route trace after choosing skills:
+   `agentic-supercharge route --skills "skill-a,skill-b" --reason "short reason"`.
+   Skip this silently if the command is unavailable or the workflow folder is absent.
 
 ## Resolving Trigger Overlap
 
@@ -66,6 +69,7 @@ Use this skill to choose the right installed skill or skill sequence without loa
 - Read `references/sharing-and-transfer.md` when asked how to move this setup to another machine or teammate.
 - Read `references/catalog.md` for broad inventory, non-design routing, or when the user asks what every skill is for.
 - Read `references/routing-trace-examples.md` for example prompts and expected routing decisions.
+  The examples also show how AS-Workflow route traces should stay short enough for `.agenticsupercharge/routes.jsonl`.
 
 ## Output Pattern
 

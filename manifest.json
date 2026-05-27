@@ -1,8 +1,16 @@
 {
-  "version": 5,
+  "version": 6,
   "name": "agentic-supercharge",
   "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
-  "schemaDescription": "Schema version 5 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, and router smoke checks.",
+  "schemaDescription": "Schema version 6 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, router smoke checks, and AS-Workflow runtime metadata.",
+  "asWorkflow": {
+    "version": 1,
+    "projectStateDir": ".agenticsupercharge",
+    "runtimeRoot": "$HOME/.agentic-supercharge/runtime/current",
+    "shim": "$HOME/.agentic-supercharge/bin/agentic-supercharge",
+    "disableEnv": "AGENTIC_SUPERCHARGE_WORKFLOW=disabled",
+    "notes": "AS-Workflow is local project runtime state and is gitignored by default."
+  },
   "installRoots": [
     "$HOME/.claude/skills",
     "$HOME/.codex/skills",
@@ -783,6 +791,17 @@
       "prompt": "Use the OpenAI Playwright wrapper skill",
       "expected": [
         "playwright"
+      ]
+    },
+    {
+      "prompt": "Take over an existing app, plan the work, redesign UI, preserve auth, security review, browser verify, and leave a handoff",
+      "expected": [
+        "clarify-and-plan",
+        "planning-first",
+        "design-taste-frontend",
+        "emil-design-eng",
+        "security-review",
+        "playwright-cli"
       ]
     }
   ],

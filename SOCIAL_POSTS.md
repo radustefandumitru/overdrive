@@ -102,7 +102,7 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 >
 > - Pulls skills from their original upstream repos. Doesn't vendor them.
 > - Installs into whichever coding agents it detects (Claude Code, Codex, Gemini CLI, Antigravity, Cursor) or only the ones you pick.
-> - Adds one local skill called `skill-router` that tells the agent to consult it as a preflight and pick 1-3 relevant skills per task instead of loading the whole pile.
+> - Adds one local skill called `skill-router` that tells the agent to consult it as a preflight and pick the minimum useful skill sequence instead of loading the whole pile.
 > - **Non-destructive by default.** Drops a `.agentic-supercharge.json` marker in folders it manages, never touches unmarked folders unless you explicitly say so. Four conflict policies: `preserve` (default), `backup-and-replace`, `replace-managed-only`, `force`.
 > - `--dry-run` actually does nothing — verified with a real audit, not just a flag check.
 > - `./verify.sh` checks frontmatter, instruction markers, broken symlinks, router catalog coverage, and runtime path leakage.
@@ -195,7 +195,7 @@ Tell the build story.
 >
 > So I built an installer that does it for me, then ended up adding:
 >
-> - A `skill-router` that helps the agent pick 1-3 relevant skills per task instead of overloading context
+> - A `skill-router` that helps the agent pick the minimum useful skill sequence instead of overloading context
 > - Non-destructive install (drops a marker in folders it owns, leaves your existing skills alone)
 > - Real `--dry-run` (audited it — actually doesn't touch the filesystem)
 > - `verify.sh` that checks frontmatter, markers, broken symlinks, runtime-path leakage
@@ -214,7 +214,7 @@ Tell the build story.
 Lean into the identity.
 
 >
-> The annoying part is each one lives in a different repo and each tool wants them in a different folder. I built **AgenticSupercharge** to pull them all from upstream and install them safely across whichever coding agents you have. Adds a `skill-router` so your agent picks 1-3 relevant skills per task instead of loading the whole pile.
+> The annoying part is each one lives in a different repo and each tool wants them in a different folder. I built **AgenticSupercharge** to pull them all from upstream and install them safely across whichever coding agents you have. Adds a `skill-router` so your agent picks the minimum useful skill sequence instead of loading the whole pile.
 >
 > Full credit to the people who actually made the skills:
 > - [Leon Lin / Taste Skill](https://github.com/Leonxlnx/taste-skill)

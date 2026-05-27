@@ -22,5 +22,6 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Obsidian vault work | Kepano Obsidian skills | `json-canvas`, `obsidian-bases`, `defuddle` |
 | Image/video workflows | `banana`, Remotion skills | approval-gated external tools where configured |
 | Slack GIF or emoji animation | `slack-gif-creator` | Banana/image tooling only if a custom source image is needed |
+| Project memory and handoff | AS-Workflow (`.agenticsupercharge/`) | `agentic-supercharge status`, `doctor`, `resync`, `checkpoint`; not a routed skill |
 
-The intended pattern is not "load everything." Let `skill-router` choose 1-3 useful skills, then proceed.
+The intended pattern is not "load everything." Let `skill-router` choose the minimum useful skill sequence, then proceed. Complex tasks can use more skills when they are phased and each one has a clear job.

@@ -166,7 +166,7 @@ git archive --format=zip --output ../AgenticSupercharge.zip --prefix=AgenticSupe
 Quickly inspect the archive before sharing it:
 
 ```bash
-if unzip -l ../AgenticSupercharge.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|agentic-supercharge-.*\\.tgz|SOCIAL_POSTS\\.md"; then
+if unzip -l ../AgenticSupercharge.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|(^|/)\\.agenticsupercharge/|agentic-supercharge-.*\\.tgz|SOCIAL_POSTS\\.md"; then
   echo "Unexpected file found"
   exit 1
 fi

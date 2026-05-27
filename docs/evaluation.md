@@ -1,6 +1,6 @@
 # Evaluation And Consistency Checks
 
-AgenticSupercharge v0.3 adds lightweight maintainer checks for two things:
+AgenticSupercharge v0.3 added lightweight maintainer checks for two things:
 
 - The repo stays internally consistent as skills, docs, release archives, and installer metadata change.
 - The `skill-router` can be evaluated against repeatable prompts instead of judged only by vibes.
@@ -90,3 +90,5 @@ The router is failing when it:
 ## Current Claim
 
 As of v0.3, AgenticSupercharge has a repeatable router benchmark and automated coverage checks. It does not yet include a statistically meaningful public scorecard proving a fixed output-quality lift across models. That claim should wait until benchmark runs are collected and reviewed.
+
+v0.4 extends the benchmark with a complex multi-phase case to ensure the router no longer treats three skills as a hard cap and can mention AS-Workflow/checkpoints when project memory would help.

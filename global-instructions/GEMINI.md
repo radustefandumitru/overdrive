@@ -57,10 +57,18 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - At the start of each non-trivial user request, consult `skill-router` as the default lightweight preflight to check whether any installed skills apply.
 - If the user explicitly names one or more skills, use those skills for the relevant part of the task and skip router selection for that part unless another unspecified part still needs routing.
 - If `skill-router` finds no useful match, proceed normally without loading extra skills.
-- When `skill-router` is only a setup step, name the chosen 1-3 skills briefly, then proceed with the task.
+- When `skill-router` is only a setup step, name the chosen skill sequence briefly, then proceed with the task.
 - For tiny factual answers, casual conversation, or obvious one-command requests, skip visible routing unless a matching skill is clearly useful.
-- Do not load the full skill catalog by default. Load only the smallest useful skill set.
+- Do not load the full skill catalog by default. Load only the smallest useful skill set. Complex work may use more than three skills when genuinely needed, preferably phased instead of all at once.
 - Keep global context small. Put project facts in project files and detailed workflows in skills.
+
+## AS-Workflow
+
+- If `.agenticsupercharge/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
+- Read `.agenticsupercharge/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
+- After meaningful multi-step work, keep workflow notes short and current when practical: state, decisions, progress, route trace, or checkpoint.
+- Use `agentic-supercharge status`, `agentic-supercharge doctor`, `agentic-supercharge resync`, or `agentic-supercharge checkpoint` when those commands are available and the workflow state matters.
+- Do not commit `.agenticsupercharge/`. It is local project state and should be gitignored by default.
 
 ## Context Budget
 

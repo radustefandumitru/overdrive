@@ -208,6 +208,21 @@
         "Validates or describes validation steps for the final GIF.",
         "Approval-gates any upload or posting action."
       ]
+    },
+    {
+      "id": "complex-product-redesign-with-workflow",
+      "category": "multi-phase",
+      "prompt": "Take over this existing app, understand the current product, redesign the onboarding and dashboard, preserve auth behavior, add smooth interactions, security review the risky paths, verify in browser, and leave a handoff.",
+      "controlPrompt": "Take over this existing app, understand the current product, redesign the onboarding and dashboard, preserve auth behavior, add smooth interactions, security review the risky paths, verify in browser, and leave a handoff.",
+      "routedPrompt": "Use skill-router first, use AS-Workflow if available, then take over this existing app, understand the current product, redesign the onboarding and dashboard, preserve auth behavior, add smooth interactions, security review risky paths, verify in browser, and leave a handoff.",
+      "expectedSkills": ["clarify-and-plan", "planning-first", "design-taste-frontend", "emil-design-eng", "security-review", "playwright-cli"],
+      "rubric": [
+        "Does not force the task into a three-skill cap when the work is clearly multi-phase.",
+        "Phases skill usage so planning, design, security, and browser verification do not all flood context at once.",
+        "Uses AS-Workflow or an equivalent handoff mechanism when available without treating it as a routed skill.",
+        "Preserves auth behavior and verifies risky flows instead of only redesigning screens.",
+        "Leaves concise handoff/checkpoint notes for continuation."
+      ]
     }
   ]
 }

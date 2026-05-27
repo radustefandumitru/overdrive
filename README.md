@@ -4,10 +4,11 @@ AgenticSupercharge is an open-source skill pack and installer for AI coding agen
 
 It gives Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project agents a shared library of specialist skills for web/app development, frontend polish, animation, SEO, research, product work, security review, launch prep, and browser validation.
 
-Think of it as two things:
+Think of it as three things:
 
 - **A toolbox:** curated skills that teach agents how to handle specific kinds of work.
 - **A bouncer:** a `skill-router` that helps the agent pick the right skills for the current task instead of loading everything into context.
+- **A notebook:** AS-Workflow, a local `.agenticsupercharge/` project-state folder that helps agents remember active work, decisions, checkpoints, and routing history.
 
 The goal is simple: better outputs from coding agents, with less manual prompting.
 
@@ -26,7 +27,7 @@ Most AI coding agents are powerful, but they often need repeated guidance:
 
 AgenticSupercharge packages those recurring instructions into reusable skills and installs them where your agents can find them.
 
-You keep prompting normally. For non-trivial work, the agent checks the router, loads the smallest useful skill set, and proceeds with more relevant guidance.
+You keep prompting normally. For non-trivial work, the agent checks the router, loads the smallest useful skill set, and proceeds with more relevant guidance. For longer projects, AS-Workflow keeps a small local memory so the agent does not have to rediscover the same context every session.
 
 ## Quick Start
 
@@ -93,12 +94,13 @@ The current manifest contains 120 unique skills.
 | Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
 | Browser validation | Playwright-based screenshots, flow checks, responsive checks, and browser debugging. |
 | Knowledge work | Obsidian workflows, docs, specs, MCP building, recent research, and context-management skills. |
+| Project memory | AS-Workflow local state, route traces, file hashes, checkpoints, and workflow health checks. |
 
 For a compact map of the whole library, see [`SKILLS_TLDR.md`](SKILLS_TLDR.md). For the full inventory, see [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md).
 
 ## How It Works
 
-AgenticSupercharge has four main parts.
+AgenticSupercharge has five main parts.
 
 ### 1. Skills
 
@@ -118,13 +120,45 @@ Examples:
 
 It is not a background daemon, model, or external service. It is a routing skill with rules, examples, and a catalog. It helps the agent decide which specialist skills are worth loading for the current request.
 
-The router is designed to keep context small. For simple tasks, it should stay quiet. For complex tasks, it should pick the useful skills and explain the sequence briefly.
+The router is designed to keep context small. For simple tasks, it should stay quiet. For complex tasks, it should pick the useful skills and explain the sequence briefly. There is no hard skill cap: the router should use as many skills as the task genuinely needs, preferably phased so the agent does not load everything at once.
 
 As of v0.3, the router does not improve itself automatically. The repo includes consistency checks and a router benchmark so maintainers can test and improve it over time.
 
 This same router is included in the public install. It is not only for the maintainer's local machine.
 
-### 3. Installer
+### 3. AS-Workflow
+
+AS-Workflow is the local notebook.
+
+Skills answer "how should the agent do this kind of task?" AS-Workflow answers "what is already happening in this project?"
+
+When supported agents do meaningful project work, they can create:
+
+```text
+.agenticsupercharge/
+```
+
+That folder stores concise project state, active work, decisions, file hashes, route traces, reports, and handoff checkpoints. It is local runtime state and is added to `.gitignore` by default.
+
+Useful commands:
+
+```bash
+agentic-supercharge status
+agentic-supercharge doctor
+agentic-supercharge resync --dry-run
+agentic-supercharge resync --apply
+agentic-supercharge checkpoint --message "before refactor"
+```
+
+Disable hook/init behavior for a process with:
+
+```bash
+AGENTIC_SUPERCHARGE_WORKFLOW=disabled
+```
+
+For details, see [`docs/as-workflow.md`](docs/as-workflow.md).
+
+### 4. Installer
 
 The installer copies skills into the folders used by each supported tool.
 
@@ -141,7 +175,9 @@ Antigravity uses the `.gemini` convention for its agent shell. Even if you run C
 
 Cursor personal skills belong in `~/.cursor/skills`. This installer does not write to Cursor's reserved `~/.cursor/skills-cursor` folder.
 
-### 4. Verification
+The installer also writes a persistent AS-Workflow runtime under `~/.agentic-supercharge/runtime/current/` so hooks do not depend on a temporary `npx` folder or a clone you might delete.
+
+### 5. Verification
 
 The project includes checks for:
 
@@ -281,6 +317,7 @@ Power-user and maintainer docs:
 |---|---|
 | [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md) | Full human-readable skill inventory. |
 | [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
+| [`docs/as-workflow.md`](docs/as-workflow.md) | Local project-state workflow, commands, hooks, and disable behavior. |
 | [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
 | [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
 | [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) | Pinned source refs used by default. |
@@ -300,7 +337,7 @@ Please support the original creators. Detailed attribution lives in [`THIRD_PART
 
 Stefan asked his coding agent to review the project bluntly and say whether it is useful or just context bloat.
 
-My assessment: AgenticSupercharge is useful when the router stays selective. The value comes from combining pinned sources, safe install behavior, source attribution, and task-specific routing. It can become harmful if an agent loads the whole catalog for every prompt, or if users expect skills to replace product judgment, tests, or clear requirements. The v0.3 benchmark gives the project a way to measure routing quality, but it does not yet prove a universal output-quality lift. The honest claim is narrower: good task-specific instructions, applied only when relevant, usually improve agent behavior on the work this kit targets.
+My assessment: AgenticSupercharge is useful when the router stays selective and AS-Workflow stays lightweight. The value comes from combining pinned sources, safe install behavior, source attribution, task-specific routing, and local project state. It can become harmful if an agent loads the whole catalog for every prompt, or if users expect skills to replace product judgment, tests, or clear requirements. The v0.3 benchmark gives the project a way to measure routing quality, and v0.4 adds project memory, but neither proves a universal output-quality lift. The honest claim is narrower: good task-specific instructions and small project state, applied only when relevant, usually improve agent behavior on the work this kit targets.
 
 Codex, GPT-5-based coding agent, high reasoning effort.
 

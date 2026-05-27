@@ -6,7 +6,7 @@ This catalog lists each unique user/global skill once across the five target roo
 
 | Skill | Purpose | Use when | Notes |
 |---|---|---|---|
-| `skill-router` | Use as the default lightweight preflight for non-trivial requests to check whether installed skills apply. Also use when the user asks which installed skill to use, when multiple installed skills might apply, or before frontend/design, context management, marketing/copy, external app actions, browser automation, image generation, Remotion/video, Chrome extension, or skill-management tasks where routing matters. Advisory only: choose and invoke/load the best existing skill(s). | Non-trivial task where a skill might help, multiple skills could apply, or user asks which skill to use | Pick 1-3 skills; do not load the full catalog by default |
+| `skill-router` | Use as the default lightweight preflight for non-trivial requests to check whether installed skills apply. Also use when the user asks which installed skill to use, when multiple installed skills might apply, or before frontend/design, context management, marketing/copy, external app actions, browser automation, image generation, Remotion/video, Chrome extension, or skill-management tasks where routing matters. Advisory only: choose and invoke/load the best existing skill(s). | Non-trivial task where a skill might help, multiple skills could apply, or user asks which skill to use | Pick the minimum sufficient skill sequence; no hard cap for complex phased work; do not load the full catalog by default |
 
 ## Planning, Research, Security, and Launch Readiness
 
