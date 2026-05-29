@@ -177,7 +177,7 @@ const readme = read('README.md');
 check('README says current manifest contains 120 unique skills', /current manifest contains 120 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
-check('README agent review mentions the v0.3 eval pack', /v0\.3.*eval pack/i.test(readme));
+check('README agent review mentions the router benchmark', /benchmark.*routing quality/i.test(readme));
 
 const skillReadiness = read('docs/skill-readiness.md');
 check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 120/.test(skillReadiness));

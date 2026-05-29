@@ -54,6 +54,22 @@ cd AgenticSupercharge
 
 After installing, restart or reload your coding agent so it re-indexes the skill folders.
 
+## Sanity Check
+
+If you installed from a clone, run:
+
+```bash
+./verify.sh
+```
+
+If you want to check AS-Workflow from any project folder, run:
+
+```bash
+~/.agentic-supercharge/bin/agentic-supercharge status
+```
+
+At first it may say AS-Workflow is not initialized. That is normal. A `.agenticsupercharge/` folder is created only after meaningful project work or an explicit workflow command such as `checkpoint` or `resync --apply`.
+
 ## What Changes After Install?
 
 You do not need to memorize every skill.
@@ -79,6 +95,24 @@ Use jack-scroll-3d-sites for the hero section.
 ```
 
 When you name a skill, your explicit choice wins for that part of the task.
+
+## What Happens Under The Hood
+
+AgenticSupercharge is file-based. It does not run a cloud service and it does not upload your project.
+
+| Piece | When it appears | What it does |
+|---|---|---|
+| Skills | During install | Copies curated `SKILL.md` folders into the selected agent roots. |
+| Instruction blocks | During install | Adds a managed global guidance block while preserving user content outside the block. |
+| Runtime | During install | Writes a persistent helper at `~/.agentic-supercharge/runtime/current/` plus a CLI shim. |
+| Hooks/commands/rules | During global install, where supported | Let supported agents call AS-Workflow. Hooks are advisory and fail open. |
+| Project state | During meaningful project work or explicit workflow commands | Creates local `.agenticsupercharge/` state and adds it to `.gitignore`. |
+
+The important split:
+
+- Skills teach the agent **how** to do specialist work.
+- `skill-router` chooses **which** skills are relevant.
+- AS-Workflow helps the agent remember **what is happening in this project**.
 
 ## What You Get
 
@@ -122,7 +156,7 @@ It is not a background daemon, model, or external service. It is a routing skill
 
 The router is designed to keep context small. For simple tasks, it should stay quiet. For complex tasks, it should pick the useful skills and explain the sequence briefly. There is no hard skill cap: the router should use as many skills as the task genuinely needs, preferably phased so the agent does not load everything at once.
 
-As of v0.3, the router does not improve itself automatically. The repo includes consistency checks and a router benchmark so maintainers can test and improve it over time.
+The router does not improve itself automatically. The repo includes consistency checks and a router benchmark so maintainers can test and improve it over time.
 
 This same router is included in the public install. It is not only for the maintainer's local machine.
 
@@ -139,6 +173,8 @@ When supported agents do meaningful project work, they can create:
 ```
 
 That folder stores concise project state, active work, decisions, file hashes, route traces, reports, and handoff checkpoints. It is local runtime state and is added to `.gitignore` by default.
+
+AS-Workflow is intentionally conservative. A simple factual question should not initialize project state. Hooks only provide lightweight reminders or update local workflow files; if a hook fails, the agent should keep going.
 
 Useful commands:
 
@@ -196,7 +232,7 @@ npm run eval:router
 ./verify.sh
 ```
 
-The v0.3 eval pack is a test bench, not a magic score. It helps compare routed prompts against plain prompts and catch obvious routing drift.
+The eval pack is a test bench, not a magic score. It helps compare routed prompts against plain prompts and catch obvious routing drift.
 
 ## Install Modes
 
@@ -302,6 +338,7 @@ AgenticSupercharge is not:
 - A replacement for clear requirements, tests, or code review.
 - A promise that every model output becomes better.
 - A background service watching your machine.
+- A telemetry or analytics system.
 - A system that uploads your private files or credentials.
 - A live auto-sync to every upstream skill repo by default.
 
@@ -337,7 +374,7 @@ Please support the original creators. Detailed attribution lives in [`THIRD_PART
 
 Stefan asked his coding agent to review the project bluntly and say whether it is useful or just context bloat.
 
-My assessment: AgenticSupercharge is useful when the router stays selective and AS-Workflow stays lightweight. The value comes from combining pinned sources, safe install behavior, source attribution, task-specific routing, and local project state. It can become harmful if an agent loads the whole catalog for every prompt, or if users expect skills to replace product judgment, tests, or clear requirements. The v0.3 benchmark gives the project a way to measure routing quality, and v0.4 adds project memory, but neither proves a universal output-quality lift. The honest claim is narrower: good task-specific instructions and small project state, applied only when relevant, usually improve agent behavior on the work this kit targets.
+My assessment: AgenticSupercharge is useful when the router stays selective and AS-Workflow stays lightweight. The value comes from combining pinned sources, safe install behavior, source attribution, task-specific routing, and local project state. It can become harmful if an agent loads the whole catalog for every prompt, or if users expect skills to replace product judgment, tests, or clear requirements. The benchmark gives the project a way to measure routing quality, and AS-Workflow adds project memory, but neither proves a universal output-quality lift. The honest claim is narrower: good task-specific instructions and small project state, applied only when relevant, usually improve agent behavior on the work this kit targets.
 
 Codex, GPT-5-based coding agent, high reasoning effort.
 
