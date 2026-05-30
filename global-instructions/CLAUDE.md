@@ -57,6 +57,8 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - For multi-step coding work in Claude Code, prefer `/model opusplan`; for complex multi-system tasks, use `/ultraplan`. Do not use these for trivial one-line fixes or factual questions.
 - When Claude Code native review commands are available, use `/security-review` for security audits and `/code-review` for general code review.
 - For Codex, Cursor, Gemini CLI, Antigravity, shared `.agents`, or project-local agents, use the `planning-first` skill for complex multi-file work when no native planning mode is available.
+- For complex multi-step work, use the runtime's planning or model knob when available. AgenticSupercharge does not auto-switch models across providers; apply Claude Code `/model opusplan` or `/ultraplan`, Codex reasoning/model options, Gemini planning/model options, or Cursor model choices deliberately.
+- When a task has independent parts, consider parallel subagents with clear, scoped context and use `multi-agent-patterns` when useful. Prefer cheaper or faster models for simple subtasks where the runtime supports that choice; do not assume every agent has subagents or per-task model routing.
 
 ## Context7 Documentation
 
@@ -80,6 +82,8 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - If `.agenticsupercharge/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
 - Read `.agenticsupercharge/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
 - After meaningful multi-step work, keep workflow notes short and current when practical: state, decisions, progress, route trace, or checkpoint.
+- When the user states a durable preference, constraint, or decision, append a short dated note to `.agenticsupercharge/decisions.md` when the workflow exists. If the new statement contradicts a recorded decision or constraint, surface the conflict and ask before overwriting it.
+- If you notice an oscillating fix loop, such as fixing A breaking B and fixing B re-breaking A, or if the user signals frustration, stop and say so plainly. Propose a different approach such as a smaller repro, different method, online research, another skill, a fresh model/planning mode, or a checkpoint before continuing.
 - Use `agentic-supercharge status`, `agentic-supercharge doctor`, `agentic-supercharge resync`, or `agentic-supercharge checkpoint` when those commands are available and the workflow state matters.
 - When the user asks "show status", "what's going on", "AS status", or similar project-state questions, run or suggest `agentic-supercharge status` if available.
 - Do not commit `.agenticsupercharge/`. It is local project state and should be gitignored by default.

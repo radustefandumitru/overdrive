@@ -29,6 +29,12 @@ npm run eval:router
 - Expected skills are documented in the router skill, catalog, or routing examples.
 - The benchmark covers several task categories instead of only frontend work.
 
+`npm run scorecard` rebuilds the public scorecard template:
+
+- Reads `evals/router-benchmark.json` and `evals/scorecard-results.json`.
+- Writes `docs/scorecard-v0.6.md`.
+- Does not call model APIs and does not invent scores.
+
 `./verify.sh` runs the normal installer verifier and then these two repo-level checks.
 
 Add `-- --verbose` when running through npm if you want every individual check printed:
@@ -94,3 +100,5 @@ As of v0.3, AgenticSupercharge has a repeatable router benchmark and automated c
 v0.4 extends the benchmark with a complex multi-phase case to ensure the router no longer treats three skills as a hard cap and can mention AS-Workflow/checkpoints when project memory would help.
 
 v0.5 adds coverage for React Doctor routing, architecture pressure-testing with `what-should-i-consider`, and `media-download` so utility/download requests do not fall back to broader video skills.
+
+v0.6 adds product-design Layers and Liquid Glass progressive-enhancement cases, plus a scorecard harness in `docs/scorecard-v0.6.md`. The scorecard is empty until real blind control-vs-routed runs are collected.

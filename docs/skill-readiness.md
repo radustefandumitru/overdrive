@@ -4,9 +4,9 @@ AgenticSupercharge is plug-and-play for installation: the installer can place sk
 
 ## Default Install Summary
 
-- Unique skills in the current manifest: 119
-- Locally authored AgenticSupercharge skills: 14
-- Upstream GitHub-sourced skills: 104
+- Unique skills in the current manifest: 129
+- Locally authored AgenticSupercharge skills: 15
+- Upstream GitHub-sourced skills: 113
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
 - AS-Workflow runtime: installed under `~/.agentic-supercharge/runtime/current/` for hooks, status, doctor, resync, route traces, and checkpoints.
@@ -25,8 +25,10 @@ These work immediately after install and agent reload because they are instructi
 - `what-should-i-consider`
 - `fluid-animations`
 - `emil-animation-polish`
+- `liquid-glass-web`
 - `media-download` guidance, once `yt-dlp` is installed
 - Jack Roberts inspired `jack-*` workflow skills when used as planning/build guidance
+- Jamie Mill `layers-*` product-design reasoning skills
 - Taste, Impeccable, Emil, Modern Web Guidance, Remotion guidance, Stop Slop, most MarketingSkills, Context Engineering guidance, Anthropic example skills, and OpenAI/Vercel routing guidance
 
 ## Needs Optional External Tools Or Accounts
@@ -39,6 +41,7 @@ These work immediately after install and agent reload because they are instructi
 | `react-doctor` | Node/npm and React Doctor package execution through `npx react-doctor@latest` | Useful only in React codebases; it may fetch the current React Doctor playbook on demand. |
 | `playwright-cli` | Node/npm and browser binaries | The official installer provides the skill; browser install may happen on first real use depending on the user's environment. |
 | `playwright` | Playwright CLI/runtime | OpenAI wrapper around Playwright-style automation; prefer `playwright-cli` for normal validation. |
+| `liquid-glass-web` Tier 3 | WebGL support and any adopted WebGL glass library license review | Tier 1 CSS works broadly; Tier 2 is Chromium-specific; Tier 3 needs browser/device testing and permissive license review. |
 | Composio/connect-style skills | User-configured connectors, auth, and explicit approval | Approval-gate external actions such as sending, posting, creating, deleting, authenticating, or spending credits. |
 | `langsmith-fetch` | LangSmith access and CLI/setup | Only useful if the user has LangSmith traces and credentials configured. |
 | `media-download` | `yt-dlp` | Treat download requests as user-approved local actions, default to `~/Downloads` when appropriate, and respect platform terms. |

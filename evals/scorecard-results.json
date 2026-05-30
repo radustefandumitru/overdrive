@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "benchmark": "evals/router-benchmark.json",
+  "scoring": "Blind 0-2 rubric scoring per case. Do not invent scores.",
+  "results": []
+}

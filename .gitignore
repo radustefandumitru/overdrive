@@ -7,3 +7,4 @@ sources.lock.json
 # Do not commit raw/private skill snapshots. Public installs pull from upstream
 # through manifest.json and pinned official installers.
 bundled/skills/
+.agenticsupercharge/

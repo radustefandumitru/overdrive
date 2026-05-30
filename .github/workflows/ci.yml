@@ -29,6 +29,7 @@ jobs:
           node --check scripts/check-consistency.js
           node --check scripts/evaluate-router.js
           node --check scripts/test-as-workflow.js
+          node --check scripts/build-scorecard.js
 
       - name: Consistency, router benchmark, and workflow checks
         run: |

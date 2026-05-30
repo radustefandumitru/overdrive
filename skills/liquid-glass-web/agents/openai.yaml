@@ -1,0 +1,13 @@
+name: liquid-glass-web
+description: Progressive web Liquid Glass guidance with universal frosted glass, Chromium SVG-displacement refraction, and optional WebGL refraction tiers.
+triggers:
+  - liquid glass
+  - frosted glass
+  - glassmorphism
+  - translucent UI
+  - refraction
+  - backdrop-filter
+  - SVG displacement
+  - WebGL glass
+prompt:
+  default_prompt: "Use $liquid-glass-web to choose the right progressive-enhancement tier for cross-browser glass UI and implement it with safe fallbacks."

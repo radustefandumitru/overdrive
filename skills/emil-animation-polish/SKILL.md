@@ -84,6 +84,47 @@ Use explicit transition properties:
 }
 ```
 
+## Modern CSS Interaction Patterns
+
+### Proximity Hover
+
+For dock-style hover fields, use the proximity pattern from `fluid-animations`: cache item rects, recompute with `ResizeObserver`, and update CSS variables from pointer distance. Do not measure layout on every `pointermove`. Keep the scale/brightness range small and disable on coarse pointers and reduced motion.
+
+Credit `@gabriell_lab` (`https://x.com/gabriell_lab/status/2060336070059864461`) for the public interaction pattern and `@baptistebriel` (`https://x.com/baptistebriel/status/2060351541345681851`) for the rect-caching performance guidance when sharing the technique.
+
+### Scroll-State Sticky Navbar
+
+For sticky navs that subtly morph only after they stick, prefer CSS scroll-state queries when available:
+
+```css
+.page-shell {
+  container-type: scroll-state;
+}
+
+.site-nav {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  border-radius: 999px;
+  transition:
+    background-color 180ms var(--ease-ui-out),
+    box-shadow 180ms var(--ease-ui-out),
+    transform 180ms var(--ease-ui-out);
+}
+
+@container scroll-state(stuck: top) {
+  .site-nav {
+    background: color-mix(in srgb, Canvas 78%, transparent);
+    box-shadow: 0 10px 30px color-mix(in srgb, black 14%, transparent);
+    backdrop-filter: blur(16px) saturate(170%);
+  }
+}
+```
+
+Support caveat: `container-type: scroll-state` and `@container scroll-state(...)` are currently a progressive enhancement, with Chromium support leading Safari/Firefox. Provide a JavaScript `IntersectionObserver` or scroll-class fallback when the stuck-state visual is important, and keep the default nav usable without the query.
+
+Credit the public sticky-navbar pattern to `@mannupaaji` (`https://x.com/mannupaaji/status/2060025609867387239`) and reference the Chrome team's CSS scroll-state queries writeup (`https://developer.chrome.com/blog/css-scroll-state-queries`) when documenting browser support.
+
 ## Review Checklist
 
 - Is every animation justified by feedback, continuity, explanation, or reduced jank?

@@ -140,6 +140,76 @@ Use CSS for simple hover/focus/color/opacity changes and decorative keyframes. K
 
 Avoid using CSS-only fixed-duration transitions for drag, throw, snap, route transitions that can be interrupted, or state changes where the user's next input may arrive before the motion completes.
 
+## Proximity Interaction Pattern
+
+Use proximity effects sparingly for dock-like toolbars, playful icon strips, spatial menus, and premium landing-page details where nearby elements should respond to pointer distance. The effect should feel like a soft field around the cursor, not a noisy hover gimmick.
+
+Performance rule: do not call `getBoundingClientRect()` on every `pointermove`. Cache item centers once, recompute on resize/layout changes with `ResizeObserver`, then use pointer coordinates against the cached centers.
+
+```ts
+type ProximityItem = {
+  el: HTMLElement;
+  cx: number;
+  cy: number;
+};
+
+function setupProximityDock(container: HTMLElement) {
+  let items: ProximityItem[] = [];
+
+  const measure = () => {
+    items = [...container.querySelectorAll<HTMLElement>("[data-proximity-item]")].map((el) => {
+      const rect = el.getBoundingClientRect();
+      return { el, cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 };
+    });
+  };
+
+  const render = (event: PointerEvent) => {
+    for (const item of items) {
+      const distance = Math.hypot(event.clientX - item.cx, event.clientY - item.cy);
+      const influence = Math.max(0, 1 - distance / 160);
+      item.el.style.setProperty("--proximity", influence.toFixed(3));
+    }
+  };
+
+  const reset = () => {
+    for (const item of items) item.el.style.setProperty("--proximity", "0");
+  };
+
+  const observer = new ResizeObserver(measure);
+  observer.observe(container);
+  measure();
+
+  container.addEventListener("pointermove", render);
+  container.addEventListener("pointerleave", reset);
+
+  return () => {
+    observer.disconnect();
+    container.removeEventListener("pointermove", render);
+    container.removeEventListener("pointerleave", reset);
+  };
+}
+```
+
+```css
+[data-proximity-item] {
+  --proximity: 0;
+  transform: translateZ(0) scale(calc(1 + var(--proximity) * 0.18));
+  filter: brightness(calc(1 + var(--proximity) * 0.14));
+  transition:
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    filter 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  [data-proximity-item] {
+    transform: none;
+    filter: none;
+  }
+}
+```
+
+Credit the public pattern inspiration to `@gabriell_lab` (`https://x.com/gabriell_lab/status/2060336070059864461`) and the rect-caching/`ResizeObserver` performance correction to `@baptistebriel` (`https://x.com/baptistebriel/status/2060351541345681851`) when documenting or sharing this pattern.
+
 ## Gesture Checklist
 
 - Tap: highlight on down, commit on up, allow cancellation outside the hit area and re-entry back inside.

@@ -486,6 +486,50 @@
       ]
     },
     {
+      "id": "layers-skills",
+      "repo": "https://github.com/jamiemill/layers-skills.git",
+      "ref": "64b9202bf0506ad1418b9975681c95798725e25a",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/layers-intro",
+          "to": "layers-intro"
+        },
+        {
+          "from": "skills/layers-orient",
+          "to": "layers-orient"
+        },
+        {
+          "from": "skills/layers-observed-behaviour",
+          "to": "layers-observed-behaviour"
+        },
+        {
+          "from": "skills/layers-domain",
+          "to": "layers-domain"
+        },
+        {
+          "from": "skills/layers-user-needs",
+          "to": "layers-user-needs"
+        },
+        {
+          "from": "skills/layers-product-strategy",
+          "to": "layers-product-strategy"
+        },
+        {
+          "from": "skills/layers-conceptual-model",
+          "to": "layers-conceptual-model"
+        },
+        {
+          "from": "skills/layers-interaction-flow",
+          "to": "layers-interaction-flow"
+        },
+        {
+          "from": "skills/layers-surface",
+          "to": "layers-surface"
+        }
+      ]
+    },
+    {
       "id": "anthropic-example-skills",
       "repo": "https://github.com/anthropics/skills.git",
       "ref": "690f15cac7f7b4c055c5ab109c79ed9259934081",
@@ -816,6 +860,41 @@
       "expected": [
         "media-download"
       ]
+    },
+    {
+      "prompt": "Help me figure out which design layer my product problem actually lives at",
+      "expected": [
+        "layers-intro",
+        "layers-orient"
+      ]
+    },
+    {
+      "prompt": "Model the objects, states, and vocabulary for this scheduling tool",
+      "expected": [
+        "layers-intro",
+        "layers-conceptual-model"
+      ]
+    },
+    {
+      "prompt": "Map the interaction flow and edge cases for this booking experience",
+      "expected": [
+        "layers-intro",
+        "layers-interaction-flow"
+      ]
+    },
+    {
+      "prompt": "Create an Apple-style liquid glass navigation component that works across browsers",
+      "expected": [
+        "liquid-glass-web",
+        "emil-animation-polish"
+      ]
+    },
+    {
+      "prompt": "Add a dock-style proximity hover effect without pointermove layout thrash",
+      "expected": [
+        "fluid-animations",
+        "emil-animation-polish"
+      ]
     }
   ],
   "localSkills": [
@@ -874,6 +953,10 @@
     {
       "from": "skills/media-download",
       "to": "media-download"
+    },
+    {
+      "from": "skills/liquid-glass-web",
+      "to": "liquid-glass-web"
     }
   ],
   "officialInstallers": [

@@ -21,6 +21,22 @@ This catalog lists each unique user/global skill once across the five target roo
 | `app-onboarding-questionnaire` | Designs questionnaire-style onboarding flows for apps, especially subscription/mobile apps, using proven conversion sequencing. | App onboarding strategy, screen sequence, onboarding questions, paywall-adjacent first-run experience, or implementation of a questionnaire flow | Pair with frontend/design skills after the onboarding blueprint is confirmed |
 | `pre-launch-checklist` | Product launch readiness checklist for apps, SaaS, landing pages, betas, App Store releases, client handoffs, and public launches. | Before shipping; launch-day runbooks; monitoring, billing, privacy, support, rollback, security, analytics, and first-week follow-up | Use `jack-seo-launch-audit` for animated website SEO/technical launch specifics; use this for broader launch readiness |
 
+## Product Design Layers
+
+Use Jamie Mill's Layers skills for product-design reasoning, not generic implementation planning or visual polish. Load `layers-intro` before any layer-specific skill.
+
+| Skill | Purpose | Use when | Notes |
+|---|---|---|---|
+| `layers-intro` | Framework orientation for the Layers of Product Design and the dependency between layers. | Any Layers workflow or when product-design layer reasoning is needed | Load first before other `layers-*` skills |
+| `layers-orient` | Diagnoses which product/design layer needs attention. | The user is unsure whether the problem is research, domain, needs, strategy, conceptual model, interaction flow, or surface | Use before jumping to a layer when the focus is unclear |
+| `layers-observed-behaviour` | Turns evidence about what users do into behavior observations and job-story candidates. | User behavior, research notes, observed workflows, or confidence-rated job stories | Problem-space layer |
+| `layers-domain` | Maps domain concepts, terminology, nouns, and language conflicts. | Domain modeling, vocabulary, concept maps, unclear nouns, or conflicting language | Problem-space layer |
+| `layers-user-needs` | Prioritizes needs, pains, desires, and job stories. | Product needs, pains, desires, JTBD, or prioritising what users need next | Problem-space layer |
+| `layers-product-strategy` | Converts problem understanding into product/service strategy and prioritised bets. | Opportunity selection, product strategy, roadmap bets, or service strategy | Solution-space layer |
+| `layers-conceptual-model` | Defines objects, states, relationships, and product vocabulary. | Product model, object model, state model, domain entities, or confusing app concepts | Often the highest-value layer for product UX debt |
+| `layers-interaction-flow` | Designs flows, breadboards, edge cases, and open interaction decisions. | Interaction structure, user flows, edge cases, task paths, or screen-flow decisions | Pair with frontend skills only after the flow is clear |
+| `layers-surface` | Audits and inventories surface-level design decisions. | Surface decision inventory, visual/UI layer audit, or checking whether surface choices match lower layers | Not a visual-polish substitute; use Taste/Emil/Impeccable for visual execution |
+
 ## Design, Frontend, Brand, and Visual Direction
 
 | Skill | Purpose | Use when | Notes |
@@ -44,6 +60,7 @@ This catalog lists each unique user/global skill once across the five target roo
 | `jack-scroll-asset-prompts` | Generates coordinated start-frame, end-frame, and transition/video prompts for assembled/exploded products, before/after transformations, and scroll-stopping website assets. | User needs image/video prompts before building a scroll-stop website visual | Pair with Banana/native image generation, `brandkit`, or `imagegen-frontend-web` |
 | `jack-seo-launch-audit` | Adds and audits SEO, metadata, structured data, internal links, responsiveness, performance, reduced motion, and launch readiness for premium animated websites. | Animated landing page or multi-page site needs SEO and launch checks before GitHub/Vercel/public publishing | External publishing actions require approval |
 | `jack-website-intelligence` | Researches a brand, existing site, and competitors to produce brand snapshots, competitor analysis, top-pattern findings, and a build brief before a premium redesign. | Brand extraction, competitor research, website intelligence, client-facing report, or build brief before implementation | Use before Jack-style site builds; Firecrawl is optional |
+| `liquid-glass-web` | Progressive web Liquid Glass guidance across universal frosted glass, Chromium SVG-displacement refraction, and optional WebGL refraction. | Liquid Glass, frosted glass, glassmorphism, translucent navs, SVG displacement, refraction, or WebGL glass UI | Default to Tier 1 universal frosted glass; enhance to Tier 2/Tier 3 only when browser targets and performance justify it |
 | `minimalist-ui` | Clean editorial-style interfaces. Warm monochrome palette, typographic contrast, flat bento grids, muted pastels. No gradients, no heavy shadows. | Task directly matches this skill domain |  |
 | `modern-web-guidance` | / | Task directly matches this skill domain |  |
 | `redesign-existing-projects` | Upgrades existing websites and apps to premium quality. Audits current design, identifies generic AI patterns, and applies high-end design standards without breaking functionality. Works with any CSS framework or vanilla CSS. | Task directly matches this skill domain |  |

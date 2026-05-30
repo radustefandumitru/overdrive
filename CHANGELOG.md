@@ -4,6 +4,17 @@
 
 - No unreleased changes.
 
+## v0.6.0 - 2026-05-30
+
+- Added Jamie Mill's MIT `layers-skills` source pinned at `64b9202bf0506ad1418b9975681c95798725e25a`, importing all nine `layers-*` product-design reasoning skills.
+- Added local `liquid-glass-web`, an original progressive-enhancement skill for universal frosted glass, Chromium SVG-displacement refraction, and optional license-checked WebGL refraction.
+- Folded proximity-hover and CSS scroll-state sticky-navbar patterns into local animation skills with attribution and performance/browser-support caveats.
+- Added AS-Workflow `research.md` for objective project research notes and a lightweight `recordDecision` helper for dated decisions and contradiction prompts.
+- Strengthened global instruction templates with durable decision tracking, contradiction surfacing, loop/frustration stopping, parallel-subagent guidance, and honest per-runtime model/planning knob guidance.
+- Added a v0.6 router scorecard harness (`docs/scorecard-v0.6.md`, `evals/scorecard-results.json`, `scripts/build-scorecard.js`) without inventing benchmark scores.
+- Updated `skill-router`, smoke checks, router benchmark cases, docs, third-party notices, verified sources, README credits, and consistency checks for the 129-skill v0.6 manifest.
+- Backfilled complete creator/provenance links for v0.5/v0.6 additions without fetching credit-only X links or redistributing third-party code.
+
 ## v0.5.0 - 2026-05-30
 
 - Trimmed the default Obsidian install to the portable `json-canvas` and `defuddle` skills; deeper Obsidian Markdown/Bases/CLI automation is now left to user/project-specific setup.

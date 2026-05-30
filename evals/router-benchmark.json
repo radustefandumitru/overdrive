@@ -320,6 +320,58 @@
         "Checks or explains the yt-dlp dependency.",
         "Reports the output concisely and respects permission/platform constraints."
       ]
+    },
+    {
+      "id": "layers-product-orientation",
+      "category": "product-design",
+      "prompt": "Help me figure out which product design layer this onboarding problem actually lives at before we redesign the UI.",
+      "controlPrompt": "Help me figure out which product design layer this onboarding problem actually lives at before we redesign the UI.",
+      "routedPrompt": "Use skill-router first, then help me figure out which product design layer this onboarding problem actually lives at before we redesign the UI.",
+      "expectedSkills": [
+        "layers-intro",
+        "layers-orient"
+      ],
+      "rubric": [
+        "Recognizes this as product-design layer diagnosis, not immediate UI implementation.",
+        "Loads layers-intro before layers-orient or explains the framework dependency.",
+        "Identifies likely lower-layer uncertainties before recommending surface redesign.",
+        "Keeps implementation/design polish skills out until the layer focus is clear."
+      ]
+    },
+    {
+      "id": "layers-conceptual-model",
+      "category": "product-design",
+      "prompt": "Model the objects, states, and vocabulary for a scheduling tool before we build screens.",
+      "controlPrompt": "Model the objects, states, and vocabulary for a scheduling tool before we build screens.",
+      "routedPrompt": "Use skill-router first, then model the objects, states, and vocabulary for a scheduling tool before we build screens.",
+      "expectedSkills": [
+        "layers-intro",
+        "layers-conceptual-model"
+      ],
+      "rubric": [
+        "Treats objects, states, relationships, and vocabulary as conceptual-model work.",
+        "Uses layers-intro before the conceptual-model skill.",
+        "Separates model decisions from screen-level surface polish.",
+        "Surfaces open vocabulary/state questions that would affect later flows."
+      ]
+    },
+    {
+      "id": "liquid-glass-web-progressive-enhancement",
+      "category": "frontend",
+      "prompt": "Create a cross-browser Apple-style Liquid Glass navbar with real refraction where possible.",
+      "controlPrompt": "Create a cross-browser Apple-style Liquid Glass navbar with real refraction where possible.",
+      "routedPrompt": "Use skill-router first, then create a cross-browser Apple-style Liquid Glass navbar with real refraction where possible.",
+      "expectedSkills": [
+        "liquid-glass-web",
+        "emil-animation-polish",
+        "playwright-cli"
+      ],
+      "rubric": [
+        "Chooses progressive enhancement instead of promising identical glass across all browsers.",
+        "Defaults to universal frosted glass and enhances to SVG displacement or WebGL only when justified.",
+        "Mentions license/browser/performance checks for WebGL or library use.",
+        "Includes browser validation and readable fallback requirements."
+      ]
     }
   ]
 }

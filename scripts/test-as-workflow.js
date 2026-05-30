@@ -53,7 +53,16 @@ const project = tempProject('as-workflow');
 const init = workflow.initWorkflow({ projectDir: project, reason: 'test' });
 check('init creates workflow', fs.existsSync(path.join(project, '.agenticsupercharge')));
 check('init creates config', fs.existsSync(path.join(project, '.agenticsupercharge/config.json')));
+check('init creates research log', fs.existsSync(path.join(project, '.agenticsupercharge/research.md')));
+check('research log includes objectivity mandate', fs.readFileSync(path.join(project, '.agenticsupercharge/research.md'), 'utf8').includes('objective, evidence-based standpoint'));
 check('init gitignores workflow', fs.readFileSync(path.join(project, '.gitignore'), 'utf8').includes('.agenticsupercharge/'));
+
+const researchPath = path.join(project, '.agenticsupercharge/research.md');
+fs.rmSync(researchPath);
+const missingResearch = workflow.doctor({ projectDir: project });
+check('doctor detects missing research log', missingResearch.issues.some((issue) => issue.includes('research.md')));
+workflow.initWorkflow({ projectDir: project, reason: 'restore research' });
+check('init restores missing research log without overwriting other workflow files', fs.existsSync(researchPath));
 
 const status = workflow.status({ projectDir: project });
 check('status reports initialized', status.initialized === true);
@@ -71,6 +80,16 @@ check('checkpoint creates handoff file', fs.existsSync(checkpoint.file));
 
 const route = workflow.recordRoute({ projectDir: project, skills: 'planning-first,playwright-cli', reason: 'test route' });
 check('route is recorded', route.ok === true && fs.readFileSync(path.join(project, '.agenticsupercharge/routes.jsonl'), 'utf8').includes('planning-first'));
+
+const decision = workflow.recordDecision({ projectDir: project, decision: 'Use compact dashboard cards by default.', rationale: 'User preference' });
+check('decision is recorded', decision.ok === true && fs.readFileSync(path.join(project, '.agenticsupercharge/decisions.md'), 'utf8').includes('Use compact dashboard cards by default.'));
+const contradiction = workflow.recordDecision({
+  projectDir: project,
+  decision: 'Use oversized dashboard cards by default.',
+  contradicts: 'Use compact dashboard cards by default.'
+});
+const decisionsText = fs.readFileSync(path.join(project, '.agenticsupercharge/decisions.md'), 'utf8');
+check('decision helper flags possible contradiction before overwriting', contradiction.needsConfirmation === true && !decisionsText.includes('Use oversized dashboard cards by default.'));
 
 const disabledProject = tempProject('as-workflow-disabled');
 const hook = workflow.hook({

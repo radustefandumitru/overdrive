@@ -15,6 +15,7 @@ On the first meaningful project task, supported agents may create:
   architecture.md
   constraints.md
   decisions.md
+  research.md
   changelog.md
   config.json
   file-index.json
@@ -51,6 +52,8 @@ If `agentic-supercharge` is not on your `PATH`, installed hooks and slash comman
 - Prompt/tool hooks may initialize the folder for non-trivial project work.
 - The status line, where supported, shows a compact AS-Workflow health hint.
 - `skill-router` can append short route traces to `routes.jsonl` when the workflow exists.
+- `research.md` is a short project research log for objective findings, sources, and challenged assumptions.
+- Durable user preferences and decisions belong in `decisions.md`; if a new statement contradicts recorded state, the agent should surface the conflict before overwriting it.
 
 Hooks are advisory. They must exit successfully, avoid secrets, and never block the agent.
 

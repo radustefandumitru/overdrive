@@ -1,6 +1,6 @@
 {
   "name": "agentic-supercharge",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Safe interactive installer for portable AI coding-agent skills across Claude Code, Codex, Gemini, Antigravity, Cursor, and local projects.",
   "license": "MIT",
   "bin": {
@@ -33,7 +33,7 @@
     "uninstall.sh"
   ],
   "scripts": {
-    "check": "node --check lib/installer.js && node --check lib/as-workflow.js && node --check bin/agentic-supercharge.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js && node --check scripts/test-as-workflow.js",
+    "check": "node --check lib/installer.js && node --check lib/as-workflow.js && node --check bin/agentic-supercharge.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js && node --check scripts/test-as-workflow.js && node --check scripts/build-scorecard.js",
     "consistency": "node scripts/check-consistency.js",
     "eval:router": "node scripts/evaluate-router.js",
     "test:workflow": "node scripts/test-as-workflow.js",
@@ -42,7 +42,8 @@
     "check-updates": "node bin/agentic-supercharge.js check-updates",
     "self-update": "node bin/agentic-supercharge.js self-update",
     "update-skills": "node bin/agentic-supercharge.js update-skills",
-    "uninstall": "node bin/agentic-supercharge.js uninstall"
+    "uninstall": "node bin/agentic-supercharge.js uninstall",
+    "scorecard": "node scripts/build-scorecard.js"
   },
   "engines": {
     "node": ">=18"

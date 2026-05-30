@@ -121,13 +121,15 @@ The important split:
 
 ## What You Get
 
-The current manifest contains 119 unique skills.
+The current manifest contains 129 unique skills.
 
 | Area | What it helps with |
 |---|---|
 | Frontend quality | Better layouts, typography, spacing, component feel, responsive behavior, and anti-generic UI direction. |
 | Animation | Smooth transitions, spring-like motion, gesture feel, scroll animation, reduced-motion support, and practical browser implementation. |
 | 3D/scroll websites | Brand research, AI asset prompts, video/frame-sequence scroll experiences, SEO, and launch checks. |
+| Product design layers | `layers-*` skills help agents reason from observed behaviour through domain, user needs, strategy, conceptual model, interaction flow, and surface decisions before jumping to screens. |
+| Glass UI | `liquid-glass-web` teaches cross-browser Liquid Glass as progressive enhancement: universal frosted glass first, then SVG displacement or WebGL only when justified. |
 | Product and planning | Clarifying vague requests, splitting complex work into phases, launch readiness, app onboarding, and product strategy. |
 | Marketing and growth | SEO, CRO, copywriting, pricing, ads, lifecycle, onboarding, launch planning, and human-sounding copy cleanup. |
 | Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
@@ -180,7 +182,7 @@ When supported agents do meaningful project work, they can create:
 .agenticsupercharge/
 ```
 
-That folder stores concise project state, active work, decisions, file hashes, route traces, reports, and handoff checkpoints. It is local runtime state and is added to `.gitignore` by default.
+That folder stores concise project state, active work, decisions, research notes, file hashes, route traces, reports, and handoff checkpoints. It is local runtime state and is added to `.gitignore` by default.
 
 AS-Workflow is intentionally conservative. A simple factual question should not initialize project state. Hooks only provide lightweight reminders or update local workflow files; if a hook fails, the agent should keep going.
 
@@ -249,6 +251,8 @@ npm run eval:router
 ```
 
 The eval pack is a test bench, not a magic score. It helps compare routed prompts against plain prompts and catch obvious routing drift.
+
+v0.6 also includes a human-scored scorecard harness at [`docs/scorecard-v0.6.md`](docs/scorecard-v0.6.md). It starts empty on purpose; real output-quality claims should wait until blind control-vs-routed runs are scored.
 
 ## Install Modes
 
@@ -382,7 +386,9 @@ Power-user and maintainer docs:
 
 AgenticSupercharge is a curated installer and router. Most skills come from other people and projects.
 
-Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste-skill), [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable), [Aiden Bai / Million / React Doctor](https://github.com/millionco/react-doctor), [Emil Kowalski](https://emilkowal.ski), [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance), [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering), [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills), [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop), [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [yt-dlp](https://github.com/yt-dlp/yt-dlp), [Anthropic Skills](https://github.com/anthropics/skills), [OpenAI Skills](https://github.com/openai/skills), [Vercel Labs Skills](https://github.com/vercel-labs/skills), [ComposioHQ Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills), [Remotion](https://www.remotion.dev), [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli), [Apple's Designing Fluid Interfaces session](https://developer.apple.com/videos/play/wwdc2018/803/), [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50), [Boris Cherny / Anthropic prompt guidance shared by @AnatoliKopadze](https://x.com/AnatoliKopadze), and [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
+Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste-skill), [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable) and [impeccable.style](https://impeccable.style), [Aiden Bai / Million / React Doctor](https://github.com/millionco/react-doctor) and [react.doctor](https://react.doctor), [Emil Kowalski](https://emilkowal.ski), [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance), [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering), [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills), [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop), [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [yt-dlp](https://github.com/yt-dlp/yt-dlp), [Anthropic Skills](https://github.com/anthropics/skills), [OpenAI Skills](https://github.com/openai/skills), [Vercel Labs Skills](https://github.com/vercel-labs/skills), [ComposioHQ Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills), [Remotion](https://www.remotion.dev), [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli), [Apple's Designing Fluid Interfaces session](https://developer.apple.com/videos/play/wwdc2018/803/), [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50), [Boris Cherny / Anthropic prompt guidance shared by @AnatoliKopadze](https://x.com/AnatoliKopadze/status/2054568935274549597), and [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
+
+v0.6 product-design and motion additions credit [Jamie Mill's Layers of Product Design skills](https://github.com/jamiemill/layers-skills) and [Layers site](https://layers.jamiemill.com), [Andrew Prifer's liquid-dom](https://github.com/AndrewPrifer/liquid-dom) as Liquid Glass inspiration, [kube.io's CSS/SVG Liquid Glass technique](https://kube.io/blog/liquid-glass-css-svg/), [`naughtyduk/liquidGL`](https://github.com/naughtyduk/liquidGL) as an optional license-checked WebGL reference, [@gabriell_lab's proximity-hover pattern](https://x.com/gabriell_lab/status/2060336070059864461), [@baptistebriel's rect-caching performance note](https://x.com/baptistebriel/status/2060351541345681851), [@mannupaaji's scroll-state navbar pattern](https://x.com/mannupaaji/status/2060025609867387239), and the [Chrome CSS scroll-state queries writeup](https://developer.chrome.com/blog/css-scroll-state-queries).
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

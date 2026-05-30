@@ -19,6 +19,7 @@ Verified on: 2026-05-30
 | Obsidian Skills | Git | `553ef99aa3306dd23f268e1ba9af752577684f69` | `main` | https://github.com/kepano/obsidian-skills |
 | Last30Days skill | Git | `1e03af19e0ad435ee6d227a3593b0c6e5d2ecbe8` | `main` | https://github.com/mvanhorn/last30days-skill |
 | App Onboarding Questionnaire | Git | `5bc4786d80f2c23de60b3ba02773e919ed8fd091` | `main` | https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire |
+| Layers of Product Design by Jamie Mill / @jamiemill | Git | `64b9202bf0506ad1418b9975681c95798725e25a` | `main` | https://github.com/jamiemill/layers-skills |
 | Anthropic example skills | Git | `690f15cac7f7b4c055c5ab109c79ed9259934081` | `main` | https://github.com/anthropics/skills |
 | OpenAI Skills Catalog | Git | `b0401f07213a66414d84a65cb50c1d226f99485a` | `main` | https://github.com/openai/skills |
 | Vercel Labs Skills | Git | `e4243fbf7d9398722024f62850ece90fa0d5c693` | `main` | https://github.com/vercel-labs/skills |
@@ -26,3 +27,20 @@ Verified on: 2026-05-30
 | Playwright CLI installer | npm | `@playwright/cli@0.1.13` | `@playwright/cli@latest` | https://github.com/microsoft/playwright-cli |
 
 `sources.lock.json` records the exact refs, commits, packages, and install decisions for real local installs. It is intentionally ignored and excluded from public packages.
+
+## Attribution And Provenance Links
+
+The links below are credited sources and provenance references for local skills, folded patterns, and release research. `x.com` links are credit-only and are not install/fetch sources.
+
+| Item | Creator / role | Links |
+|---|---|---|
+| React Doctor | Aiden Bai / Million / @aidenybai | https://github.com/millionco/react-doctor · https://react.doctor · https://x.com/aidenybai/status/2059303624266977296 |
+| Impeccable | Paul Bakaus / @pbakaus | https://github.com/pbakaus/impeccable · https://impeccable.style · https://x.com/pbakaus/status/2060208540992880794 |
+| Media Download | yt-dlp project | https://github.com/yt-dlp/yt-dlp |
+| Prompt-line principles | Boris Cherny / Anthropic, shared by @AnatoliKopadze | https://x.com/AnatoliKopadze/status/2054568935274549597 · https://x.com/AnatoliKopadze/status/2056362875195686927 |
+| Layers of Product Design | Jamie Mill / @jamiemill; recommended by @nurijanian | https://github.com/jamiemill/layers-skills · https://layers.jamiemill.com · https://x.com/nurijanian/status/2058231994329497922 |
+| Liquid Glass inspiration | Andrew Prifer / @AndrewPrifer | https://github.com/AndrewPrifer/liquid-dom · https://x.com/AndrewPrifer/status/2056923983581446529 |
+| Liquid Glass CSS/SVG technique | kube.io | https://kube.io/blog/liquid-glass-css-svg/ |
+| Liquid Glass implementation references | nikdelvin, rizroze, Z1Code, naughtyduk, dashersw | https://github.com/nikdelvin/liquid-glass · https://github.com/rizroze/liquid-glass · https://github.com/Z1Code/glass-refraction · https://github.com/naughtyduk/liquidGL · https://github.com/dashersw/liquid-glass-js |
+| Proximity hover | @gabriell_lab and @baptistebriel | https://x.com/gabriell_lab/status/2060336070059864461 · https://x.com/baptistebriel/status/2060351541345681851 |
+| CSS scroll-state navbar | @mannupaaji and Chrome team | https://x.com/mannupaaji/status/2060025609867387239 · https://developer.chrome.com/blog/css-scroll-state-queries |
