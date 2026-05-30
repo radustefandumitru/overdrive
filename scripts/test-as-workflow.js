@@ -3,6 +3,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { spawnSync } = require('child_process');
 const workflow = require('../lib/as-workflow');
 
 const failures = [];
@@ -16,6 +17,32 @@ function tempProject(name) {
   fs.writeFileSync(path.join(dir, 'package.json'), '{"name":"test"}\n');
   fs.writeFileSync(path.join(dir, 'index.js'), 'console.log("hello")\n');
   return dir;
+}
+
+function runNode(args, env = {}) {
+  const result = spawnSync(process.execPath, args, {
+    cwd: path.resolve(__dirname, '..'),
+    env: { ...process.env, ...env },
+    encoding: 'utf8'
+  });
+  check(`command exits 0: node ${args.join(' ')}`, result.status === 0, result.stderr || result.stdout);
+  return result;
+}
+
+function collectInvalidCommandHooks(settings, file) {
+  const invalid = [];
+  for (const [event, groups] of Object.entries(settings.hooks || {})) {
+    if (!Array.isArray(groups)) continue;
+    groups.forEach((group, groupIndex) => {
+      if (typeof group.matcher !== 'string') invalid.push(`${file}:${event}[${groupIndex}] missing string matcher`);
+      for (const [hookIndex, hook] of (group.hooks || []).entries()) {
+        if (hook?.type === 'command' && typeof hook.command !== 'string') {
+          invalid.push(`${file}:${event}[${groupIndex}].hooks[${hookIndex}] missing command`);
+        }
+      }
+    });
+  }
+  return invalid;
 }
 
 const dryProject = tempProject('as-workflow-dry');
@@ -72,6 +99,37 @@ const disabledRoute = workflow.recordRoute({
   env: { ...process.env, AGENTIC_SUPERCHARGE_WORKFLOW: 'disabled' }
 });
 check('disabled route does not write route trace', disabledRoute.disabled === true && fs.readFileSync(path.join(disabledRouteProject, '.agenticsupercharge/routes.jsonl'), 'utf8') === '');
+
+const runtimeHome = fs.mkdtempSync(path.join(os.tmpdir(), 'as-workflow-runtime-home-'));
+const retiredSkill = path.join(runtimeHome, '.claude/skills/video-downloader');
+fs.mkdirSync(retiredSkill, { recursive: true });
+fs.writeFileSync(path.join(retiredSkill, '.agentic-supercharge.json'), '{"managedBy":"AgenticSupercharge"}\n');
+runNode([
+  'bin/agentic-supercharge.js',
+  '--scope', 'global',
+  '--tools', 'claude,codex,gemini,antigravity,cursor,agents',
+  '--force-targets',
+  '--skip-upstream',
+  '--skip-official-installers',
+  '--skills', 'skill-router,media-download',
+  '--yes'
+], { HOME: runtimeHome, AGENTIC_SUPERCHARGE_KIT_DIR: path.resolve(__dirname, '..') });
+check('retired managed skills are pruned', !fs.existsSync(retiredSkill));
+
+const hookSettings = [
+  '.claude/settings.json',
+  '.codex/hooks.json',
+  '.gemini/settings.json',
+  '.gemini/config/settings.json'
+];
+for (const rel of hookSettings) {
+  const file = path.join(runtimeHome, rel);
+  check(`${rel} exists after runtime install`, fs.existsSync(file));
+  if (!fs.existsSync(file)) continue;
+  const invalid = collectInvalidCommandHooks(JSON.parse(fs.readFileSync(file, 'utf8')), rel);
+  check(`${rel} has valid command hook schema`, invalid.length === 0, invalid.join(', '));
+}
+check('Cursor receives rule fallback only', fs.existsSync(path.join(runtimeHome, '.cursor/rules/agentic-supercharge-workflow.mdc')) && !fs.existsSync(path.join(runtimeHome, '.cursor/settings.json')));
 
 if (failures.length) {
   console.error(`AS-Workflow tests failed (${failures.length})`);

@@ -4,6 +4,19 @@
 
 - No unreleased changes.
 
+## v0.5.0 - 2026-05-30
+
+- Trimmed the default Obsidian install to the portable `json-canvas` and `defuddle` skills; deeper Obsidian Markdown/Bases/CLI automation is now left to user/project-specific setup.
+- Added verified pinned `react-doctor` from Million / Aiden Bai for React code-health diagnostics.
+- Updated `impeccable` to the verified `skill-v3.1.1` commit and refreshed its Apache-2.0 attribution.
+- Added local `what-should-i-consider` for objective architecture and plan pressure-testing.
+- Replaced the upstream `video-downloader` include with local `media-download`, a small yt-dlp wrapper for MP3 and high-quality MP4 downloads.
+- Added global instruction lines for objective pushback, research-before-guessing, concise output, and natural-language AS-Workflow status triggers.
+- Added install-time skill selection with `--all`, `--skills`, and `--skip-skills`, while keeping full install as the recommended default.
+- Added a first-run installer welcome, subset-aware dry runs, router smoke coverage for new skills, and hook hardening so emitted command hooks include command strings.
+- Repositioned the README around AgenticSupercharge as a full workflow system, clarified managed skills versus native/plugin/MCP layers, and added Stefan's early-AI-adopter origin note.
+- Updated `skill-router` to recognize Claude Code's `security-guidance` plugin as a Claude-only preventative security layer alongside native `/security-review` and portable `security-review`.
+
 ## v0.4.0 - 2026-05-27
 
 - Added AS-Workflow, a lightweight local project-state layer backed by a gitignored `.agenticsupercharge/` folder for project state, decisions, file hashes, route traces, reports, active work, and handoff checkpoints.

@@ -1,0 +1,10 @@
+name: what-should-i-consider
+description: Pressure-test plans and architecture decisions for hidden assumptions, risks, tradeoffs, and missing decisions.
+triggers:
+  - what should I consider
+  - what am I missing
+  - pressure test this
+  - architecture review
+  - hidden risks
+prompt:
+  default_prompt: "Use $what-should-i-consider to surface hidden assumptions, tradeoffs, failure modes, and decisions not yet made."

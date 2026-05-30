@@ -6,7 +6,9 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 |---|---|---|
 | Ambiguous or broad task | `clarify-and-plan` | domain skill after assumptions/options are clear |
 | Complex multi-file coding work | `planning-first` | `clarify-and-plan` first if the task is vague; Claude Code can use `/model opusplan` or `/ultraplan` |
+| Pressure-test a plan | `what-should-i-consider` | `security-review` for auth/security risk; `clarify-and-plan` if options need shaping |
 | Security review or hardening | Claude Code `/security-review`, otherwise `security-review` | dependency scanners, tests, or manual verification for fixes |
+| React code diagnostics | `react-doctor` | `planning-first` for larger refactors; `playwright-cli` for UI validation |
 | Recent market/community research | `last30days` | Context7 or official docs for library/API facts |
 | App questionnaire onboarding | `app-onboarding-questionnaire` | frontend/design skills after the onboarding blueprint is confirmed |
 | Pre-launch readiness | `pre-launch-checklist` | `security-review`, marketing skills, `jack-seo-launch-audit`, or `playwright-cli` for focused checks |
@@ -19,8 +21,8 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Current docs or APIs | Context7 guidance in global instructions | `modern-web-guidance` for browser/platform decisions |
 | Browser validation | `playwright-cli` | OpenAI `playwright` wrapper as fallback; screenshots, snapshots, responsive checks, UI flow checks |
 | Discover more skills | `find-skills` | only when the user asks to find, compare, or install additional skills |
-| Obsidian vault work | Kepano Obsidian skills | `json-canvas`, `obsidian-bases`, `defuddle` |
-| Image/video workflows | `banana`, Remotion skills | approval-gated external tools where configured |
+| Obsidian-adjacent files/research | `json-canvas`, `defuddle` | broader vault operations need a dedicated user/project Obsidian setup |
+| Image/video/media workflows | `banana`, Remotion skills, `media-download` | approval-gated external tools where configured; `yt-dlp` for downloads |
 | Slack GIF or emoji animation | `slack-gif-creator` | Banana/image tooling only if a custom source image is needed |
 | Project memory and handoff | AS-Workflow (`.agenticsupercharge/`) | `agentic-supercharge status`, `doctor`, `resync`, `checkpoint`; not a routed skill |
 

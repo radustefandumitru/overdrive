@@ -128,12 +128,24 @@
     {
       "id": "impeccable",
       "repo": "https://github.com/pbakaus/impeccable.git",
-      "ref": "84135db0e6bdd58d22828f7bc8331cae7bde3e7f",
+      "ref": "4af581e23f17d112d8f9d6b7a5b7ff37823494e1",
       "trackingRef": "main",
       "includes": [
         {
           "from": "skill",
           "to": "impeccable"
+        }
+      ]
+    },
+    {
+      "id": "react-doctor",
+      "repo": "https://github.com/millionco/react-doctor.git",
+      "ref": "6d53182f7333b29d5168dcd311c1d5f18e95e072",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/react-doctor",
+          "to": "react-doctor"
         }
       ]
     },
@@ -440,20 +452,8 @@
       "trackingRef": "main",
       "includes": [
         {
-          "from": "skills/obsidian-markdown",
-          "to": "obsidian-markdown"
-        },
-        {
-          "from": "skills/obsidian-bases",
-          "to": "obsidian-bases"
-        },
-        {
           "from": "skills/json-canvas",
           "to": "json-canvas"
-        },
-        {
-          "from": "skills/obsidian-cli",
-          "to": "obsidian-cli"
         },
         {
           "from": "skills/defuddle",
@@ -618,10 +618,6 @@
         {
           "from": "twitter-algorithm-optimizer",
           "to": "twitter-algorithm-optimizer"
-        },
-        {
-          "from": "video-downloader",
-          "to": "video-downloader"
         }
       ]
     }
@@ -701,19 +697,6 @@
       ]
     },
     {
-      "prompt": "Create an Obsidian note with wikilinks and callouts",
-      "expected": [
-        "obsidian-markdown"
-      ]
-    },
-    {
-      "prompt": "Build an Obsidian Base and canvas map",
-      "expected": [
-        "obsidian-bases",
-        "json-canvas"
-      ]
-    },
-    {
       "prompt": "Post this to Slack",
       "expected": [
         "connect-apps",
@@ -749,6 +732,12 @@
       "prompt": "Security review this PR for vulnerabilities",
       "expected": [
         "security-review"
+      ]
+    },
+    {
+      "prompt": "Make sure Claude warns me about dangerous generated code and commit diffs",
+      "expected": [
+        "security-guidance"
       ]
     },
     {
@@ -803,6 +792,30 @@
         "security-review",
         "playwright-cli"
       ]
+    },
+    {
+      "prompt": "Diagnose and fix React code quality issues",
+      "expected": [
+        "react-doctor"
+      ]
+    },
+    {
+      "prompt": "What should I consider before changing this auth architecture?",
+      "expected": [
+        "what-should-i-consider"
+      ]
+    },
+    {
+      "prompt": "Download this video as mp3",
+      "expected": [
+        "media-download"
+      ]
+    },
+    {
+      "prompt": "Download this video as highest-quality mp4",
+      "expected": [
+        "media-download"
+      ]
     }
   ],
   "localSkills": [
@@ -853,6 +866,14 @@
     {
       "from": "skills/jack-seo-launch-audit",
       "to": "jack-seo-launch-audit"
+    },
+    {
+      "from": "skills/what-should-i-consider",
+      "to": "what-should-i-consider"
+    },
+    {
+      "from": "skills/media-download",
+      "to": "media-download"
     }
   ],
   "officialInstallers": [

@@ -1,0 +1,10 @@
+name: media-download
+description: Download or extract audio/video from user-provided media URLs with yt-dlp.
+triggers:
+  - download this video
+  - save this as mp3
+  - highest quality mp4
+  - extract audio
+  - yt-dlp
+prompt:
+  default_prompt: "Use $media-download to choose safe yt-dlp commands, a target folder, and concise output reporting."

@@ -1,18 +1,19 @@
 # AgenticSupercharge
 
-AgenticSupercharge is an open-source skill pack and installer for AI coding agents.
+**AgenticSupercharge** is a complete, plug-and-play system that supercharges AI coding agents, not just another skill pack.
 
-It gives Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project agents a shared library of specialist skills for web/app development, frontend polish, animation, SEO, research, product work, security review, launch prep, and browser validation.
+It installs four layers that work together across Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared local agents:
 
-Think of it as three things:
+- **Specialist skills:** a curated library that teaches agents how to do specific work well, including web/app development, frontend polish, animation, SEO, research, product work, security review, launch prep, and browser validation.
+- **A skill-router:** picks the minimum useful skills for each task instead of dumping the whole catalog into context, keeping agents focused, fast, and token-light.
+- **AS-Workflow:** a local `.agenticsupercharge/` project-state layer that gives agents memory: active work, decisions, constraints, file hashes, routing history, checkpoints, and handoffs. It is local, gitignored, and never uploaded by AgenticSupercharge.
+- **A global operating guide:** a Karpathy-inspired instruction layer that makes agents think before coding, keep diffs surgical, plan complex work, stay objective, and verify their output.
 
-- **A toolbox:** curated skills that teach agents how to handle specific kinds of work.
-- **A bouncer:** a `skill-router` that helps the agent pick the right skills for the current task instead of loading everything into context.
-- **A notebook:** AS-Workflow, a local `.agenticsupercharge/` project-state folder that helps agents remember active work, decisions, checkpoints, and routing history.
+All of that is wrapped in a safe, boring installer: pinned sources, non-destructive defaults, reversible uninstall, and no telemetry.
 
-The goal is simple: better outputs from coding agents, with less manual prompting.
+There are a million skill packs on GitHub. AgenticSupercharge is the workflow around them: tools, selective routing, project state, and an operating discipline for how the agent works, so you get better output with less manual prompting. The promise is simple: **it just works.**
 
-I built this as my own daily AI coding-agent setup and am releasing it free for the community. If you build something with it, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). Contributions are welcome. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+I built AgenticSupercharge as my own daily AI coding-agent setup. I've been an early AI adopter since ChatGPT launched in November 2022, and this distills the manual practices and habits I've refined over years of trial and error into something that just works. I'm releasing it free for the community. If you build something with it, tag me or send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/). Contributions are welcome. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
 
 ## Why Use It?
 
@@ -100,6 +101,10 @@ When you name a skill, your explicit choice wins for that part of the task.
 
 AgenticSupercharge is file-based. It does not run a cloud service and it does not upload your project.
 
+AgenticSupercharge installs its own managed skills into each selected agent's skill directory. Each managed skill folder contains an `.agentic-supercharge.json` marker so future updates and uninstalls can tell what belongs to this kit. It also installs the AS-Workflow runtime and, where supported, hooks, commands, or rules. It does not replace or manage your agent's native skills, third-party plugin skills, or MCP servers. Those are separate layers that live alongside AgenticSupercharge.
+
+On Cursor specifically, AgenticSupercharge installs into `~/.cursor/skills` and adds the AS-Workflow rule at `~/.cursor/rules/`. It does not touch Cursor's reserved `~/.cursor/skills-cursor` folder or write Cursor hook settings.
+
 | Piece | When it appears | What it does |
 |---|---|---|
 | Skills | During install | Copies curated `SKILL.md` folders into the selected agent roots. |
@@ -116,7 +121,7 @@ The important split:
 
 ## What You Get
 
-The current manifest contains 120 unique skills.
+The current manifest contains 119 unique skills.
 
 | Area | What it helps with |
 |---|---|
@@ -127,7 +132,10 @@ The current manifest contains 120 unique skills.
 | Marketing and growth | SEO, CRO, copywriting, pricing, ads, lifecycle, onboarding, launch planning, and human-sounding copy cleanup. |
 | Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
 | Browser validation | Playwright-based screenshots, flow checks, responsive checks, and browser debugging. |
-| Knowledge work | Obsidian workflows, docs, specs, MCP building, recent research, and context-management skills. |
+| Knowledge work | Docs, specs, MCP building, recent research, context-management skills, JSON Canvas, and clean web-to-markdown extraction. |
+| Code health | React diagnostics through `react-doctor`, plus planning/security/browser checks when the task needs them. |
+| Objective review | `what-should-i-consider` pressure-tests plans for hidden assumptions, architecture risks, and missing decisions. |
+| Media utilities | `media-download` wraps `yt-dlp` for user-requested MP3 and high-quality MP4 downloads. |
 | Project memory | AS-Workflow local state, route traces, file hashes, checkpoints, and workflow health checks. |
 
 For a compact map of the whole library, see [`SKILLS_TLDR.md`](SKILLS_TLDR.md). For the full inventory, see [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md).
@@ -212,6 +220,14 @@ Antigravity uses the `.gemini` convention for its agent shell. Even if you run C
 Cursor personal skills belong in `~/.cursor/skills`. This installer does not write to Cursor's reserved `~/.cursor/skills-cursor` folder.
 
 The installer also writes a persistent AS-Workflow runtime under `~/.agentic-supercharge/runtime/current/` so hooks do not depend on a temporary `npx` folder or a clone you might delete.
+
+The interactive installer asks whether you want the full library or a subset. Full install is recommended because the router keeps context small, but power users can install a subset:
+
+```bash
+./install.sh --scope global --tools auto --skills skill-router,planning-first,playwright-cli
+./install.sh --scope global --tools auto --skip-skills connect,connect-apps
+./install.sh --scope global --tools auto --all
+```
 
 ### 5. Verification
 
@@ -329,7 +345,7 @@ This installer does not copy or publish:
 - GitHub, Vercel, Supabase, Firecrawl, Google, Claude, Codex, Gemini, Antigravity, Cursor, or other account credentials.
 - Private course/community material or raw third-party resource downloads.
 
-Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are optional user/project setup and are documented in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md).
+Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are optional user/project setup and are documented in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md). Obsidian support is intentionally light in v0.5: the public install keeps `json-canvas` and `defuddle`, while deeper vault automation belongs in each user's own Obsidian setup.
 
 ## What This Is Not
 
@@ -366,7 +382,7 @@ Power-user and maintainer docs:
 
 AgenticSupercharge is a curated installer and router. Most skills come from other people and projects.
 
-Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste-skill), [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable), [Emil Kowalski](https://emilkowal.ski), [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance), [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering), [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills), [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop), [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [Anthropic Skills](https://github.com/anthropics/skills), [OpenAI Skills](https://github.com/openai/skills), [Vercel Labs Skills](https://github.com/vercel-labs/skills), [ComposioHQ Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills), [Remotion](https://www.remotion.dev), [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli), [Apple's Designing Fluid Interfaces session](https://developer.apple.com/videos/play/wwdc2018/803/), [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50), and [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
+Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste-skill), [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable), [Aiden Bai / Million / React Doctor](https://github.com/millionco/react-doctor), [Emil Kowalski](https://emilkowal.ski), [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance), [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering), [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills), [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop), [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [yt-dlp](https://github.com/yt-dlp/yt-dlp), [Anthropic Skills](https://github.com/anthropics/skills), [OpenAI Skills](https://github.com/openai/skills), [Vercel Labs Skills](https://github.com/vercel-labs/skills), [ComposioHQ Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills), [Remotion](https://www.remotion.dev), [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli), [Apple's Designing Fluid Interfaces session](https://developer.apple.com/videos/play/wwdc2018/803/), [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50), [Boris Cherny / Anthropic prompt guidance shared by @AnatoliKopadze](https://x.com/AnatoliKopadze), and [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

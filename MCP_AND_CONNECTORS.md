@@ -44,12 +44,13 @@ References: GitHub MCP server docs, Supabase MCP docs, Vercel MCP docs, Firecraw
 | Spokenly | Voice dictation with useful Claude Code integration options. | Paid app; optional MCP features depend on the user's own setup. |
 | Whisper Dictation | Local/system dictation workflow for users who prefer Whisper-backed transcription. | May require local model download and mic permissions. |
 | VoiceMode + local Whisper | Free DIY voice pipeline. | Requires Python, ffmpeg, a local Whisper model, and more manual setup; not part of the default installer. |
-| Obsidian CLI | Running Obsidian vault operations, plugin/theme workflows, screenshots, and DOM inspection. | Install according to the `obsidian-cli` skill/upstream Obsidian CLI instructions; keep vaults backed up or under version control before broad edits. |
-| Defuddle | Clean web-page-to-markdown extraction for notes and research. | Install the Defuddle CLI before using the `defuddle` skill. |
+| Obsidian | Deeper vault automation beyond the bundled `json-canvas` and `defuddle` skills. | AgenticSupercharge v0.5 keeps Obsidian support intentionally light; users who need full vault CLI/Bases/Markdown automation should add their preferred Obsidian tooling locally and keep vaults backed up. |
+| Defuddle | Clean web-page-to-markdown extraction for notes and research. | The `defuddle` skill enhances extraction when the CLI is available and falls back gracefully to normal web fetch/browser workflows when it is not. |
+| yt-dlp | User-requested media downloads, MP3 extraction, and high-quality MP4 downloads through the bundled `media-download` skill. | Install with `brew install yt-dlp` on macOS if missing. Respect platform terms and permissions. |
 
 ## Security Review Integration
 
-For deep security review on real PRs, consider Anthropic's official `anthropics/claude-code-security-review` GitHub Action. The local `security-review` skill provides similar in-IDE analysis for non-Claude agents, but the GitHub Action is better for diff-aware PR comments and CI integration.
+For deep security review on real PRs, consider Anthropic's official `anthropics/claude-code-security-review` GitHub Action and ClaudeDevs security-guidance material where available in Claude Code. The portable `security-review` skill in this kit is for non-Claude agents and local in-IDE review. These are complementary: Claude-only hook/CI tooling can provide diff-aware PR comments, while the portable skill keeps a baseline review workflow available in Codex, Gemini, Antigravity, Cursor, and shared `.agents`.
 
 ## Sharing Rule
 

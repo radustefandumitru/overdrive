@@ -2,12 +2,13 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-05-26
+Verified on: 2026-05-30
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|
 | Taste Skill | Git | `339afcbf575daeaa61ee89646b3ba8912b308c39` | `main` | https://github.com/Leonxlnx/taste-skill |
-| Impeccable | Git | `84135db0e6bdd58d22828f7bc8331cae7bde3e7f` | `main` | https://github.com/pbakaus/impeccable |
+| Impeccable by Paul Bakaus / @pbakaus | Git | `4af581e23f17d112d8f9d6b7a5b7ff37823494e1` (`skill-v3.1.1`) | `main` | https://github.com/pbakaus/impeccable |
+| React Doctor by Million / Aiden Bai / @aidenybai | Git | `6d53182f7333b29d5168dcd311c1d5f18e95e072` | `main` | https://github.com/millionco/react-doctor |
 | Emil Kowalski skill | Git | `ecf66bbd1fb33c25332b6b0e454d08049978284c` | `main` | https://github.com/emilkowalski/skill |
 | Modern Web Guidance | Git | `65d7f20ac85517a362107ce89b7be7f905105fd3` | `main` | https://github.com/GoogleChrome/modern-web-guidance |
 | Remotion Skills | Git | `277510e78245ac0fa275d7cb6520d52e0ac2e212` | `main` | https://github.com/remotion-dev/skills |

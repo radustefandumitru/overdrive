@@ -156,11 +156,11 @@ Safe uninstall:
 
 ## Release Archive
 
-The public GitHub repo is the source of truth. If you need a zip for upload, review, or release assets, build one from committed files instead of zipping the working tree:
+The public GitHub repo is the source of truth. If you need a zip for upload, review, or release assets, build one from committed files instead of zipping the working tree. Keep maintainer-only drafts such as `SOCIAL_POSTS.md` out of the archive:
 
 ```bash
 cd /path/to/AgenticSupercharge
-git archive --format=zip --output ../AgenticSupercharge.zip --prefix=AgenticSupercharge/ HEAD
+git archive --format=zip --output ../AgenticSupercharge.zip --prefix=AgenticSupercharge/ HEAD -- . ':(exclude)SOCIAL_POSTS.md'
 ```
 
 Quickly inspect the archive before sharing it:
@@ -178,6 +178,8 @@ Expected result: no matches from the inspection command.
 
 For a new release, replace `vX.Y.Z` with the package version in `package.json`:
 
+Treat `README.md` as a required release artifact, not static background material. Every release should update the README when skills, workflow capabilities, install behavior, positioning, compatibility, or safety boundaries change.
+
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
@@ -194,6 +196,6 @@ For the local public-safe skills:
 - Fluid Animations is based on Apple's WWDC 2018 fluid interface guidance, paraphrased for coding agents.
 - Emil Animation Polish is based on Emil Kowalski's public writing and animation lessons, paraphrased and attributed.
 - Jack Roberts inspired website skills are based on the user-provided public video/resource workflow, paraphrased and attributed. They do not redistribute raw resource downloads.
-- Clarify And Plan, Planning First, and Pre-Launch Checklist are original AgenticSupercharge workflow skills, with the global planning guidance inspired by Karpathy-style coding-agent principles.
+- Clarify And Plan, Planning First, What Should I Consider, Media Download, and Pre-Launch Checklist are original AgenticSupercharge workflow skills, with the global planning guidance inspired by Karpathy-style coding-agent principles and the media workflow pointing users to install yt-dlp themselves.
 - Security Review is adapted from Anthropic's MIT-licensed `anthropics/claude-code-security-review` template for non-Claude runtimes.
 - Karpathy-inspired global guidance is adapted behavior guidance, not a claim of authorship over Andrej Karpathy's writing or the `multica-ai/andrej-karpathy-skills` repo.

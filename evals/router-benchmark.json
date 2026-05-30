@@ -18,7 +18,11 @@
       "prompt": "Build a premium Next.js landing page for a developer-tool startup with polished interactions and verify it in a browser.",
       "controlPrompt": "Build a premium Next.js landing page for a developer-tool startup with polished interactions and verify it in a browser.",
       "routedPrompt": "Use skill-router first, then build a premium Next.js landing page for a developer-tool startup with polished interactions and verify it in a browser.",
-      "expectedSkills": ["design-taste-frontend", "emil-design-eng", "playwright-cli"],
+      "expectedSkills": [
+        "design-taste-frontend",
+        "emil-design-eng",
+        "playwright-cli"
+      ],
       "rubric": [
         "Chooses a concrete visual direction instead of generic SaaS defaults.",
         "Builds the actual usable page rather than a marketing explanation.",
@@ -33,7 +37,10 @@
       "prompt": "Make this mobile drawer feel fluid, interruptible, and natural when dragged or flicked.",
       "controlPrompt": "Make this mobile drawer feel fluid, interruptible, and natural when dragged or flicked.",
       "routedPrompt": "Use skill-router first, then make this mobile drawer feel fluid, interruptible, and natural when dragged or flicked.",
-      "expectedSkills": ["fluid-animations", "emil-design-eng"],
+      "expectedSkills": [
+        "fluid-animations",
+        "emil-design-eng"
+      ],
       "rubric": [
         "Identifies gesture velocity, snap points, interruptibility, and reduced-motion concerns.",
         "Uses spring or physically plausible motion instead of only duration/easing tweaks.",
@@ -47,7 +54,10 @@
       "prompt": "This popover animation feels sluggish and cheap. Tune it so it feels crisp on web.",
       "controlPrompt": "This popover animation feels sluggish and cheap. Tune it so it feels crisp on web.",
       "routedPrompt": "Use skill-router first, then tune this sluggish popover animation so it feels crisp on web.",
-      "expectedSkills": ["emil-animation-polish", "emil-design-eng"],
+      "expectedSkills": [
+        "emil-animation-polish",
+        "emil-design-eng"
+      ],
       "rubric": [
         "Separates web easing/duration polish from gesture-heavy fluid animation.",
         "Considers transform origin, opacity, scale, timing, and focus behavior.",
@@ -61,7 +71,10 @@
       "prompt": "Refactor this checkout flow across several files, but keep behavior identical and verify it.",
       "controlPrompt": "Refactor this checkout flow across several files, but keep behavior identical and verify it.",
       "routedPrompt": "Use skill-router first, then refactor this checkout flow across several files while preserving behavior and verification.",
-      "expectedSkills": ["planning-first", "clarify-and-plan"],
+      "expectedSkills": [
+        "planning-first",
+        "clarify-and-plan"
+      ],
       "rubric": [
         "Inspects the existing code before editing.",
         "States the refactor boundary and behavior-preservation criteria.",
@@ -75,7 +88,10 @@
       "prompt": "Add a smarter onboarding thing to my app.",
       "controlPrompt": "Add a smarter onboarding thing to my app.",
       "routedPrompt": "Use skill-router first, then handle this ambiguous request: add a smarter onboarding thing to my app.",
-      "expectedSkills": ["clarify-and-plan", "app-onboarding-questionnaire"],
+      "expectedSkills": [
+        "clarify-and-plan",
+        "app-onboarding-questionnaire"
+      ],
       "rubric": [
         "Does not silently assume what smarter onboarding means.",
         "Offers concrete options or asks focused questions when necessary.",
@@ -89,7 +105,9 @@
       "prompt": "Security review this PR for auth, XSS, injection, secrets, and supply-chain issues.",
       "controlPrompt": "Security review this PR for auth, XSS, injection, secrets, and supply-chain issues.",
       "routedPrompt": "Use skill-router first, then security review this PR for auth, XSS, injection, secrets, and supply-chain issues.",
-      "expectedSkills": ["security-review"],
+      "expectedSkills": [
+        "security-review"
+      ],
       "rubric": [
         "Prioritizes concrete vulnerabilities over style commentary.",
         "Checks auth/authz, injection, XSS, secrets, and dependency risk.",
@@ -103,7 +121,9 @@
       "prompt": "What has the React community been saying about server components over the last 30 days?",
       "controlPrompt": "What has the React community been saying about server components over the last 30 days?",
       "routedPrompt": "Use skill-router first, then research what the React community has been saying about server components over the last 30 days.",
-      "expectedSkills": ["last30days"],
+      "expectedSkills": [
+        "last30days"
+      ],
       "rubric": [
         "Treats the request as time-boxed recent community research.",
         "Separates community sentiment from official documentation.",
@@ -117,7 +137,11 @@
       "prompt": "Create a Jack Roberts style 3D scroll website for a moving company with an animated van hero and SEO-ready pages.",
       "controlPrompt": "Create a Jack Roberts style 3D scroll website for a moving company with an animated van hero and SEO-ready pages.",
       "routedPrompt": "Use skill-router first, then create a Jack Roberts style 3D scroll website for a moving company with an animated van hero and SEO-ready pages.",
-      "expectedSkills": ["jack-premium-site-system", "jack-scroll-3d-sites", "jack-seo-launch-audit"],
+      "expectedSkills": [
+        "jack-premium-site-system",
+        "jack-scroll-3d-sites",
+        "jack-seo-launch-audit"
+      ],
       "rubric": [
         "Breaks the work into brand research, asset prompts, scroll implementation, SEO, and launch checks.",
         "Treats external tools such as image/video generators, Firecrawl, GitHub, and Vercel as optional.",
@@ -131,7 +155,10 @@
       "prompt": "Create start-frame, exploded end-frame, and video transition prompts for a product scroll-stop hero.",
       "controlPrompt": "Create start-frame, exploded end-frame, and video transition prompts for a product scroll-stop hero.",
       "routedPrompt": "Use skill-router first, then create start-frame, exploded end-frame, and video transition prompts for a product scroll-stop hero.",
-      "expectedSkills": ["jack-scroll-asset-prompts", "banana"],
+      "expectedSkills": [
+        "jack-scroll-asset-prompts",
+        "banana"
+      ],
       "rubric": [
         "Creates coordinated prompts where start, end, and transition match.",
         "Includes constraints for clean edges, consistent lighting, and brand fit.",
@@ -145,7 +172,10 @@
       "prompt": "Run a pre-launch checklist for this SaaS before I share it publicly.",
       "controlPrompt": "Run a pre-launch checklist for this SaaS before I share it publicly.",
       "routedPrompt": "Use skill-router first, then run a pre-launch checklist for this SaaS before I share it publicly.",
-      "expectedSkills": ["pre-launch-checklist", "security-review"],
+      "expectedSkills": [
+        "pre-launch-checklist",
+        "security-review"
+      ],
       "rubric": [
         "Covers readiness beyond code: monitoring, billing, support, privacy, rollback, and analytics.",
         "Identifies security and privacy items without overloading unrelated skills.",
@@ -159,7 +189,11 @@
       "prompt": "Write launch emails for my product that do not sound like AI.",
       "controlPrompt": "Write launch emails for my product that do not sound like AI.",
       "routedPrompt": "Use skill-router first, then write launch emails for my product that do not sound like AI.",
-      "expectedSkills": ["emails", "copywriting", "stop-slop"],
+      "expectedSkills": [
+        "emails",
+        "copywriting",
+        "stop-slop"
+      ],
       "rubric": [
         "Uses product/audience context or asks for missing essentials.",
         "Writes concrete, non-generic email copy.",
@@ -168,17 +202,19 @@
       ]
     },
     {
-      "id": "obsidian-research-note",
+      "id": "json-canvas-map",
       "category": "knowledge-work",
-      "prompt": "Turn this research into an Obsidian note with wikilinks, callouts, and useful frontmatter.",
-      "controlPrompt": "Turn this research into an Obsidian note with wikilinks, callouts, and useful frontmatter.",
-      "routedPrompt": "Use skill-router first, then turn this research into an Obsidian note with wikilinks, callouts, and useful frontmatter.",
-      "expectedSkills": ["obsidian-markdown"],
+      "prompt": "Turn this project research into a JSON Canvas map with grouped themes and useful connections.",
+      "controlPrompt": "Turn this project research into a JSON Canvas map with grouped themes and useful connections.",
+      "routedPrompt": "Use skill-router first, then turn this project research into a JSON Canvas map with grouped themes and useful connections.",
+      "expectedSkills": [
+        "json-canvas"
+      ],
       "rubric": [
-        "Uses Obsidian-flavored Markdown rather than generic Markdown only.",
-        "Adds appropriate wikilinks, callouts, aliases, tags, and properties.",
-        "Preserves the original meaning and source context.",
-        "Warns before broad edits to a real vault."
+        "Recognizes the task as JSON Canvas work rather than generic Markdown notes.",
+        "Creates a valid canvas structure with nodes, groups, and meaningful edges.",
+        "Preserves the original research meaning and source context.",
+        "Warns before broad edits to a real vault or project knowledge base."
       ]
     },
     {
@@ -187,7 +223,10 @@
       "prompt": "Build a high-quality MCP server for this API and use current SDK docs.",
       "controlPrompt": "Build a high-quality MCP server for this API and use current SDK docs.",
       "routedPrompt": "Use skill-router first, then build a high-quality MCP server for this API and use current SDK docs.",
-      "expectedSkills": ["mcp-builder", "modern-web-guidance"],
+      "expectedSkills": [
+        "mcp-builder",
+        "modern-web-guidance"
+      ],
       "rubric": [
         "Recognizes MCP server design as the core task.",
         "Uses current official SDK documentation where available.",
@@ -201,7 +240,9 @@
       "prompt": "Create a Slack-ready animated emoji GIF for a team launch celebration.",
       "controlPrompt": "Create a Slack-ready animated emoji GIF for a team launch celebration.",
       "routedPrompt": "Use skill-router first, then create a Slack-ready animated emoji GIF for a team launch celebration.",
-      "expectedSkills": ["slack-gif-creator"],
+      "expectedSkills": [
+        "slack-gif-creator"
+      ],
       "rubric": [
         "Uses Slack-specific constraints for file size, dimensions, and loop length.",
         "Designs a simple readable animation that works at small sizes.",
@@ -215,13 +256,69 @@
       "prompt": "Take over this existing app, understand the current product, redesign the onboarding and dashboard, preserve auth behavior, add smooth interactions, security review the risky paths, verify in browser, and leave a handoff.",
       "controlPrompt": "Take over this existing app, understand the current product, redesign the onboarding and dashboard, preserve auth behavior, add smooth interactions, security review the risky paths, verify in browser, and leave a handoff.",
       "routedPrompt": "Use skill-router first, use AS-Workflow if available, then take over this existing app, understand the current product, redesign the onboarding and dashboard, preserve auth behavior, add smooth interactions, security review risky paths, verify in browser, and leave a handoff.",
-      "expectedSkills": ["clarify-and-plan", "planning-first", "design-taste-frontend", "emil-design-eng", "security-review", "playwright-cli"],
+      "expectedSkills": [
+        "clarify-and-plan",
+        "planning-first",
+        "design-taste-frontend",
+        "emil-design-eng",
+        "security-review",
+        "playwright-cli"
+      ],
       "rubric": [
         "Does not force the task into a three-skill cap when the work is clearly multi-phase.",
         "Phases skill usage so planning, design, security, and browser verification do not all flood context at once.",
         "Uses AS-Workflow or an equivalent handoff mechanism when available without treating it as a routed skill.",
         "Preserves auth behavior and verifies risky flows instead of only redesigning screens.",
         "Leaves concise handoff/checkpoint notes for continuation."
+      ]
+    },
+    {
+      "id": "react-doctor-code-quality",
+      "category": "react",
+      "prompt": "Diagnose and fix React code quality issues in this feature before commit.",
+      "controlPrompt": "Diagnose and fix React code quality issues in this feature before commit.",
+      "routedPrompt": "Use skill-router first, then diagnose and fix React code quality issues in this feature before commit.",
+      "expectedSkills": [
+        "react-doctor"
+      ],
+      "rubric": [
+        "Recognizes the task as React-specific diagnostics rather than generic frontend polish.",
+        "Runs or recommends the React Doctor workflow when available.",
+        "Prioritizes errors and regressions before lower-severity cleanup.",
+        "Avoids broad unrelated refactors."
+      ]
+    },
+    {
+      "id": "architecture-pressure-test",
+      "category": "planning",
+      "prompt": "What should I consider before replacing our auth architecture with a custom token system?",
+      "controlPrompt": "What should I consider before replacing our auth architecture with a custom token system?",
+      "routedPrompt": "Use skill-router first, then pressure-test this plan: replacing our auth architecture with a custom token system.",
+      "expectedSkills": [
+        "what-should-i-consider",
+        "security-review"
+      ],
+      "rubric": [
+        "Attacks hidden assumptions and failure modes before validating the plan.",
+        "Calls out auth/security risks, migration, rollback, observability, and maintenance cost.",
+        "Separates blockers from tradeoffs and names decisions not yet made.",
+        "Gives an honest recommendation rather than default agreement."
+      ]
+    },
+    {
+      "id": "media-download-mp3",
+      "category": "utility",
+      "prompt": "Download this video as an mp3 into my Downloads folder.",
+      "controlPrompt": "Download this video as an mp3 into my Downloads folder.",
+      "routedPrompt": "Use skill-router first, then download this video as an mp3 into my Downloads folder.",
+      "expectedSkills": [
+        "media-download"
+      ],
+      "rubric": [
+        "Chooses the media-download/yt-dlp workflow.",
+        "Uses the requested target folder or a safe default.",
+        "Checks or explains the yt-dlp dependency.",
+        "Reports the output concisely and respects permission/platform constraints."
       ]
     }
   ]

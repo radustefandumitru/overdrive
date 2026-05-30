@@ -90,19 +90,24 @@ const manifest = readJson('manifest.json');
 const pkg = readJson('package.json');
 const skills = collectManifestSkills(manifest);
 const uniqueSkills = new Set(skills.all);
-const allowedExpectedTerms = new Set(['approval']);
+const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.4.0 or newer', isAtLeastVersion(pkg.version, '0.4.0'), `found ${pkg.version}`);
+check('package version is 0.5.0 or newer', isAtLeastVersion(pkg.version, '0.5.0'), `found ${pkg.version}`);
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
-check('manifest has 12 local skills', skills.local.length === 12, `found ${skills.local.length}`);
-check('manifest has 107 upstream GitHub skills', skills.source.length === 107, `found ${skills.source.length}`);
+check('manifest has 14 local skills', skills.local.length === 14, `found ${skills.local.length}`);
+check('manifest has 104 upstream GitHub skills', skills.source.length === 104, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
-check('manifest has 120 unique skills', uniqueSkills.size === 120, `found ${uniqueSkills.size}`);
+check('manifest has 119 unique skills', uniqueSkills.size === 119, `found ${uniqueSkills.size}`);
 check('manifest skill names are unique', uniqueSkills.size === skills.all.length);
+check('manifest includes react-doctor', uniqueSkills.has('react-doctor'));
+check('manifest includes what-should-i-consider', uniqueSkills.has('what-should-i-consider'));
+check('manifest includes media-download', uniqueSkills.has('media-download'));
+check('manifest excludes removed Obsidian skills', !uniqueSkills.has('obsidian-cli') && !uniqueSkills.has('obsidian-markdown') && !uniqueSkills.has('obsidian-bases'));
+check('manifest excludes upstream video-downloader', !uniqueSkills.has('video-downloader'));
 
 for (const sourceEntry of manifest.sources || []) {
   check(`source ${sourceEntry.id} has pinned 40-char ref`, /^[a-f0-9]{40}$/i.test(sourceEntry.ref || ''), sourceEntry.ref);
@@ -174,17 +179,34 @@ check('package files include docs/', packageFiles.has('docs/'));
 check('package files exclude SOCIAL_POSTS.md', !packageFiles.has('SOCIAL_POSTS.md'));
 
 const readme = read('README.md');
-check('README says current manifest contains 120 unique skills', /current manifest contains 120 unique skills/i.test(readme));
+check('README says current manifest contains 119 unique skills', /current manifest contains 119 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
+check('README positions AgenticSupercharge as a complete system', /complete,\s*plug-and-play system/i.test(readme) && /not just another skill pack/i.test(readme));
+check('README includes Stefan origin note', /early AI adopter since ChatGPT launched in November 2022/i.test(readme));
+check('README clarifies managed vs native/plugin layers', /managed skills/i.test(readme) && /native skills, third-party plugin skills, or MCP servers/i.test(readme));
+check('README documents Cursor reserved folder boundary', /~\/\.cursor\/skills-cursor/.test(readme) && /does not touch Cursor's reserved/i.test(readme));
+check('README states no telemetry', /no telemetry/i.test(readme));
 check('README agent review mentions the router benchmark', /benchmark.*routing quality/i.test(readme));
+check('README documents skill subset install flags', /--skills/.test(readme) && /--skip-skills/.test(readme));
 
 const skillReadiness = read('docs/skill-readiness.md');
-check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 120/.test(skillReadiness));
+check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 119/.test(skillReadiness));
 
 const skillSummary = read('SKILLS_SUMMARY.md');
 for (const skillName of skills.local) {
   check(`SKILLS_SUMMARY includes local skill ${skillName}`, skillSummary.includes(`\`${skillName}\``));
+}
+
+const globalInstructionFiles = ['global-instructions/CLAUDE.md', 'global-instructions/AGENTS.md', 'global-instructions/GEMINI.md'];
+for (const file of globalInstructionFiles) {
+  const text = read(file);
+  check(`${file} includes objectivity guidance`, text.includes('Default to objective, evidence-based reasoning'));
+  check(`${file} includes research-before-guessing guidance`, text.includes('start with current research using web search, Context7, or official docs'));
+  check(`${file} includes concise output guidance`, text.includes('Skip unnecessary preamble'));
+  check(`${file} includes pressure-test guidance`, text.includes('attack the plan first'));
+  check(`${file} includes natural status trigger`, text.includes('When the user asks "show status"'));
+  check(`${file} credits Boris/Anatoli prompt-line principles`, text.includes('Boris Cherny') && text.includes('@AnatoliKopadze'));
 }
 
 const verifiedSources = read('VERIFIED_SOURCES.md').replace(/\.git\b/gi, '').toLowerCase();

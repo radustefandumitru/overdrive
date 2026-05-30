@@ -9,12 +9,16 @@ These examples are for maintainers checking whether `skill-router` remains selec
 | "This popover animation feels sluggish." | `emil-animation-polish` -> `emil-design-eng` | Practical easing, duration, hover/touch, and origin-aware polish. |
 | "Refactor this auth flow across the app, but first tell me the safest plan." | `clarify-and-plan` -> `planning-first` -> `security-review` if auth risk is material | Ambiguous multi-file work needs assumptions and phases before implementation; auth may need a security pass. |
 | "Security review this PR for vulnerabilities." | Claude Code: native `/security-review`; other agents: `security-review` | Avoid loading both the native command and the portable skill. |
+| "Make sure Claude warns me about dangerous generated code and commit diffs." | Claude Code: `security-guidance` plugin; other agents: `security-review` only for explicit audits | `security-guidance` is a Claude-only preventative hook/plugin layer, not a portable skill folder. |
 | "What has the React community been saying about server components in the last 30 days?" | `last30days` | Time-boxed community/recent sentiment research. |
+| "Run React doctor and fix the highest-risk code quality issues." | `react-doctor` | React-specific diagnostics and cleanup should stay scoped to React code health. |
+| "What should I consider before changing this auth architecture?" | `what-should-i-consider` | The user wants hidden assumptions, risks, and missing decisions before implementation. |
 | "Design a questionnaire onboarding flow for my subscription app." | `app-onboarding-questionnaire` -> design/frontend skill only after strategy | The onboarding sequence comes before implementation polish. |
 | "Run a launch checklist before I ship this SaaS." | `pre-launch-checklist` -> `security-review` or marketing skills only if needed | Broad product/business launch readiness, not just SEO. |
 | "SEO audit this 3D scroll website before Vercel." | `jack-seo-launch-audit` -> `playwright-cli` | Animated-site SEO/performance launch checks fit the Jack workflow. |
 | "Find me a new skill for React performance work." | `find-skills` | Skill discovery is different from routing among installed skills. |
-| "Create an Obsidian note with wikilinks and callouts." | `obsidian-markdown` | Exact domain skill; snapshot/vault safety before broad edits. |
+| "Create a JSON Canvas map for these project ideas." | `json-canvas` | The retained Obsidian-adjacent skill is canvas-specific and file-based. |
+| "Download this video as an MP3." | `media-download` | User-requested local media extraction maps to the yt-dlp wrapper. |
 | "This thread is huge, compact it into a handoff." | `context-compression` | User explicitly requested compaction, so the lossy step is approved. |
 
 ## AS-Workflow Route Trace

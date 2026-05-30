@@ -92,3 +92,5 @@ The router is failing when it:
 As of v0.3, AgenticSupercharge has a repeatable router benchmark and automated coverage checks. It does not yet include a statistically meaningful public scorecard proving a fixed output-quality lift across models. That claim should wait until benchmark runs are collected and reviewed.
 
 v0.4 extends the benchmark with a complex multi-phase case to ensure the router no longer treats three skills as a hard cap and can mention AS-Workflow/checkpoints when project memory would help.
+
+v0.5 adds coverage for React Doctor routing, architecture pressure-testing with `what-should-i-consider`, and `media-download` so utility/download requests do not fall back to broader video skills.
