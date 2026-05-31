@@ -372,6 +372,39 @@
         "Mentions license/browser/performance checks for WebGL or library use.",
         "Includes browser validation and readable fallback requirements."
       ]
+    },
+    {
+      "id": "convert-local-docs-to-markdown",
+      "category": "knowledge-work",
+      "prompt": "Read this PDF and spreadsheet efficiently, then summarize only the project requirements.",
+      "controlPrompt": "Read this PDF and spreadsheet efficiently, then summarize only the project requirements.",
+      "routedPrompt": "Use skill-router first, then read this PDF and spreadsheet efficiently and summarize only the project requirements.",
+      "expectedSkills": [
+        "convert-to-markdown"
+      ],
+      "rubric": [
+        "Recognizes local document conversion as the first step rather than loading raw native files.",
+        "Uses MarkItDown when available and falls back clearly when it is not.",
+        "Reads only the converted/relevant content needed for the requested summary.",
+        "Avoids overwriting originals or exposing sensitive document content unnecessarily."
+      ]
+    },
+    {
+      "id": "reddit-community-sentiment",
+      "category": "research",
+      "prompt": "Research what Reddit users are saying about this product category and summarize recurring pain points.",
+      "controlPrompt": "Research what Reddit users are saying about this product category and summarize recurring pain points.",
+      "routedPrompt": "Use skill-router first, then research what Reddit users are saying about this product category and summarize recurring pain points.",
+      "expectedSkills": [
+        "reddit-research",
+        "last30days"
+      ],
+      "rubric": [
+        "Treats Reddit as noisy qualitative community signal, not official or statistically representative data.",
+        "Uses public read-only, low-volume access or falls back clearly if blocked.",
+        "Separates observed pain-point patterns from recommendations.",
+        "Cites source URLs/dates when browsing is available."
+      ]
     }
   ]
 }

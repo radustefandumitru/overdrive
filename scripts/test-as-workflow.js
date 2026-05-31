@@ -54,8 +54,21 @@ const init = workflow.initWorkflow({ projectDir: project, reason: 'test' });
 check('init creates workflow', fs.existsSync(path.join(project, '.agenticsupercharge')));
 check('init creates config', fs.existsSync(path.join(project, '.agenticsupercharge/config.json')));
 check('init creates research log', fs.existsSync(path.join(project, '.agenticsupercharge/research.md')));
+check('init creates knowledge vault', fs.existsSync(path.join(project, '.agenticsupercharge/knowledge')));
+check('init creates knowledge index', fs.existsSync(path.join(project, '.agenticsupercharge/knowledge-index.json')));
+check('config includes knowledge autosummarize default', JSON.parse(fs.readFileSync(path.join(project, '.agenticsupercharge/config.json'), 'utf8')).knowledge_autosummarize === 'ask');
 check('research log includes objectivity mandate', fs.readFileSync(path.join(project, '.agenticsupercharge/research.md'), 'utf8').includes('objective, evidence-based standpoint'));
 check('init gitignores workflow', fs.readFileSync(path.join(project, '.gitignore'), 'utf8').includes('.agenticsupercharge/'));
+
+const knowledgeDir = path.join(project, '.agenticsupercharge/knowledge');
+fs.writeFileSync(path.join(knowledgeDir, 'brief.md'), '# Brief\n\nA short project reference.\n');
+fs.writeFileSync(path.join(knowledgeDir, 'data.csv'), 'name,value\nalpha,1\n');
+const knowledgeDryRun = workflow.knowledge({ projectDir: project, apply: false });
+check('knowledge dry-run scans vault without writing', knowledgeDryRun.trackedKnowledge === 2 && JSON.parse(fs.readFileSync(path.join(project, '.agenticsupercharge/knowledge-index.json'), 'utf8')).files.length === 0);
+const knowledgeApply = workflow.knowledge({ projectDir: project, apply: true });
+const knowledgeIndex = JSON.parse(fs.readFileSync(path.join(project, '.agenticsupercharge/knowledge-index.json'), 'utf8'));
+check('knowledge apply indexes vault files', knowledgeApply.trackedKnowledge === 2 && knowledgeIndex.files.length === 2);
+check('knowledge index records markdown cache for csv fallback', knowledgeIndex.files.some((entry) => entry.path.endsWith('data.csv') && entry.markdownCache && entry.conversionStatus === 'converted'));
 
 const researchPath = path.join(project, '.agenticsupercharge/research.md');
 fs.rmSync(researchPath);
@@ -69,7 +82,14 @@ check('status reports initialized', status.initialized === true);
 
 const resync = workflow.resync({ projectDir: project, apply: true });
 check('resync apply tracks files', resync.trackedFiles > 0);
+check('resync apply refreshes knowledge index', resync.knowledge && resync.knowledge.trackedKnowledge === 2);
 check('resync writes file-index', JSON.parse(fs.readFileSync(path.join(project, '.agenticsupercharge/file-index.json'), 'utf8')).files.length > 0);
+
+const cachePath = path.join(project, knowledgeIndex.files.find((entry) => entry.path.endsWith('data.csv')).markdownCache);
+fs.rmSync(cachePath);
+const missingKnowledgeCache = workflow.doctor({ projectDir: project });
+check('doctor detects missing knowledge markdown cache', missingKnowledgeCache.issues.some((issue) => issue.includes('Knowledge markdown cache is missing')));
+workflow.knowledge({ projectDir: project, apply: true });
 
 fs.writeFileSync(path.join(project, 'index.js'), 'console.log("changed")\n');
 const doctor = workflow.doctor({ projectDir: project });

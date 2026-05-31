@@ -4,6 +4,15 @@
 
 - No unreleased changes.
 
+## v0.7.0 - 2026-05-31
+
+- Added AS-Workflow knowledge vault support with `.agenticsupercharge/knowledge/`, `.agenticsupercharge/knowledge-index.json`, `knowledge_autosummarize`, `agentic-supercharge knowledge`, doctor coverage, and workflow tests.
+- Added local `convert-to-markdown` skill for token-efficient local PDF/Office/spreadsheet/data-file reading with optional Microsoft MarkItDown support.
+- Added local `reddit-research` skill for low-volume public-read-only Reddit/community signal with explicit best-effort and rate-limit caveats.
+- Added optional MarkItDown MCP and Browserbase connector documentation while keeping Context7 as the only prescribed MCP.
+- Added `scripts/analyze-routes.js`, `npm run analyze:routes`, and `docs/catalog-health.md` for local maintainer route-frequency and catalog-health analysis with no telemetry.
+- Updated `skill-router`, router benchmark cases, docs, attributions, global instructions, skill readiness, and consistency checks for the 131-skill v0.7 manifest.
+
 ## v0.6.0 - 2026-05-30
 
 - Added Jamie Mill's MIT `layers-skills` source pinned at `64b9202bf0506ad1418b9975681c95798725e25a`, importing all nine `layers-*` product-design reasoning skills.

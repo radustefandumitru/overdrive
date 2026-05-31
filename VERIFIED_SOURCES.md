@@ -2,7 +2,7 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-05-30
+Verified on: 2026-05-31
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|
@@ -44,3 +44,6 @@ The links below are credited sources and provenance references for local skills,
 | Liquid Glass implementation references | nikdelvin, rizroze, Z1Code, naughtyduk, dashersw | https://github.com/nikdelvin/liquid-glass · https://github.com/rizroze/liquid-glass · https://github.com/Z1Code/glass-refraction · https://github.com/naughtyduk/liquidGL · https://github.com/dashersw/liquid-glass-js |
 | Proximity hover | @gabriell_lab and @baptistebriel | https://x.com/gabriell_lab/status/2060336070059864461 · https://x.com/baptistebriel/status/2060351541345681851 |
 | CSS scroll-state navbar | @mannupaaji and Chrome team | https://x.com/mannupaaji/status/2060025609867387239 · https://developer.chrome.com/blog/css-scroll-state-queries |
+| MarkItDown token pipeline | Microsoft | https://github.com/microsoft/markitdown |
+| Browserbase optional connector | Browserbase; amplified by @iam_elias1 | https://github.com/browserbase/skills · https://x.com/iam_elias1/status/2059274512408162520 |
+| Reddit research | Reddit public read-only endpoints | public `*.json` endpoints such as subreddit search and comments JSON; no credentials bundled |

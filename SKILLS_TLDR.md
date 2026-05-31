@@ -11,6 +11,8 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Security review or hardening | Claude Code `/security-review`, otherwise `security-review` | dependency scanners, tests, or manual verification for fixes |
 | React code diagnostics | `react-doctor` | `planning-first` for larger refactors; `playwright-cli` for UI validation |
 | Recent market/community research | `last30days` | Context7 or official docs for library/API facts |
+| Reddit community signal | `reddit-research` | `last30days` for recency; customer-research/content strategy for synthesis |
+| Local PDF/Office/data docs | `convert-to-markdown` | AS-Workflow knowledge vault; `defuddle` for web pages |
 | App questionnaire onboarding | `app-onboarding-questionnaire` | frontend/design skills after the onboarding blueprint is confirmed |
 | Pre-launch readiness | `pre-launch-checklist` | `security-review`, marketing skills, `jack-seo-launch-audit`, or `playwright-cli` for focused checks |
 | Premium frontend or landing page | `skill-router`, `design-taste-frontend`, `emil-design-eng` | `impeccable`, `modern-web-guidance`, `playwright-cli` |
@@ -26,6 +28,6 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Obsidian-adjacent files/research | `json-canvas`, `defuddle` | broader vault operations need a dedicated user/project Obsidian setup |
 | Image/video/media workflows | `banana`, Remotion skills, `media-download` | approval-gated external tools where configured; `yt-dlp` for downloads |
 | Slack GIF or emoji animation | `slack-gif-creator` | Banana/image tooling only if a custom source image is needed |
-| Project memory and handoff | AS-Workflow (`.agenticsupercharge/`) | `agentic-supercharge status`, `doctor`, `resync`, `checkpoint`; not a routed skill |
+| Project memory and handoff | AS-Workflow (`.agenticsupercharge/`) | `agentic-supercharge status`, `doctor`, `resync`, `knowledge`, `checkpoint`; not a routed skill |
 
 The intended pattern is not "load everything." Let `skill-router` choose the minimum useful skill sequence, then proceed. Complex tasks can use more skills when they are phased and each one has a clear job.

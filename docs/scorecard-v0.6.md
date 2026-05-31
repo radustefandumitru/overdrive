@@ -15,7 +15,7 @@ Do not claim AgenticSupercharge improves outputs from this file until the table 
 
 ## Summary
 
-- Scored cases: 0/21
+- Scored cases: 0/23
 - Routed wins: 0
 - Ties: 0
 - Routed losses: 0
@@ -45,6 +45,8 @@ Do not claim AgenticSupercharge improves outputs from this file until the table 
 | layers-product-orientation | product-design | layers-intro, layers-orient |  |  |  |  |  |
 | layers-conceptual-model | product-design | layers-intro, layers-conceptual-model |  |  |  |  |  |
 | liquid-glass-web-progressive-enhancement | frontend | liquid-glass-web, emil-animation-polish, playwright-cli |  |  |  |  |  |
+| convert-local-docs-to-markdown | knowledge-work | convert-to-markdown |  |  |  |  |  |
+| reddit-community-sentiment | research | reddit-research, last30days |  |  |  |  |  |
 
 ## Raw Results Schema
 

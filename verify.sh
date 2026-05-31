@@ -12,3 +12,4 @@ AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js
 node "$KIT_DIR/scripts/check-consistency.js"
 node "$KIT_DIR/scripts/evaluate-router.js"
 node "$KIT_DIR/scripts/test-as-workflow.js"
+node "$KIT_DIR/scripts/analyze-routes.js"

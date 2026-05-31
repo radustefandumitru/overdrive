@@ -14,6 +14,7 @@ Do not publish:
 
 - Raw/private skill snapshots or vendored third-party copies unless every upstream license has been reviewed and redistribution is allowed.
 - API keys, OAuth tokens, MCP configs with credentials, service-role keys, database URLs, browser profiles, cookies, or app sessions.
+- `.agenticsupercharge/` runtime state, knowledge-vault files, converted Markdown caches, route traces, handoffs, or local workflow reports.
 - Jack Roberts raw PDFs, zips, templates, downloaded folders, prompts, private community/course material, or copied third-party skill text.
 - Personal account state for GitHub, Vercel, Supabase, Firecrawl, Google, Claude, Codex, Gemini, Antigravity, Cursor, or any other service.
 - Cursor's built-in `~/.cursor/skills-cursor` content.
@@ -57,6 +58,7 @@ node --check lib/installer.js
 node --check bin/agentic-supercharge.js
 npm run consistency
 npm run eval:router
+npm run analyze:routes
 ./install.sh --dry-run
 ./install.sh --list-targets
 ./check-updates.sh

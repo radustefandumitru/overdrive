@@ -81,6 +81,8 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 
 - If `.agenticsupercharge/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
 - Read `.agenticsupercharge/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
+- If `.agenticsupercharge/knowledge-index.json` exists and the task could benefit from local reference docs, inspect the index first, then load only the specific relevant source file or `markdownCache`. Do not dump the whole knowledge vault into context.
+- For local PDFs, Office files, spreadsheets, HTML exports, or data files, prefer `convert-to-markdown`/MarkItDown before reading when it would reduce tokens or preserve structure.
 - After meaningful multi-step work, keep workflow notes short and current when practical: state, decisions, progress, route trace, or checkpoint.
 - When the user states a durable preference, constraint, or decision, append a short dated note to `.agenticsupercharge/decisions.md` when the workflow exists. If the new statement contradicts a recorded decision or constraint, surface the conflict and ask before overwriting it.
 - If you notice an oscillating fix loop, such as fixing A breaking B and fixing B re-breaking A, or if the user signals frustration, stop and say so plainly. Propose a different approach such as a smaller repro, different method, online research, another skill, a fresh model/planning mode, or a checkpoint before continuing.

@@ -1,0 +1,11 @@
+name: reddit-research
+description: Research public Reddit posts/comments for community sentiment and user language using low-volume read-only JSON endpoints when available.
+triggers:
+  - reddit research
+  - what are people saying on reddit
+  - subreddit sentiment
+  - reddit comments
+  - community signal
+prompt:
+  default_prompt: "Use $reddit-research for low-volume public Reddit research, cite sources, respect rate limits, and fall back clearly when Reddit blocks access."
+

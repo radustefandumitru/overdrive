@@ -1,0 +1,11 @@
+name: convert-to-markdown
+description: Convert local PDF/Office/spreadsheet/data files to clean Markdown before reading to reduce token usage and preserve document structure.
+triggers:
+  - convert this pdf to markdown
+  - read this docx efficiently
+  - summarize this spreadsheet
+  - ingest this into the knowledge vault
+  - MarkItDown
+prompt:
+  default_prompt: "Use $convert-to-markdown to convert supported local documents with MarkItDown when available, then read the Markdown output instead of the raw source."
+

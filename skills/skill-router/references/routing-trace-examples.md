@@ -14,6 +14,8 @@ These examples are for maintainers checking whether `skill-router` remains selec
 | "Security review this PR for vulnerabilities." | Claude Code: native `/security-review`; other agents: `security-review` | Avoid loading both the native command and the portable skill. |
 | "Make sure Claude warns me about dangerous generated code and commit diffs." | Claude Code: `security-guidance` plugin; other agents: `security-review` only for explicit audits | `security-guidance` is a Claude-only preventative hook/plugin layer, not a portable skill folder. |
 | "What has the React community been saying about server components in the last 30 days?" | `last30days` | Time-boxed community/recent sentiment research. |
+| "What are Reddit users saying about this product category?" | `reddit-research` -> `last30days` if recency matters | Reddit is explicitly in scope; keep it low-volume and public-read-only. |
+| "Read this PDF and spreadsheet, then summarize the useful bits." | `convert-to-markdown` | Convert local documents to Markdown first when that reduces tokens and preserves structure. |
 | "Run React doctor and fix the highest-risk code quality issues." | `react-doctor` | React-specific diagnostics and cleanup should stay scoped to React code health. |
 | "What should I consider before changing this auth architecture?" | `what-should-i-consider` | The user wants hidden assumptions, risks, and missing decisions before implementation. |
 | "Design a questionnaire onboarding flow for my subscription app." | `app-onboarding-questionnaire` -> design/frontend skill only after strategy | The onboarding sequence comes before implementation polish. |
@@ -39,3 +41,5 @@ This appends one JSONL entry to `.agenticsupercharge/routes.jsonl`. It is option
 - `clarify-and-plan` answers "what should we do and what are the options?" while `planning-first` answers "how do we execute this complex coding task safely?"
 - `pre-launch-checklist` is for product and operational launch readiness. `jack-seo-launch-audit` is for technical/SEO launch checks on animated premium websites.
 - `last30days` is for recent community discourse. Context7 is still the default for current official library/API documentation.
+- `reddit-research` is for Reddit-specific public community signal. `last30days` is broader recent sentiment.
+- `convert-to-markdown` is for local documents and AS-Workflow knowledge-vault ingest. `defuddle` remains the better fit for web-page extraction.

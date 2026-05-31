@@ -4,12 +4,12 @@ AgenticSupercharge is plug-and-play for installation: the installer can place sk
 
 ## Default Install Summary
 
-- Unique skills in the current manifest: 129
-- Locally authored AgenticSupercharge skills: 15
+- Unique skills in the current manifest: 131
+- Locally authored AgenticSupercharge skills: 17
 - Upstream GitHub-sourced skills: 113
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
-- AS-Workflow runtime: installed under `~/.agentic-supercharge/runtime/current/` for hooks, status, doctor, resync, route traces, and checkpoints.
+- AS-Workflow runtime: installed under `~/.agentic-supercharge/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, route traces, and checkpoints.
 
 Claude Code receives one fewer local skill because `security-review` is skipped there by policy in favor of Claude Code's native `/security-review` command.
 
@@ -27,6 +27,8 @@ These work immediately after install and agent reload because they are instructi
 - `emil-animation-polish`
 - `liquid-glass-web`
 - `media-download` guidance, once `yt-dlp` is installed
+- `convert-to-markdown` guidance, with MarkItDown enhancement when installed
+- `reddit-research` guidance, with public Reddit access treated as best-effort
 - Jack Roberts inspired `jack-*` workflow skills when used as planning/build guidance
 - Jamie Mill `layers-*` product-design reasoning skills
 - Taste, Impeccable, Emil, Modern Web Guidance, Remotion guidance, Stop Slop, most MarketingSkills, Context Engineering guidance, Anthropic example skills, and OpenAI/Vercel routing guidance
@@ -45,6 +47,8 @@ These work immediately after install and agent reload because they are instructi
 | Composio/connect-style skills | User-configured connectors, auth, and explicit approval | Approval-gate external actions such as sending, posting, creating, deleting, authenticating, or spending credits. |
 | `langsmith-fetch` | LangSmith access and CLI/setup | Only useful if the user has LangSmith traces and credentials configured. |
 | `media-download` | `yt-dlp` | Treat download requests as user-approved local actions, default to `~/Downloads` when appropriate, and respect platform terms. |
+| `convert-to-markdown` | Python and Microsoft MarkItDown, ideally `pip install 'markitdown[all]'` | Converts local PDF/Office/spreadsheet/data files before reading. If unavailable, agents should fall back to native reading or simple text caches. |
+| `reddit-research` | Public Reddit JSON endpoints and normal web access | Best-effort only. Reddit may rate-limit/block unauthenticated requests; no auth, cookies, API keys, or stored credentials are required or bundled. |
 | Jack Roberts inspired publishing steps | Optional Firecrawl, image/video generators, GitHub, Vercel, browser tools | The skills treat these as optional user-configured tools and approval-gate publishing. |
 
 ## Obsidian Verification Notes

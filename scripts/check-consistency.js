@@ -94,19 +94,21 @@ const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.6.0 or newer', isAtLeastVersion(pkg.version, '0.6.0'), `found ${pkg.version}`);
+check('package version is 0.7.0 or newer', isAtLeastVersion(pkg.version, '0.7.0'), `found ${pkg.version}`);
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
-check('manifest has 15 local skills', skills.local.length === 15, `found ${skills.local.length}`);
+check('manifest has 17 local skills', skills.local.length === 17, `found ${skills.local.length}`);
 check('manifest has 113 upstream GitHub skills', skills.source.length === 113, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
-check('manifest has 129 unique skills', uniqueSkills.size === 129, `found ${uniqueSkills.size}`);
+check('manifest has 131 unique skills', uniqueSkills.size === 131, `found ${uniqueSkills.size}`);
 check('manifest skill names are unique', uniqueSkills.size === skills.all.length);
 check('manifest includes react-doctor', uniqueSkills.has('react-doctor'));
 check('manifest includes what-should-i-consider', uniqueSkills.has('what-should-i-consider'));
 check('manifest includes media-download', uniqueSkills.has('media-download'));
 check('manifest includes liquid-glass-web', uniqueSkills.has('liquid-glass-web'));
+check('manifest includes convert-to-markdown', uniqueSkills.has('convert-to-markdown'));
+check('manifest includes reddit-research', uniqueSkills.has('reddit-research'));
 check('manifest includes layers-intro', uniqueSkills.has('layers-intro'));
 check('manifest includes layers-orient', uniqueSkills.has('layers-orient'));
 check('manifest includes layers-conceptual-model', uniqueSkills.has('layers-conceptual-model'));
@@ -182,10 +184,13 @@ check('package files include evals/', packageFiles.has('evals/'));
 check('package files include docs/', packageFiles.has('docs/'));
 check('package files exclude SOCIAL_POSTS.md', !packageFiles.has('SOCIAL_POSTS.md'));
 check('package check script includes build-scorecard syntax check', /build-scorecard\.js/.test(pkg.scripts?.check || ''));
+check('package check script includes analyze-routes syntax check', /analyze-routes\.js/.test(pkg.scripts?.check || ''));
 check('package exposes scorecard script', /build-scorecard\.js/.test(pkg.scripts?.scorecard || ''));
+check('package exposes analyze routes script', /analyze-routes\.js/.test(pkg.scripts?.['analyze:routes'] || ''));
+check('analyze-routes script exists', exists('scripts/analyze-routes.js'));
 
 const readme = read('README.md');
-check('README says current manifest contains 129 unique skills', /current manifest contains 129 unique skills/i.test(readme));
+check('README says current manifest contains 131 unique skills', /current manifest contains 131 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
 check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
@@ -198,12 +203,16 @@ check('README agent review mentions the router benchmark', /benchmark.*routing q
 check('README documents skill subset install flags', /--skills/.test(readme) && /--skip-skills/.test(readme));
 check('README mentions Layers product-design skills', /layers-\*/i.test(readme) || /Layers product-design/i.test(readme));
 check('README mentions Liquid Glass Web', /liquid-glass-web/i.test(readme) || /Liquid Glass/i.test(readme));
+check('README explains knowledge vault', /knowledge vault/i.test(readme) && /knowledge-index\.json/.test(readme));
+check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
+check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
 check('README credits Layers source links', readme.includes('https://github.com/jamiemill/layers-skills') && readme.includes('https://layers.jamiemill.com'));
 check('README credits Liquid Glass provenance links', readme.includes('https://github.com/AndrewPrifer/liquid-dom') && readme.includes('https://kube.io/blog/liquid-glass-css-svg/') && readme.includes('https://github.com/naughtyduk/liquidGL'));
 check('README credits v0.6 motion provenance links', readme.includes('https://x.com/gabriell_lab/status/2060336070059864461') && readme.includes('https://x.com/baptistebriel/status/2060351541345681851') && readme.includes('https://x.com/mannupaaji/status/2060025609867387239'));
+check('README credits v0.7 sources', readme.includes('https://github.com/microsoft/markitdown') && readme.includes('https://github.com/browserbase/skills'));
 
 const skillReadiness = read('docs/skill-readiness.md');
-check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 129/.test(skillReadiness));
+check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 131/.test(skillReadiness));
 check('scorecard doc exists', exists('docs/scorecard-v0.6.md'));
 check('scorecard results file exists', exists('evals/scorecard-results.json'));
 if (exists('evals/scorecard-results.json')) {
@@ -255,6 +264,8 @@ for (const link of [
   'https://x.com/gabriell_lab/status/2060336070059864461',
   'https://x.com/baptistebriel/status/2060351541345681851',
   'https://x.com/mannupaaji/status/2060025609867387239',
+  'https://github.com/microsoft/markitdown',
+  'https://github.com/browserbase/skills',
 ]) {
   check(`VERIFIED_SOURCES includes attribution link ${link}`, verifiedRaw.includes(link));
 }
@@ -282,6 +293,8 @@ for (const link of [
   'https://x.com/gabriell_lab/status/2060336070059864461',
   'https://x.com/baptistebriel/status/2060351541345681851',
   'https://x.com/mannupaaji/status/2060025609867387239',
+  'https://github.com/microsoft/markitdown',
+  'https://github.com/browserbase/skills',
 ]) {
   check(`THIRD_PARTY_NOTICES includes attribution link ${link}`, thirdPartyRaw.includes(link));
 }
@@ -302,6 +315,8 @@ check('skill-router allows flexible skill sequences', /no hard cap/i.test(router
 check('skill-router mentions AS-Workflow route trace helper', /routes\.jsonl/.test(routerSkill));
 check('skill-router documents Layers routing', /layers-intro/.test(routerSkill) && /layers-conceptual-model/.test(routerSkill));
 check('skill-router documents Liquid Glass routing', /liquid-glass-web/.test(routerSkill) && /Tier 1/.test(routerSkill));
+check('skill-router documents convert-to-markdown routing', /convert-to-markdown/.test(routerSkill));
+check('skill-router documents reddit-research routing', /reddit-research/.test(routerSkill));
 for (const skillName of skills.local) {
   check(`router catalog lists local skill ${skillName}`, routerCatalog.includes(`\`${skillName}\``));
 }
@@ -311,8 +326,17 @@ for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-mod
 
 const asWorkflow = read('lib/as-workflow.js');
 check('AS-Workflow required files include research.md', /requiredFiles[\s\S]*research\.md/.test(asWorkflow));
+check('AS-Workflow required files include knowledge-index.json', /requiredFiles[\s\S]*knowledge-index\.json/.test(asWorkflow));
+check('AS-Workflow required dirs include knowledge', /requiredDirs[\s\S]*knowledge/.test(asWorkflow));
+check('AS-Workflow config includes knowledge_autosummarize', /knowledge_autosummarize/.test(asWorkflow));
+check('AS-Workflow exports knowledge helper', /function knowledge/.test(asWorkflow) && /module\.exports[\s\S]*knowledge/.test(asWorkflow));
 check('AS-Workflow seeds research objectivity mandate', /objective, evidence-based standpoint/.test(asWorkflow));
 check('AS-Workflow exports recordDecision helper', /recordDecision/.test(asWorkflow) && /module\.exports[\s\S]*recordDecision/.test(asWorkflow));
+
+const mcpDocs = read('MCP_AND_CONNECTORS.md');
+check('MCP docs mention optional MarkItDown MCP', /markitdown/i.test(mcpDocs) && /optional/i.test(mcpDocs));
+check('MCP docs mention Browserbase as optional', /Browserbase/i.test(mcpDocs) && /not installed/i.test(mcpDocs));
+check('catalog health doc exists', exists('docs/catalog-health.md'));
 
 const changelog = read('CHANGELOG.md');
 check(`CHANGELOG has v${pkg.version} entry`, changelog.includes(`## v${pkg.version}`));

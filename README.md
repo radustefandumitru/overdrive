@@ -6,7 +6,7 @@ It installs four layers that work together across Claude Code, Codex, Gemini CLI
 
 - **Specialist skills:** a curated library that teaches agents how to do specific work well, including web/app development, frontend polish, animation, SEO, research, product work, security review, launch prep, and browser validation.
 - **A skill-router:** picks the minimum useful skills for each task instead of dumping the whole catalog into context, keeping agents focused, fast, and token-light.
-- **AS-Workflow:** a local `.agenticsupercharge/` project-state layer that gives agents memory: active work, decisions, constraints, file hashes, routing history, checkpoints, and handoffs. It is local, gitignored, and never uploaded by AgenticSupercharge.
+- **AS-Workflow:** a local `.agenticsupercharge/` project-state layer that gives agents memory: active work, decisions, constraints, file hashes, routing history, checkpoints, handoffs, and an optional knowledge vault. It is local, gitignored, and never uploaded by AgenticSupercharge.
 - **A global operating guide:** a Karpathy-inspired instruction layer that makes agents think before coding, keep diffs surgical, plan complex work, stay objective, and verify their output.
 
 All of that is wrapped in a safe, boring installer: pinned sources, non-destructive defaults, reversible uninstall, and no telemetry.
@@ -28,7 +28,7 @@ Most AI coding agents are powerful, but they often need repeated guidance:
 
 AgenticSupercharge packages those recurring instructions into reusable skills and installs them where your agents can find them.
 
-You keep prompting normally. For non-trivial work, the agent checks the router, loads the smallest useful skill set, and proceeds with more relevant guidance. For longer projects, AS-Workflow keeps a small local memory so the agent does not have to rediscover the same context every session.
+You keep prompting normally. For non-trivial work, the agent checks the router, loads the smallest useful skill set, and proceeds with more relevant guidance. For longer projects, AS-Workflow keeps a small local memory so the agent does not have to rediscover the same context every session. For reference-heavy work, the knowledge vault lets you drop local docs into `.agenticsupercharge/knowledge/`, index them, and have the agent read only the relevant Markdown/cache files.
 
 ## Quick Start
 
@@ -118,10 +118,11 @@ The important split:
 - Skills teach the agent **how** to do specialist work.
 - `skill-router` chooses **which** skills are relevant.
 - AS-Workflow helps the agent remember **what is happening in this project**.
+- The knowledge vault helps the agent find **which local reference docs matter** without dumping all of them into context.
 
 ## What You Get
 
-The current manifest contains 129 unique skills.
+The current manifest contains 131 unique skills.
 
 | Area | What it helps with |
 |---|---|
@@ -134,11 +135,11 @@ The current manifest contains 129 unique skills.
 | Marketing and growth | SEO, CRO, copywriting, pricing, ads, lifecycle, onboarding, launch planning, and human-sounding copy cleanup. |
 | Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
 | Browser validation | Playwright-based screenshots, flow checks, responsive checks, and browser debugging. |
-| Knowledge work | Docs, specs, MCP building, recent research, context-management skills, JSON Canvas, and clean web-to-markdown extraction. |
+| Knowledge work | Docs, specs, MCP building, recent research, Reddit community signal, local document-to-Markdown conversion, context-management skills, JSON Canvas, and clean web-to-markdown extraction. |
 | Code health | React diagnostics through `react-doctor`, plus planning/security/browser checks when the task needs them. |
 | Objective review | `what-should-i-consider` pressure-tests plans for hidden assumptions, architecture risks, and missing decisions. |
 | Media utilities | `media-download` wraps `yt-dlp` for user-requested MP3 and high-quality MP4 downloads. |
-| Project memory | AS-Workflow local state, route traces, file hashes, checkpoints, and workflow health checks. |
+| Project memory | AS-Workflow local state, knowledge vault, route traces, file hashes, checkpoints, and workflow health checks. |
 
 For a compact map of the whole library, see [`SKILLS_TLDR.md`](SKILLS_TLDR.md). For the full inventory, see [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md).
 
@@ -157,6 +158,8 @@ Examples:
 - `jack-scroll-3d-sites` for scroll-driven animated sites.
 - `security-review` for non-Claude security audits.
 - `pre-launch-checklist` for release readiness.
+- `convert-to-markdown` for local PDFs, Office docs, spreadsheets, and data files.
+- `reddit-research` for public Reddit/community signal.
 
 ### 2. Skill Router
 
@@ -182,7 +185,23 @@ When supported agents do meaningful project work, they can create:
 .agenticsupercharge/
 ```
 
-That folder stores concise project state, active work, decisions, research notes, file hashes, route traces, reports, and handoff checkpoints. It is local runtime state and is added to `.gitignore` by default.
+That folder stores concise project state, active work, decisions, research notes, file hashes, route traces, reports, handoff checkpoints, and an optional reference-doc knowledge vault. It is local runtime state and is added to `.gitignore` by default.
+
+The knowledge vault is intentionally boring:
+
+```text
+.agenticsupercharge/
+  knowledge/
+  knowledge-index.json
+```
+
+Drop project reference docs into `knowledge/`, then run:
+
+```bash
+agentic-supercharge knowledge --apply
+```
+
+The CLI indexes file paths, hashes, sizes, titles, and cached Markdown paths. It does not call a model or create embeddings. Agents can later inspect `knowledge-index.json`, choose the relevant file, and load only that source or its Markdown cache. This is the local, file-based version of "project knowledge" without telemetry or cloud sync.
 
 AS-Workflow is intentionally conservative. A simple factual question should not initialize project state. Hooks only provide lightweight reminders or update local workflow files; if a hook fails, the agent should keep going.
 
@@ -191,6 +210,8 @@ Useful commands:
 ```bash
 agentic-supercharge status
 agentic-supercharge doctor
+agentic-supercharge knowledge --dry-run
+agentic-supercharge knowledge --apply
 agentic-supercharge resync --dry-run
 agentic-supercharge resync --apply
 agentic-supercharge checkpoint --message "before refactor"
@@ -247,12 +268,15 @@ Maintainers can run:
 ```bash
 npm run consistency
 npm run eval:router
+npm run analyze:routes
 ./verify.sh
 ```
 
 The eval pack is a test bench, not a magic score. It helps compare routed prompts against plain prompts and catch obvious routing drift.
 
 v0.6 also includes a human-scored scorecard harness at [`docs/scorecard-v0.6.md`](docs/scorecard-v0.6.md). It starts empty on purpose; real output-quality claims should wait until blind control-vs-routed runs are scored.
+
+`npm run analyze:routes` writes [`docs/catalog-health.md`](docs/catalog-health.md), a local-only maintainer report for route frequency, common skill pairings, and human-review candidates. It is not telemetry and never collects user data.
 
 ## Install Modes
 
@@ -349,7 +373,7 @@ This installer does not copy or publish:
 - GitHub, Vercel, Supabase, Firecrawl, Google, Claude, Codex, Gemini, Antigravity, Cursor, or other account credentials.
 - Private course/community material or raw third-party resource downloads.
 
-Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are optional user/project setup and are documented in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md). Obsidian support is intentionally light in v0.5: the public install keeps `json-canvas` and `defuddle`, while deeper vault automation belongs in each user's own Obsidian setup.
+Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are optional user/project setup and are documented in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md). MarkItDown MCP and Browserbase are documented as optional tools only; they are not installed or configured by AgenticSupercharge. Obsidian support is intentionally light: the public install keeps `json-canvas` and `defuddle`, while deeper vault automation belongs in each user's own Obsidian setup.
 
 ## What This Is Not
 
@@ -376,6 +400,7 @@ Power-user and maintainer docs:
 | [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
 | [`docs/as-workflow.md`](docs/as-workflow.md) | Local project-state workflow, commands, hooks, and disable behavior. |
 | [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
+| [`docs/catalog-health.md`](docs/catalog-health.md) | Local route-analysis output for maintainers. |
 | [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
 | [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) | Pinned source refs used by default. |
 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Attribution, licenses, and redistribution notes. |
@@ -389,6 +414,8 @@ AgenticSupercharge is a curated installer and router. Most skills come from othe
 Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste-skill), [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable) and [impeccable.style](https://impeccable.style), [Aiden Bai / Million / React Doctor](https://github.com/millionco/react-doctor) and [react.doctor](https://react.doctor), [Emil Kowalski](https://emilkowal.ski), [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance), [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering), [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills), [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop), [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [yt-dlp](https://github.com/yt-dlp/yt-dlp), [Anthropic Skills](https://github.com/anthropics/skills), [OpenAI Skills](https://github.com/openai/skills), [Vercel Labs Skills](https://github.com/vercel-labs/skills), [ComposioHQ Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills), [Remotion](https://www.remotion.dev), [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli), [Apple's Designing Fluid Interfaces session](https://developer.apple.com/videos/play/wwdc2018/803/), [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50), [Boris Cherny / Anthropic prompt guidance shared by @AnatoliKopadze](https://x.com/AnatoliKopadze/status/2054568935274549597), and [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
 
 v0.6 product-design and motion additions credit [Jamie Mill's Layers of Product Design skills](https://github.com/jamiemill/layers-skills) and [Layers site](https://layers.jamiemill.com), [Andrew Prifer's liquid-dom](https://github.com/AndrewPrifer/liquid-dom) as Liquid Glass inspiration, [kube.io's CSS/SVG Liquid Glass technique](https://kube.io/blog/liquid-glass-css-svg/), [`naughtyduk/liquidGL`](https://github.com/naughtyduk/liquidGL) as an optional license-checked WebGL reference, [@gabriell_lab's proximity-hover pattern](https://x.com/gabriell_lab/status/2060336070059864461), [@baptistebriel's rect-caching performance note](https://x.com/baptistebriel/status/2060351541345681851), [@mannupaaji's scroll-state navbar pattern](https://x.com/mannupaaji/status/2060025609867387239), and the [Chrome CSS scroll-state queries writeup](https://developer.chrome.com/blog/css-scroll-state-queries).
+
+v0.7 knowledge and token-efficiency additions credit [Microsoft MarkItDown](https://github.com/microsoft/markitdown) for the optional document-to-Markdown conversion pipeline and [Browserbase skills](https://github.com/browserbase/skills) as an optional documented connector. Reddit research uses public read-only Reddit endpoints only and does not bundle credentials or Reddit code.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

@@ -102,3 +102,5 @@ v0.4 extends the benchmark with a complex multi-phase case to ensure the router 
 v0.5 adds coverage for React Doctor routing, architecture pressure-testing with `what-should-i-consider`, and `media-download` so utility/download requests do not fall back to broader video skills.
 
 v0.6 adds product-design Layers and Liquid Glass progressive-enhancement cases, plus a scorecard harness in `docs/scorecard-v0.6.md`. The scorecard is empty until real blind control-vs-routed runs are collected.
+
+v0.7 adds `convert-to-markdown` and `reddit-research` cases, plus `npm run analyze:routes` for local maintainer catalog-health analysis from AS-Workflow `routes.jsonl`. Route analysis is local only and is not telemetry.
