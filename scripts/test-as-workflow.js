@@ -53,11 +53,13 @@ const project = tempProject('as-workflow');
 const init = workflow.initWorkflow({ projectDir: project, reason: 'test' });
 check('init creates workflow', fs.existsSync(path.join(project, '.agenticsupercharge')));
 check('init creates config', fs.existsSync(path.join(project, '.agenticsupercharge/config.json')));
+check('init creates preferences tracker', fs.existsSync(path.join(project, '.agenticsupercharge/preferences.md')));
 check('init creates research log', fs.existsSync(path.join(project, '.agenticsupercharge/research.md')));
 check('init creates knowledge vault', fs.existsSync(path.join(project, '.agenticsupercharge/knowledge')));
 check('init creates knowledge index', fs.existsSync(path.join(project, '.agenticsupercharge/knowledge-index.json')));
 check('config includes knowledge autosummarize default', JSON.parse(fs.readFileSync(path.join(project, '.agenticsupercharge/config.json'), 'utf8')).knowledge_autosummarize === 'ask');
 check('research log includes objectivity mandate', fs.readFileSync(path.join(project, '.agenticsupercharge/research.md'), 'utf8').includes('objective, evidence-based standpoint'));
+check('preferences tracker includes do-not guidance', fs.readFileSync(path.join(project, '.agenticsupercharge/preferences.md'), 'utf8').includes('do-not rules'));
 check('init gitignores workflow', fs.readFileSync(path.join(project, '.gitignore'), 'utf8').includes('.agenticsupercharge/'));
 
 const knowledgeDir = path.join(project, '.agenticsupercharge/knowledge');
@@ -76,6 +78,23 @@ const missingResearch = workflow.doctor({ projectDir: project });
 check('doctor detects missing research log', missingResearch.issues.some((issue) => issue.includes('research.md')));
 workflow.initWorkflow({ projectDir: project, reason: 'restore research' });
 check('init restores missing research log without overwriting other workflow files', fs.existsSync(researchPath));
+
+const preferencesPath = path.join(project, '.agenticsupercharge/preferences.md');
+fs.rmSync(preferencesPath);
+const missingPreferences = workflow.doctor({ projectDir: project });
+check('doctor detects missing preferences tracker', missingPreferences.issues.some((issue) => issue.includes('preferences.md')));
+workflow.initWorkflow({ projectDir: project, reason: 'restore preferences' });
+check('init restores missing preferences tracker without overwriting other workflow files', fs.existsSync(preferencesPath));
+
+fs.writeFileSync(path.join(project, '.DS_Store'), 'finder noise');
+fs.writeFileSync(path.join(project, 'sources.lock.json'), '{"local":"install metadata"}\n');
+fs.mkdirSync(path.join(project, 'nested/.agenticsupercharge'), { recursive: true });
+fs.writeFileSync(path.join(project, 'nested/.agenticsupercharge/state.md'), '# nested state\n');
+workflow.resync({ projectDir: project, apply: true });
+const indexedAfterDsStore = JSON.parse(fs.readFileSync(path.join(project, '.agenticsupercharge/file-index.json'), 'utf8'));
+check('resync ignores .DS_Store files', !indexedAfterDsStore.files.some((entry) => entry.path.endsWith('.DS_Store')));
+check('resync ignores sources.lock.json install metadata', !indexedAfterDsStore.files.some((entry) => entry.path === 'sources.lock.json'));
+check('resync ignores nested AS-Workflow folders', !indexedAfterDsStore.files.some((entry) => entry.path.includes('/.agenticsupercharge/')));
 
 const status = workflow.status({ projectDir: project });
 check('status reports initialized', status.initialized === true);

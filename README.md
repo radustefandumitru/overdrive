@@ -75,19 +75,17 @@ At first it may say AS-Workflow is not initialized. That is normal. A `.agentics
 
 You do not need to memorize every skill.
 
-Example prompt:
+The global instructions tell the agent to do a lightweight skill check. The router might choose different skills depending on the work:
 
-```text
-Build a premium Next.js landing page with smooth scroll-based animation and run a browser check.
-```
+| You ask | The router might use |
+|---|---|
+| "Review this for security holes before I deploy." | `security-review` |
+| "Make this drawer feel smooth and natural." | `fluid-animations` + `emil-animation-polish` |
+| "Find and fix problems in my React app." | `react-doctor` |
+| "SEO-audit my site before launch." | `jack-seo-launch-audit` |
+| "Design a premium landing page and verify it in-browser." | `design-taste-frontend` + `impeccable` + `playwright-cli` |
 
-The global instructions tell the agent to do a lightweight skill check. The router might choose:
-
-```text
-design-taste-frontend -> emil-design-eng -> fluid-animations -> playwright-cli
-```
-
-Then the agent uses those skills while doing the work.
+Then the agent loads only the relevant skill bodies while doing the work. For complex requests, it can use more skills in phases; for simple requests, the router should stay quiet.
 
 You can also name a skill directly:
 
@@ -139,7 +137,7 @@ The current manifest contains 131 unique skills.
 | Code health | React diagnostics through `react-doctor`, plus planning/security/browser checks when the task needs them. |
 | Objective review | `what-should-i-consider` pressure-tests plans for hidden assumptions, architecture risks, and missing decisions. |
 | Media utilities | `media-download` wraps `yt-dlp` for user-requested MP3 and high-quality MP4 downloads. |
-| Project memory | AS-Workflow local state, knowledge vault, route traces, file hashes, checkpoints, and workflow health checks. |
+| Project memory | AS-Workflow local state, preferences, knowledge vault, route traces, file hashes, checkpoints, and workflow health checks. |
 
 For a compact map of the whole library, see [`SKILLS_TLDR.md`](SKILLS_TLDR.md). For the full inventory, see [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md).
 
@@ -185,7 +183,7 @@ When supported agents do meaningful project work, they can create:
 .agenticsupercharge/
 ```
 
-That folder stores concise project state, active work, decisions, research notes, file hashes, route traces, reports, handoff checkpoints, and an optional reference-doc knowledge vault. It is local runtime state and is added to `.gitignore` by default.
+That folder stores concise project state, active work, decisions, preferences, research notes, file hashes, route traces, reports, handoff checkpoints, and an optional reference-doc knowledge vault. It is local runtime state and is added to `.gitignore` by default.
 
 The knowledge vault is intentionally boring:
 
@@ -399,6 +397,7 @@ Power-user and maintainer docs:
 | [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md) | Full human-readable skill inventory. |
 | [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
 | [`docs/as-workflow.md`](docs/as-workflow.md) | Local project-state workflow, commands, hooks, and disable behavior. |
+| [`docs/prompt-caching.md`](docs/prompt-caching.md) | How AgenticSupercharge stays friendly to prompt-cache reuse. |
 | [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
 | [`docs/catalog-health.md`](docs/catalog-health.md) | Local route-analysis output for maintainers. |
 | [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
@@ -416,6 +415,8 @@ Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste
 v0.6 product-design and motion additions credit [Jamie Mill's Layers of Product Design skills](https://github.com/jamiemill/layers-skills) and [Layers site](https://layers.jamiemill.com), [Andrew Prifer's liquid-dom](https://github.com/AndrewPrifer/liquid-dom) as Liquid Glass inspiration, [kube.io's CSS/SVG Liquid Glass technique](https://kube.io/blog/liquid-glass-css-svg/), [`naughtyduk/liquidGL`](https://github.com/naughtyduk/liquidGL) as an optional license-checked WebGL reference, [@gabriell_lab's proximity-hover pattern](https://x.com/gabriell_lab/status/2060336070059864461), [@baptistebriel's rect-caching performance note](https://x.com/baptistebriel/status/2060351541345681851), [@mannupaaji's scroll-state navbar pattern](https://x.com/mannupaaji/status/2060025609867387239), and the [Chrome CSS scroll-state queries writeup](https://developer.chrome.com/blog/css-scroll-state-queries).
 
 v0.7 knowledge and token-efficiency additions credit [Microsoft MarkItDown](https://github.com/microsoft/markitdown) for the optional document-to-Markdown conversion pipeline and [Browserbase skills](https://github.com/browserbase/skills) as an optional documented connector. Reddit research uses public read-only Reddit endpoints only and does not bundle credentials or Reddit code.
+
+v0.8 context-efficiency guidance credits [Andre Kreidemann's prompt-caching writeup](https://kreidemann.com/blog/prompt-caching), [Sankalp Shubham's prompt-caching walkthrough](https://sankalp.bearblog.dev/how-prompt-caching-works/), and [Sam Rose / ngrok's prompt-caching article](https://ngrok.com/blog/prompt-caching). The guidance is paraphrased; no article text is redistributed.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

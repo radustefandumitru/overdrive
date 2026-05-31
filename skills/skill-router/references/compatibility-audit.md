@@ -47,7 +47,7 @@ Never copy API keys, OAuth tokens, MCP secrets, service-role keys, database URLs
 
 ## Context Bloat Rule
 
-Skills are cheap at metadata level but expensive when full bodies and references are loaded. Prefer one primary skill plus one or two support skills. Use `skill-router` to name the sequence, then load only the chosen skill bodies.
+Skills are cheap at metadata level but expensive when full bodies and references are loaded. Prefer one primary skill plus focused support skills, phased when the work is broad; there is no hard cap when each skill has a clear job. Use `skill-router` to name the sequence, then load only the chosen skill bodies.
 
 ## Approval Rule
 

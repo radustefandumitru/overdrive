@@ -4,6 +4,14 @@
 
 - No unreleased changes.
 
+## v0.8.0 - 2026-05-31
+
+- Added prompt-cache-friendly guidance and `docs/prompt-caching.md` while keeping caching controlled by the host runtime/harness.
+- Added AS-Workflow `preferences.md` for lightweight per-project do-not rules and durable user preferences, with init/doctor/test coverage.
+- Strengthened global instructions for lean context, escalating ~60% / ~75% / ~85-90% context-budget heads-ups, native plan-mode versus `clarify-and-plan`, and native orchestration instead of custom orchestrators.
+- Kept the catalog at 131 unique skills: v0.8 adds no new skills and keeps context skills router-selectable rather than always-on.
+- Updated README examples, router/catalog guidance, attribution, and consistency checks for the context-efficiency release.
+
 ## v0.7.0 - 2026-05-31
 
 - Added AS-Workflow knowledge vault support with `.agenticsupercharge/knowledge/`, `.agenticsupercharge/knowledge-index.json`, `knowledge_autosummarize`, `agentic-supercharge knowledge`, doctor coverage, and workflow tests.

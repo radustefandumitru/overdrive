@@ -47,3 +47,4 @@ The links below are credited sources and provenance references for local skills,
 | MarkItDown token pipeline | Microsoft | https://github.com/microsoft/markitdown |
 | Browserbase optional connector | Browserbase; amplified by @iam_elias1 | https://github.com/browserbase/skills · https://x.com/iam_elias1/status/2059274512408162520 |
 | Reddit research | Reddit public read-only endpoints | public `*.json` endpoints such as subreddit search and comments JSON; no credentials bundled |
+| Prompt-caching guidance | Andre Kreidemann; Sankalp Shubham; Sam Rose / ngrok | https://kreidemann.com/blog/prompt-caching · https://sankalp.bearblog.dev/how-prompt-caching-works/ · https://ngrok.com/blog/prompt-caching |

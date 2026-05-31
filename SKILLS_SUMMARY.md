@@ -10,7 +10,7 @@ They do not need to manually link each skill. The only manual step is restarting
 
 This kit is upstream-first, pinned by default, and target-aware: normal installs pull third-party skills from verified GitHub refs or pinned official npm installers, then install only into selected/detected targets using a non-destructive conflict policy. Public releases do not ship vendored third-party skill snapshots.
 
-AS-Workflow is the non-skill project-state layer added in v0.4 and expanded in v0.7. It creates a local, gitignored `.agenticsupercharge/` folder for active work, decisions, file hashes, route traces, reports, handoffs, and a small knowledge vault. Skills teach the agent how to do work; AS-Workflow helps it remember what is happening in a specific project.
+AS-Workflow is the non-skill project-state layer added in v0.4 and expanded through v0.8. It creates a local, gitignored `.agenticsupercharge/` folder for active work, decisions, preferences, research, file hashes, route traces, reports, handoffs, and a small knowledge vault. Skills teach the agent how to do work; AS-Workflow helps it remember what is happening in a specific project without bloating every prompt.
 
 ## Source Families
 
@@ -41,9 +41,9 @@ AS-Workflow is the non-skill project-state layer added in v0.4 and expanded in v
 ## How The Skills Work Together
 
 - Start with `skill-router` as the default lightweight preflight for non-trivial requests; it should pick the minimum relevant skill sequence rather than loading everything. Complex tasks can use more skills when phased clearly.
-- Use AS-Workflow as local project memory when `.agenticsupercharge/` exists: read only the state, active work, or relevant knowledge-vault index entry that helps the task, and use `status`, `doctor`, `resync`, `knowledge`, or `checkpoint` when continuation/health/handoff/reference-doc indexing matters.
-- Global/project instructions add always-on behavior across Claude Code, Codex, Gemini CLI, Antigravity, and local project agents: think before coding, keep solutions simple, make surgical changes, verify against explicit goals, consult `skill-router` before non-trivial work, and use Context7 for current docs when it fits the task.
-- Clarification and planning: `clarify-and-plan` handles ambiguity, assumptions, options, and phase boundaries. `planning-first` wraps complex non-Claude coding work in Explore -> Plan -> Implement -> Verify. Claude Code users can prefer native `/model opusplan` and `/ultraplan`.
+- Use AS-Workflow as local project memory when `.agenticsupercharge/` exists: read only the state, preferences, active work, or relevant knowledge-vault index entry that helps the task, and use `status`, `doctor`, `resync`, `knowledge`, or `checkpoint` when continuation/health/handoff/reference-doc indexing matters.
+- Global/project instructions add always-on behavior across Claude Code, Codex, Gemini CLI, Antigravity, and local project agents: think before coding, keep solutions simple, make surgical changes, keep context lean, verify against explicit goals, consult `skill-router` before non-trivial work, and use Context7 for current docs when it fits the task.
+- Clarification and planning: `clarify-and-plan` handles ambiguity, assumptions, options, and phase boundaries. `planning-first` wraps complex non-Claude coding work in Explore -> Plan -> Implement -> Verify. Claude Code users can prefer native `/model opusplan` and `/ultraplan`, but should not run duplicate planning passes.
 - Security and launch: Claude Code should use native `/security-review`; other agents use the portable `security-review` skill. `pre-launch-checklist` covers product/business launch readiness and pairs with focused security, SEO, marketing, or browser checks.
 - Research and onboarding: `last30days` handles recent community/social research; `reddit-research` handles explicit Reddit/subreddit public signal; `app-onboarding-questionnaire` handles questionnaire-style app onboarding flows before implementation.
 - Product design layers: `layers-intro` plus the narrow `layers-*` skill helps agents reason about observed behaviour, domain language, user needs, product strategy, conceptual models, interaction flows, and surface decisions before jumping into implementation.

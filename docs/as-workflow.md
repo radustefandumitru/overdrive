@@ -15,6 +15,7 @@ On the first meaningful project task, supported agents may create:
   architecture.md
   constraints.md
   decisions.md
+  preferences.md
   research.md
   changelog.md
   config.json
@@ -56,9 +57,10 @@ If `agentic-supercharge` is not on your `PATH`, installed hooks and slash comman
 - Prompt/tool hooks may initialize the folder for non-trivial project work.
 - The status line, where supported, shows a compact AS-Workflow health hint.
 - `skill-router` can append short route traces to `routes.jsonl` when the workflow exists.
+- `preferences.md` records durable user preferences and do-not rules, such as repeated corrections or "never do X" instructions. Keep it short, dated, and free of secrets.
 - `research.md` is a short project research log for objective findings, sources, and challenged assumptions.
 - `knowledge/` is a local reference-doc vault. Drop project/business docs there, run `agentic-supercharge knowledge --apply`, then agents inspect `knowledge-index.json` and load only relevant files or markdown caches.
-- Durable user preferences and decisions belong in `decisions.md`; if a new statement contradicts recorded state, the agent should surface the conflict before overwriting it.
+- Durable product and architecture decisions belong in `decisions.md`; durable user preferences belong in `preferences.md`. If a new statement contradicts recorded state, the agent should surface the conflict before overwriting it.
 
 Hooks are advisory. They must exit successfully, avoid secrets, and never block the agent.
 
@@ -85,6 +87,19 @@ The intended use is cheap lookup first:
 2. Pick the specific relevant file or `markdownCache`.
 3. Load only that file.
 4. Keep summaries short and current when they are genuinely useful.
+
+## Preferences
+
+`preferences.md` is the lightweight "please do not repeat this" file.
+
+Use it when the user:
+
+- says they dislike a behavior or output style,
+- says "never do X",
+- repeats the same correction,
+- shows clear frustration about a pattern the agent can avoid.
+
+Do not use it for secrets, credentials, private personal data, temporary mood, or project facts that belong in `state.md`, `constraints.md`, or `decisions.md`. If a preference contradicts an existing decision or constraint, ask before recording it.
 
 ## Disable It
 

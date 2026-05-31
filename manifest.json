@@ -2,7 +2,7 @@
   "version": 6,
   "name": "agentic-supercharge",
   "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
-  "schemaDescription": "Schema version 6 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, router smoke checks, and AS-Workflow runtime/knowledge-vault metadata.",
+  "schemaDescription": "Schema version 6 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, router smoke checks, and AS-Workflow runtime, preferences, and knowledge-vault metadata.",
   "asWorkflow": {
     "version": 1,
     "projectStateDir": ".agenticsupercharge",

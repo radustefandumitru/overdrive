@@ -25,6 +25,7 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Current docs or APIs | Context7 guidance in global instructions | `modern-web-guidance` for browser/platform decisions |
 | Browser validation | `playwright-cli` | OpenAI `playwright` wrapper as fallback; screenshots, snapshots, responsive checks, UI flow checks |
 | Discover more skills | `find-skills` | only when the user asks to find, compare, or install additional skills |
+| Context or token efficiency | `context-optimization` | `context-compression` only after user approval; AS-Workflow preferences/knowledge files when local project memory helps |
 | Obsidian-adjacent files/research | `json-canvas`, `defuddle` | broader vault operations need a dedicated user/project Obsidian setup |
 | Image/video/media workflows | `banana`, Remotion skills, `media-download` | approval-gated external tools where configured; `yt-dlp` for downloads |
 | Slack GIF or emoji animation | `slack-gif-creator` | Banana/image tooling only if a custom source image is needed |

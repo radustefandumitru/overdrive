@@ -94,7 +94,7 @@ const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.7.0 or newer', isAtLeastVersion(pkg.version, '0.7.0'), `found ${pkg.version}`);
+check('package version is 0.8.0 or newer', isAtLeastVersion(pkg.version, '0.8.0'), `found ${pkg.version}`);
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
@@ -206,10 +206,14 @@ check('README mentions Liquid Glass Web', /liquid-glass-web/i.test(readme) || /L
 check('README explains knowledge vault', /knowledge vault/i.test(readme) && /knowledge-index\.json/.test(readme));
 check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
+check('README links prompt caching doc', /docs\/prompt-caching\.md/.test(readme));
+check('README shows varied router examples', /security-review/.test(readme) && /react-doctor/.test(readme) && /jack-seo-launch-audit/.test(readme));
 check('README credits Layers source links', readme.includes('https://github.com/jamiemill/layers-skills') && readme.includes('https://layers.jamiemill.com'));
 check('README credits Liquid Glass provenance links', readme.includes('https://github.com/AndrewPrifer/liquid-dom') && readme.includes('https://kube.io/blog/liquid-glass-css-svg/') && readme.includes('https://github.com/naughtyduk/liquidGL'));
 check('README credits v0.6 motion provenance links', readme.includes('https://x.com/gabriell_lab/status/2060336070059864461') && readme.includes('https://x.com/baptistebriel/status/2060351541345681851') && readme.includes('https://x.com/mannupaaji/status/2060025609867387239'));
 check('README credits v0.7 sources', readme.includes('https://github.com/microsoft/markitdown') && readme.includes('https://github.com/browserbase/skills'));
+check('README credits prompt-caching sources', readme.includes('https://kreidemann.com/blog/prompt-caching') && readme.includes('https://sankalp.bearblog.dev/how-prompt-caching-works/') && readme.includes('https://ngrok.com/blog/prompt-caching'));
+check('prompt caching doc exists', exists('docs/prompt-caching.md'));
 
 const skillReadiness = read('docs/skill-readiness.md');
 check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 131/.test(skillReadiness));
@@ -236,8 +240,15 @@ for (const file of globalInstructionFiles) {
   check(`${file} includes natural status trigger`, text.includes('When the user asks "show status"'));
   check(`${file} includes decision contradiction guidance`, text.includes('contradicts a recorded decision or constraint'));
   check(`${file} includes loop frustration stop guidance`, text.includes('oscillating fix loop'));
-  check(`${file} includes parallel subagent guidance`, text.includes('parallel subagents with clear, scoped context'));
+  check(`${file} includes native orchestration guidance`, text.includes('runtime\'s native orchestration'));
   check(`${file} includes model/planning knob honesty`, text.includes('does not auto-switch models across providers'));
+  check(`${file} includes native plan mode vs clarify guidance`, text.includes('`clarify-and-plan` adds requirement and ambiguity clarification'));
+  check(`${file} includes prompt-cache stability guidance`, text.includes('Prefer stable, front-loaded context'));
+  check(`${file} includes lean context guidance`, text.includes('Keep context lean'));
+  check(`${file} includes vague request sharpening guidance`, text.includes('sharpen the goal'));
+  check(`${file} includes escalating context budget bands`, text.includes('~60%+ (caution)') && text.includes('~75%+ (warning)') && text.includes('~85-90%+ (red zone)'));
+  check(`${file} includes per-band re-prompt guidance`, text.includes('crosses each new band'));
+  check(`${file} includes preferences tracker guidance`, text.includes('preferences.md'));
   check(`${file} credits Boris/Anatoli prompt-line principles`, text.includes('Boris Cherny') && text.includes('@AnatoliKopadze'));
 }
 
@@ -266,6 +277,9 @@ for (const link of [
   'https://x.com/mannupaaji/status/2060025609867387239',
   'https://github.com/microsoft/markitdown',
   'https://github.com/browserbase/skills',
+  'https://kreidemann.com/blog/prompt-caching',
+  'https://sankalp.bearblog.dev/how-prompt-caching-works/',
+  'https://ngrok.com/blog/prompt-caching',
 ]) {
   check(`VERIFIED_SOURCES includes attribution link ${link}`, verifiedRaw.includes(link));
 }
@@ -295,6 +309,9 @@ for (const link of [
   'https://x.com/mannupaaji/status/2060025609867387239',
   'https://github.com/microsoft/markitdown',
   'https://github.com/browserbase/skills',
+  'https://kreidemann.com/blog/prompt-caching',
+  'https://sankalp.bearblog.dev/how-prompt-caching-works/',
+  'https://ngrok.com/blog/prompt-caching',
 ]) {
   check(`THIRD_PARTY_NOTICES includes attribution link ${link}`, thirdPartyRaw.includes(link));
 }
@@ -312,6 +329,7 @@ const routerSkill = read('skills/skill-router/SKILL.md');
 const routerCatalog = read('skills/skill-router/references/catalog.md');
 check('skill-router links routing trace examples', /routing-trace-examples\.md/.test(routerSkill));
 check('skill-router allows flexible skill sequences', /no hard cap/i.test(routerSkill) || /as many skills/i.test(routerSkill));
+check('skill-router documents deterministic sequence order', /stable, deterministic ordering/.test(routerSkill));
 check('skill-router mentions AS-Workflow route trace helper', /routes\.jsonl/.test(routerSkill));
 check('skill-router documents Layers routing', /layers-intro/.test(routerSkill) && /layers-conceptual-model/.test(routerSkill));
 check('skill-router documents Liquid Glass routing', /liquid-glass-web/.test(routerSkill) && /Tier 1/.test(routerSkill));
@@ -326,11 +344,14 @@ for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-mod
 
 const asWorkflow = read('lib/as-workflow.js');
 check('AS-Workflow required files include research.md', /requiredFiles[\s\S]*research\.md/.test(asWorkflow));
+check('AS-Workflow required files include preferences.md', /requiredFiles[\s\S]*preferences\.md/.test(asWorkflow));
 check('AS-Workflow required files include knowledge-index.json', /requiredFiles[\s\S]*knowledge-index\.json/.test(asWorkflow));
 check('AS-Workflow required dirs include knowledge', /requiredDirs[\s\S]*knowledge/.test(asWorkflow));
 check('AS-Workflow config includes knowledge_autosummarize', /knowledge_autosummarize/.test(asWorkflow));
 check('AS-Workflow exports knowledge helper', /function knowledge/.test(asWorkflow) && /module\.exports[\s\S]*knowledge/.test(asWorkflow));
 check('AS-Workflow seeds research objectivity mandate', /objective, evidence-based standpoint/.test(asWorkflow));
+check('AS-Workflow seeds preferences do-not guidance', /do-not rules/.test(asWorkflow));
+check('AS-Workflow hook context avoids volatile issue counts', !/Workflow doctor currently reports/.test(asWorkflow));
 check('AS-Workflow exports recordDecision helper', /recordDecision/.test(asWorkflow) && /module\.exports[\s\S]*recordDecision/.test(asWorkflow));
 
 const mcpDocs = read('MCP_AND_CONNECTORS.md');

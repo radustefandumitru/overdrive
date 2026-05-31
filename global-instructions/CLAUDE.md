@@ -54,11 +54,12 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 
 ## Planning Workflows
 
-- For multi-step coding work in Claude Code, prefer `/model opusplan`; for complex multi-system tasks, use `/ultraplan`. Do not use these for trivial one-line fixes or factual questions.
+- Use the runtime's native plan mode where available, such as Claude Code plan mode with `/model opusplan`; for complex Claude multi-system tasks, use `/ultraplan`. Do not use these for trivial one-line fixes or factual questions.
+- `clarify-and-plan` adds requirement and ambiguity clarification that native plan modes do not force, and `planning-first` is the planning layer for agents without a native plan mode. Do not run two redundant planning passes: clarify, then plan, then build.
 - When Claude Code native review commands are available, use `/security-review` for security audits and `/code-review` for general code review.
 - For Codex, Cursor, Gemini CLI, Antigravity, shared `.agents`, or project-local agents, use the `planning-first` skill for complex multi-file work when no native planning mode is available.
 - For complex multi-step work, use the runtime's planning or model knob when available. AgenticSupercharge does not auto-switch models across providers; apply Claude Code `/model opusplan` or `/ultraplan`, Codex reasoning/model options, Gemini planning/model options, or Cursor model choices deliberately.
-- When a task has independent parts, consider parallel subagents with clear, scoped context and use `multi-agent-patterns` when useful. Prefer cheaper or faster models for simple subtasks where the runtime supports that choice; do not assume every agent has subagents or per-task model routing.
+- For large, decomposable tasks, use the runtime's native orchestration where available, such as Claude dynamic workflows / Task subagents or Codex Goals, to run independent subtasks in parallel with clean contexts; lean on `multi-agent-patterns`. Do not build a custom orchestrator. Prefer cheaper or faster models for simple subtasks where the runtime supports that choice; do not assume every agent has subagents or per-task model routing.
 
 ## Context7 Documentation
 
@@ -75,6 +76,10 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - When `skill-router` is only a setup step, name the chosen skill sequence briefly, then proceed with the task.
 - For tiny factual answers, casual conversation, or obvious one-command requests, skip visible routing unless a matching skill is clearly useful.
 - Do not load the full skill catalog by default. Load only the smallest useful skill set. Complex work may use more than three skills when genuinely needed, preferably phased instead of all at once.
+- Keep context lean: after a verbose tool output has been used, summarize or mask it rather than re-reading it; do not re-paste large unchanged content.
+- Prefer stable, front-loaded context: keep skills, instructions, and workflow state early and unchanged across turns so the harness's prompt cache stays warm; put the changing request last.
+- For a vague or underspecified request, sharpen the goal or ask one clarifying question before executing; do not silently guess.
+- Keep `context-optimization`, `context-compression`, and `clarify-and-plan` router-selectable for deep work; do not load them as always-on skills.
 - Keep global context small. Put project facts in project files and detailed workflows in skills.
 
 ## AS-Workflow
@@ -82,6 +87,8 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - If `.agenticsupercharge/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
 - Read `.agenticsupercharge/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
 - If `.agenticsupercharge/knowledge-index.json` exists and the task could benefit from local reference docs, inspect the index first, then load only the specific relevant source file or `markdownCache`. Do not dump the whole knowledge vault into context.
+- If `.agenticsupercharge/preferences.md` exists, read it at the start of meaningful work when it could prevent repeating prior mistakes.
+- When the user expresses a dislike, says "never do X", repeats a correction, or shows clear frustration, append a short dated rule to `.agenticsupercharge/preferences.md` when the workflow exists. If the new preference contradicts existing workflow state, ask before recording it. Keep it lightweight and never store secrets or sensitive data.
 - For local PDFs, Office files, spreadsheets, HTML exports, or data files, prefer `convert-to-markdown`/MarkItDown before reading when it would reduce tokens or preserve structure.
 - After meaningful multi-step work, keep workflow notes short and current when practical: state, decisions, progress, route trace, or checkpoint.
 - When the user states a durable preference, constraint, or decision, append a short dated note to `.agenticsupercharge/decisions.md` when the workflow exists. If the new statement contradicts a recorded decision or constraint, surface the conflict and ask before overwriting it.
@@ -92,9 +99,13 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 
 ## Context Budget
 
-- Monitor remaining context as work progresses. When estimated remaining context drops below about 40% of the model window, or earlier if large tool outputs are accumulating, surface a brief in-chat choice: compact prior conversation with `context-compression`, start a fresh session with a handoff file, or continue as-is.
-- If the user chooses compact, invoke `context-compression`, then restate the active goal and verification checkpoints in 2-3 lines.
+- Monitor estimated context use and re-check it on each substantial new request. Surface a brief, escalating heads-up as usage climbs, and re-surface it each time it crosses into a higher band, not just once:
+  - ~60%+ (caution): note that context is getting heavy; offer to compact/summarize (`context-compression` or the runtime's native compaction), start a fresh session with a handoff, or continue, especially before a big multi-step task.
+  - ~75%+ (warning): raise it again, more firmly. Recommend compacting or a fresh handoff before the next big step.
+  - ~85-90%+ (red zone): strongly urge compaction or a fresh session now, before continuing; instruction-following and output quality degrade sharply here.
+- Re-prompt when usage crosses each new band, even if the user previously chose to continue. Keep it brief, without nagging again within the same band.
+- If the user chooses compact, invoke `context-compression` or native compaction, then restate the active goal and verification checkpoints in 2-3 lines.
 - If the user chooses a fresh session, write a short handoff file with the active goal, key decisions, files touched, and next steps.
-- If the user chooses to continue, proceed normally and do not re-prompt unless context grows substantially further, such as past roughly 75% used.
+- Defer to the runtime's native compaction where it exists; this is a proactive prompt-level heads-up, not custom memory machinery.
 - Never compress silently. Compression loses detail, so the user should always consent.
 <!-- ai-skill-setup:global-guidelines:end -->
