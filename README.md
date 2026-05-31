@@ -120,7 +120,7 @@ The important split:
 
 ## What You Get
 
-The current manifest contains 131 unique skills.
+The current manifest contains 132 unique skills.
 
 | Area | What it helps with |
 |---|---|
@@ -134,6 +134,7 @@ The current manifest contains 131 unique skills.
 | Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
 | Browser validation | Playwright-based screenshots, flow checks, responsive checks, and browser debugging. |
 | Knowledge work | Docs, specs, MCP building, recent research, Reddit community signal, local document-to-Markdown conversion, context-management skills, JSON Canvas, and clean web-to-markdown extraction. |
+| Codebase intelligence | Optional Graphify-powered code/corpus relationship mapping for "how does this codebase fit together?" and "what connects X to Y?" questions. |
 | Code health | React diagnostics through `react-doctor`, plus planning/security/browser checks when the task needs them. |
 | Objective review | `what-should-i-consider` pressure-tests plans for hidden assumptions, architecture risks, and missing decisions. |
 | Media utilities | `media-download` wraps `yt-dlp` for user-requested MP3 and high-quality MP4 downloads. |
@@ -158,6 +159,7 @@ Examples:
 - `pre-launch-checklist` for release readiness.
 - `convert-to-markdown` for local PDFs, Office docs, spreadsheets, and data files.
 - `reddit-research` for public Reddit/community signal.
+- `graphify` for optional codebase or mixed-corpus graph intelligence.
 
 ### 2. Skill Router
 
@@ -202,6 +204,8 @@ agentic-supercharge knowledge --apply
 The CLI indexes file paths, hashes, sizes, titles, and cached Markdown paths. It does not call a model or create embeddings. Agents can later inspect `knowledge-index.json`, choose the relevant file, and load only that source or its Markdown cache. This is the local, file-based version of "project knowledge" without telemetry or cloud sync.
 
 AS-Workflow is intentionally conservative. A simple factual question should not initialize project state. Hooks only provide lightweight reminders or update local workflow files; if a hook fails, the agent should keep going.
+
+Graphify is separate from AS-Workflow. AS-Workflow remembers local project state, decisions, route traces, and reference docs; Graphify is for on-demand queryable knowledge graphs over a codebase or mixed corpus. AgenticSupercharge does not install Python packages automatically. If a user wants Graphify-backed analysis, they can install it themselves with `pip install graphifyy` or `pip install 'graphifyy[pdf]'`, and agents fall back to normal `rg`/file reads when Graphify is unavailable.
 
 Useful commands:
 
@@ -417,6 +421,8 @@ v0.6 product-design and motion additions credit [Jamie Mill's Layers of Product 
 v0.7 knowledge and token-efficiency additions credit [Microsoft MarkItDown](https://github.com/microsoft/markitdown) for the optional document-to-Markdown conversion pipeline and [Browserbase skills](https://github.com/browserbase/skills) as an optional documented connector. Reddit research uses public read-only Reddit endpoints only and does not bundle credentials or Reddit code.
 
 v0.8 context-efficiency guidance credits [Andre Kreidemann's prompt-caching writeup](https://kreidemann.com/blog/prompt-caching), [Sankalp Shubham's prompt-caching walkthrough](https://sankalp.bearblog.dev/how-prompt-caching-works/), and [Sam Rose / ngrok's prompt-caching article](https://ngrok.com/blog/prompt-caching). The guidance is paraphrased; no article text is redistributed.
+
+v0.9 code-intelligence additions credit [Safi Shamsi / Graphify](https://github.com/safishamsi/graphify) and [graphify.net](https://graphify.net). AgenticSupercharge installs an MIT-allowed, safety-adapted Graphify skill from a pinned commit. It does not bundle the `graphifyy` package, Python dependencies, Neo4j, MCP servers, PDFs extras, or Graphify runtime state.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

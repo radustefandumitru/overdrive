@@ -532,6 +532,22 @@
       ]
     },
     {
+      "id": "graphify",
+      "repo": "https://github.com/safishamsi/graphify.git",
+      "ref": "91f4d120b630ee35c79bf3c75ccd186870a808f9",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/graphify",
+          "to": "graphify",
+          "skillFile": "skill.md",
+          "transforms": [
+            "agentic-graphify-safe"
+          ]
+        }
+      ]
+    },
+    {
       "id": "anthropic-example-skills",
       "repo": "https://github.com/anthropics/skills.git",
       "ref": "690f15cac7f7b4c055c5ab109c79ed9259934081",
@@ -882,6 +898,18 @@
       "expected": [
         "layers-intro",
         "layers-interaction-flow"
+      ]
+    },
+    {
+      "prompt": "Map how this codebase fits together before I edit it",
+      "expected": [
+        "graphify"
+      ]
+    },
+    {
+      "prompt": "What connects this auth module to the database layer?",
+      "expected": [
+        "graphify"
       ]
     },
     {

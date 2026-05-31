@@ -4,6 +4,13 @@
 
 - No unreleased changes.
 
+## v0.9.0 - 2026-05-31
+
+- Added Safi Shamsi's MIT Graphify source pinned at `91f4d120b630ee35c79bf3c75ccd186870a808f9`, importing one optional `graphify` code/corpus intelligence skill.
+- Added installer support for upstream skills whose source file is lowercase `skill.md`, normalizing to installed `SKILL.md`.
+- Added a Graphify-specific safety transform that removes upstream Python auto-install behavior, preserves optional setup guidance for `pip install graphifyy` / `pip install 'graphifyy[pdf]'`, and teaches agents to fall back to normal repo exploration when Graphify is unavailable.
+- Updated `skill-router`, smoke checks, router benchmark cases, docs, third-party notices, verified sources, skill readiness, and consistency checks for the 132-skill v0.9 manifest.
+
 ## v0.8.0 - 2026-05-31
 
 - Added prompt-cache-friendly guidance and `docs/prompt-caching.md` while keeping caching controlled by the host runtime/harness.

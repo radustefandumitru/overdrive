@@ -1,6 +1,6 @@
 # Catalog Health
 
-Generated: 2026-05-31T13:50:42.330Z
+Generated: 2026-05-31T20:13:15.683Z
 
 This report is produced from local AS-Workflow route traces. It is maintainer infrastructure only: AgenticSupercharge does not collect user telemetry.
 
@@ -8,7 +8,7 @@ This report is produced from local AS-Workflow route traces. It is maintainer in
 
 - Requested paths: `./.agenticsupercharge/routes.jsonl`
 - Route files found: 1
-- Route entries: 4
+- Route entries: 6
 - Invalid JSONL lines: 0
 - No-skill matched rate: 0%
 - Scorecard cases recorded: 0
@@ -17,16 +17,16 @@ This report is produced from local AS-Workflow route traces. It is maintainer in
 
 | Skill | Count |
 | --- | --- |
-| skill-router | 4 |
-| planning-first | 3 |
-| superpowers:finishing-a-development-branch | 1 |
+| skill-router | 6 |
+| planning-first | 4 |
+| superpowers:finishing-a-development-branch | 2 |
 
 ## Common Skill Pairs
 
 | Pair | Count |
 | --- | --- |
-| planning-first + skill-router | 3 |
-| skill-router + superpowers:finishing-a-development-branch | 1 |
+| planning-first + skill-router | 4 |
+| skill-router + superpowers:finishing-a-development-branch | 2 |
 
 ## Review Candidates
 

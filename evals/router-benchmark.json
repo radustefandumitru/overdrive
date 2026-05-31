@@ -405,6 +405,38 @@
         "Separates observed pain-point patterns from recommendations.",
         "Cites source URLs/dates when browsing is available."
       ]
+    },
+    {
+      "id": "graphify-codebase-map",
+      "category": "code-intelligence",
+      "prompt": "Map how this codebase fits together before I edit the auth flow.",
+      "controlPrompt": "Map how this codebase fits together before I edit the auth flow.",
+      "routedPrompt": "Use skill-router first, then map how this codebase fits together before editing the auth flow.",
+      "expectedSkills": [
+        "graphify"
+      ],
+      "rubric": [
+        "Recognizes codebase relationship mapping as a Graphify-sized task rather than a simple grep.",
+        "Checks whether Graphify is available without installing Python packages automatically.",
+        "Falls back to normal repo exploration if Graphify is unavailable or setup is declined.",
+        "Returns an actionable architecture map before recommending edits."
+      ]
+    },
+    {
+      "id": "graphify-auth-db-relationship",
+      "category": "code-intelligence",
+      "prompt": "What connects this auth module to the database layer?",
+      "controlPrompt": "What connects this auth module to the database layer?",
+      "routedPrompt": "Use skill-router first, then explain what connects this auth module to the database layer.",
+      "expectedSkills": [
+        "graphify"
+      ],
+      "rubric": [
+        "Treats the request as a cross-file relationship query.",
+        "Uses Graphify when available to query code/doc relationships.",
+        "Avoids duplicating AS-Workflow knowledge-vault work unless project docs are explicitly relevant.",
+        "Cites concrete files, functions, imports, schemas, or routes when answering."
+      ]
     }
   ]
 }

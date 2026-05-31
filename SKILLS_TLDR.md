@@ -13,6 +13,7 @@ Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 | Recent market/community research | `last30days` | Context7 or official docs for library/API facts |
 | Reddit community signal | `reddit-research` | `last30days` for recency; customer-research/content strategy for synthesis |
 | Local PDF/Office/data docs | `convert-to-markdown` | AS-Workflow knowledge vault; `defuddle` for web pages |
+| Codebase or mixed-corpus relationship mapping | `graphify` | Normal `rg`/file reads if Graphify is unavailable; AS-Workflow knowledge vault for project memory/reference docs |
 | App questionnaire onboarding | `app-onboarding-questionnaire` | frontend/design skills after the onboarding blueprint is confirmed |
 | Pre-launch readiness | `pre-launch-checklist` | `security-review`, marketing skills, `jack-seo-launch-audit`, or `playwright-cli` for focused checks |
 | Premium frontend or landing page | `skill-router`, `design-taste-frontend`, `emil-design-eng` | `impeccable`, `modern-web-guidance`, `playwright-cli` |
