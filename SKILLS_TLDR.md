@@ -2,6 +2,8 @@
 
 Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 
+v0.11 makes a few optional helpers more plug-and-play: the installer may attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
+
 | Goal | Start With | Add When Needed |
 |---|---|---|
 | Ambiguous or broad task | `clarify-and-plan` | domain skill after assumptions/options are clear |

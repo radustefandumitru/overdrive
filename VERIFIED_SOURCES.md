@@ -31,6 +31,20 @@ Verified on: 2026-06-02
 | Composio Awesome Claude Skills | Git | `92568c1edaff1bde5371154f036d959346c145a8` | `master` | https://github.com/ComposioHQ/awesome-claude-skills |
 | Playwright CLI installer | npm | `@playwright/cli@0.1.13` | `@playwright/cli@latest` | https://github.com/microsoft/playwright-cli |
 
+## Optional Helper Tooling
+
+These are not vendored skill sources. v0.11 may invoke them on the user's machine during safe, non-privileged optional setup unless `--no-tool-install` is set.
+
+| Tool | Use | Version/pin policy | Upstream |
+|---|---|---|---|
+| graphifyy | Graphify CLI/package setup | `graphifyy==0.1.14` pinned by installer; Python 3.10-3.12 preferred for this dependency tree | https://github.com/safishamsi/graphify |
+| pipx | Preferred user-space Python CLI installer | Existing local tool if available | https://github.com/pypa/pipx |
+| Homebrew | macOS helper setup for `ffmpeg` / `yt-dlp` | Existing local tool if available | https://github.com/Homebrew/brew |
+| Windows Package Manager / winget | Windows helper setup for FFmpeg / yt-dlp | Existing local tool if available | https://github.com/microsoft/winget-cli |
+| FFmpeg | Video frame/metadata helper for `claude-video` | Package-manager version; no binaries bundled | https://ffmpeg.org/ |
+| yt-dlp | Media/caption helper for `media-download` and `claude-video` | Package-manager or pipx version; no binaries bundled | https://github.com/yt-dlp/yt-dlp |
+| Playwright Chromium | Browser fallback for `design-extract` when no system browser exists | Playwright-managed browser download; no browser bundled | https://github.com/microsoft/playwright |
+
 `sources.lock.json` records the exact refs, commits, packages, and install decisions for real local installs. It is intentionally ignored and excluded from public packages.
 
 ## Attribution And Provenance Links

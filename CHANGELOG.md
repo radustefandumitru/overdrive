@@ -4,6 +4,15 @@
 
 - No unreleased changes.
 
+## v0.11.0 - 2026-06-02
+
+- Changed the optional dependency policy from "document only" to "attempt safe setup during install, then fail open": Graphify, Claude Video/media helpers, and Design Extract browser support now get non-privileged installer attempts unless `--no-tool-install` is set.
+- Added installer support for `graphifyy==0.1.14` through `pipx` or a managed user-space virtualenv, never global `pip`, `sudo`, or `--break-system-packages`.
+- Added safe helper setup paths for `yt-dlp`, `ffmpeg`, and Design Extract browser support while preserving runtime preflights, manual fallback commands, and no API-key collection.
+- Updated Graphify router/instruction guidance to prefer an existing project graph for codebase relationship questions, recommend Graphify's own watch/git-hook freshness flow when stale, and avoid any AgenticSupercharge background graph daemon.
+- Strengthened global objectivity guidance against sycophancy and weak-premise feedback loops, including proactive challenge for consequential, ambiguous, or irreversible decisions.
+- Updated docs, third-party notices, readiness checks, router catalog, and consistency tests for the v0.11 plug-and-play dependency policy.
+
 ## v0.10.0 - 2026-06-02
 
 - Added four pinned MIT upstream skills: `prompt-master`, `humanizer`, `design-extract`, and `claude-video`, raising the manifest to 136 unique skills.

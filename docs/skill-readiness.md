@@ -1,6 +1,6 @@
 # Skill Readiness Audit
 
-AgenticSupercharge is plug-and-play for installation: the installer can place skills and global instructions without account setup. Some individual workflows still need optional tools, credentials, or app permissions before they can execute fully.
+AgenticSupercharge is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v0.11, it also attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
 
 ## Default Install Summary
 
@@ -26,7 +26,7 @@ These work immediately after install and agent reload because they are instructi
 - `fluid-animations`
 - `emil-animation-polish`
 - `liquid-glass-web`
-- `media-download` guidance, once `yt-dlp` is installed
+- `media-download` guidance, with installer-attempted `yt-dlp` setup when the skill is selected
 - `convert-to-markdown` guidance, with MarkItDown enhancement when installed
 - `reddit-research` guidance, with public Reddit access treated as best-effort
 - `prompt-master` prompt-writing guidance
@@ -45,9 +45,9 @@ These work immediately after install and agent reload because they are instructi
 | `react-doctor` | Node/npm and React Doctor package execution through `npx react-doctor@latest` | Useful only in React codebases; it may fetch the current React Doctor playbook on demand. |
 | `playwright-cli` | Node/npm and browser binaries | The official installer provides the skill; browser install may happen on first real use depending on the user's environment. |
 | `playwright` | Playwright CLI/runtime | OpenAI wrapper around Playwright-style automation; prefer `playwright-cli` for normal validation. |
-| `graphify` | Python 3.10+ and `pip install graphifyy`; optional PDF support with `pip install 'graphifyy[pdf]'` | Optional codebase/mixed-corpus graph intelligence. Agents should check availability, never auto-install, and fall back to normal `rg`/file reads if unavailable. |
-| `design-extract` | Node/designlang, Chrome/Chromium or Playwright, and public page access | Optional public website design-language extraction. Agents should check availability, prefer `--system-chrome`, never auto-install packages/browsers/extensions/MCPs, and fall back to screenshots/source inspection or user-provided brand details. |
-| `claude-video` | ffmpeg/ffprobe, yt-dlp, and optional Groq/OpenAI Whisper key for transcription | Optional video/screen-recording comprehension. Agents should run preflight checks only, never auto-install Homebrew/apt/winget/pip tools, never write API keys from chat, and fall back to frames-only/captions-only when needed. |
+| `graphify` | Python 3.10-3.12 preferred for the pinned `graphifyy==0.1.14` dependency tree; optional PDF support | Installer attempts `pipx install --python python3.12 graphifyy==0.1.14` when a compatible interpreter is available, or a managed user-space virtualenv. It never uses global `pip`, `sudo`, or `--break-system-packages`. Agents should check availability and fall back to normal `rg`/file reads if unavailable. |
+| `design-extract` | Node/designlang, Chrome/Chromium or Playwright, and public page access | Installer prefers an existing system Chrome/Chromium/Edge and only attempts Playwright Chromium when no system browser is found. Agents should check availability, prefer `--system-chrome`, avoid extensions/MCP/cookies/auth state, and fall back to screenshots/source inspection or user-provided brand details. |
+| `claude-video` | ffmpeg/ffprobe, yt-dlp, and optional Groq/OpenAI Whisper key for transcription | Installer attempts non-privileged `ffmpeg`/`yt-dlp` setup through Homebrew, winget, pipx, or managed venv paths where possible. Agents should run preflight checks, never write API keys from chat, and fall back to frames-only/captions-only when needed. |
 | `liquid-glass-web` Tier 3 | WebGL support and any adopted WebGL glass library license review | Tier 1 CSS works broadly; Tier 2 is Chromium-specific; Tier 3 needs browser/device testing and permissive license review. |
 | Composio/connect-style skills | User-configured connectors, auth, and explicit approval | Approval-gate external actions such as sending, posting, creating, deleting, authenticating, or spending credits. |
 | `langsmith-fetch` | LangSmith access and CLI/setup | Only useful if the user has LangSmith traces and credentials configured. |
@@ -65,5 +65,5 @@ Before broad edits to a real vault, create a git commit, vault snapshot, or Obsi
 ## Public-Safety Notes
 
 - The public kit does not copy MCP configs, OAuth state, tokens, browser profiles, `.env` files, or app sessions.
-- Optional MCPs and external tools are documented in `MCP_AND_CONNECTORS.md`, not installed by default.
+- Optional MCPs remain documented in `MCP_AND_CONNECTORS.md` and are not installed by default. The installer may attempt a narrow set of non-privileged external helper tools for selected bundled skills; pass `--no-tool-install` to skip that behavior.
 - If a skill requires account access or external side effects, the agent should ask before acting.

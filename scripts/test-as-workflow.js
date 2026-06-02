@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const installer = require('../lib/installer');
 const workflow = require('../lib/as-workflow');
 
 const failures = [];
@@ -27,6 +28,39 @@ function runNode(args, env = {}) {
   });
   check(`command exits 0: node ${args.join(' ')}`, result.status === 0, result.stderr || result.stdout);
   return result;
+}
+
+function fakeToolOps({ platform = 'darwin', commands = [], paths = [], installSucceeds = true } = {}) {
+  const commandSet = new Set(commands);
+  const pathSet = new Set(paths);
+  const calls = [];
+  return {
+    platform,
+    env: {},
+    calls,
+    commandExists: (cmd) => commandSet.has(cmd),
+    pathExists: (value) => pathSet.has(value),
+    runOptional: (cmd, args) => {
+      calls.push(['optional', cmd, ...args]);
+      if (/^python3(\.\d+)?$/.test(cmd) && args.join(' ').includes('sys.version_info')) return cmd === 'python3.14' ? '3.14' : '3.11';
+      if (/^python3(\.\d+)?$/.test(cmd) && args.join(' ').includes('import graphify') && commandSet.has('graphify')) return 'ok';
+      return null;
+    },
+    run: (cmd, args) => {
+      calls.push([cmd, ...args]);
+      if (!installSucceeds) throw new Error(`${cmd} failed in fake tool setup`);
+      if (cmd === 'pipx' && args.includes('graphifyy==0.1.14')) commandSet.add('graphify');
+      if (cmd === 'brew' && args.includes('ffmpeg')) {
+        commandSet.add('ffmpeg');
+        commandSet.add('ffprobe');
+      }
+      if ((cmd === 'brew' && args.includes('yt-dlp')) || (cmd === 'pipx' && args.includes('yt-dlp'))) {
+        commandSet.add('yt-dlp');
+      }
+      if (cmd === 'npx' && args.includes('chromium')) commandSet.add('chromium');
+      return '';
+    }
+  };
 }
 
 function collectInvalidCommandHooks(settings, file) {
@@ -174,6 +208,35 @@ const emptyUsage = workflow.usage({
   env: { ...process.env, CLAUDE_CONFIG_DIR: path.join(usageConfigDir, 'missing'), CODEX_HOME: usageCodexHome }
 });
 check('usage degrades cleanly when logs are absent', emptyUsage.ok === true && emptyUsage.totals.total === 0 && workflow.formatUsage(emptyUsage).includes('No Claude Code token usage entries'));
+
+const toolHome = fs.mkdtempSync(path.join(os.tmpdir(), 'as-tool-home-'));
+const toolCtx = installer.createContext({ dryRun: false, allowUpstreamDrift: false, conflict: 'preserve' }, { HOME: toolHome });
+const toolPlan = { skillTargets: [], instructions: [] };
+const selectedToolOptions = {
+  dryRun: false,
+  noToolInstall: false,
+  skipUpstream: false,
+  selectedSkillNames: new Set(['graphify', 'design-extract', 'claude-video', 'media-download'])
+};
+const successOps = fakeToolOps({ commands: ['python3.12', 'pipx', 'brew', 'npx'] });
+const successSetup = installer.setupOptionalTools(toolCtx, selectedToolOptions, toolPlan, successOps);
+check('optional tool setup can install selected tool helpers', successSetup.every((item) => ['installed', 'present'].includes(item.status)));
+check('optional tool setup invokes no sudo command', !successOps.calls.some((call) => call[0] === 'sudo'));
+check('optional tool setup never invokes global pip directly', !successOps.calls.some((call) => /^pip3?$/.test(call[0]) || call.includes('--break-system-packages')));
+
+const fallbackOps = fakeToolOps({ platform: 'linux', commands: [] });
+const fallbackSetup = installer.setupOptionalTools(toolCtx, selectedToolOptions, toolPlan, fallbackOps);
+check('optional tool setup falls back when package managers are absent', fallbackSetup.every((item) => item.status === 'fallback' && item.manualCommand));
+
+const tooNewPythonOps = fakeToolOps({ commands: ['python3.14'] });
+const tooNewPythonSetup = installer.setupOptionalTools(toolCtx, { ...selectedToolOptions, selectedSkillNames: new Set(['graphify']) }, toolPlan, tooNewPythonOps);
+check('Graphify setup avoids too-new Python when pinned deps are incompatible', tooNewPythonSetup[0].status === 'fallback' && /Python 3\.10-3\.12/.test(tooNewPythonSetup[0].reason));
+
+const skipSetup = installer.setupOptionalTools(toolCtx, { ...selectedToolOptions, noToolInstall: true }, toolPlan, fakeToolOps());
+check('optional tool setup respects --no-tool-install', skipSetup.every((item) => item.status === 'skipped'));
+
+const drySetup = installer.setupOptionalTools(toolCtx, { ...selectedToolOptions, dryRun: true }, toolPlan, fakeToolOps());
+check('optional tool setup dry-run writes no installs', drySetup.every((item) => item.status === 'would-attempt'));
 
 const decision = workflow.recordDecision({ projectDir: project, decision: 'Use compact dashboard cards by default.', rationale: 'User preference' });
 check('decision is recorded', decision.ok === true && fs.readFileSync(path.join(project, '.agenticsupercharge/decisions.md'), 'utf8').includes('Use compact dashboard cards by default.'));

@@ -55,6 +55,8 @@ cd AgenticSupercharge
 
 After installing, restart or reload your coding agent so it re-indexes the skill folders.
 
+By default, v0.11 also tries to set up a few optional helper tools when their skills are selected: Graphify (`graphifyy==0.1.14`), video helpers (`ffmpeg` and `yt-dlp`), and browser support for `design-extract`. These attempts are non-privileged, fail open, and never collect keys or write MCP/app config. Use `--no-tool-install` if you only want the skill files and instructions.
+
 ## Sanity Check
 
 If you installed from a clone, run:
@@ -112,6 +114,7 @@ On Cursor specifically, AgenticSupercharge installs into `~/.cursor/skills` and 
 | Skills | During install | Copies curated `SKILL.md` folders into the selected agent roots. |
 | Instruction blocks | During install | Adds a managed global guidance block while preserving user content outside the block. |
 | Runtime | During install | Writes a persistent helper at `~/.agentic-supercharge/runtime/current/` plus a CLI shim. |
+| Optional helper tools | During install, unless `--no-tool-install` is set | Attempts safe user-space setup for Graphify, video helpers, and browser support. Missing tools become warnings, not install failures. |
 | Hooks/commands/rules | During global install, where supported | Let supported agents call AS-Workflow. Hooks are advisory and fail open. |
 | Project state | During meaningful project work or explicit workflow commands | Creates local `.agenticsupercharge/` state and adds it to `.gitignore`. |
 
@@ -218,7 +221,7 @@ The CLI indexes file paths, hashes, sizes, titles, and cached Markdown paths. It
 
 AS-Workflow is intentionally conservative. A simple factual question should not initialize project state. Hooks only provide lightweight reminders or update local workflow files; if a hook fails, the agent should keep going.
 
-Graphify is separate from AS-Workflow. AS-Workflow remembers local project state, decisions, route traces, and reference docs; Graphify is for on-demand queryable knowledge graphs over a codebase or mixed corpus. AgenticSupercharge does not install Python packages automatically. If a user wants Graphify-backed analysis, they can install it themselves with `pip install graphifyy` or `pip install 'graphifyy[pdf]'`, and agents fall back to normal `rg`/file reads when Graphify is unavailable.
+Graphify is separate from AS-Workflow. AS-Workflow remembers local project state, decisions, route traces, and reference docs; Graphify is for on-demand queryable knowledge graphs over a codebase or mixed corpus. AgenticSupercharge attempts to set up `graphifyy==0.1.14` with `pipx` or a managed user-space virtualenv during install, preferring Python 3.10-3.12 because the pinned dependency tree may not build on newer Python releases yet. It never uses global `pip`, `sudo`, or `--break-system-packages`. If setup is skipped, fails, or is disabled with `--no-tool-install`, agents explain the manual setup and fall back to normal `rg`/file reads.
 
 Useful commands:
 
@@ -262,12 +265,15 @@ Cursor personal skills belong in `~/.cursor/skills`. This installer does not wri
 
 The installer also writes a persistent AS-Workflow runtime under `~/.agentic-supercharge/runtime/current/` so hooks do not depend on a temporary `npx` folder or a clone you might delete.
 
+When relevant skills are selected, it may also attempt safe helper setup for `graphifyy==0.1.14`, `yt-dlp`, `ffmpeg`, and browser support. These attempts are best-effort and non-privileged; missing tools become warnings and manual fallback instructions.
+
 The interactive installer asks whether you want the full library or a subset. Full install is recommended because the router keeps context small, but power users can install a subset:
 
 ```bash
 ./install.sh --scope global --tools auto --skills skill-router,planning-first,playwright-cli
 ./install.sh --scope global --tools auto --skip-skills connect,connect-apps
 ./install.sh --scope global --tools auto --all
+./install.sh --scope global --tools auto --no-tool-install
 ```
 
 ### 5. Verification
@@ -393,6 +399,8 @@ This installer does not copy or publish:
 
 Context7 is the only public-standard MCP recommendation in this kit. Other MCPs and connectors are optional user/project setup and are documented in [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md). MarkItDown MCP and Browserbase are documented as optional tools only; they are not installed or configured by AgenticSupercharge. Obsidian support is intentionally light: the public install keeps `json-canvas` and `defuddle`, while deeper vault automation belongs in each user's own Obsidian setup.
 
+The installer may attempt non-privileged setup for a narrow set of external helper binaries/packages used by bundled skills: `graphifyy==0.1.14`, `yt-dlp`, `ffmpeg`, and browser support for `design-extract`. It does not install account connectors, MCP servers, browser extensions, cookies, API keys, or app sessions.
+
 ## What This Is Not
 
 AgenticSupercharge is not:
@@ -403,6 +411,7 @@ AgenticSupercharge is not:
 - A telemetry or analytics system.
 - A system that uploads your private files or credentials.
 - A live auto-sync to every upstream skill repo by default.
+- A privileged package manager. Optional helper setup is best-effort, user-space where possible, and can be skipped with `--no-tool-install`.
 
 It is a curated, installable skill layer. It works best when the router stays selective and the agent still verifies its work.
 
@@ -440,7 +449,9 @@ v0.8 context-efficiency guidance credits [Andre Kreidemann's prompt-caching writ
 
 v0.9 code-intelligence additions credit [Safi Shamsi / Graphify](https://github.com/safishamsi/graphify) and [graphify.net](https://graphify.net). AgenticSupercharge installs an MIT-allowed, safety-adapted Graphify skill from a pinned commit. It does not bundle the `graphifyy` package, Python dependencies, Neo4j, MCP servers, PDFs extras, or Graphify runtime state.
 
-v0.10 additions credit [Nidhin J S / prompt-master](https://github.com/nidhinjs/prompt-master), [Siqi Chen / humanizer](https://github.com/blader/humanizer), [Manav Arya Singh / design-extract](https://github.com/Manavarya09/design-extract) and [designlang](https://designlang.manavaryasingh.com), and [Brad Bonanno / claude-video](https://github.com/bradautomates/claude-video). `design-extract` and `claude-video` are safety-adapted so agents check availability, ask before setup, avoid writing secrets, and never auto-install tools. The on-demand `usage` command is original AgenticSupercharge code inspired by [codeburn](https://github.com/getagentseal/codeburn) and [ccusage](https://github.com/ryoppippi/ccusage); no code is reused.
+v0.10 additions credit [Nidhin J S / prompt-master](https://github.com/nidhinjs/prompt-master), [Siqi Chen / humanizer](https://github.com/blader/humanizer), [Manav Arya Singh / design-extract](https://github.com/Manavarya09/design-extract) and [designlang](https://designlang.manavaryasingh.com), and [Brad Bonanno / claude-video](https://github.com/bradautomates/claude-video). `design-extract` and `claude-video` are safety-adapted so agents check availability, avoid writing secrets, and fail open when dependencies are unavailable. The on-demand `usage` command is original AgenticSupercharge code inspired by [codeburn](https://github.com/getagentseal/codeburn) and [ccusage](https://github.com/ryoppippi/ccusage); no code is reused.
+
+v0.11 changes make selected optional dependencies more plug-and-play by attempting safe, non-privileged setup during the installer: `graphifyy==0.1.14`, `yt-dlp`, `ffmpeg`, and browser support for Design Extract. These are invoked or downloaded on the user's machine only when needed; no third-party runtime packages, browsers, generated data, or credentials are bundled in this repository.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

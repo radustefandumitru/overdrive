@@ -94,7 +94,7 @@ const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.10.0 or newer', isAtLeastVersion(pkg.version, '0.10.0'), `found ${pkg.version}`);
+check('package version is 0.11.0 or newer', isAtLeastVersion(pkg.version, '0.11.0'), `found ${pkg.version}`);
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
@@ -225,7 +225,8 @@ check('README explains knowledge vault', /knowledge vault/i.test(readme) && /kno
 check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
 check('README links prompt caching doc', /docs\/prompt-caching\.md/.test(readme));
-check('README mentions Graphify optional code intelligence', /Graphify/i.test(readme) && /graphifyy/.test(readme) && /does not install Python packages automatically/i.test(readme));
+check('README mentions v0.11 optional tool setup', /--no-tool-install/.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /non-privileged/i.test(readme));
+check('README mentions Graphify optional code intelligence', /Graphify/i.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /managed user-space virtualenv/i.test(readme));
 check('README mentions v0.10 skills', /prompt-master/.test(readme) && /humanizer/.test(readme) && /design-extract/.test(readme) && /claude-video/.test(readme));
 check('README documents usage command privacy', /agentic-supercharge usage/.test(readme) && /prints no prompt or message content/i.test(readme));
 check('README shows varied router examples', /security-review/.test(readme) && /react-doctor/.test(readme) && /jack-seo-launch-audit/.test(readme));
@@ -242,7 +243,7 @@ check('prompt caching doc exists', exists('docs/prompt-caching.md'));
 const skillReadiness = read('docs/skill-readiness.md');
 check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 136/.test(skillReadiness));
 check('skill readiness doc explains Graphify setup', /graphifyy/.test(skillReadiness) && /optional/i.test(skillReadiness));
-check('skill readiness doc explains v0.10 optional setup', /design-extract/.test(skillReadiness) && /claude-video/.test(skillReadiness) && /never auto-install/i.test(skillReadiness));
+check('skill readiness doc explains v0.11 optional setup', /design-extract/.test(skillReadiness) && /claude-video/.test(skillReadiness) && /--no-tool-install/.test(skillReadiness) && /non-privileged/.test(skillReadiness));
 check('scorecard doc exists', exists('docs/scorecard-v0.6.md'));
 check('scorecard results file exists', exists('evals/scorecard-results.json'));
 if (exists('evals/scorecard-results.json')) {
@@ -260,6 +261,9 @@ const globalInstructionFiles = ['global-instructions/CLAUDE.md', 'global-instruc
 for (const file of globalInstructionFiles) {
   const text = read(file);
   check(`${file} includes objectivity guidance`, text.includes('Default to objective, evidence-based reasoning'));
+  check(`${file} includes anti-sycophancy guidance`, text.includes('sycophancy / Dunning-Kruger feedback loop'));
+  check(`${file} includes weak-premise challenge guidance`, text.includes('consequential, ambiguous, or irreversible decision'));
+  check(`${file} includes stronger option guidance`, text.includes('When the user\'s preferred idea competes with a stronger one'));
   check(`${file} includes research-before-guessing guidance`, text.includes('start with current research using web search, Context7, or official docs'));
   check(`${file} includes concise output guidance`, text.includes('Skip unnecessary preamble'));
   check(`${file} includes pressure-test guidance`, text.includes('attack the plan first'));
@@ -271,6 +275,7 @@ for (const file of globalInstructionFiles) {
   check(`${file} includes model/planning knob honesty`, text.includes('does not auto-switch models across providers'));
   check(`${file} includes native plan mode vs clarify guidance`, text.includes('`clarify-and-plan` adds requirement and ambiguity clarification'));
   check(`${file} includes prompt-cache stability guidance`, text.includes('Prefer stable, front-loaded context'));
+  check(`${file} includes Graphify graph preference guidance`, text.includes('if a Graphify graph already exists in the project'));
   check(`${file} includes lean context guidance`, text.includes('Keep context lean'));
   check(`${file} includes vague request sharpening guidance`, text.includes('sharpen the goal'));
   check(`${file} includes escalating context budget bands`, text.includes('~60%+ (caution)') && text.includes('~75%+ (warning)') && text.includes('~85-90%+ (red zone)'));
@@ -316,6 +321,10 @@ for (const link of [
   'https://github.com/bradautomates/claude-video',
   'https://github.com/getagentseal/codeburn',
   'https://github.com/ryoppippi/ccusage',
+  'https://github.com/pypa/pipx',
+  'https://github.com/Homebrew/brew',
+  'https://github.com/microsoft/winget-cli',
+  'https://ffmpeg.org/',
 ]) {
   check(`VERIFIED_SOURCES includes attribution link ${link}`, verifiedRaw.includes(link));
 }
@@ -357,6 +366,10 @@ for (const link of [
   'https://github.com/bradautomates/claude-video',
   'https://github.com/getagentseal/codeburn',
   'https://github.com/ryoppippi/ccusage',
+  'https://github.com/pypa/pipx',
+  'https://github.com/Homebrew/brew',
+  'https://github.com/microsoft/winget-cli',
+  'https://ffmpeg.org/',
 ]) {
   check(`THIRD_PARTY_NOTICES includes attribution link ${link}`, thirdPartyRaw.includes(link));
 }
@@ -391,10 +404,18 @@ for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-mod
 
 const installer = read('lib/installer.js');
 check('installer supports Graphify lowercase skill.md normalization', /skillFile/.test(installer) && /agentic-graphify-safe/.test(installer));
-check('installer Graphify transform forbids Python auto-install', /Never install Python packages automatically/.test(installer) && /hasUnsafeGraphifyInstallInstruction/.test(installer));
+check('installer supports v0.11 no-tool-install flag', /--no-tool-install/.test(installer) && /options\.noToolInstall/.test(installer));
+check('installer supports optional tool setup engine', /function setupOptionalTools/.test(installer) && /function graphifyToolSetup/.test(installer) && /function ffmpegToolSetup/.test(installer) && /function ytDlpToolSetup/.test(installer) && /function browserToolSetup/.test(installer));
+check('installer pins Graphify package setup', /graphifyy==0\.1\.14/.test(installer));
+check('installer Graphify setup avoids global pip and break-system-packages', /managed venv/.test(installer) && /pipx install/.test(installer) && /never uses global pip/.test(installer) && /hasUnsafeGraphifyInstallInstruction/.test(installer));
+check('installer Graphify setup prefers Python 3.10-3.12', /function selectGraphifyPython/.test(installer) && /Python 3\.10-3\.12/.test(installer) && /--python/.test(installer));
 check('installer supports v0.10 safety transforms', /agentic-design-extract-safe/.test(installer) && /agentic-claude-video-safe/.test(installer) && /agentic-humanizer-ethics/.test(installer));
-check('installer Design Extract transform avoids npx auto-install', /npx --no-install designlang/.test(installer) && !/npx --yes designlang/.test(installer));
-check('installer Claude Video transform removes auto setup paths', /Never install binaries/.test(installer) && /patchClaudeVideoSetupScript/.test(installer) && installer.includes('subprocess\\.run\\(cmd\\)'));
+check('installer Design Extract transform prefers system Chrome and public URLs', /--system-chrome/.test(installer) && /Only extract public pages/.test(installer));
+check('installer Design Extract browser setup does not install MCP or browser state', /never installs extensions, MCP servers, cookies, authenticated sessions, or global CLIs/.test(installer));
+check('installer Claude Video transform preserves preflight and key safety', /AgenticSupercharge normally attempts setup during install/.test(installer) && /do not ask the user to paste a key into chat/.test(installer));
+check('installer optional setup is fail-open', /status: 'fallback'/.test(installer) && /never hard-fails the main install/.test(installer) && /Optional tool setup fallbacks/.test(installer));
+check('installer optional setup avoids sudo execution', !/ops\.run\([^)]*sudo/.test(installer) && !/runCommand\([^)]*sudo/.test(installer));
+check('installer tests cover optional setup', /fakeToolOps/.test(read('scripts/test-as-workflow.js')) && /--no-tool-install/.test(read('scripts/test-as-workflow.js')) && /sudo/.test(read('scripts/test-as-workflow.js')));
 
 const asWorkflow = read('lib/as-workflow.js');
 check('AS-Workflow required files include research.md', /requiredFiles[\s\S]*research\.md/.test(asWorkflow));

@@ -106,6 +106,12 @@ Global auto-detection with safe defaults:
 ./install.sh --scope global --tools auto --conflict preserve
 ```
 
+Skip optional helper tool setup:
+
+```bash
+./install.sh --scope global --tools auto --conflict preserve --no-tool-install
+```
+
 Global manual target install:
 
 ```bash
