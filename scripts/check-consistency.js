@@ -94,19 +94,20 @@ const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.11.0 or newer', isAtLeastVersion(pkg.version, '0.11.0'), `found ${pkg.version}`);
+check('package version is 0.12.0 or newer', isAtLeastVersion(pkg.version, '0.12.0'), `found ${pkg.version}`);
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
-check('manifest has 17 local skills', skills.local.length === 17, `found ${skills.local.length}`);
+check('manifest has 18 local skills', skills.local.length === 18, `found ${skills.local.length}`);
 check('manifest has 118 upstream GitHub skills', skills.source.length === 118, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
-check('manifest has 136 unique skills', uniqueSkills.size === 136, `found ${uniqueSkills.size}`);
+check('manifest has 137 unique skills', uniqueSkills.size === 137, `found ${uniqueSkills.size}`);
 check('manifest skill names are unique', uniqueSkills.size === skills.all.length);
 check('manifest includes react-doctor', uniqueSkills.has('react-doctor'));
 check('manifest includes what-should-i-consider', uniqueSkills.has('what-should-i-consider'));
 check('manifest includes media-download', uniqueSkills.has('media-download'));
 check('manifest includes liquid-glass-web', uniqueSkills.has('liquid-glass-web'));
+check('manifest includes pretext', uniqueSkills.has('pretext'));
 check('manifest includes convert-to-markdown', uniqueSkills.has('convert-to-markdown'));
 check('manifest includes reddit-research', uniqueSkills.has('reddit-research'));
 check('manifest includes graphify', uniqueSkills.has('graphify'));
@@ -208,7 +209,7 @@ check('package exposes analyze routes script', /analyze-routes\.js/.test(pkg.scr
 check('analyze-routes script exists', exists('scripts/analyze-routes.js'));
 
 const readme = read('README.md');
-check('README says current manifest contains 136 unique skills', /current manifest contains 136 unique skills/i.test(readme));
+check('README says current manifest contains 137 unique skills', /current manifest contains 137 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
 check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
@@ -225,6 +226,8 @@ check('README explains knowledge vault', /knowledge vault/i.test(readme) && /kno
 check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
 check('README links prompt caching doc', /docs\/prompt-caching\.md/.test(readme));
+check('README links context runtime matrix doc', /docs\/context-runtime-matrix\.md/.test(readme));
+check('README mentions pretext skill', /pretext/i.test(readme) && /@chenglou\/pretext/.test(readme));
 check('README mentions v0.11 optional tool setup', /--no-tool-install/.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /non-privileged/i.test(readme));
 check('README mentions Graphify optional code intelligence', /Graphify/i.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /managed user-space virtualenv/i.test(readme));
 check('README mentions v0.10 skills', /prompt-master/.test(readme) && /humanizer/.test(readme) && /design-extract/.test(readme) && /claude-video/.test(readme));
@@ -239,9 +242,16 @@ check('README credits Graphify source links', readme.includes('https://github.co
 check('README credits v0.10 source links', readme.includes('https://github.com/nidhinjs/prompt-master') && readme.includes('https://github.com/blader/humanizer') && readme.includes('https://github.com/Manavarya09/design-extract') && readme.includes('https://designlang.manavaryasingh.com') && readme.includes('https://github.com/bradautomates/claude-video'));
 check('README credits usage inspiration links', readme.includes('https://github.com/getagentseal/codeburn') && readme.includes('https://github.com/ryoppippi/ccusage'));
 check('prompt caching doc exists', exists('docs/prompt-caching.md'));
+check('context runtime matrix doc exists', exists('docs/context-runtime-matrix.md'));
+if (exists('docs/context-runtime-matrix.md')) {
+  const contextMatrix = read('docs/context-runtime-matrix.md');
+  check('context matrix covers supported runtimes', /Claude Code/.test(contextMatrix) && /Codex/.test(contextMatrix) && /Gemini CLI/.test(contextMatrix) && /Antigravity/.test(contextMatrix) && /Cursor/.test(contextMatrix));
+  check('context matrix distinguishes Claude-only levers', /Claude-only/.test(contextMatrix) && /ENABLE_TOOL_SEARCH=false/.test(contextMatrix) && /disable-model-invocation/.test(contextMatrix));
+  check('context matrix defers to native compaction', /\/compact/.test(contextMatrix) && /\/compress/.test(contextMatrix) && /Do not silently compress/.test(contextMatrix));
+}
 
 const skillReadiness = read('docs/skill-readiness.md');
-check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 136/.test(skillReadiness));
+check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 137/.test(skillReadiness));
 check('skill readiness doc explains Graphify setup', /graphifyy/.test(skillReadiness) && /optional/i.test(skillReadiness));
 check('skill readiness doc explains v0.11 optional setup', /design-extract/.test(skillReadiness) && /claude-video/.test(skillReadiness) && /--no-tool-install/.test(skillReadiness) && /non-privileged/.test(skillReadiness));
 check('scorecard doc exists', exists('docs/scorecard-v0.6.md'));
@@ -274,8 +284,10 @@ for (const file of globalInstructionFiles) {
   check(`${file} includes native orchestration guidance`, text.includes('runtime\'s native orchestration'));
   check(`${file} includes model/planning knob honesty`, text.includes('does not auto-switch models across providers'));
   check(`${file} includes native plan mode vs clarify guidance`, text.includes('`clarify-and-plan` adds requirement and ambiguity clarification'));
-  check(`${file} includes prompt-cache stability guidance`, text.includes('Prefer stable, front-loaded context'));
-  check(`${file} includes Graphify graph preference guidance`, text.includes('if a Graphify graph already exists in the project'));
+	  check(`${file} includes prompt-cache stability guidance`, text.includes('Prefer stable, front-loaded context'));
+	  check(`${file} includes native context commands guidance`, text.includes('Claude Code `/memory` and `/compact`') && text.includes('Gemini CLI `/memory`, `/compress`, `/stats`, `/skills`, and `/mcp`'));
+	  check(`${file} keeps Claude-only context levers platform-specific`, text.includes('ENABLE_TOOL_SEARCH=false') && text.includes('disable-model-invocation') && text.includes('should not be presented as universal behavior'));
+	  check(`${file} includes Graphify graph preference guidance`, text.includes('if a Graphify graph already exists in the project'));
   check(`${file} includes lean context guidance`, text.includes('Keep context lean'));
   check(`${file} includes vague request sharpening guidance`, text.includes('sharpen the goal'));
   check(`${file} includes escalating context budget bands`, text.includes('~60%+ (caution)') && text.includes('~75%+ (warning)') && text.includes('~85-90%+ (red zone)'));
@@ -318,8 +330,9 @@ for (const link of [
   'https://github.com/blader/humanizer',
   'https://github.com/Manavarya09/design-extract',
   'https://designlang.manavaryasingh.com',
-  'https://github.com/bradautomates/claude-video',
-  'https://github.com/getagentseal/codeburn',
+	  'https://github.com/bradautomates/claude-video',
+	  'https://github.com/chenglou/pretext',
+	  'https://github.com/getagentseal/codeburn',
   'https://github.com/ryoppippi/ccusage',
   'https://github.com/pypa/pipx',
   'https://github.com/Homebrew/brew',
@@ -363,8 +376,9 @@ for (const link of [
   'https://github.com/blader/humanizer',
   'https://github.com/Manavarya09/design-extract',
   'https://designlang.manavaryasingh.com',
-  'https://github.com/bradautomates/claude-video',
-  'https://github.com/getagentseal/codeburn',
+	  'https://github.com/bradautomates/claude-video',
+	  'https://github.com/chenglou/pretext',
+	  'https://github.com/getagentseal/codeburn',
   'https://github.com/ryoppippi/ccusage',
   'https://github.com/pypa/pipx',
   'https://github.com/Homebrew/brew',
@@ -391,6 +405,7 @@ check('skill-router documents deterministic sequence order', /stable, determinis
 check('skill-router mentions AS-Workflow route trace helper', /routes\.jsonl/.test(routerSkill));
 check('skill-router documents Layers routing', /layers-intro/.test(routerSkill) && /layers-conceptual-model/.test(routerSkill));
 check('skill-router documents Liquid Glass routing', /liquid-glass-web/.test(routerSkill) && /Tier 1/.test(routerSkill));
+check('skill-router documents pretext routing', /pretext/.test(routerSkill) && /text measurement\/layout performance/.test(routerSkill));
 check('skill-router documents convert-to-markdown routing', /convert-to-markdown/.test(routerSkill));
 check('skill-router documents reddit-research routing', /reddit-research/.test(routerSkill));
 check('skill-router documents graphify routing', /graphify/.test(routerSkill) && /AS-Workflow knowledge vault/.test(routerSkill));

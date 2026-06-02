@@ -10,6 +10,8 @@ These examples are for maintainers checking whether `skill-router` remains selec
 | "Help me figure out which design layer this product problem lives at." | `layers-intro` -> `layers-orient` | Layers orientation diagnoses the product-design layer before picking implementation or visual skills. |
 | "Model the objects and states for this scheduling tool." | `layers-intro` -> `layers-conceptual-model` | Object/state/vocabulary decisions are conceptual-model work, not generic planning or visual polish. |
 | "Create a cross-browser Liquid Glass navbar." | `liquid-glass-web` -> `emil-animation-polish` -> `playwright-cli` | The skill chooses the glass tier and fallbacks; Emil handles motion polish and Playwright proves browser behavior. |
+| "Virtualize 100k differently-sized text rows without DOM reflow." | `pretext` | Text measurement/layout performance is the core task; design polish is secondary unless requested. |
+| "Make chat bubbles shrinkwrap multiline text without layout thrash." | `pretext` -> `playwright-cli` if browser verification is needed | Pretext handles text measurement; browser proof is useful when visual precision matters. |
 | "Refactor this auth flow across the app, but first tell me the safest plan." | `clarify-and-plan` -> `planning-first` -> `security-review` if auth risk is material | Ambiguous multi-file work needs assumptions and phases before implementation; auth may need a security pass. |
 | "Security review this PR for vulnerabilities." | Claude Code: native `/security-review`; other agents: `security-review` | Avoid loading both the native command and the portable skill. |
 | "Make sure Claude warns me about dangerous generated code and commit diffs." | Claude Code: `security-guidance` plugin; other agents: `security-review` only for explicit audits | `security-guidance` is a Claude-only preventative hook/plugin layer, not a portable skill folder. |
@@ -43,3 +45,4 @@ This appends one JSONL entry to `.agenticsupercharge/routes.jsonl`. It is option
 - `last30days` is for recent community discourse. Context7 is still the default for current official library/API documentation.
 - `reddit-research` is for Reddit-specific public community signal. `last30days` is broader recent sentiment.
 - `convert-to-markdown` is for local documents and AS-Workflow knowledge-vault ingest. `defuddle` remains the better fit for web-page extraction.
+- `pretext` is for text measurement/layout engineering and reflow avoidance. Use visual/frontend design skills when the problem is hierarchy, typography taste, brand, or UI polish.

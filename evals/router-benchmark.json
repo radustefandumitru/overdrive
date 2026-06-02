@@ -374,6 +374,22 @@
       ]
     },
     {
+      "id": "pretext-virtualized-text-layout",
+      "category": "frontend-performance",
+      "prompt": "Virtualize 100k differently-sized chat messages without hidden DOM measurement nodes or layout thrash.",
+      "controlPrompt": "Virtualize 100k differently-sized chat messages without hidden DOM measurement nodes or layout thrash.",
+      "routedPrompt": "Use skill-router first, then virtualize 100k differently-sized chat messages without hidden DOM measurement nodes or layout thrash.",
+      "expectedSkills": [
+        "pretext"
+      ],
+      "rubric": [
+        "Recognizes the core problem as text measurement/layout performance rather than visual polish.",
+        "Uses or recommends @chenglou/pretext as a per-project dependency without bundling or global installer setup.",
+        "Caches prepared text/layout data and recomputes only when text, font metrics, or width changes.",
+        "Verifies scroll stability and reduced layout reads such as getBoundingClientRect or offsetHeight."
+      ]
+    },
+    {
       "id": "convert-local-docs-to-markdown",
       "category": "knowledge-work",
       "prompt": "Read this PDF and spreadsheet efficiently, then summarize only the project requirements.",

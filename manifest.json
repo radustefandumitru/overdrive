@@ -984,6 +984,18 @@
       ]
     },
     {
+      "prompt": "Virtualize 100k differently-sized text rows without DOM measurement reflow",
+      "expected": [
+        "pretext"
+      ]
+    },
+    {
+      "prompt": "Make these chat bubbles shrinkwrap multiline text without layout thrash",
+      "expected": [
+        "pretext"
+      ]
+    },
+    {
       "prompt": "Read this PDF and spreadsheet efficiently before summarizing them",
       "expected": [
         "convert-to-markdown"
@@ -1105,6 +1117,10 @@
     {
       "from": "skills/liquid-glass-web",
       "to": "liquid-glass-web"
+    },
+    {
+      "from": "skills/pretext",
+      "to": "pretext"
     },
     {
       "from": "skills/convert-to-markdown",

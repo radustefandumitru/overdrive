@@ -2,7 +2,7 @@
 
 Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 
-v0.11 makes a few optional helpers more plug-and-play: the installer may attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
+v0.12 adds native context-window guidance across supported runtimes and a local `pretext` skill for advanced text measurement/layout. The installer may still attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
 
 | Goal | Start With | Add When Needed |
 |---|---|---|
@@ -24,6 +24,7 @@ v0.11 makes a few optional helpers more plug-and-play: the installer may attempt
 | Extract a site's design language | `design-extract` | `design-taste-frontend`, `impeccable`, `emil-design-eng` after extraction |
 | Smooth web animation | `emil-animation-polish` | `fluid-animations` for gesture, spring, velocity, rubberbanding, or direct-manipulation work |
 | Liquid/frosted glass UI | `liquid-glass-web` | `emil-animation-polish`, `modern-web-guidance`, `playwright-cli` for motion, support, and validation |
+| Advanced text measurement/layout | `pretext` | `playwright-cli` for browser verification; frontend design skills only if visual polish is also requested |
 | Jack Roberts style 3D/scroll site | `jack-premium-site-system` | `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit` |
 | SEO, launch, copy, CRO | Corey Haines MarketingSkills | `stop-slop` for final human voice polish |
 | Brand-specific artifacts | `brand-guidelines` | `brandkit` for new visual identity boards; `impeccable` for final polish |
@@ -32,6 +33,7 @@ v0.11 makes a few optional helpers more plug-and-play: the installer may attempt
 | Browser validation | `playwright-cli` | OpenAI `playwright` wrapper as fallback; screenshots, snapshots, responsive checks, UI flow checks |
 | Discover more skills | `find-skills` | only when the user asks to find, compare, or install additional skills |
 | Context or token efficiency | `context-optimization` | `context-compression` only after user approval; AS-Workflow preferences/knowledge files when local project memory helps |
+| Runtime context behavior | native runtime commands | see `docs/context-runtime-matrix.md`; do not assume Claude-only context levers work everywhere |
 | Obsidian-adjacent files/research | `json-canvas`, `defuddle` | broader vault operations need a dedicated user/project Obsidian setup |
 | Image/video/media workflows | `banana`, Remotion skills, `media-download` | approval-gated external tools where configured; `yt-dlp` for downloads |
 | Video or screen-recording comprehension | `claude-video` | `media-download` only when the task is downloading/extracting media |

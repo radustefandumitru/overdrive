@@ -63,6 +63,7 @@ The links below are credited sources and provenance references for local skills,
 | Humanizer | Siqi Chen / @blader | https://github.com/blader/humanizer |
 | Design Extract / designlang | Manav Arya Singh / @Manavarya09 | https://github.com/Manavarya09/design-extract · https://designlang.manavaryasingh.com |
 | Claude Video | Brad Bonanno / @bradautomates | https://github.com/bradautomates/claude-video |
+| Pretext | Cheng Lou / @_chenglou | https://github.com/chenglou/pretext · npm `@chenglou/pretext` |
 | Usage command inspiration | AgentSeal codeburn; ryoppippi ccusage | https://github.com/getagentseal/codeburn · https://github.com/ryoppippi/ccusage |
 | Liquid Glass inspiration | Andrew Prifer / @AndrewPrifer | https://github.com/AndrewPrifer/liquid-dom · https://x.com/AndrewPrifer/status/2056923983581446529 |
 | Liquid Glass CSS/SVG technique | kube.io | https://kube.io/blog/liquid-glass-css-svg/ |

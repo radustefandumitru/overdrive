@@ -1,11 +1,11 @@
 # Skill Readiness Audit
 
-AgenticSupercharge is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v0.11, it also attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
+AgenticSupercharge is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v0.12, it also documents native context-window behavior by runtime and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
 
 ## Default Install Summary
 
-- Unique skills in the current manifest: 136
-- Locally authored AgenticSupercharge skills: 17
+- Unique skills in the current manifest: 137
+- Locally authored AgenticSupercharge skills: 18
 - Upstream GitHub-sourced skills: 118
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
@@ -26,6 +26,7 @@ These work immediately after install and agent reload because they are instructi
 - `fluid-animations`
 - `emil-animation-polish`
 - `liquid-glass-web`
+- `pretext` guidance for advanced text measurement/layout, with `@chenglou/pretext` added only as a per-project app dependency when the project needs it
 - `media-download` guidance, with installer-attempted `yt-dlp` setup when the skill is selected
 - `convert-to-markdown` guidance, with MarkItDown enhancement when installed
 - `reddit-research` guidance, with public Reddit access treated as best-effort
@@ -49,6 +50,7 @@ These work immediately after install and agent reload because they are instructi
 | `design-extract` | Node/designlang, Chrome/Chromium or Playwright, and public page access | Installer prefers an existing system Chrome/Chromium/Edge and only attempts Playwright Chromium when no system browser is found. Agents should check availability, prefer `--system-chrome`, avoid extensions/MCP/cookies/auth state, and fall back to screenshots/source inspection or user-provided brand details. |
 | `claude-video` | ffmpeg/ffprobe, yt-dlp, and optional Groq/OpenAI Whisper key for transcription | Installer attempts non-privileged `ffmpeg`/`yt-dlp` setup through Homebrew, winget, pipx, or managed venv paths where possible. Agents should run preflight checks, never write API keys from chat, and fall back to frames-only/captions-only when needed. |
 | `liquid-glass-web` Tier 3 | WebGL support and any adopted WebGL glass library license review | Tier 1 CSS works broadly; Tier 2 is Chromium-specific; Tier 3 needs browser/device testing and permissive license review. |
+| `pretext` | `@chenglou/pretext` installed in the user's web app project | No global installer setup. Agents should add it through the project's package manager only when text measurement/layout performance is the actual task. |
 | Composio/connect-style skills | User-configured connectors, auth, and explicit approval | Approval-gate external actions such as sending, posting, creating, deleting, authenticating, or spending credits. |
 | `langsmith-fetch` | LangSmith access and CLI/setup | Only useful if the user has LangSmith traces and credentials configured. |
 | `media-download` | `yt-dlp` | Treat download requests as user-approved local actions, default to `~/Downloads` when appropriate, and respect platform terms. |

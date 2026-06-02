@@ -1,6 +1,6 @@
 # Catalog Health
 
-Generated: 2026-06-02T10:47:04.572Z
+Generated: 2026-06-02T22:41:32.089Z
 
 This report is produced from local AS-Workflow route traces. It is maintainer infrastructure only: AgenticSupercharge does not collect user telemetry.
 

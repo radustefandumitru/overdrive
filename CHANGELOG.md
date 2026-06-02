@@ -4,6 +4,13 @@
 
 - No unreleased changes.
 
+## v0.12.0 - 2026-06-02
+
+- Added local `pretext` skill for advanced text measurement/layout guidance using Cheng Lou's MIT `@chenglou/pretext` library, raising the manifest to 137 unique skills.
+- Added `docs/context-runtime-matrix.md` to document verified native context-window mechanisms across Claude Code, Codex, Gemini CLI, Antigravity, and Cursor without adding always-on machinery.
+- Updated global instruction templates to defer to each runtime's native memory/compact/compress commands and avoid presenting Claude-only context levers as universal behavior.
+- Updated `skill-router`, smoke checks, router benchmark cases, summaries, readiness docs, third-party notices, verified sources, and consistency checks for the v0.12 routing and attribution boundaries.
+
 ## v0.11.0 - 2026-06-02
 
 - Changed the optional dependency policy from "document only" to "attempt safe setup during install, then fail open": Graphify, Claude Video/media helpers, and Design Extract browser support now get non-privileged installer attempts unless `--no-tool-install` is set.

@@ -1,0 +1,10 @@
+name: pretext
+description: Use for advanced web text measurement and layout with @chenglou/pretext: virtualized variable-height text rows, shrinkwrapped chat bubbles, responsive multiline text, auto-growing textareas, label overflow checks, Canvas/SVG/WebGL text, and avoiding DOM reflow. This is text-layout engineering/performance, not visual design polish.
+metadata:
+  source: local
+  agenticSupercharge: true
+  recommendedWhen:
+    - Text measurement or wrapping is causing layout reflow.
+    - A virtualized list needs accurate variable text heights.
+    - A component needs shrinkwrapped or manually rendered multiline text.
+    - Canvas, SVG, or WebGL text needs predictable line ranges.

@@ -55,7 +55,7 @@ cd AgenticSupercharge
 
 After installing, restart or reload your coding agent so it re-indexes the skill folders.
 
-By default, v0.11 also tries to set up a few optional helper tools when their skills are selected: Graphify (`graphifyy==0.1.14`), video helpers (`ffmpeg` and `yt-dlp`), and browser support for `design-extract`. These attempts are non-privileged, fail open, and never collect keys or write MCP/app config. Use `--no-tool-install` if you only want the skill files and instructions.
+By default, v0.12 also tries to set up a few optional helper tools when their skills are selected: Graphify (`graphifyy==0.1.14`), video helpers (`ffmpeg` and `yt-dlp`), and browser support for `design-extract`. These attempts are non-privileged, fail open, and never collect keys or write MCP/app config. Use `--no-tool-install` if you only want the skill files and instructions.
 
 ## Sanity Check
 
@@ -88,6 +88,7 @@ The global instructions tell the agent to do a lightweight skill check. The rout
 | "Make this paragraph sound less AI-written but keep the facts." | `humanizer` |
 | "Extract the design system from this public website." | `design-extract` |
 | "Watch this screen recording and tell me where the UI breaks." | `claude-video` |
+| "Virtualize 100k variable-height text rows without layout thrash." | `pretext` |
 | "SEO-audit my site before launch." | `jack-seo-launch-audit` |
 | "Design a premium landing page and verify it in-browser." | `design-taste-frontend` + `impeccable` + `playwright-cli` |
 
@@ -127,7 +128,7 @@ The important split:
 
 ## What You Get
 
-The current manifest contains 136 unique skills.
+The current manifest contains 137 unique skills.
 
 | Area | What it helps with |
 |---|---|
@@ -136,6 +137,7 @@ The current manifest contains 136 unique skills.
 | 3D/scroll websites | Brand research, AI asset prompts, video/frame-sequence scroll experiences, SEO, and launch checks. |
 | Product design layers | `layers-*` skills help agents reason from observed behaviour through domain, user needs, strategy, conceptual model, interaction flow, and surface decisions before jumping to screens. |
 | Glass UI | `liquid-glass-web` teaches cross-browser Liquid Glass as progressive enhancement: universal frosted glass first, then SVG displacement or WebGL only when justified. |
+| Text layout engineering | `pretext` teaches agents to use `@chenglou/pretext` for advanced text measurement/layout without DOM reflow: virtualized text rows, shrinkwrapped chat bubbles, auto-growing textareas, overflow checks, and Canvas/SVG/WebGL text. |
 | Prompt engineering | `prompt-master` helps write or improve prompts, reusable instructions, and AI task specs without turning every request into meta-prompting. |
 | Writing polish | `humanizer` rewrites existing text to sound more natural while preserving meaning and facts; `stop-slop` remains the broader AI-tell cleanup skill. |
 | Design extraction | `design-extract` can ingest a public website's design language, tokens, fonts, spacing, and component patterns when optional tooling is available. |
@@ -176,6 +178,7 @@ Examples:
 - `humanizer` for meaning-preserving human voice cleanup.
 - `design-extract` for public website design-language extraction.
 - `claude-video` for video and screen-recording comprehension.
+- `pretext` for text measurement/layout engineering without DOM reflow.
 
 ### 2. Skill Router
 
@@ -245,6 +248,8 @@ AGENTIC_SUPERCHARGE_WORKFLOW=disabled
 ```
 
 For details, see [`docs/as-workflow.md`](docs/as-workflow.md).
+
+AgenticSupercharge also keeps context optimization native to each runtime instead of adding a background memory system. The current matrix lives in [`docs/context-runtime-matrix.md`](docs/context-runtime-matrix.md): Claude Code, Codex, Gemini CLI, Antigravity, and Cursor do not expose identical context controls, so the global guide stays lean and defers to each runtime's own memory, compact/compress, rules, and skill-loading behavior.
 
 ### 4. Installer
 
@@ -426,6 +431,7 @@ Power-user and maintainer docs:
 | [`SKILLS_SUMMARY.md`](SKILLS_SUMMARY.md) | Full human-readable skill inventory. |
 | [`docs/skill-readiness.md`](docs/skill-readiness.md) | Which skills work immediately and which need optional tools. |
 | [`docs/as-workflow.md`](docs/as-workflow.md) | Local project-state workflow, commands, hooks, and disable behavior. |
+| [`docs/context-runtime-matrix.md`](docs/context-runtime-matrix.md) | Verified native context-window mechanisms by supported runtime. |
 | [`docs/prompt-caching.md`](docs/prompt-caching.md) | How AgenticSupercharge stays friendly to prompt-cache reuse. |
 | [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
 | [`docs/catalog-health.md`](docs/catalog-health.md) | Local route-analysis output for maintainers. |
@@ -452,6 +458,8 @@ v0.9 code-intelligence additions credit [Safi Shamsi / Graphify](https://github.
 v0.10 additions credit [Nidhin J S / prompt-master](https://github.com/nidhinjs/prompt-master), [Siqi Chen / humanizer](https://github.com/blader/humanizer), [Manav Arya Singh / design-extract](https://github.com/Manavarya09/design-extract) and [designlang](https://designlang.manavaryasingh.com), and [Brad Bonanno / claude-video](https://github.com/bradautomates/claude-video). `design-extract` and `claude-video` are safety-adapted so agents check availability, avoid writing secrets, and fail open when dependencies are unavailable. The on-demand `usage` command is original AgenticSupercharge code inspired by [codeburn](https://github.com/getagentseal/codeburn) and [ccusage](https://github.com/ryoppippi/ccusage); no code is reused.
 
 v0.11 changes make selected optional dependencies more plug-and-play by attempting safe, non-privileged setup during the installer: `graphifyy==0.1.14`, `yt-dlp`, `ffmpeg`, and browser support for Design Extract. These are invoked or downloaded on the user's machine only when needed; no third-party runtime packages, browsers, generated data, or credentials are bundled in this repository.
+
+v0.12 adds native context-window guidance through [`docs/context-runtime-matrix.md`](docs/context-runtime-matrix.md) and a local `pretext` skill for Cheng Lou's MIT [`@chenglou/pretext`](https://github.com/chenglou/pretext) library. The skill teaches agents how to use Pretext as a per-project app dependency; no Pretext source code or npm package is bundled.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

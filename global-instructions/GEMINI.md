@@ -111,6 +111,7 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - Re-prompt when usage crosses each new band, even if the user previously chose to continue. Keep it brief, without nagging again within the same band.
 - If the user chooses compact, invoke `context-compression` or native compaction, then restate the active goal and verification checkpoints in 2-3 lines.
 - If the user chooses a fresh session, write a short handoff file with the active goal, key decisions, files touched, and next steps.
-- Defer to the runtime's native compaction where it exists; this is a proactive prompt-level heads-up, not custom memory machinery.
+- Defer to the runtime's native compaction where it exists; this is a proactive prompt-level heads-up, not custom memory machinery. Use native context and memory commands when available instead of guessing: Claude Code `/memory` and `/compact`, Codex `/compact` and `/mcp`, Gemini CLI `/memory`, `/compress`, `/stats`, `/skills`, and `/mcp`.
+- Treat platform-specific context levers as platform-specific. Claude-only options such as MCP tool-search deferral (`ENABLE_TOOL_SEARCH=false`) or `disable-model-invocation` should not be presented as universal behavior.
 - Never compress silently. Compression loses detail, so the user should always consent.
 <!-- ai-skill-setup:global-guidelines:end -->
