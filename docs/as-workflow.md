@@ -42,6 +42,8 @@ agentic-supercharge knowledge --dry-run
 agentic-supercharge knowledge --apply
 agentic-supercharge resync --dry-run
 agentic-supercharge resync --apply
+agentic-supercharge usage --days 30
+agentic-supercharge usage --all --json
 agentic-supercharge checkpoint --message "before refactor"
 ```
 
@@ -57,6 +59,7 @@ If `agentic-supercharge` is not on your `PATH`, installed hooks and slash comman
 - Prompt/tool hooks may initialize the folder for non-trivial project work.
 - The status line, where supported, shows a compact AS-Workflow health hint.
 - `skill-router` can append short route traces to `routes.jsonl` when the workflow exists.
+- `usage` can read local Claude Code token logs on demand and join them to route traces when timestamps line up. It reports token counts, cache use, top projects/models/tools, and biggest sessions without printing prompts or message content.
 - `preferences.md` records durable user preferences and do-not rules, such as repeated corrections or "never do X" instructions. Keep it short, dated, and free of secrets.
 - `research.md` is a short project research log for objective findings, sources, and challenged assumptions.
 - `knowledge/` is a local reference-doc vault. Drop project/business docs there, run `agentic-supercharge knowledge --apply`, then agents inspect `knowledge-index.json` and load only relevant files or markdown caches.

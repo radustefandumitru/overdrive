@@ -95,6 +95,7 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - If you notice an oscillating fix loop, such as fixing A breaking B and fixing B re-breaking A, or if the user signals frustration, stop and say so plainly. Propose a different approach such as a smaller repro, different method, online research, another skill, a fresh model/planning mode, or a checkpoint before continuing.
 - Use `agentic-supercharge status`, `agentic-supercharge doctor`, `agentic-supercharge resync`, or `agentic-supercharge checkpoint` when those commands are available and the workflow state matters.
 - When the user asks "show status", "what's going on", "AS status", or similar project-state questions, run or suggest `agentic-supercharge status` if available.
+- When the user asks "show usage", "what's burning tokens", "token usage", "Claude usage", or similar local usage questions, run or suggest `agentic-supercharge usage` if available. It is local, read-only, token-only, and should not print prompts or message content.
 - Do not commit `.agenticsupercharge/`. It is local project state and should be gitignored by default.
 
 ## Context Budget

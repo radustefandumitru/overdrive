@@ -20,6 +20,7 @@ Examples:
 - A React setup issue may route through `modern-web-guidance`, then use Context7 for current React/Next.js/library docs.
 - A frontend polish task may use `design-taste-frontend`, `emil-design-eng`, `emil-animation-polish`, or `fluid-animations`, then use whatever browser validation tool the recipient has configured.
 - A Jack Roberts style 3D website workflow may use `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, or `jack-seo-launch-audit`. Firecrawl, GitHub, Vercel, image/video generation services, and browser connectors are optional personal/project tools, not required public kit assumptions.
+- `design-extract` may mention designlang, browser tooling, and optional Design Extract ecosystem surfaces. AgenticSupercharge does not prescribe or install its optional MCP/config surfaces; agents should check local availability, ask before setup, and fall back to screenshots/source inspection when unavailable.
 - A repository or database task may use a connector if the recipient has configured one, but the public kit should not assume which connector or project exists.
 
 ## Recommended Optional MCPs
@@ -50,6 +51,8 @@ References: GitHub MCP server docs, Supabase MCP docs, Vercel MCP docs, Firecraw
 | Defuddle | Clean web-page-to-markdown extraction for notes and research. | The `defuddle` skill enhances extraction when the CLI is available and falls back gracefully to normal web fetch/browser workflows when it is not. |
 | yt-dlp | User-requested media downloads, MP3 extraction, and high-quality MP4 downloads through the bundled `media-download` skill. | Install with `brew install yt-dlp` on macOS if missing. Respect platform terms and permissions. |
 | MarkItDown | Local file-to-Markdown conversion used by `convert-to-markdown` and AS-Workflow knowledge-vault caching when available. | Install with `python3 -m pip install 'markitdown[all]'` when PDF/Office/spreadsheet conversion is needed. |
+| designlang / Design Extract | Public website design-language extraction for colors, fonts, spacing, components, Tailwind/shadcn themes, and handoff files. | Optional. Prefer `--system-chrome` if the user has Chrome installed. Do not auto-install Node packages, browsers, extensions, or MCP configs. |
+| ffmpeg / ffprobe | Frame extraction and video inspection for `claude-video`. | Optional. The skill should report missing binaries and continue frames-only/captions-only when possible, not install packages automatically. |
 
 ## Security Review Integration
 

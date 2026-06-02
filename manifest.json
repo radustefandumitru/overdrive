@@ -548,6 +548,63 @@
       ]
     },
     {
+      "id": "claude-video",
+      "repo": "https://github.com/bradautomates/claude-video.git",
+      "ref": "c333c2289e57bf040b32846f18d669e3f8edad9b",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": ".",
+          "to": "claude-video",
+          "transforms": [
+            "agentic-claude-video-safe"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "design-extract",
+      "repo": "https://github.com/Manavarya09/design-extract.git",
+      "ref": "82b20dbe5a0e17f1f9153def04af8279f5672e3c",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/extract-design",
+          "to": "design-extract",
+          "transforms": [
+            "agentic-design-extract-safe"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "humanizer",
+      "repo": "https://github.com/blader/humanizer.git",
+      "ref": "a2ace14a88a6746f64f1f53ed8272d6788828038",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": ".",
+          "to": "humanizer",
+          "transforms": [
+            "agentic-humanizer-ethics"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompt-master",
+      "repo": "https://github.com/nidhinjs/prompt-master.git",
+      "ref": "7a02ddd31bad3056cc3ccf0af2b23d7b30d4abc2",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": ".",
+          "to": "prompt-master"
+        }
+      ]
+    },
+    {
       "id": "anthropic-example-skills",
       "repo": "https://github.com/anthropics/skills.git",
       "ref": "690f15cac7f7b4c055c5ab109c79ed9259934081",
@@ -937,6 +994,54 @@
       "expected": [
         "reddit-research",
         "last30days"
+      ]
+    },
+    {
+      "prompt": "Write me a tight prompt to get ChatGPT to produce a launch plan without waffle",
+      "expected": [
+        "prompt-master"
+      ]
+    },
+    {
+      "prompt": "Improve this Claude Code prompt so it scopes files and stop conditions properly",
+      "expected": [
+        "prompt-master"
+      ]
+    },
+    {
+      "prompt": "Make this paragraph not sound AI-written while preserving the facts",
+      "expected": [
+        "humanizer"
+      ]
+    },
+    {
+      "prompt": "Humanize this launch email draft using my existing voice sample",
+      "expected": [
+        "humanizer"
+      ]
+    },
+    {
+      "prompt": "Pull the design system, tokens, fonts, and component patterns from this public website",
+      "expected": [
+        "design-extract"
+      ]
+    },
+    {
+      "prompt": "Extract the Tailwind and shadcn theme from stripe.com before redesigning my page",
+      "expected": [
+        "design-extract"
+      ]
+    },
+    {
+      "prompt": "Watch this screen recording and tell me where the UI breaks",
+      "expected": [
+        "claude-video"
+      ]
+    },
+    {
+      "prompt": "Use /watch on this product demo video and summarize the key moments",
+      "expected": [
+        "claude-video"
       ]
     }
   ],

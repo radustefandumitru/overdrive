@@ -4,9 +4,9 @@ AgenticSupercharge is plug-and-play for installation: the installer can place sk
 
 ## Default Install Summary
 
-- Unique skills in the current manifest: 132
+- Unique skills in the current manifest: 136
 - Locally authored AgenticSupercharge skills: 17
-- Upstream GitHub-sourced skills: 114
+- Upstream GitHub-sourced skills: 118
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
 - AS-Workflow runtime: installed under `~/.agentic-supercharge/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, preferences, route traces, and checkpoints.
@@ -29,6 +29,8 @@ These work immediately after install and agent reload because they are instructi
 - `media-download` guidance, once `yt-dlp` is installed
 - `convert-to-markdown` guidance, with MarkItDown enhancement when installed
 - `reddit-research` guidance, with public Reddit access treated as best-effort
+- `prompt-master` prompt-writing guidance
+- `humanizer` meaning-preserving voice cleanup guidance
 - Jack Roberts inspired `jack-*` workflow skills when used as planning/build guidance
 - Jamie Mill `layers-*` product-design reasoning skills
 - Taste, Impeccable, Emil, Modern Web Guidance, Remotion guidance, Stop Slop, most MarketingSkills, Context Engineering guidance, Anthropic example skills, and OpenAI/Vercel routing guidance
@@ -44,6 +46,8 @@ These work immediately after install and agent reload because they are instructi
 | `playwright-cli` | Node/npm and browser binaries | The official installer provides the skill; browser install may happen on first real use depending on the user's environment. |
 | `playwright` | Playwright CLI/runtime | OpenAI wrapper around Playwright-style automation; prefer `playwright-cli` for normal validation. |
 | `graphify` | Python 3.10+ and `pip install graphifyy`; optional PDF support with `pip install 'graphifyy[pdf]'` | Optional codebase/mixed-corpus graph intelligence. Agents should check availability, never auto-install, and fall back to normal `rg`/file reads if unavailable. |
+| `design-extract` | Node/designlang, Chrome/Chromium or Playwright, and public page access | Optional public website design-language extraction. Agents should check availability, prefer `--system-chrome`, never auto-install packages/browsers/extensions/MCPs, and fall back to screenshots/source inspection or user-provided brand details. |
+| `claude-video` | ffmpeg/ffprobe, yt-dlp, and optional Groq/OpenAI Whisper key for transcription | Optional video/screen-recording comprehension. Agents should run preflight checks only, never auto-install Homebrew/apt/winget/pip tools, never write API keys from chat, and fall back to frames-only/captions-only when needed. |
 | `liquid-glass-web` Tier 3 | WebGL support and any adopted WebGL glass library license review | Tier 1 CSS works broadly; Tier 2 is Chromium-specific; Tier 3 needs browser/device testing and permissive license review. |
 | Composio/connect-style skills | User-configured connectors, auth, and explicit approval | Approval-gate external actions such as sending, posting, creating, deleting, authenticating, or spending credits. |
 | `langsmith-fetch` | LangSmith access and CLI/setup | Only useful if the user has LangSmith traces and credentials configured. |

@@ -82,6 +82,10 @@ The global instructions tell the agent to do a lightweight skill check. The rout
 | "Review this for security holes before I deploy." | `security-review` |
 | "Make this drawer feel smooth and natural." | `fluid-animations` + `emil-animation-polish` |
 | "Find and fix problems in my React app." | `react-doctor` |
+| "Make this prompt sharper before I send it to another AI." | `prompt-master` |
+| "Make this paragraph sound less AI-written but keep the facts." | `humanizer` |
+| "Extract the design system from this public website." | `design-extract` |
+| "Watch this screen recording and tell me where the UI breaks." | `claude-video` |
 | "SEO-audit my site before launch." | `jack-seo-launch-audit` |
 | "Design a premium landing page and verify it in-browser." | `design-taste-frontend` + `impeccable` + `playwright-cli` |
 
@@ -120,7 +124,7 @@ The important split:
 
 ## What You Get
 
-The current manifest contains 132 unique skills.
+The current manifest contains 136 unique skills.
 
 | Area | What it helps with |
 |---|---|
@@ -129,12 +133,17 @@ The current manifest contains 132 unique skills.
 | 3D/scroll websites | Brand research, AI asset prompts, video/frame-sequence scroll experiences, SEO, and launch checks. |
 | Product design layers | `layers-*` skills help agents reason from observed behaviour through domain, user needs, strategy, conceptual model, interaction flow, and surface decisions before jumping to screens. |
 | Glass UI | `liquid-glass-web` teaches cross-browser Liquid Glass as progressive enhancement: universal frosted glass first, then SVG displacement or WebGL only when justified. |
+| Prompt engineering | `prompt-master` helps write or improve prompts, reusable instructions, and AI task specs without turning every request into meta-prompting. |
+| Writing polish | `humanizer` rewrites existing text to sound more natural while preserving meaning and facts; `stop-slop` remains the broader AI-tell cleanup skill. |
+| Design extraction | `design-extract` can ingest a public website's design language, tokens, fonts, spacing, and component patterns when optional tooling is available. |
+| Video comprehension | `claude-video` helps agents analyze videos and screen recordings; `media-download` remains the downloader. |
 | Product and planning | Clarifying vague requests, splitting complex work into phases, launch readiness, app onboarding, and product strategy. |
 | Marketing and growth | SEO, CRO, copywriting, pricing, ads, lifecycle, onboarding, launch planning, and human-sounding copy cleanup. |
 | Security and safety | Portable security review guidance, secrets/supply-chain checks, and safer install/uninstall behavior. |
 | Browser validation | Playwright-based screenshots, flow checks, responsive checks, and browser debugging. |
 | Knowledge work | Docs, specs, MCP building, recent research, Reddit community signal, local document-to-Markdown conversion, context-management skills, JSON Canvas, and clean web-to-markdown extraction. |
 | Codebase intelligence | Optional Graphify-powered code/corpus relationship mapping for "how does this codebase fit together?" and "what connects X to Y?" questions. |
+| Usage insight | `agentic-supercharge usage` reads local Claude Code token logs on demand and reports token counts, cache use, top projects/models/tools, biggest sessions, and best-effort route attribution. It prints no prompt or message content. |
 | Code health | React diagnostics through `react-doctor`, plus planning/security/browser checks when the task needs them. |
 | Objective review | `what-should-i-consider` pressure-tests plans for hidden assumptions, architecture risks, and missing decisions. |
 | Media utilities | `media-download` wraps `yt-dlp` for user-requested MP3 and high-quality MP4 downloads. |
@@ -160,6 +169,10 @@ Examples:
 - `convert-to-markdown` for local PDFs, Office docs, spreadsheets, and data files.
 - `reddit-research` for public Reddit/community signal.
 - `graphify` for optional codebase or mixed-corpus graph intelligence.
+- `prompt-master` for prompt writing and prompt improvement.
+- `humanizer` for meaning-preserving human voice cleanup.
+- `design-extract` for public website design-language extraction.
+- `claude-video` for video and screen-recording comprehension.
 
 ### 2. Skill Router
 
@@ -216,8 +229,11 @@ agentic-supercharge knowledge --dry-run
 agentic-supercharge knowledge --apply
 agentic-supercharge resync --dry-run
 agentic-supercharge resync --apply
+agentic-supercharge usage --days 30
 agentic-supercharge checkpoint --message "before refactor"
 ```
+
+`usage` is read-only and local. It scans Claude Code JSONL usage logs first, reports token counts rather than prices, joins to AS route traces when timestamps line up, and keeps prompt/message content out of the output. Codex usage parsing is opportunistic for now; if cheap token fields are not present, the command says so.
 
 Disable hook/init behavior for a process with:
 
@@ -423,6 +439,8 @@ v0.7 knowledge and token-efficiency additions credit [Microsoft MarkItDown](http
 v0.8 context-efficiency guidance credits [Andre Kreidemann's prompt-caching writeup](https://kreidemann.com/blog/prompt-caching), [Sankalp Shubham's prompt-caching walkthrough](https://sankalp.bearblog.dev/how-prompt-caching-works/), and [Sam Rose / ngrok's prompt-caching article](https://ngrok.com/blog/prompt-caching). The guidance is paraphrased; no article text is redistributed.
 
 v0.9 code-intelligence additions credit [Safi Shamsi / Graphify](https://github.com/safishamsi/graphify) and [graphify.net](https://graphify.net). AgenticSupercharge installs an MIT-allowed, safety-adapted Graphify skill from a pinned commit. It does not bundle the `graphifyy` package, Python dependencies, Neo4j, MCP servers, PDFs extras, or Graphify runtime state.
+
+v0.10 additions credit [Nidhin J S / prompt-master](https://github.com/nidhinjs/prompt-master), [Siqi Chen / humanizer](https://github.com/blader/humanizer), [Manav Arya Singh / design-extract](https://github.com/Manavarya09/design-extract) and [designlang](https://designlang.manavaryasingh.com), and [Brad Bonanno / claude-video](https://github.com/bradautomates/claude-video). `design-extract` and `claude-video` are safety-adapted so agents check availability, ask before setup, avoid writing secrets, and never auto-install tools. The on-demand `usage` command is original AgenticSupercharge code inspired by [codeburn](https://github.com/getagentseal/codeburn) and [ccusage](https://github.com/ryoppippi/ccusage); no code is reused.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 

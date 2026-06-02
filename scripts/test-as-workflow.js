@@ -120,6 +120,61 @@ check('checkpoint creates handoff file', fs.existsSync(checkpoint.file));
 const route = workflow.recordRoute({ projectDir: project, skills: 'planning-first,playwright-cli', reason: 'test route' });
 check('route is recorded', route.ok === true && fs.readFileSync(path.join(project, '.agenticsupercharge/routes.jsonl'), 'utf8').includes('planning-first'));
 
+const usageConfigDir = fs.mkdtempSync(path.join(os.tmpdir(), 'as-workflow-usage-claude-'));
+const usageCodexHome = fs.mkdtempSync(path.join(os.tmpdir(), 'as-workflow-usage-codex-'));
+const usageProject = tempProject('as-workflow-usage');
+workflow.initWorkflow({ projectDir: usageProject, reason: 'usage test' });
+const usageNow = new Date().toISOString();
+fs.writeFileSync(
+  path.join(usageProject, '.agenticsupercharge/routes.jsonl'),
+  `${JSON.stringify({ ts: usageNow, skills: ['prompt-master'], reason: 'usage test' })}\n`
+);
+const claudeLogDir = path.join(usageConfigDir, 'projects', '-tmp-as-workflow-usage');
+fs.mkdirSync(claudeLogDir, { recursive: true });
+fs.writeFileSync(path.join(claudeLogDir, 'session.jsonl'), [
+  '{malformed json',
+  JSON.stringify({
+    type: 'user',
+    timestamp: usageNow,
+    cwd: usageProject,
+    sessionId: 'usage-session',
+    message: { role: 'user', content: 'SECRET PROMPT CONTENT SHOULD NOT PRINT' }
+  }),
+  JSON.stringify({
+    type: 'assistant',
+    timestamp: usageNow,
+    cwd: usageProject,
+    sessionId: 'usage-session',
+    message: {
+      role: 'assistant',
+      model: 'claude-test',
+      content: [{ type: 'tool_use', name: 'Bash' }],
+      usage: {
+        input_tokens: 100,
+        output_tokens: 20,
+        cache_read_input_tokens: 40,
+        cache_creation_input_tokens: 10
+      }
+    }
+  })
+].join('\n'));
+const usage = workflow.usage({
+  projectDir: usageProject,
+  days: 1,
+  env: { ...process.env, CLAUDE_CONFIG_DIR: usageConfigDir, CODEX_HOME: usageCodexHome }
+});
+const usageText = workflow.formatUsage(usage);
+check('usage aggregates Claude Code token totals', usage.totals.total === 170 && usage.totals.input === 100 && usage.totals.output === 20);
+check('usage records cache-hit percentage', usage.cacheHitPercent === 28.6);
+check('usage records top tool without prompt content', usage.topTools.some((entry) => entry.name === 'Bash') && !usageText.includes('SECRET PROMPT CONTENT'));
+check('usage attributes tokens to route skills when timestamps match', usage.bySkill.some((entry) => entry.name === 'prompt-master' && entry.total === 170));
+const emptyUsage = workflow.usage({
+  projectDir: usageProject,
+  days: 1,
+  env: { ...process.env, CLAUDE_CONFIG_DIR: path.join(usageConfigDir, 'missing'), CODEX_HOME: usageCodexHome }
+});
+check('usage degrades cleanly when logs are absent', emptyUsage.ok === true && emptyUsage.totals.total === 0 && workflow.formatUsage(emptyUsage).includes('No Claude Code token usage entries'));
+
 const decision = workflow.recordDecision({ projectDir: project, decision: 'Use compact dashboard cards by default.', rationale: 'User preference' });
 check('decision is recorded', decision.ok === true && fs.readFileSync(path.join(project, '.agenticsupercharge/decisions.md'), 'utf8').includes('Use compact dashboard cards by default.'));
 const contradiction = workflow.recordDecision({

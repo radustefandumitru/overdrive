@@ -437,6 +437,71 @@
         "Avoids duplicating AS-Workflow knowledge-vault work unless project docs are explicitly relevant.",
         "Cites concrete files, functions, imports, schemas, or routes when answering."
       ]
+    },
+    {
+      "id": "prompt-master-launch-plan-prompt",
+      "category": "prompt-engineering",
+      "prompt": "Write me a tight prompt to get ChatGPT to produce a launch plan without waffle.",
+      "controlPrompt": "Write me a tight prompt to get ChatGPT to produce a launch plan without waffle.",
+      "routedPrompt": "Use skill-router first, then write a tight prompt to get ChatGPT to produce a launch plan without waffle.",
+      "expectedSkills": [
+        "prompt-master"
+      ],
+      "rubric": [
+        "Recognizes the deliverable is a prompt, not the launch plan itself.",
+        "Adds concrete scope, inputs, constraints, output format, and stop conditions.",
+        "Avoids generic prompt-engineering filler and keeps the prompt usable.",
+        "Does not route to broad planning unless the underlying launch requirements are missing."
+      ]
+    },
+    {
+      "id": "humanizer-existing-copy",
+      "category": "writing-polish",
+      "prompt": "Make this paragraph not sound AI-written while preserving the facts.",
+      "controlPrompt": "Make this paragraph not sound AI-written while preserving the facts.",
+      "routedPrompt": "Use skill-router first, then make this paragraph not sound AI-written while preserving the facts.",
+      "expectedSkills": [
+        "humanizer"
+      ],
+      "rubric": [
+        "Preserves facts, claims, and intended meaning.",
+        "Improves rhythm, specificity, and natural voice without over-polishing.",
+        "Avoids fabricating authorship, lived experience, or undisclosed human origin.",
+        "Distinguishes voice-preserving editing from broad stop-slop cleanup."
+      ]
+    },
+    {
+      "id": "design-extract-public-site",
+      "category": "frontend-design",
+      "prompt": "Pull the design system, tokens, fonts, and component patterns from this public website before redesigning my page.",
+      "controlPrompt": "Pull the design system, tokens, fonts, and component patterns from this public website before redesigning my page.",
+      "routedPrompt": "Use skill-router first, then pull the design system, tokens, fonts, and component patterns from this public website before redesigning my page.",
+      "expectedSkills": [
+        "design-extract",
+        "design-taste-frontend"
+      ],
+      "rubric": [
+        "Uses design-extract for public URL design-language extraction before visual redesign work.",
+        "Checks tool availability and permission boundaries without auto-installing dependencies.",
+        "Summarizes reusable tokens/patterns rather than copying the site too closely.",
+        "Feeds findings into the normal design implementation stack only after extraction."
+      ]
+    },
+    {
+      "id": "claude-video-screen-recording",
+      "category": "video-comprehension",
+      "prompt": "Watch this screen recording and tell me where the UI breaks.",
+      "controlPrompt": "Watch this screen recording and tell me where the UI breaks.",
+      "routedPrompt": "Use skill-router first, then watch this screen recording and tell me where the UI breaks.",
+      "expectedSkills": [
+        "claude-video"
+      ],
+      "rubric": [
+        "Recognizes the task as video comprehension rather than media download.",
+        "Checks or explains optional ffmpeg/yt-dlp/Whisper availability without auto-installing.",
+        "Uses frames, captions, or fallback analysis appropriately.",
+        "Reports concrete timestamps/visual moments when available."
+      ]
     }
   ]
 }

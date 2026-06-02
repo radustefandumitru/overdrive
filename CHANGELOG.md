@@ -4,6 +4,14 @@
 
 - No unreleased changes.
 
+## v0.10.0 - 2026-06-02
+
+- Added four pinned MIT upstream skills: `prompt-master`, `humanizer`, `design-extract`, and `claude-video`, raising the manifest to 136 unique skills.
+- Added safety transforms for `design-extract` and `claude-video` so agents check availability, ask before setup, avoid writing secrets, and never auto-install packages, browsers, Homebrew/apt/winget/pip tooling, or MCPs.
+- Added an ethics note to `humanizer` so humanizing preserves meaning and facts without deceptive authorship, fake lived experience, or removing required AI disclosure.
+- Added `agentic-supercharge usage`, `/as-usage`, and workflow tests for local, read-only token usage reporting from Claude Code JSONL logs with best-effort AS route attribution and no prompt/message content printing.
+- Updated `skill-router`, smoke checks, router benchmark cases, docs, third-party notices, verified sources, skill readiness, and consistency checks for the v0.10 manifest and new routing boundaries.
+
 ## v0.9.0 - 2026-05-31
 
 - Added Safi Shamsi's MIT Graphify source pinned at `91f4d120b630ee35c79bf3c75ccd186870a808f9`, importing one optional `graphify` code/corpus intelligence skill.

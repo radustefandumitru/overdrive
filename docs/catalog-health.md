@@ -1,6 +1,6 @@
 # Catalog Health
 
-Generated: 2026-05-31T20:13:15.683Z
+Generated: 2026-06-02T07:23:09.531Z
 
 This report is produced from local AS-Workflow route traces. It is maintainer infrastructure only: AgenticSupercharge does not collect user telemetry.
 
@@ -8,7 +8,7 @@ This report is produced from local AS-Workflow route traces. It is maintainer in
 
 - Requested paths: `./.agenticsupercharge/routes.jsonl`
 - Route files found: 1
-- Route entries: 6
+- Route entries: 7
 - Invalid JSONL lines: 0
 - No-skill matched rate: 0%
 - Scorecard cases recorded: 0
@@ -17,16 +17,23 @@ This report is produced from local AS-Workflow route traces. It is maintainer in
 
 | Skill | Count |
 | --- | --- |
-| skill-router | 6 |
-| planning-first | 4 |
+| skill-router | 7 |
+| planning-first | 5 |
 | superpowers:finishing-a-development-branch | 2 |
+| superpowers:executing-plans | 1 |
+| superpowers:verification-before-completion | 1 |
 
 ## Common Skill Pairs
 
 | Pair | Count |
 | --- | --- |
-| planning-first + skill-router | 4 |
+| planning-first + skill-router | 5 |
 | skill-router + superpowers:finishing-a-development-branch | 2 |
+| planning-first + superpowers:executing-plans | 1 |
+| planning-first + superpowers:verification-before-completion | 1 |
+| skill-router + superpowers:executing-plans | 1 |
+| skill-router + superpowers:verification-before-completion | 1 |
+| superpowers:executing-plans + superpowers:verification-before-completion | 1 |
 
 ## Review Candidates
 

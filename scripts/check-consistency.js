@@ -94,14 +94,14 @@ const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
 console.log('AgenticSupercharge consistency check');
 
-check('package version is 0.9.0 or newer', isAtLeastVersion(pkg.version, '0.9.0'), `found ${pkg.version}`);
+check('package version is 0.10.0 or newer', isAtLeastVersion(pkg.version, '0.10.0'), `found ${pkg.version}`);
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
 check('manifest has 17 local skills', skills.local.length === 17, `found ${skills.local.length}`);
-check('manifest has 114 upstream GitHub skills', skills.source.length === 114, `found ${skills.source.length}`);
+check('manifest has 118 upstream GitHub skills', skills.source.length === 118, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
-check('manifest has 132 unique skills', uniqueSkills.size === 132, `found ${uniqueSkills.size}`);
+check('manifest has 136 unique skills', uniqueSkills.size === 136, `found ${uniqueSkills.size}`);
 check('manifest skill names are unique', uniqueSkills.size === skills.all.length);
 check('manifest includes react-doctor', uniqueSkills.has('react-doctor'));
 check('manifest includes what-should-i-consider', uniqueSkills.has('what-should-i-consider'));
@@ -110,6 +110,10 @@ check('manifest includes liquid-glass-web', uniqueSkills.has('liquid-glass-web')
 check('manifest includes convert-to-markdown', uniqueSkills.has('convert-to-markdown'));
 check('manifest includes reddit-research', uniqueSkills.has('reddit-research'));
 check('manifest includes graphify', uniqueSkills.has('graphify'));
+check('manifest includes prompt-master', uniqueSkills.has('prompt-master'));
+check('manifest includes humanizer', uniqueSkills.has('humanizer'));
+check('manifest includes design-extract', uniqueSkills.has('design-extract'));
+check('manifest includes claude-video', uniqueSkills.has('claude-video'));
 check('manifest includes layers-intro', uniqueSkills.has('layers-intro'));
 check('manifest includes layers-orient', uniqueSkills.has('layers-orient'));
 check('manifest includes layers-conceptual-model', uniqueSkills.has('layers-conceptual-model'));
@@ -126,6 +130,15 @@ for (const sourceEntry of manifest.sources || []) {
     if (include.to === 'graphify') {
       check('graphify source normalizes lowercase skill file', include.skillFile === 'skill.md');
       check('graphify source has safe transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-graphify-safe'));
+    }
+    if (include.to === 'design-extract') {
+      check('design-extract source has safe transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-design-extract-safe'));
+    }
+    if (include.to === 'claude-video') {
+      check('claude-video source has safe transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-claude-video-safe'));
+    }
+    if (include.to === 'humanizer') {
+      check('humanizer source has ethics transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-humanizer-ethics'));
     }
   }
 }
@@ -195,7 +208,7 @@ check('package exposes analyze routes script', /analyze-routes\.js/.test(pkg.scr
 check('analyze-routes script exists', exists('scripts/analyze-routes.js'));
 
 const readme = read('README.md');
-check('README says current manifest contains 132 unique skills', /current manifest contains 132 unique skills/i.test(readme));
+check('README says current manifest contains 136 unique skills', /current manifest contains 136 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
 check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
@@ -213,6 +226,8 @@ check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) &&
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
 check('README links prompt caching doc', /docs\/prompt-caching\.md/.test(readme));
 check('README mentions Graphify optional code intelligence', /Graphify/i.test(readme) && /graphifyy/.test(readme) && /does not install Python packages automatically/i.test(readme));
+check('README mentions v0.10 skills', /prompt-master/.test(readme) && /humanizer/.test(readme) && /design-extract/.test(readme) && /claude-video/.test(readme));
+check('README documents usage command privacy', /agentic-supercharge usage/.test(readme) && /prints no prompt or message content/i.test(readme));
 check('README shows varied router examples', /security-review/.test(readme) && /react-doctor/.test(readme) && /jack-seo-launch-audit/.test(readme));
 check('README credits Layers source links', readme.includes('https://github.com/jamiemill/layers-skills') && readme.includes('https://layers.jamiemill.com'));
 check('README credits Liquid Glass provenance links', readme.includes('https://github.com/AndrewPrifer/liquid-dom') && readme.includes('https://kube.io/blog/liquid-glass-css-svg/') && readme.includes('https://github.com/naughtyduk/liquidGL'));
@@ -220,11 +235,14 @@ check('README credits v0.6 motion provenance links', readme.includes('https://x.
 check('README credits v0.7 sources', readme.includes('https://github.com/microsoft/markitdown') && readme.includes('https://github.com/browserbase/skills'));
 check('README credits prompt-caching sources', readme.includes('https://kreidemann.com/blog/prompt-caching') && readme.includes('https://sankalp.bearblog.dev/how-prompt-caching-works/') && readme.includes('https://ngrok.com/blog/prompt-caching'));
 check('README credits Graphify source links', readme.includes('https://github.com/safishamsi/graphify') && readme.includes('https://graphify.net'));
+check('README credits v0.10 source links', readme.includes('https://github.com/nidhinjs/prompt-master') && readme.includes('https://github.com/blader/humanizer') && readme.includes('https://github.com/Manavarya09/design-extract') && readme.includes('https://designlang.manavaryasingh.com') && readme.includes('https://github.com/bradautomates/claude-video'));
+check('README credits usage inspiration links', readme.includes('https://github.com/getagentseal/codeburn') && readme.includes('https://github.com/ryoppippi/ccusage'));
 check('prompt caching doc exists', exists('docs/prompt-caching.md'));
 
 const skillReadiness = read('docs/skill-readiness.md');
-check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 132/.test(skillReadiness));
+check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 136/.test(skillReadiness));
 check('skill readiness doc explains Graphify setup', /graphifyy/.test(skillReadiness) && /optional/i.test(skillReadiness));
+check('skill readiness doc explains v0.10 optional setup', /design-extract/.test(skillReadiness) && /claude-video/.test(skillReadiness) && /never auto-install/i.test(skillReadiness));
 check('scorecard doc exists', exists('docs/scorecard-v0.6.md'));
 check('scorecard results file exists', exists('evals/scorecard-results.json'));
 if (exists('evals/scorecard-results.json')) {
@@ -246,6 +264,7 @@ for (const file of globalInstructionFiles) {
   check(`${file} includes concise output guidance`, text.includes('Skip unnecessary preamble'));
   check(`${file} includes pressure-test guidance`, text.includes('attack the plan first'));
   check(`${file} includes natural status trigger`, text.includes('When the user asks "show status"'));
+  check(`${file} includes natural usage trigger`, text.includes('When the user asks "show usage"') && text.includes('should not print prompts or message content'));
   check(`${file} includes decision contradiction guidance`, text.includes('contradicts a recorded decision or constraint'));
   check(`${file} includes loop frustration stop guidance`, text.includes('oscillating fix loop'));
   check(`${file} includes native orchestration guidance`, text.includes('runtime\'s native orchestration'));
@@ -290,6 +309,13 @@ for (const link of [
   'https://ngrok.com/blog/prompt-caching',
   'https://github.com/safishamsi/graphify',
   'https://graphify.net',
+  'https://github.com/nidhinjs/prompt-master',
+  'https://github.com/blader/humanizer',
+  'https://github.com/Manavarya09/design-extract',
+  'https://designlang.manavaryasingh.com',
+  'https://github.com/bradautomates/claude-video',
+  'https://github.com/getagentseal/codeburn',
+  'https://github.com/ryoppippi/ccusage',
 ]) {
   check(`VERIFIED_SOURCES includes attribution link ${link}`, verifiedRaw.includes(link));
 }
@@ -324,6 +350,13 @@ for (const link of [
   'https://ngrok.com/blog/prompt-caching',
   'https://github.com/safishamsi/graphify',
   'https://graphify.net',
+  'https://github.com/nidhinjs/prompt-master',
+  'https://github.com/blader/humanizer',
+  'https://github.com/Manavarya09/design-extract',
+  'https://designlang.manavaryasingh.com',
+  'https://github.com/bradautomates/claude-video',
+  'https://github.com/getagentseal/codeburn',
+  'https://github.com/ryoppippi/ccusage',
 ]) {
   check(`THIRD_PARTY_NOTICES includes attribution link ${link}`, thirdPartyRaw.includes(link));
 }
@@ -348,16 +381,20 @@ check('skill-router documents Liquid Glass routing', /liquid-glass-web/.test(rou
 check('skill-router documents convert-to-markdown routing', /convert-to-markdown/.test(routerSkill));
 check('skill-router documents reddit-research routing', /reddit-research/.test(routerSkill));
 check('skill-router documents graphify routing', /graphify/.test(routerSkill) && /AS-Workflow knowledge vault/.test(routerSkill));
+check('skill-router documents v0.10 routing', /prompt-master/.test(routerSkill) && /humanizer/.test(routerSkill) && /design-extract/.test(routerSkill) && /claude-video/.test(routerSkill));
 for (const skillName of skills.local) {
   check(`router catalog lists local skill ${skillName}`, routerCatalog.includes(`\`${skillName}\``));
 }
-for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-model', 'layers-interaction-flow', 'liquid-glass-web', 'graphify']) {
+for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-model', 'layers-interaction-flow', 'liquid-glass-web', 'graphify', 'prompt-master', 'humanizer', 'design-extract', 'claude-video']) {
   check(`router catalog lists routed skill ${skillName}`, routerCatalog.includes(`\`${skillName}\``));
 }
 
 const installer = read('lib/installer.js');
 check('installer supports Graphify lowercase skill.md normalization', /skillFile/.test(installer) && /agentic-graphify-safe/.test(installer));
 check('installer Graphify transform forbids Python auto-install', /Never install Python packages automatically/.test(installer) && /hasUnsafeGraphifyInstallInstruction/.test(installer));
+check('installer supports v0.10 safety transforms', /agentic-design-extract-safe/.test(installer) && /agentic-claude-video-safe/.test(installer) && /agentic-humanizer-ethics/.test(installer));
+check('installer Design Extract transform avoids npx auto-install', /npx --no-install designlang/.test(installer) && !/npx --yes designlang/.test(installer));
+check('installer Claude Video transform removes auto setup paths', /Never install binaries/.test(installer) && /patchClaudeVideoSetupScript/.test(installer) && installer.includes('subprocess\\.run\\(cmd\\)'));
 
 const asWorkflow = read('lib/as-workflow.js');
 check('AS-Workflow required files include research.md', /requiredFiles[\s\S]*research\.md/.test(asWorkflow));
@@ -370,6 +407,8 @@ check('AS-Workflow seeds research objectivity mandate', /objective, evidence-bas
 check('AS-Workflow seeds preferences do-not guidance', /do-not rules/.test(asWorkflow));
 check('AS-Workflow hook context avoids volatile issue counts', !/Workflow doctor currently reports/.test(asWorkflow));
 check('AS-Workflow exports recordDecision helper', /recordDecision/.test(asWorkflow) && /module\.exports[\s\S]*recordDecision/.test(asWorkflow));
+check('AS-Workflow exports usage helper', /function usage/.test(asWorkflow) && /formatUsage/.test(asWorkflow) && /module\.exports[\s\S]*usage/.test(asWorkflow));
+check('AS-Workflow usage avoids content printing in tests', /SECRET PROMPT CONTENT SHOULD NOT PRINT/.test(read('scripts/test-as-workflow.js')));
 
 const mcpDocs = read('MCP_AND_CONNECTORS.md');
 check('MCP docs mention optional MarkItDown MCP', /markitdown/i.test(mcpDocs) && /optional/i.test(mcpDocs));

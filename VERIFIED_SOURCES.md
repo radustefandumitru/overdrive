@@ -2,7 +2,7 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-05-31
+Verified on: 2026-06-02
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|
@@ -21,6 +21,10 @@ Verified on: 2026-05-31
 | App Onboarding Questionnaire | Git | `5bc4786d80f2c23de60b3ba02773e919ed8fd091` | `main` | https://github.com/adamlyttleapps/claude-skill-app-onboarding-questionnaire |
 | Layers of Product Design by Jamie Mill / @jamiemill | Git | `64b9202bf0506ad1418b9975681c95798725e25a` | `main` | https://github.com/jamiemill/layers-skills |
 | Graphify by Safi Shamsi | Git | `91f4d120b630ee35c79bf3c75ccd186870a808f9` | `main` | https://github.com/safishamsi/graphify |
+| Claude Video by Brad Bonanno / @bradautomates | Git | `c333c2289e57bf040b32846f18d669e3f8edad9b` | `main` | https://github.com/bradautomates/claude-video |
+| Design Extract by Manav Arya Singh / @Manavarya09 | Git | `82b20dbe5a0e17f1f9153def04af8279f5672e3c` (`v12.15.0`) | `main` | https://github.com/Manavarya09/design-extract |
+| Humanizer by Siqi Chen / @blader | Git | `a2ace14a88a6746f64f1f53ed8272d6788828038` | `main` | https://github.com/blader/humanizer |
+| Prompt Master by Nidhin J S / @nidhinjs | Git | `7a02ddd31bad3056cc3ccf0af2b23d7b30d4abc2` | `main` | https://github.com/nidhinjs/prompt-master |
 | Anthropic example skills | Git | `690f15cac7f7b4c055c5ab109c79ed9259934081` | `main` | https://github.com/anthropics/skills |
 | OpenAI Skills Catalog | Git | `b0401f07213a66414d84a65cb50c1d226f99485a` | `main` | https://github.com/openai/skills |
 | Vercel Labs Skills | Git | `e4243fbf7d9398722024f62850ece90fa0d5c693` | `main` | https://github.com/vercel-labs/skills |
@@ -41,6 +45,11 @@ The links below are credited sources and provenance references for local skills,
 | Prompt-line principles | Boris Cherny / Anthropic, shared by @AnatoliKopadze | https://x.com/AnatoliKopadze/status/2054568935274549597 · https://x.com/AnatoliKopadze/status/2056362875195686927 |
 | Layers of Product Design | Jamie Mill / @jamiemill; recommended by @nurijanian | https://github.com/jamiemill/layers-skills · https://layers.jamiemill.com · https://x.com/nurijanian/status/2058231994329497922 |
 | Graphify | Safi Shamsi / @safishamsi | https://github.com/safishamsi/graphify · https://graphify.net |
+| Prompt Master | Nidhin J S / @nidhinjs | https://github.com/nidhinjs/prompt-master |
+| Humanizer | Siqi Chen / @blader | https://github.com/blader/humanizer |
+| Design Extract / designlang | Manav Arya Singh / @Manavarya09 | https://github.com/Manavarya09/design-extract · https://designlang.manavaryasingh.com |
+| Claude Video | Brad Bonanno / @bradautomates | https://github.com/bradautomates/claude-video |
+| Usage command inspiration | AgentSeal codeburn; ryoppippi ccusage | https://github.com/getagentseal/codeburn · https://github.com/ryoppippi/ccusage |
 | Liquid Glass inspiration | Andrew Prifer / @AndrewPrifer | https://github.com/AndrewPrifer/liquid-dom · https://x.com/AndrewPrifer/status/2056923983581446529 |
 | Liquid Glass CSS/SVG technique | kube.io | https://kube.io/blog/liquid-glass-css-svg/ |
 | Liquid Glass implementation references | nikdelvin, rizroze, Z1Code, naughtyduk, dashersw | https://github.com/nikdelvin/liquid-glass · https://github.com/rizroze/liquid-glass · https://github.com/Z1Code/glass-refraction · https://github.com/naughtyduk/liquidGL · https://github.com/dashersw/liquid-glass-js |
