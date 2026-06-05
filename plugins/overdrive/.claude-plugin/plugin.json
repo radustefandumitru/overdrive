@@ -5,7 +5,7 @@
   "description": "Thin Claude Code helper for the full Overdrive CLI installer, skill router, and ovd-workflow runtime.",
   "author": {
     "name": "Radu Stefan Dumitru",
-    "url": "https://x.com/editor_stefan?s=11"
+    "url": "https://x.com/editor_stefan"
   },
   "homepage": "https://github.com/radustefandumitru/overdrive",
   "repository": "https://github.com/radustefandumitru/overdrive",

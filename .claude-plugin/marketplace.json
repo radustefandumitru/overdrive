@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "owner": {
     "name": "Radu Stefan Dumitru",
-    "url": "https://x.com/editor_stefan?s=11"
+    "url": "https://x.com/editor_stefan"
   },
   "plugins": [
     {
@@ -15,7 +15,7 @@
       "version": "1.0.0",
       "author": {
         "name": "Radu Stefan Dumitru",
-        "url": "https://x.com/editor_stefan?s=11"
+        "url": "https://x.com/editor_stefan"
       },
       "homepage": "https://github.com/radustefandumitru/overdrive",
       "repository": "https://github.com/radustefandumitru/overdrive",

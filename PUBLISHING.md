@@ -188,6 +188,8 @@ For a new release, replace `vX.Y.Z` with the package version in `package.json`:
 
 Treat `README.md` as a required release artifact, not static background material. Every release should update the README when skills, workflow capabilities, install behavior, positioning, compatibility, or safety boundaries change.
 
+For v1 launch, rename or create the public GitHub repo at `radustefandumitru/overdrive` and create the matching tag/release before promoting `npx github:radustefandumitru/overdrive` commands or relying on `overdrive check-updates`.
+
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z

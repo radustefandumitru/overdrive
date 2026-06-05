@@ -36,7 +36,7 @@ The folder is local runtime state. The installer adds `.overdrive/` and the lega
 Overdrive v1 keeps migration deliberately conservative:
 
 - `.overdrive/` is the new canonical project-state folder.
-- If `.agenticsupercharge/` exists and `.overdrive/` does not, Overdrive copies the legacy folder into `.overdrive/` on a write action such as `overdrive checkpoint` or `overdrive resync --apply`.
+- If `.agenticsupercharge/` exists and `.overdrive/` does not, Overdrive copies the legacy folder into `.overdrive/` on install for the active project, on `overdrive migrate --apply`, or on a write action such as `overdrive checkpoint` or `overdrive resync --apply`.
 - The old `.agenticsupercharge/` folder is not deleted during the RC.
 - Old `.agentic-supercharge.json` markers count as managed, and new writes use `.overdrive.json`.
 - `AGENTIC_SUPERCHARGE_WORKFLOW=disabled` still disables workflow writes for compatibility, but `OVERDRIVE_WORKFLOW=disabled` is canonical.
@@ -48,6 +48,8 @@ Use these from a project folder:
 ```bash
 overdrive status
 overdrive doctor
+overdrive migrate --dry-run
+overdrive migrate --apply
 overdrive knowledge --dry-run
 overdrive knowledge --apply
 overdrive resync --dry-run
@@ -64,6 +66,8 @@ If `overdrive` is not on your `PATH`, installed hooks and slash commands use the
 ```
 
 `ovd` is installed as a short alias where Overdrive installs its runtime shim. The legacy `agentic-supercharge` CLI alias remains available for compatibility and delegates to the new Overdrive runtime.
+
+`overdrive migrate` is dry-run by default. Add `--apply` to copy legacy `.agenticsupercharge/` state into `.overdrive/`. It does not delete the legacy folder.
 
 ## How Agents Use It
 

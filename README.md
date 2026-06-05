@@ -16,7 +16,7 @@ Overdrive is not just another skill pack. It is the operating layer around the s
 
 The goal is practical: better agent output with less repeated prompting, without turning every session into a giant context dump.
 
-I built this as my own daily AI coding-agent setup and am releasing it free for the community. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan?s=11), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/), or open an issue/PR. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+I built this as my own daily AI coding-agent setup and am releasing it free for the community. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/), or open an issue/PR. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
 
 ## Quick Start
 
@@ -72,7 +72,9 @@ You keep prompting normally. For non-trivial work, the global instructions ask t
 You can also name a skill directly:
 
 ```text
-Use jack-scroll-3d-sites for the hero section.
+Use prompt-master to tighten this launch prompt before I send it.
+Use graphify to map how this codebase fits together before editing.
+Use liquid-glass-web for this navigation component.
 ```
 
 Explicit user-named skills win for that part of the task.
@@ -193,7 +195,7 @@ Overdrive manages its own **managed skills** and instruction blocks. It does not
 | Instruction blocks | During install | Adds a managed global guidance block while preserving user content outside the block. |
 | Runtime | During install | Writes persistent helpers at `~/.overdrive/runtime/current/` plus `overdrive` and `ovd` CLI shims. |
 | Legacy alias | During install | Keeps `agentic-supercharge` as a compatibility alias to the new Overdrive runtime. |
-| Optional helper tools | During install, unless `--no-tool-install` is set | Attempts safe user-space setup for Graphify, video helpers, and browser support. Missing tools become warnings, not install failures. |
+| Optional helper tools and installer-backed sources | During install, unless `--no-tool-install` is set | Attempts safe user-space setup for Graphify, video helpers, browser support, and official installer-backed skills. Missing tools become warnings, not install failures. |
 | Hooks/commands/rules | During global install, where supported | Let supported agents call ovd-workflow. Hooks are advisory and fail open. |
 | Project state | During meaningful project work or explicit workflow commands | Creates local `.overdrive/` state and adds `.overdrive/` plus `.agenticsupercharge/` to `.gitignore`. |
 
@@ -242,7 +244,7 @@ Overdrive is non-destructive by default.
 
 Managed skill folders receive `.overdrive.json`. Legacy `.agentic-supercharge.json` markers still count as managed so old installs can be updated or uninstalled safely. Managed instruction blocks now use `overdrive:global-guidelines`; old `ai-skill-setup:global-guidelines` blocks are replaced rather than duplicated.
 
-Uninstall removes only managed folders, managed instruction blocks, managed hooks/rules/commands, and managed runtime files:
+Uninstall removes only managed folders, managed instruction blocks, managed hooks/rules/commands, managed runtime files, and Overdrive-managed helper venvs/shims under `~/.overdrive`. Shared Homebrew/winget tools are left in place because they may be used outside Overdrive:
 
 ```bash
 ./uninstall.sh --dry-run
@@ -257,7 +259,7 @@ By default, Overdrive may attempt safe setup for a narrow set of optional helper
 - Video helpers: `ffmpeg` and `yt-dlp`.
 - Browser support for `design-extract`, preferring existing system Chrome/Chromium where available.
 
-These attempts are non-privileged, fail open, and never collect keys or write MCP/app config. Overdrive never uses global `pip`, `sudo`, or `--break-system-packages`. Use `--no-tool-install` if you only want skill files and instructions.
+These attempts are non-privileged, fail open, and never collect keys or write MCP/app config. Overdrive never uses global `pip`, `sudo`, or `--break-system-packages`. Use `--no-tool-install` if you only want skill files and instructions; it also skips official installer-backed `npx` sources.
 
 Graphify is separate from ovd-workflow. ovd-workflow remembers local project state, decisions, route traces, and reference docs; Graphify is for on-demand queryable knowledge graphs over a codebase or mixed corpus. If setup is skipped, fails, or is unavailable, agents fall back to normal `rg` and file reads.
 
@@ -328,6 +330,7 @@ npm run consistency
 npm run eval:router
 npm run test:workflow
 npm run analyze:routes
+npm run source:fidelity
 ./verify.sh
 npm pack --dry-run
 ```
@@ -337,6 +340,8 @@ The eval pack is a test bench, not a performance claim. It helps compare routed 
 v0.6 also includes a human-scored scorecard harness at [`docs/scorecard-v0.6.md`](docs/scorecard-v0.6.md). It starts empty on purpose; real output-quality claims should wait until blind control-vs-routed runs are scored.
 
 `npm run analyze:routes` writes [`docs/catalog-health.md`](docs/catalog-health.md), a local-only maintainer report for route frequency, common skill pairings, and human-review candidates. It is not telemetry and never collects user data.
+
+`npm run source:fidelity` clones pinned upstream sources and writes a maintainer report comparing copied, modified, omitted, and transformed skill files. It is a release-audit helper and is not part of the runtime.
 
 ## Privacy And Credentials
 
@@ -382,6 +387,7 @@ Power-user and maintainer docs:
 | [`docs/prompt-caching.md`](docs/prompt-caching.md) | How Overdrive stays friendly to prompt-cache reuse. |
 | [`docs/evaluation.md`](docs/evaluation.md) | Router benchmark protocol and consistency-check explanation. |
 | [`docs/catalog-health.md`](docs/catalog-health.md) | Local route-analysis output for maintainers. |
+| `docs/source-fidelity-report.md` | Optional generated maintainer report from `npm run source:fidelity`. |
 | [`MCP_AND_CONNECTORS.md`](MCP_AND_CONNECTORS.md) | Context7 and optional MCP/connectors guidance. |
 | [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md) | Pinned source refs used by default. |
 | [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Attribution, licenses, and redistribution notes. |
@@ -391,6 +397,8 @@ Power-user and maintainer docs:
 ## Credits
 
 Overdrive is a curated installer and router. Most skills come from other people and projects.
+
+Development and review support also credits [Eugen Bulboaca](https://github.com/bulboacaeugen).
 
 Major sources include [Leonxlnx / Taste Skill](https://github.com/Leonxlnx/taste-skill), [Paul Bakaus / Impeccable](https://github.com/pbakaus/impeccable) and [impeccable.style](https://impeccable.style), [Aiden Bai / Million / React Doctor](https://github.com/millionco/react-doctor) and [react.doctor](https://react.doctor), [Emil Kowalski](https://emilkowal.ski), [GoogleChrome / Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance), [Muratcan Koylan / Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering), [Corey Haines / MarketingSkills](https://github.com/coreyhaines31/marketingskills), [Hardik Pandya / Stop Slop](https://github.com/hardikpandya/stop-slop), [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills), [yt-dlp](https://github.com/yt-dlp/yt-dlp), [Anthropic Skills](https://github.com/anthropics/skills), [OpenAI Skills](https://github.com/openai/skills), [Vercel Labs Skills](https://github.com/vercel-labs/skills), [ComposioHQ Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills), [Remotion](https://www.remotion.dev), [Microsoft Playwright CLI](https://github.com/microsoft/playwright-cli), [Apple's Designing Fluid Interfaces session](https://developer.apple.com/videos/play/wwdc2018/803/), [Jack Roberts](https://www.youtube.com/watch?v=TZUTe7s11-I&list=WL&index=50), [Boris Cherny / Anthropic prompt guidance shared by @AnatoliKopadze](https://x.com/AnatoliKopadze/status/2054568935274549597), and [multica-ai / andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
 
@@ -409,6 +417,10 @@ v0.11 changes make selected optional dependencies more plug-and-play by attempti
 v0.12 adds native context-window guidance through [`docs/context-runtime-matrix.md`](docs/context-runtime-matrix.md) and a local `pretext` skill for Cheng Lou's MIT [`@chenglou/pretext`](https://github.com/chenglou/pretext) library. The skill teaches agents how to use Pretext as a per-project app dependency; no Pretext source code or npm package is bundled.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+## License
+
+Overdrive's original code, installer, workflow runtime, docs, and local skills are licensed under Apache-2.0. Third-party skills, references, tools, and upstream projects keep their own licenses and attribution; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md).
 
 ## Honest Assessment
 

@@ -40,7 +40,7 @@
     "uninstall.sh"
   ],
   "scripts": {
-    "check": "node --check lib/installer.js && node --check lib/ovd-workflow.js && node --check bin/overdrive.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js && node --check scripts/test-ovd-workflow.js && node --check scripts/build-scorecard.js && node --check scripts/analyze-routes.js",
+    "check": "node --check lib/installer.js && node --check lib/ovd-workflow.js && node --check bin/overdrive.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js && node --check scripts/test-ovd-workflow.js && node --check scripts/build-scorecard.js && node --check scripts/analyze-routes.js && node --check scripts/source-fidelity-report.js",
     "consistency": "node scripts/check-consistency.js",
     "eval:router": "node scripts/evaluate-router.js",
     "test:workflow": "node scripts/test-ovd-workflow.js",
@@ -51,7 +51,8 @@
     "update-skills": "node bin/overdrive.js update-skills",
     "uninstall": "node bin/overdrive.js uninstall",
     "scorecard": "node scripts/build-scorecard.js",
-    "analyze:routes": "node scripts/analyze-routes.js"
+    "analyze:routes": "node scripts/analyze-routes.js",
+    "source:fidelity": "node scripts/source-fidelity-report.js"
   },
   "engines": {
     "node": ">=18"

@@ -5,6 +5,7 @@
 - Rebranded AgenticSupercharge to Overdrive as a local release candidate, with canonical `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, `~/.overdrive/`, `OVERDRIVE_WORKFLOW`, package name `overdrive-cli`, and archive `Overdrive.zip`.
 - Added compatibility aliases for the old `agentic-supercharge` CLI, old `/as-*` slash commands, old `.agenticsupercharge/` project state, old `.agentic-supercharge.json` managed markers, and old `ai-skill-setup:global-guidelines` managed instruction blocks.
 - Added non-destructive workflow migration from `.agenticsupercharge/` to `.overdrive/` on Overdrive write actions while keeping both folders gitignored.
+- Hardened the RC after audit: exact `SKILL.md` casing for lowercase upstream skill files, idempotent workflow hook cleanup, explicit `overdrive migrate`, stricter `--no-tool-install` semantics, safer `claude-video` payload stripping, managed helper-tool uninstall cleanup, and behavioral/source-fidelity tests for installed output.
 - Switched the original Overdrive project license to Apache-2.0 and added `NOTICE`; third-party skills and references remain governed by their own licenses in `THIRD_PARTY_NOTICES.md`.
 - Added repo-local README assets, a polished Overdrive README landing page, and a thin Claude Code marketplace/plugin wrapper that points users to the full CLI install without bundling all 137 skills.
 - Rebuilt release packaging around `Overdrive.zip`; no public tag, GitHub release, hardening audit, or remote repo rename is part of this RC.

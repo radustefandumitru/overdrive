@@ -67,5 +67,5 @@ Before broad edits to a real vault, create a git commit, vault snapshot, or Obsi
 ## Public-Safety Notes
 
 - The public kit does not copy MCP configs, OAuth state, tokens, browser profiles, `.env` files, or app sessions.
-- Optional MCPs remain documented in `MCP_AND_CONNECTORS.md` and are not installed by default. The installer may attempt a narrow set of non-privileged external helper tools for selected bundled skills; pass `--no-tool-install` to skip that behavior.
+- Optional MCPs remain documented in `MCP_AND_CONNECTORS.md` and are not installed by default. The installer may attempt a narrow set of non-privileged external helper tools or official installer-backed skill sources for selected bundled skills; pass `--no-tool-install` to skip both helper setup and external installer-backed sources.
 - If a skill requires account access or external side effects, the agent should ask before acting.
