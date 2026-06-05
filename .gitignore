@@ -1,5 +1,6 @@
 .DS_Store
 *.zip
+overdrive-*.tgz
 agentic-supercharge-*.tgz
 package-lock.json
 sources.lock.json
@@ -7,4 +8,5 @@ sources.lock.json
 # Do not commit raw/private skill snapshots. Public installs pull from upstream
 # through manifest.json and pinned official installers.
 bundled/skills/
+.overdrive/
 .agenticsupercharge/

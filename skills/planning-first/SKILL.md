@@ -49,4 +49,4 @@ Use this skill when the implementation is large enough that rushing straight int
 
 ## Attribution
 
-Original AgenticSupercharge skill by Stefan / Radu Stefan Dumitru, designed to give non-Claude agents a lightweight planning-first workflow.
+Original Overdrive skill by Stefan / Radu Stefan Dumitru, designed to give non-Claude agents a lightweight planning-first workflow.

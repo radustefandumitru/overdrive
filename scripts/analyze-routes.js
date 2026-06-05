@@ -47,7 +47,7 @@ function parseArgs(argv) {
 }
 
 function routeFiles(inputPaths) {
-  const candidates = inputPaths.length ? inputPaths : [path.join(root, '.agenticsupercharge/routes.jsonl')];
+  const candidates = inputPaths.length ? inputPaths : [path.join(root, '.overdrive/routes.jsonl')];
   const files = [];
   for (const candidate of candidates) {
     if (!fs.existsSync(candidate)) continue;
@@ -129,7 +129,7 @@ function analyze(entries, allSkills, scorecard) {
     .slice(0, 50) : [];
 
   return {
-    generatedAt: new Date().toISOString(),
+    generatedAt: 'deterministic report; rerun `npm run analyze:routes` to refresh metrics',
     routeFilesAnalyzed: entries.length ? unique(entries.map((entry) => entry._file)).length : 0,
     totalRoutes: entries.length,
     invalidLines: invalid,
@@ -172,11 +172,11 @@ function renderMarkdown(summary, files, inputPaths) {
 
 Generated: ${summary.generatedAt}
 
-This report is produced from local AS-Workflow route traces. It is maintainer infrastructure only: AgenticSupercharge does not collect user telemetry.
+This report is produced from local ovd-workflow route traces. It is maintainer infrastructure only: Overdrive does not collect user telemetry.
 
 ## Inputs
 
-- Requested paths: ${inputPaths.length ? inputPaths.map((item) => `\`${item}\``).join(', ') : '`./.agenticsupercharge/routes.jsonl`'}
+- Requested paths: ${inputPaths.length ? inputPaths.map((item) => `\`${item}\``).join(', ') : '`./.overdrive/routes.jsonl`'}
 - Route files found: ${files.length}
 - Route entries: ${summary.totalRoutes}
 - Invalid JSONL lines: ${summary.invalidLines}

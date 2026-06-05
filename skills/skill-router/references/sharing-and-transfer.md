@@ -5,12 +5,12 @@ Use the standalone installer kit instead of copying personal app folders.
 Default local kit shape:
 
 ```bash
-AgenticSupercharge/
+Overdrive/
 ```
 
 ## Recommended Flow
 
-1. Share the whole `ai-skill-setup` folder by zip, AirDrop, private repo, or cloud storage.
+1. Share the whole `overdrive` folder by zip, AirDrop, private repo, or cloud storage.
 2. On the receiving Mac, inspect `manifest.json` and `install.sh`.
 3. Run:
 

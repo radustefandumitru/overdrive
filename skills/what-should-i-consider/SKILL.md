@@ -61,4 +61,4 @@ Recommended next move
 
 ## Attribution
 
-Original AgenticSupercharge skill by Radu Stefan Dumitru and Codex, created to make agents more objective when reviewing architecture, product, and implementation plans.
+Original Overdrive skill by Radu Stefan Dumitru and Codex, created to make agents more objective when reviewing architecture, product, and implementation plans.

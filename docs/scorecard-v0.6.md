@@ -2,7 +2,7 @@
 
 This is the public scorecard template for comparing plain prompts against `skill-router` routed prompts. It is intentionally empty until real blind runs are collected and scored.
 
-Do not claim AgenticSupercharge improves outputs from this file until the table contains real model runs.
+Do not claim Overdrive improves outputs from this file until the table contains real model runs.
 
 ## Protocol
 

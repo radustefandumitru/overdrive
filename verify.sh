@@ -8,8 +8,8 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
-AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" verify "$@"
+OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" verify "$@"
 node "$KIT_DIR/scripts/check-consistency.js"
 node "$KIT_DIR/scripts/evaluate-router.js"
-node "$KIT_DIR/scripts/test-as-workflow.js"
+node "$KIT_DIR/scripts/test-ovd-workflow.js"
 node "$KIT_DIR/scripts/analyze-routes.js"

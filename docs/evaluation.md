@@ -1,6 +1,6 @@
 # Evaluation And Consistency Checks
 
-AgenticSupercharge v0.3 added lightweight maintainer checks for two things:
+Overdrive v0.3 added lightweight maintainer checks for two things:
 
 - The repo stays internally consistent as skills, docs, release archives, and installer metadata change.
 - The `skill-router` can be evaluated against repeatable prompts instead of judged only by vibes.
@@ -95,12 +95,12 @@ The router is failing when it:
 
 ## Current Claim
 
-As of v0.3, AgenticSupercharge has a repeatable router benchmark and automated coverage checks. It does not yet include a statistically meaningful public scorecard proving a fixed output-quality lift across models. That claim should wait until benchmark runs are collected and reviewed.
+As of v0.3, Overdrive has a repeatable router benchmark and automated coverage checks. It does not yet include a statistically meaningful public scorecard proving a fixed output-quality lift across models. That claim should wait until benchmark runs are collected and reviewed.
 
-v0.4 extends the benchmark with a complex multi-phase case to ensure the router no longer treats three skills as a hard cap and can mention AS-Workflow/checkpoints when project memory would help.
+v0.4 extends the benchmark with a complex multi-phase case to ensure the router no longer treats three skills as a hard cap and can mention ovd-workflow/checkpoints when project memory would help.
 
 v0.5 adds coverage for React Doctor routing, architecture pressure-testing with `what-should-i-consider`, and `media-download` so utility/download requests do not fall back to broader video skills.
 
 v0.6 adds product-design Layers and Liquid Glass progressive-enhancement cases, plus a scorecard harness in `docs/scorecard-v0.6.md`. The scorecard is empty until real blind control-vs-routed runs are collected.
 
-v0.7 adds `convert-to-markdown` and `reddit-research` cases, plus `npm run analyze:routes` for local maintainer catalog-health analysis from AS-Workflow `routes.jsonl`. Route analysis is local only and is not telemetry.
+v0.7 adds `convert-to-markdown` and `reddit-research` cases, plus `npm run analyze:routes` for local maintainer catalog-health analysis from ovd-workflow `routes.jsonl`. Route analysis is local only and is not telemetry.

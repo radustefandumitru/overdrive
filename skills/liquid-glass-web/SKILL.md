@@ -80,6 +80,6 @@ Always provide Tier 1 as the fallback.
 
 ## Attribution
 
-Original AgenticSupercharge skill by Stefan / Radu Stefan Dumitru.
+Original Overdrive skill by Stefan / Radu Stefan Dumitru.
 
 Inspired by Andrew Prifer's liquid-dom work (`https://github.com/AndrewPrifer/liquid-dom`, `https://x.com/AndrewPrifer/status/2056923983581446529`), kube.io's public CSS/SVG Liquid Glass technique (`https://kube.io/blog/liquid-glass-css-svg/`), and the broader web glass/refraction community. `naughtyduk/liquidGL` (`https://github.com/naughtyduk/liquidGL`) is an optional WebGL reference/library candidate; verify its license before adopting code or adding it as a dependency.

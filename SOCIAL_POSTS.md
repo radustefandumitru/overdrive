@@ -1,6 +1,6 @@
 # Social Post Drafts
 
-Repo URL: https://github.com/radustefandumitru/AgenticSupercharge
+Repo URL: https://github.com/radustefandumitru/Overdrive
 
 Support link: https://buymeacoffee.com/stefandumitru
 
@@ -8,7 +8,7 @@ Support link: https://buymeacoffee.com/stefandumitru
 
 Short version:
 
-> AgenticSupercharge v0.2.0 is out.
+> Overdrive v0.2.0 is out.
 >
 > This release makes the setup less like a pile of skills and more like an actual working agent layer:
 >
@@ -25,7 +25,7 @@ Short version:
 >
 > Still free, open source, macOS-first, and non-destructive by default.
 >
-> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+> Repo: https://github.com/radustefandumitru/Overdrive
 
 Tone to keep: grateful, attribution-heavy, and honest that this improves output only when the router stays selective.
 
@@ -54,7 +54,7 @@ Use GitHub links for the canonical source. Only include Reddit usernames when th
 
 ## Reddit Posts
 
-The tone across all variants is humble and gratitude-forward: AgenticSupercharge is plumbing around great work by other people. Lead with the creators, name what's added on top, acknowledge the limits honestly.
+The tone across all variants is humble and gratitude-forward: Overdrive is plumbing around great work by other people. Lead with the creators, name what's added on top, acknowledge the limits honestly.
 
 ### Where To Post (Ranked)
 
@@ -86,7 +86,7 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 
 - ⭐ I packaged the Claude / Codex / Cursor skills I actually use into one installer — all credit to the original creators
 - ⭐ I keep installing the same 10 community skills across Claude Code, Codex, and Cursor. I finally wrote an installer that does it for me.
-- AgenticSupercharge: a non-destructive installer for the best community skills, with a router so agents pick the right one
+- Overdrive: a non-destructive installer for the best community skills, with a router so agents pick the right one
 - After collecting agent skills from GitHub for months, I built an installer that pulls them all from upstream with attribution
 
 ### Main Post (works in r/ClaudeAI, r/ClaudeCode, r/AnthropicAI, r/AI_Agents)
@@ -94,16 +94,16 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 >
 > The annoying part was the setup. Each repo lives in a different place, each coding agent wants skills in a different folder (`~/.claude/skills`, `~/.codex/skills`, `~/.gemini/skills`, `~/.gemini/config/skills`, `~/.cursor/skills`), keeping them updated is manual, and there's no good way to do it without clobbering whatever you already had.
 >
-> So I put together a small installer: **AgenticSupercharge**.
+> So I put together a small installer: **Overdrive**.
 >
-> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+> Repo: https://github.com/radustefandumitru/Overdrive
 >
 > **What it actually does**
 >
 > - Pulls skills from their original upstream repos. Doesn't vendor them.
 > - Installs into whichever coding agents it detects (Claude Code, Codex, Gemini CLI, Antigravity, Cursor) or only the ones you pick.
 > - Adds one local skill called `skill-router` that tells the agent to consult it as a preflight and pick the minimum useful skill sequence instead of loading the whole pile.
-> - **Non-destructive by default.** Drops a `.agentic-supercharge.json` marker in folders it manages, never touches unmarked folders unless you explicitly say so. Four conflict policies: `preserve` (default), `backup-and-replace`, `replace-managed-only`, `force`.
+> - **Non-destructive by default.** Drops a `.overdrive.json` marker in folders it manages, never touches unmarked folders unless you explicitly say so. Four conflict policies: `preserve` (default), `backup-and-replace`, `replace-managed-only`, `force`.
 > - `--dry-run` actually does nothing — verified with a real audit, not just a flag check.
 > - `./verify.sh` checks frontmatter, instruction markers, broken symlinks, router catalog coverage, and runtime path leakage.
 > - `./update.sh` refreshes managed skills from verified pinned sources, with `--allow-upstream-drift` available if you intentionally want live upstream branches/latest packages.
@@ -142,20 +142,20 @@ Best two are starred. Both signal the humble framing in the title itself, which 
 > Preview first — writes nothing to your machine:
 >
 > ```bash
-> npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
+> npx -y github:radustefandumitru/Overdrive -- --dry-run
 > ```
 >
 > Then for real:
 >
 > ```bash
-> npx -y github:radustefandumitru/AgenticSupercharge
+> npx -y github:radustefandumitru/Overdrive
 > ```
 >
 > Or clone the repo first if you want to read the installer code before running it (recommended for anything from a stranger on the internet):
 >
 > ```bash
-> git clone https://github.com/radustefandumitru/AgenticSupercharge.git
-> cd AgenticSupercharge
+> git clone https://github.com/radustefandumitru/Overdrive.git
+> cd Overdrive
 > ./install.sh --dry-run
 > ./install.sh
 > ./verify.sh
@@ -171,17 +171,17 @@ Lead with the Cursor-specific angle.
 
 > Most Claude Code / Codex skill installers either ignore Cursor or write into the wrong folder (some try `~/.cursor/skills-cursor`, which is reserved for Cursor itself).
 >
-> I just published **AgenticSupercharge**, a non-destructive installer that handles Cursor correctly: `~/.cursor/skills` globally, `.cursor/skills` for project-local. Cursor auto-detect only fires if the app or CLI is actually installed, not just because a config folder exists.
+> I just published **Overdrive**, a non-destructive installer that handles Cursor correctly: `~/.cursor/skills` globally, `.cursor/skills` for project-local. Cursor auto-detect only fires if the app or CLI is actually installed, not just because a config folder exists.
 >
 > Same install ships across Claude Code, Codex, Gemini CLI, Antigravity, and shared `.agents` if you have any of those too.
 >
 >
-> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+> Repo: https://github.com/radustefandumitru/Overdrive
 >
 > Preview first:
 >
 > ```bash
-> npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run --scope local --project-dir .
+> npx -y github:radustefandumitru/Overdrive -- --dry-run --scope local --project-dir .
 > ```
 >
 > Honest caveat: only helps if your agent actually consults the included `skill-router` instead of loading every skill into context. macOS-first detection. Feedback welcome — u/StefanDumitru.
@@ -190,7 +190,7 @@ Lead with the Cursor-specific angle.
 
 Tell the build story.
 
-> **AgenticSupercharge** — I curated my favorite Claude/Codex/Cursor skills into one safe installer
+> **Overdrive** — I curated my favorite Claude/Codex/Cursor skills into one safe installer
 >
 >
 > So I built an installer that does it for me, then ended up adding:
@@ -205,7 +205,7 @@ Tell the build story.
 >
 > All credit to the original skill authors — this is just plumbing.
 >
-> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+> Repo: https://github.com/radustefandumitru/Overdrive
 >
 > Built and iterated on using the same skills it installs, which was a fun feedback loop. macOS-first. Open to feedback and contributors.
 
@@ -214,7 +214,7 @@ Tell the build story.
 Lean into the identity.
 
 >
-> The annoying part is each one lives in a different repo and each tool wants them in a different folder. I built **AgenticSupercharge** to pull them all from upstream and install them safely across whichever coding agents you have. Adds a `skill-router` so your agent picks the minimum useful skill sequence instead of loading the whole pile.
+> The annoying part is each one lives in a different repo and each tool wants them in a different folder. I built **Overdrive** to pull them all from upstream and install them safely across whichever coding agents you have. Adds a `skill-router` so your agent picks the minimum useful skill sequence instead of loading the whole pile.
 >
 > Full credit to the people who actually made the skills:
 > - [Leon Lin / Taste Skill](https://github.com/Leonxlnx/taste-skill)
@@ -226,12 +226,12 @@ Lean into the identity.
 > - [Kepano / Obsidian Skills](https://github.com/kepano/obsidian-skills)
 > - More in the repo
 >
-> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+> Repo: https://github.com/radustefandumitru/Overdrive
 >
 > Preview first (writes nothing):
 >
 > ```
-> npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
+> npx -y github:radustefandumitru/Overdrive -- --dry-run
 > ```
 >
 > Honest caveat: it only helps if the router stays selective. Throwing every skill into your agent's context will make output worse, not better. The router is there exactly to prevent that. macOS-first for now.
@@ -249,14 +249,14 @@ For audiences that care about output more than tooling.
 > - [Emil Kowalski's skill](https://github.com/emilkowalski/skill) — design engineering, component feel, animation taste
 > - [Google's Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance) — current HTML/CSS/browser APIs, Baseline compatibility
 >
-> Setting them all up across multiple agents was annoying, so I packaged them into one installer: **AgenticSupercharge**. It also includes a `fluid-animations` skill (Apple-style direct manipulation, springs, gestures) and an `emil-animation-polish` skill (practical CSS easing/timing audits) that I wrote myself based on public material from Apple's WWDC talks and Emil's animation writing.
+> Setting them all up across multiple agents was annoying, so I packaged them into one installer: **Overdrive**. It also includes a `fluid-animations` skill (Apple-style direct manipulation, springs, gestures) and an `emil-animation-polish` skill (practical CSS easing/timing audits) that I wrote myself based on public material from Apple's WWDC talks and Emil's animation writing.
 >
-> Repo: https://github.com/radustefandumitru/AgenticSupercharge
+> Repo: https://github.com/radustefandumitru/Overdrive
 >
 > All credit to the upstream creators. macOS-first installer. Preview without writing anything:
 >
 > ```
-> npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
+> npx -y github:radustefandumitru/Overdrive -- --dry-run
 > ```
 
 ## X / Twitter Thread
@@ -265,11 +265,11 @@ For audiences that care about output more than tooling.
 
 I am giving away my personal AI coding-agent setup for free.
 
-I built AgenticSupercharge, a portable AI skill setup for Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and project-local installs.
+I built Overdrive, a portable AI skill setup for Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and project-local installs.
 
 It pulls a curated set of agent skills from upstream + installs a `skill-router` that helps the agent choose the right skill instead of loading a giant pile of context.
 
-Repo: https://github.com/radustefandumitru/AgenticSupercharge
+Repo: https://github.com/radustefandumitru/Overdrive
 
 Feedback welcome. Tag me if you build something with it.
 
@@ -323,8 +323,8 @@ Please star/support the originals.
 Install:
 
 ```bash
-git clone https://github.com/radustefandumitru/AgenticSupercharge.git
-cd AgenticSupercharge
+git clone https://github.com/radustefandumitru/Overdrive.git
+cd Overdrive
 ./install.sh --dry-run
 ./install.sh
 ./verify.sh
@@ -333,8 +333,8 @@ cd AgenticSupercharge
 Or with GitHub `npx`:
 
 ```bash
-npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
-npx -y github:radustefandumitru/AgenticSupercharge
+npx -y github:radustefandumitru/Overdrive -- --dry-run
+npx -y github:radustefandumitru/Overdrive
 ```
 
 Then restart Claude Code, Codex, Gemini CLI, Antigravity, or Cursor.
@@ -347,13 +347,13 @@ It passed my local verification checks, but review scripts before running any in
 
 I am giving away my personal AI coding-agent setup for free.
 
-I built AgenticSupercharge, a portable AI skill setup for Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project installs.
+I built Overdrive, a portable AI skill setup for Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and local project installs.
 
 It pulls a curated set of high-quality skills from upstream plus a `skill-router` so agents choose the right skill without loading unnecessary context.
 
 
 All credit to the original creators. This is an installer/router to make discovery easier for builders.
 
-Repo: https://github.com/radustefandumitru/AgenticSupercharge
+Repo: https://github.com/radustefandumitru/Overdrive
 
 Feedback: u/StefanDumitru

@@ -92,12 +92,19 @@ const skills = collectManifestSkills(manifest);
 const uniqueSkills = new Set(skills.all);
 const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 
-console.log('AgenticSupercharge consistency check');
+console.log('Overdrive consistency check');
 
-check('package version is 0.12.0 or newer', isAtLeastVersion(pkg.version, '0.12.0'), `found ${pkg.version}`);
+check('package is overdrive-cli', pkg.name === 'overdrive-cli', `found ${pkg.name}`);
+check('package version is 1.0.0 RC', pkg.version === '1.0.0', `found ${pkg.version}`);
+check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pkg.license}`);
+check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
+check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');
+check('package exposes overdrive-cli bin alias', pkg.bin?.['overdrive-cli'] === 'bin/overdrive.js');
+check('package exposes legacy agentic-supercharge bin alias', pkg.bin?.['agentic-supercharge'] === 'bin/agentic-supercharge.js');
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
-check('manifest includes AS-Workflow metadata', manifest.asWorkflow?.projectStateDir === '.agenticsupercharge' && /AGENTIC_SUPERCHARGE_WORKFLOW/.test(manifest.asWorkflow?.disableEnv || ''));
+check('manifest includes ovd-workflow metadata', manifest.ovdWorkflow?.projectStateDir === '.overdrive' && /OVERDRIVE_WORKFLOW/.test(manifest.ovdWorkflow?.disableEnv || ''));
+check('manifest no longer uses asWorkflow key', !Object.prototype.hasOwnProperty.call(manifest, 'asWorkflow'));
 check('manifest has 18 local skills', skills.local.length === 18, `found ${skills.local.length}`);
 check('manifest has 118 upstream GitHub skills', skills.source.length === 118, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
@@ -201,20 +208,47 @@ const packageFiles = new Set(pkg.files || []);
 check('package files include scripts/', packageFiles.has('scripts/'));
 check('package files include evals/', packageFiles.has('evals/'));
 check('package files include docs/', packageFiles.has('docs/'));
+check('package files include assets/', packageFiles.has('assets/'));
+check('package files include plugin wrapper', packageFiles.has('plugins/') && packageFiles.has('.claude-plugin/'));
+check('package files include NOTICE', packageFiles.has('NOTICE'));
 check('package files exclude SOCIAL_POSTS.md', !packageFiles.has('SOCIAL_POSTS.md'));
 check('package check script includes build-scorecard syntax check', /build-scorecard\.js/.test(pkg.scripts?.check || ''));
 check('package check script includes analyze-routes syntax check', /analyze-routes\.js/.test(pkg.scripts?.check || ''));
 check('package exposes scorecard script', /build-scorecard\.js/.test(pkg.scripts?.scorecard || ''));
 check('package exposes analyze routes script', /analyze-routes\.js/.test(pkg.scripts?.['analyze:routes'] || ''));
 check('analyze-routes script exists', exists('scripts/analyze-routes.js'));
+check('legacy CLI wrapper exists', exists('bin/agentic-supercharge.js'));
+check('legacy workflow wrapper exists', exists('lib/as-workflow.js'));
+for (const asset of [
+  'assets/overdrive logo.png',
+  'assets/overdrive-flow-diagram@2x.png',
+  'assets/overdrive-system-diagram@2x.png',
+  'assets/overdrive-architecture-diagram@2x.png'
+]) {
+  check(`README asset exists: ${asset}`, exists(asset));
+}
+check('Claude marketplace file exists', exists('.claude-plugin/marketplace.json'));
+check('Claude plugin manifest exists', exists('plugins/overdrive/.claude-plugin/plugin.json'));
+if (exists('.claude-plugin/marketplace.json')) {
+  const marketplace = readJson('.claude-plugin/marketplace.json');
+  check('Claude marketplace is named overdrive-marketplace', marketplace.name === 'overdrive-marketplace');
+  check('Claude marketplace references thin Overdrive plugin', Array.isArray(marketplace.plugins) && marketplace.plugins.some((plugin) => plugin.name === 'overdrive' && plugin.source === './plugins/overdrive'));
+}
+if (exists('plugins/overdrive/.claude-plugin/plugin.json')) {
+  const plugin = readJson('plugins/overdrive/.claude-plugin/plugin.json');
+  check('Claude plugin wrapper is overdrive v1', plugin.name === 'overdrive' && plugin.version === '1.0.0');
+  check('Claude plugin wrapper uses Apache license', plugin.license === 'Apache-2.0');
+}
+check('Claude plugin helper skill exists', exists('plugins/overdrive/skills/overdrive/SKILL.md'));
+check('Claude plugin wrapper stays thin', !exists('plugins/overdrive/skills/skill-router') && !exists('plugins/overdrive/skills/playwright-cli'));
 
 const readme = read('README.md');
 check('README says current manifest contains 137 unique skills', /current manifest contains 137 unique skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
-check('README explains AS-Workflow', /AS-Workflow/i.test(readme) && /\.agenticsupercharge/.test(readme));
-check('README positions AgenticSupercharge as a complete system', /complete,\s*plug-and-play system/i.test(readme) && /not just another skill pack/i.test(readme));
-check('README includes Stefan origin note', /early AI adopter since ChatGPT launched in November 2022/i.test(readme));
+check('README explains ovd-workflow', /ovd-workflow/i.test(readme) && /\.overdrive/.test(readme));
+check('README positions Overdrive as a complete system', /complete,\s*plug-and-play system/i.test(readme) && /not just another skill pack/i.test(readme));
+check('README includes Stefan origin/contact note', /own daily AI coding-agent setup/i.test(readme) && /@editor_stefan/.test(readme) && /buymeacoffee/.test(readme));
 check('README clarifies managed vs native/plugin layers', /managed skills/i.test(readme) && /native skills, third-party plugin skills, or MCP servers/i.test(readme));
 check('README documents Cursor reserved folder boundary', /~\/\.cursor\/skills-cursor/.test(readme) && /does not touch Cursor's reserved/i.test(readme));
 check('README states no telemetry', /no telemetry/i.test(readme));
@@ -223,6 +257,9 @@ check('README documents skill subset install flags', /--skills/.test(readme) && 
 check('README mentions Layers product-design skills', /layers-\*/i.test(readme) || /Layers product-design/i.test(readme));
 check('README mentions Liquid Glass Web', /liquid-glass-web/i.test(readme) || /Liquid Glass/i.test(readme));
 check('README explains knowledge vault', /knowledge vault/i.test(readme) && /knowledge-index\.json/.test(readme));
+check('README embeds repo-local Overdrive assets', /assets\/overdrive%20logo\.png/.test(readme) && /assets\/overdrive-flow-diagram@2x\.png/.test(readme) && /assets\/overdrive-system-diagram@2x\.png/.test(readme) && /assets\/overdrive-architecture-diagram@2x\.png/.test(readme));
+check('README documents ovd aliases and legacy CLI compatibility', /ovd --help/.test(readme) && /agentic-supercharge --help/.test(readme) && /legacy compatibility alias/.test(readme));
+check('README documents Claude plugin wrapper', /Claude Plugin Wrapper/.test(readme) && /\.claude-plugin\/marketplace\.json/.test(readme) && /does \*\*not\*\* bundle all 137 skills/.test(readme));
 check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
 check('README links prompt caching doc', /docs\/prompt-caching\.md/.test(readme));
@@ -231,7 +268,7 @@ check('README mentions pretext skill', /pretext/i.test(readme) && /@chenglou\/pr
 check('README mentions v0.11 optional tool setup', /--no-tool-install/.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /non-privileged/i.test(readme));
 check('README mentions Graphify optional code intelligence', /Graphify/i.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /managed user-space virtualenv/i.test(readme));
 check('README mentions v0.10 skills', /prompt-master/.test(readme) && /humanizer/.test(readme) && /design-extract/.test(readme) && /claude-video/.test(readme));
-check('README documents usage command privacy', /agentic-supercharge usage/.test(readme) && /prints no prompt or message content/i.test(readme));
+check('README documents usage command privacy', /overdrive usage/.test(readme) && /prints no prompt or message content/i.test(readme));
 check('README shows varied router examples', /security-review/.test(readme) && /react-doctor/.test(readme) && /jack-seo-launch-audit/.test(readme));
 check('README credits Layers source links', readme.includes('https://github.com/jamiemill/layers-skills') && readme.includes('https://layers.jamiemill.com'));
 check('README credits Liquid Glass provenance links', readme.includes('https://github.com/AndrewPrifer/liquid-dom') && readme.includes('https://kube.io/blog/liquid-glass-css-svg/') && readme.includes('https://github.com/naughtyduk/liquidGL'));
@@ -402,13 +439,13 @@ const routerCatalog = read('skills/skill-router/references/catalog.md');
 check('skill-router links routing trace examples', /routing-trace-examples\.md/.test(routerSkill));
 check('skill-router allows flexible skill sequences', /no hard cap/i.test(routerSkill) || /as many skills/i.test(routerSkill));
 check('skill-router documents deterministic sequence order', /stable, deterministic ordering/.test(routerSkill));
-check('skill-router mentions AS-Workflow route trace helper', /routes\.jsonl/.test(routerSkill));
+check('skill-router mentions ovd-workflow route trace helper', /routes\.jsonl/.test(routerSkill));
 check('skill-router documents Layers routing', /layers-intro/.test(routerSkill) && /layers-conceptual-model/.test(routerSkill));
 check('skill-router documents Liquid Glass routing', /liquid-glass-web/.test(routerSkill) && /Tier 1/.test(routerSkill));
 check('skill-router documents pretext routing', /pretext/.test(routerSkill) && /text measurement\/layout performance/.test(routerSkill));
 check('skill-router documents convert-to-markdown routing', /convert-to-markdown/.test(routerSkill));
 check('skill-router documents reddit-research routing', /reddit-research/.test(routerSkill));
-check('skill-router documents graphify routing', /graphify/.test(routerSkill) && /AS-Workflow knowledge vault/.test(routerSkill));
+check('skill-router documents graphify routing', /graphify/.test(routerSkill) && /ovd-workflow knowledge vault/.test(routerSkill));
 check('skill-router documents v0.10 routing', /prompt-master/.test(routerSkill) && /humanizer/.test(routerSkill) && /design-extract/.test(routerSkill) && /claude-video/.test(routerSkill));
 for (const skillName of skills.local) {
   check(`router catalog lists local skill ${skillName}`, routerCatalog.includes(`\`${skillName}\``));
@@ -418,6 +455,12 @@ for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-mod
 }
 
 const installer = read('lib/installer.js');
+check('installer writes Overdrive markers and recognizes legacy markers', /\.overdrive\.json/.test(installer) && /\.agentic-supercharge\.json/.test(installer) && /function readMarker/.test(installer));
+check('installer replaces legacy managed instruction blocks', /legacyManagedBlockStart/.test(installer) && /ai-skill-setup:global-guidelines/.test(installer));
+check('installer installs ovd slash commands and as aliases', /ovd-status/.test(installer) && /as-status/.test(installer) && /Legacy alias for \/ovd-status/.test(installer));
+check('installer installs persistent overdrive and ovd shims', /writeWorkflowShim\(shim/.test(installer) && /writeWorkflowShim\(ovdShim/.test(installer));
+check('installer keeps legacy CLI shim as compatibility alias', /agentic-supercharge/.test(installer) && /Overdrive managed legacy CLI shim/.test(installer));
+check('installer copies package payload into persistent runtime', /function copyRuntimePayload/.test(installer) && /pkg\.files/.test(installer) && /manifest\.json/.test(installer));
 check('installer supports Graphify lowercase skill.md normalization', /skillFile/.test(installer) && /agentic-graphify-safe/.test(installer));
 check('installer supports v0.11 no-tool-install flag', /--no-tool-install/.test(installer) && /options\.noToolInstall/.test(installer));
 check('installer supports optional tool setup engine', /function setupOptionalTools/.test(installer) && /function graphifyToolSetup/.test(installer) && /function ffmpegToolSetup/.test(installer) && /function ytDlpToolSetup/.test(installer) && /function browserToolSetup/.test(installer));
@@ -427,29 +470,34 @@ check('installer Graphify setup prefers Python 3.10-3.12', /function selectGraph
 check('installer supports v0.10 safety transforms', /agentic-design-extract-safe/.test(installer) && /agentic-claude-video-safe/.test(installer) && /agentic-humanizer-ethics/.test(installer));
 check('installer Design Extract transform prefers system Chrome and public URLs', /--system-chrome/.test(installer) && /Only extract public pages/.test(installer));
 check('installer Design Extract browser setup does not install MCP or browser state', /never installs extensions, MCP servers, cookies, authenticated sessions, or global CLIs/.test(installer));
-check('installer Claude Video transform preserves preflight and key safety', /AgenticSupercharge normally attempts setup during install/.test(installer) && /do not ask the user to paste a key into chat/.test(installer));
+check('installer Claude Video transform preserves preflight and key safety', /Overdrive normally attempts setup during install/.test(installer) && /do not ask the user to paste a key into chat/.test(installer));
 check('installer optional setup is fail-open', /status: 'fallback'/.test(installer) && /never hard-fails the main install/.test(installer) && /Optional tool setup fallbacks/.test(installer));
 check('installer optional setup avoids sudo execution', !/ops\.run\([^)]*sudo/.test(installer) && !/runCommand\([^)]*sudo/.test(installer));
-check('installer tests cover optional setup', /fakeToolOps/.test(read('scripts/test-as-workflow.js')) && /--no-tool-install/.test(read('scripts/test-as-workflow.js')) && /sudo/.test(read('scripts/test-as-workflow.js')));
+check('installer tests cover optional setup', /fakeToolOps/.test(read('scripts/test-ovd-workflow.js')) && /--no-tool-install/.test(read('scripts/test-ovd-workflow.js')) && /sudo/.test(read('scripts/test-ovd-workflow.js')));
 
-const asWorkflow = read('lib/as-workflow.js');
-check('AS-Workflow required files include research.md', /requiredFiles[\s\S]*research\.md/.test(asWorkflow));
-check('AS-Workflow required files include preferences.md', /requiredFiles[\s\S]*preferences\.md/.test(asWorkflow));
-check('AS-Workflow required files include knowledge-index.json', /requiredFiles[\s\S]*knowledge-index\.json/.test(asWorkflow));
-check('AS-Workflow required dirs include knowledge', /requiredDirs[\s\S]*knowledge/.test(asWorkflow));
-check('AS-Workflow config includes knowledge_autosummarize', /knowledge_autosummarize/.test(asWorkflow));
-check('AS-Workflow exports knowledge helper', /function knowledge/.test(asWorkflow) && /module\.exports[\s\S]*knowledge/.test(asWorkflow));
-check('AS-Workflow seeds research objectivity mandate', /objective, evidence-based standpoint/.test(asWorkflow));
-check('AS-Workflow seeds preferences do-not guidance', /do-not rules/.test(asWorkflow));
-check('AS-Workflow hook context avoids volatile issue counts', !/Workflow doctor currently reports/.test(asWorkflow));
-check('AS-Workflow exports recordDecision helper', /recordDecision/.test(asWorkflow) && /module\.exports[\s\S]*recordDecision/.test(asWorkflow));
-check('AS-Workflow exports usage helper', /function usage/.test(asWorkflow) && /formatUsage/.test(asWorkflow) && /module\.exports[\s\S]*usage/.test(asWorkflow));
-check('AS-Workflow usage avoids content printing in tests', /SECRET PROMPT CONTENT SHOULD NOT PRINT/.test(read('scripts/test-as-workflow.js')));
+const ovdWorkflow = read('lib/ovd-workflow.js');
+check('ovd-workflow required files include research.md', /requiredFiles[\s\S]*research\.md/.test(ovdWorkflow));
+check('ovd-workflow required files include preferences.md', /requiredFiles[\s\S]*preferences\.md/.test(ovdWorkflow));
+check('ovd-workflow required files include knowledge-index.json', /requiredFiles[\s\S]*knowledge-index\.json/.test(ovdWorkflow));
+check('ovd-workflow required dirs include knowledge', /requiredDirs[\s\S]*knowledge/.test(ovdWorkflow));
+check('ovd-workflow config includes knowledge_autosummarize', /knowledge_autosummarize/.test(ovdWorkflow));
+check('ovd-workflow exports knowledge helper', /function knowledge/.test(ovdWorkflow) && /module\.exports[\s\S]*knowledge/.test(ovdWorkflow));
+check('ovd-workflow seeds research objectivity mandate', /objective, evidence-based standpoint/.test(ovdWorkflow));
+check('ovd-workflow seeds preferences do-not guidance', /do-not rules/.test(ovdWorkflow));
+check('ovd-workflow hook context avoids volatile issue counts', !/Workflow doctor currently reports/.test(ovdWorkflow));
+check('ovd-workflow exports recordDecision helper', /recordDecision/.test(ovdWorkflow) && /module\.exports[\s\S]*recordDecision/.test(ovdWorkflow));
+check('ovd-workflow exports usage helper', /function usage/.test(ovdWorkflow) && /formatUsage/.test(ovdWorkflow) && /module\.exports[\s\S]*usage/.test(ovdWorkflow));
+check('ovd-workflow usage avoids content printing in tests', /SECRET PROMPT CONTENT SHOULD NOT PRINT/.test(read('scripts/test-ovd-workflow.js')));
+check('ovd-workflow supports legacy project-state migration', /legacyWorkflowDirName = '\.agenticsupercharge'/.test(ovdWorkflow) && /function migrateLegacyWorkflow/.test(ovdWorkflow));
+check('ovd-workflow honors legacy disable env', /AGENTIC_SUPERCHARGE_WORKFLOW/.test(ovdWorkflow));
+check('ovd-workflow statusline uses OVD label', /OVD: off/.test(ovdWorkflow) && /OVD:\$\{active\}/.test(ovdWorkflow));
 
 const mcpDocs = read('MCP_AND_CONNECTORS.md');
 check('MCP docs mention optional MarkItDown MCP', /markitdown/i.test(mcpDocs) && /optional/i.test(mcpDocs));
 check('MCP docs mention Browserbase as optional', /Browserbase/i.test(mcpDocs) && /not installed/i.test(mcpDocs));
 check('catalog health doc exists', exists('docs/catalog-health.md'));
+check('LICENSE is Apache-2.0 text', /Apache License[\s\S]*Version 2\.0/.test(read('LICENSE')) && read('LICENSE').includes('Radu Stefan Dumitru'));
+check('NOTICE exists and points to third-party notices', exists('NOTICE') && /Overdrive/.test(read('NOTICE')) && /THIRD_PARTY_NOTICES\.md/.test(read('NOTICE')));
 
 const changelog = read('CHANGELOG.md');
 check(`CHANGELOG has v${pkg.version} entry`, changelog.includes(`## v${pkg.version}`));

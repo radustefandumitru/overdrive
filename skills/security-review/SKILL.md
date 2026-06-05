@@ -7,7 +7,7 @@ description: Use for security reviews, vulnerability audits, hardening passes, a
 
 Use this portable skill for non-Claude agents when the user asks for a security review, vulnerability audit, hardening pass, or security-focused PR/code review. On Claude Code, prefer the bundled `/security-review` command when it is available.
 
-This skill is adapted from Anthropic's MIT-licensed `anthropics/claude-code-security-review` template for portable AgenticSupercharge runtimes.
+This skill is adapted from Anthropic's MIT-licensed `anthropics/claude-code-security-review` template for portable Overdrive runtimes.
 
 ## Scope First
 

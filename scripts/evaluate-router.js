@@ -56,7 +56,7 @@ const routerText = [
   read('skills/skill-router/references/routing-trace-examples.md')
 ].join('\n');
 
-console.log('AgenticSupercharge router benchmark validation');
+console.log('Overdrive router benchmark validation');
 
 check('benchmark schema version is 1', benchmark.version === 1, `found ${benchmark.version}`);
 check('benchmark describes manual scoring', Boolean(benchmark.scoring && benchmark.scoring.manualProtocol));

@@ -1,39 +1,25 @@
 # Catalog Health
 
-Generated: 2026-06-02T22:41:32.089Z
+Generated: deterministic report; rerun `npm run analyze:routes` to refresh metrics
 
-This report is produced from local AS-Workflow route traces. It is maintainer infrastructure only: AgenticSupercharge does not collect user telemetry.
+This report is produced from local ovd-workflow route traces. It is maintainer infrastructure only: Overdrive does not collect user telemetry.
 
 ## Inputs
 
-- Requested paths: `./.agenticsupercharge/routes.jsonl`
-- Route files found: 1
-- Route entries: 8
+- Requested paths: `./.overdrive/routes.jsonl`
+- Route files found: 0
+- Route entries: 0
 - Invalid JSONL lines: 0
 - No-skill matched rate: 0%
 - Scorecard cases recorded: 0
 
 ## Most Routed Skills
 
-| Skill | Count |
-| --- | --- |
-| skill-router | 8 |
-| planning-first | 5 |
-| superpowers:finishing-a-development-branch | 2 |
-| superpowers:executing-plans | 1 |
-| superpowers:verification-before-completion | 1 |
+No route data found yet.
 
 ## Common Skill Pairs
 
-| Pair | Count |
-| --- | --- |
-| planning-first + skill-router | 5 |
-| skill-router + superpowers:finishing-a-development-branch | 2 |
-| planning-first + superpowers:executing-plans | 1 |
-| planning-first + superpowers:verification-before-completion | 1 |
-| skill-router + superpowers:executing-plans | 1 |
-| skill-router + superpowers:verification-before-completion | 1 |
-| superpowers:executing-plans + superpowers:verification-before-completion | 1 |
+No co-occurrence pairs found yet.
 
 ## Review Candidates
 

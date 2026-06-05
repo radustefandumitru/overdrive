@@ -1,27 +1,27 @@
-# Publishing AgenticSupercharge
+# Publishing Overdrive
 
 This kit is designed to be published as a public GitHub repo and installed from clone, release archive, or GitHub `npx`.
 
 Public repo:
 
-[radustefandumitru/AgenticSupercharge](https://github.com/radustefandumitru/AgenticSupercharge)
+[radustefandumitru/overdrive](https://github.com/radustefandumitru/overdrive)
 
 ## Public-Safe Shape
 
-Publish the installer, manifest, local AgenticSupercharge skills, global instruction templates, docs, and source notices.
+Publish the installer, manifest, local Overdrive skills, global instruction templates, docs, and source notices.
 
 Do not publish:
 
 - Raw/private skill snapshots or vendored third-party copies unless every upstream license has been reviewed and redistribution is allowed.
 - API keys, OAuth tokens, MCP configs with credentials, service-role keys, database URLs, browser profiles, cookies, or app sessions.
-- `.agenticsupercharge/` runtime state, knowledge-vault files, converted Markdown caches, route traces, handoffs, or local workflow reports.
+- `.overdrive/` runtime state, knowledge-vault files, converted Markdown caches, route traces, handoffs, or local workflow reports.
 - Jack Roberts raw PDFs, zips, templates, downloaded folders, prompts, private community/course material, or copied third-party skill text.
 - Personal account state for GitHub, Vercel, Supabase, Firecrawl, Google, Claude, Codex, Gemini, Antigravity, Cursor, or any other service.
 - Cursor's built-in `~/.cursor/skills-cursor` content.
 
 The public framing should be:
 
-- AgenticSupercharge is a curated installer and router.
+- Overdrive is a curated installer and router.
 - Original creators keep credit for their work.
 - The installer pulls approved sources from upstream repos or official installers.
 - Default installs use verified pinned source refs and package versions from `VERIFIED_SOURCES.md`.
@@ -31,14 +31,14 @@ The public framing should be:
 
 ## Publish Commands
 
-From your local AgenticSupercharge checkout:
+From your local Overdrive checkout:
 
 ```bash
 git init
 git add .
-git commit -m "Initial AgenticSupercharge installer"
+git commit -m "Initial Overdrive installer"
 git branch -M main
-git remote add origin https://github.com/radustefandumitru/AgenticSupercharge.git
+git remote add origin https://github.com/radustefandumitru/overdrive.git
 git push -u origin main
 ```
 
@@ -46,7 +46,7 @@ If a remote already exists:
 
 ```bash
 git remote -v
-git remote set-url origin https://github.com/radustefandumitru/AgenticSupercharge.git
+git remote set-url origin https://github.com/radustefandumitru/overdrive.git
 git push -u origin main
 ```
 
@@ -55,7 +55,7 @@ Before pushing, run:
 ```bash
 bash -n install.sh verify.sh check-updates.sh update.sh uninstall.sh
 node --check lib/installer.js
-node --check bin/agentic-supercharge.js
+node --check bin/overdrive.js
 npm run consistency
 npm run eval:router
 npm run analyze:routes
@@ -71,8 +71,8 @@ npm pack --dry-run
 Clone:
 
 ```bash
-git clone https://github.com/radustefandumitru/AgenticSupercharge.git
-cd AgenticSupercharge
+git clone https://github.com/radustefandumitru/overdrive.git
+cd Overdrive
 ./install.sh --dry-run
 ./install.sh
 ```
@@ -86,15 +86,15 @@ Safe preview:
 GitHub `npx`:
 
 ```bash
-npx -y github:radustefandumitru/AgenticSupercharge -- --dry-run
-npx -y github:radustefandumitru/AgenticSupercharge
+npx -y github:radustefandumitru/overdrive -- --dry-run
+npx -y github:radustefandumitru/overdrive
 ```
 
 Release archive:
 
 ```bash
-unzip AgenticSupercharge.zip
-cd AgenticSupercharge
+unzip Overdrive.zip
+cd Overdrive
 ./install.sh
 ```
 
@@ -145,8 +145,8 @@ Check for a newer kit release or upstream skill tracking refs without applying c
 GitHub `npx` update path:
 
 ```bash
-npx -y github:radustefandumitru/AgenticSupercharge update-skills
-npx -y github:radustefandumitru/AgenticSupercharge update-skills --all-skills
+npx -y github:radustefandumitru/overdrive update-skills
+npx -y github:radustefandumitru/overdrive update-skills --all-skills
 ```
 
 Use live upstream branches/latest packages only when intentionally reviewing fresh upstream changes:
@@ -167,14 +167,14 @@ Safe uninstall:
 The public GitHub repo is the source of truth. If you need a zip for upload, review, or release assets, build one from committed files instead of zipping the working tree. Keep maintainer-only drafts such as `SOCIAL_POSTS.md` out of the archive:
 
 ```bash
-cd /path/to/AgenticSupercharge
-git archive --format=zip --output ../AgenticSupercharge.zip --prefix=AgenticSupercharge/ HEAD -- . ':(exclude)SOCIAL_POSTS.md'
+cd /path/to/Overdrive
+git archive --format=zip --output ../Overdrive.zip --prefix=Overdrive/ HEAD -- . ':(exclude)SOCIAL_POSTS.md'
 ```
 
 Quickly inspect the archive before sharing it:
 
 ```bash
-if unzip -l ../AgenticSupercharge.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|(^|/)\\.agenticsupercharge/|agentic-supercharge-.*\\.tgz|SOCIAL_POSTS\\.md"; then
+if unzip -l ../Overdrive.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|(^|/)\\.overdrive/|overdrive-.*\\.tgz|SOCIAL_POSTS\\.md"; then
   echo "Unexpected file found"
   exit 1
 fi
@@ -191,8 +191,8 @@ Treat `README.md` as a required release artifact, not static background material
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
-gh release create vX.Y.Z ../AgenticSupercharge.zip --title "AgenticSupercharge vX.Y.Z" --notes-file CHANGELOG.md
-gh repo edit radustefandumitru/AgenticSupercharge --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
+gh release create vX.Y.Z ../Overdrive.zip --title "Overdrive vX.Y.Z" --notes-file CHANGELOG.md
+gh repo edit radustefandumitru/overdrive --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
 ```
 
 ## Attribution Notes
@@ -204,6 +204,6 @@ For the local public-safe skills:
 - Fluid Animations is based on Apple's WWDC 2018 fluid interface guidance, paraphrased for coding agents.
 - Emil Animation Polish is based on Emil Kowalski's public writing and animation lessons, paraphrased and attributed.
 - Jack Roberts inspired website skills are based on the user-provided public video/resource workflow, paraphrased and attributed. They do not redistribute raw resource downloads.
-- Clarify And Plan, Planning First, What Should I Consider, Media Download, and Pre-Launch Checklist are original AgenticSupercharge workflow skills, with the global planning guidance inspired by Karpathy-style coding-agent principles and the media workflow pointing users to install yt-dlp themselves.
+- Clarify And Plan, Planning First, What Should I Consider, Media Download, and Pre-Launch Checklist are original Overdrive workflow skills, with the global planning guidance inspired by Karpathy-style coding-agent principles and the media workflow pointing users to install yt-dlp themselves.
 - Security Review is adapted from Anthropic's MIT-licensed `anthropics/claude-code-security-review` template for non-Claude runtimes.
 - Karpathy-inspired global guidance is adapted behavior guidance, not a claim of authorship over Andrej Karpathy's writing or the `multica-ai/andrej-karpathy-skills` repo.

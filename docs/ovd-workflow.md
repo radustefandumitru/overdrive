@@ -1,15 +1,15 @@
-# AS-Workflow
+# ovd-workflow
 
-AS-Workflow is AgenticSupercharge's lightweight project-state layer.
+ovd-workflow is Overdrive's lightweight project-state layer.
 
-Skills teach agents how to do specialist work. AS-Workflow helps them remember what is happening in the current project without loading a giant pile of context.
+Skills teach agents how to do specialist work. ovd-workflow helps them remember what is happening in the current project without loading a giant pile of context.
 
 ## What It Creates
 
 On the first meaningful project task, supported agents may create:
 
 ```text
-.agenticsupercharge/
+.overdrive/
   project.md
   state.md
   architecture.md
@@ -29,43 +29,68 @@ On the first meaningful project task, supported agents may create:
     _active.json
 ```
 
-The folder is local runtime state. The installer adds `.agenticsupercharge/` to `.gitignore` when it initializes the workflow.
+The folder is local runtime state. The installer adds `.overdrive/` and the legacy `.agenticsupercharge/` path to `.gitignore` when it initializes the workflow.
+
+## Migration From AgenticSupercharge
+
+Overdrive v1 keeps migration deliberately conservative:
+
+- `.overdrive/` is the new canonical project-state folder.
+- If `.agenticsupercharge/` exists and `.overdrive/` does not, Overdrive copies the legacy folder into `.overdrive/` on a write action such as `overdrive checkpoint` or `overdrive resync --apply`.
+- The old `.agenticsupercharge/` folder is not deleted during the RC.
+- Old `.agentic-supercharge.json` markers count as managed, and new writes use `.overdrive.json`.
+- `AGENTIC_SUPERCHARGE_WORKFLOW=disabled` still disables workflow writes for compatibility, but `OVERDRIVE_WORKFLOW=disabled` is canonical.
 
 ## Commands
 
 Use these from a project folder:
 
 ```bash
-agentic-supercharge status
-agentic-supercharge doctor
-agentic-supercharge knowledge --dry-run
-agentic-supercharge knowledge --apply
-agentic-supercharge resync --dry-run
-agentic-supercharge resync --apply
-agentic-supercharge usage --days 30
-agentic-supercharge usage --all --json
-agentic-supercharge checkpoint --message "before refactor"
+overdrive status
+overdrive doctor
+overdrive knowledge --dry-run
+overdrive knowledge --apply
+overdrive resync --dry-run
+overdrive resync --apply
+overdrive usage --days 30
+overdrive usage --all --json
+overdrive checkpoint --message "before refactor"
 ```
 
-If `agentic-supercharge` is not on your `PATH`, installed hooks and slash commands use the persistent runtime shim at:
+If `overdrive` is not on your `PATH`, installed hooks and slash commands use the persistent runtime shim at:
 
 ```text
-~/.agentic-supercharge/bin/agentic-supercharge
+~/.overdrive/bin/overdrive
 ```
+
+`ovd` is installed as a short alias where Overdrive installs its runtime shim. The legacy `agentic-supercharge` CLI alias remains available for compatibility and delegates to the new Overdrive runtime.
 
 ## How Agents Use It
 
 - Session hooks add a tiny reminder when a workflow already exists.
 - Prompt/tool hooks may initialize the folder for non-trivial project work.
-- The status line, where supported, shows a compact AS-Workflow health hint.
+- The status line, where supported, shows a compact ovd-workflow health hint.
 - `skill-router` can append short route traces to `routes.jsonl` when the workflow exists.
 - `usage` can read local Claude Code token logs on demand and join them to route traces when timestamps line up. It reports token counts, cache use, top projects/models/tools, and biggest sessions without printing prompts or message content.
 - `preferences.md` records durable user preferences and do-not rules, such as repeated corrections or "never do X" instructions. Keep it short, dated, and free of secrets.
 - `research.md` is a short project research log for objective findings, sources, and challenged assumptions.
-- `knowledge/` is a local reference-doc vault. Drop project/business docs there, run `agentic-supercharge knowledge --apply`, then agents inspect `knowledge-index.json` and load only relevant files or markdown caches.
+- `knowledge/` is a local reference-doc vault. Drop project/business docs there, run `overdrive knowledge --apply`, then agents inspect `knowledge-index.json` and load only relevant files or markdown caches.
 - Durable product and architecture decisions belong in `decisions.md`; durable user preferences belong in `preferences.md`. If a new statement contradicts recorded state, the agent should surface the conflict before overwriting it.
 
 Hooks are advisory. They must exit successfully, avoid secrets, and never block the agent.
+
+## Slash Commands
+
+Claude Code receives canonical `/ovd-*` commands where slash commands are installed:
+
+- `/ovd-status`
+- `/ovd-resync`
+- `/ovd-knowledge`
+- `/ovd-doctor`
+- `/ovd-checkpoint`
+- `/ovd-usage`
+
+Legacy `/as-*` aliases remain as managed compatibility commands.
 
 ## Knowledge Vault
 
@@ -74,7 +99,7 @@ The knowledge vault is for reference documents the project may need over time: b
 It is deliberately not a codebase indexer, vector database, daemon, or telemetry pipeline.
 
 ```text
-.agenticsupercharge/
+.overdrive/
   knowledge/
     brief.md
     research.pdf
@@ -82,7 +107,7 @@ It is deliberately not a codebase indexer, vector database, daemon, or telemetry
   knowledge-index.json
 ```
 
-`agentic-supercharge knowledge --apply` scans the vault, hashes files, records structural metadata, and converts supported non-Markdown files into cached Markdown when MarkItDown or a safe text fallback is available. The CLI cannot generate AI summaries; agents can fill the `summary` and `topics` fields later when useful.
+`overdrive knowledge --apply` scans the vault, hashes files, records structural metadata, and converts supported non-Markdown files into cached Markdown when MarkItDown or a safe text fallback is available. The CLI cannot generate AI summaries; agents can fill the `summary` and `topics` fields later when useful.
 
 The intended use is cheap lookup first:
 
@@ -109,10 +134,16 @@ Do not use it for secrets, credentials, private personal data, temporary mood, o
 Set:
 
 ```bash
-AGENTIC_SUPERCHARGE_WORKFLOW=disabled
+OVERDRIVE_WORKFLOW=disabled
 ```
 
 This disables workflow hook/init behavior for that process.
+
+Legacy compatibility:
+
+```bash
+AGENTIC_SUPERCHARGE_WORKFLOW=disabled
+```
 
 ## What It Is Not
 

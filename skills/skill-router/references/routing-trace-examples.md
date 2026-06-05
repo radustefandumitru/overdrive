@@ -28,15 +28,15 @@ These examples are for maintainers checking whether `skill-router` remains selec
 | "Download this video as an MP3." | `media-download` | User-requested local media extraction maps to the yt-dlp wrapper. |
 | "This thread is huge, compact it into a handoff." | `context-compression` | User explicitly requested compaction, so the lossy step is approved. |
 
-## AS-Workflow Route Trace
+## ovd-workflow Route Trace
 
-When `.agenticsupercharge/` exists and the runtime command is available, keep route traces terse:
+When `.overdrive/` exists and the runtime command is available, keep route traces terse:
 
 ```bash
-agentic-supercharge route --skills "planning-first,design-taste-frontend,playwright-cli" --reason "multi-file UI implementation with browser validation"
+overdrive route --skills "planning-first,design-taste-frontend,playwright-cli" --reason "multi-file UI implementation with browser validation"
 ```
 
-This appends one JSONL entry to `.agenticsupercharge/routes.jsonl`. It is optional and should never block the task.
+This appends one JSONL entry to `.overdrive/routes.jsonl`. It is optional and should never block the task.
 
 ## Collision Notes
 
@@ -44,5 +44,5 @@ This appends one JSONL entry to `.agenticsupercharge/routes.jsonl`. It is option
 - `pre-launch-checklist` is for product and operational launch readiness. `jack-seo-launch-audit` is for technical/SEO launch checks on animated premium websites.
 - `last30days` is for recent community discourse. Context7 is still the default for current official library/API documentation.
 - `reddit-research` is for Reddit-specific public community signal. `last30days` is broader recent sentiment.
-- `convert-to-markdown` is for local documents and AS-Workflow knowledge-vault ingest. `defuddle` remains the better fit for web-page extraction.
+- `convert-to-markdown` is for local documents and ovd-workflow knowledge-vault ingest. `defuddle` remains the better fit for web-page extraction.
 - `pretext` is for text measurement/layout engineering and reflow avoidance. Use visual/frontend design skills when the problem is hierarchy, typography taste, brand, or UI polish.

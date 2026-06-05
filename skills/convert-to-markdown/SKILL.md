@@ -1,6 +1,6 @@
 ---
 name: convert-to-markdown
-description: Use when the user references a local PDF, Office document, spreadsheet, presentation, HTML file, CSV/data file, or AS-Workflow knowledge-vault document and the agent should convert it to clean Markdown before reading to reduce tokens and preserve structure. Uses Microsoft's MarkItDown when available; falls back gracefully when Python/MarkItDown is unavailable.
+description: Use when the user references a local PDF, Office document, spreadsheet, presentation, HTML file, CSV/data file, or ovd-workflow knowledge-vault document and the agent should convert it to clean Markdown before reading to reduce tokens and preserve structure. Uses Microsoft's MarkItDown when available; falls back gracefully when Python/MarkItDown is unavailable.
 ---
 
 # Convert To Markdown
@@ -12,7 +12,7 @@ The goal is simple: create a clean Markdown version first, then read the Markdow
 ## When To Use
 
 - The user points to a local PDF, Word document, PowerPoint, spreadsheet, HTML export, CSV, or data file.
-- AS-Workflow knowledge vault is ingesting non-Markdown references from `.agenticsupercharge/knowledge/`.
+- ovd-workflow knowledge vault is ingesting non-Markdown references from `.overdrive/knowledge/`.
 - The task is summarization, extraction, comparison, source review, requirements analysis, or context preparation.
 - A model/native file upload would consume unnecessary tokens or obscure tables/headings.
 
@@ -48,15 +48,15 @@ command -v markitdown
 5. Report conversion caveats briefly: missing tables, OCR limits, unsupported format, or skipped images.
 6. Never overwrite an original file. If an output path exists, use a cache path or ask before replacing it.
 
-## AS-Workflow Knowledge Vault
+## ovd-workflow Knowledge Vault
 
-For `.agenticsupercharge/knowledge/`, prefer the runtime command:
+For `.overdrive/knowledge/`, prefer the runtime command:
 
 ```bash
-agentic-supercharge knowledge --apply
+overdrive knowledge --apply
 ```
 
-This refreshes `.agenticsupercharge/knowledge-index.json`, converts supported non-Markdown files to cached Markdown where possible, and leaves summaries/topics for the agent to fill in later.
+This refreshes `.overdrive/knowledge-index.json`, converts supported non-Markdown files to cached Markdown where possible, and leaves summaries/topics for the agent to fill in later.
 
 When using the vault during a task, inspect `knowledge-index.json` first, then load only the relevant original file or `markdownCache`. Do not dump the full vault into context.
 
@@ -69,7 +69,7 @@ When using the vault during a task, inspect `knowledge-index.json` first, then l
 
 ## Honesty Boundary
 
-AgenticSupercharge cannot intercept every native file ingestion path inside Claude, Codex, Cursor, Gemini, or Antigravity. This skill is instruction-led: convert local files before reading when possible. AS-Workflow also uses the same idea during knowledge-vault ingest.
+Overdrive cannot intercept every native file ingestion path inside Claude, Codex, Cursor, Gemini, or Antigravity. This skill is instruction-led: convert local files before reading when possible. ovd-workflow also uses the same idea during knowledge-vault ingest.
 
 ## Security
 

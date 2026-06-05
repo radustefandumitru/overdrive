@@ -1,0 +1,32 @@
+{
+  "name": "overdrive-marketplace",
+  "description": "Thin Claude Code marketplace wrapper for the Overdrive CLI installer and workflow runtime.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Radu Stefan Dumitru",
+    "url": "https://x.com/editor_stefan?s=11"
+  },
+  "plugins": [
+    {
+      "name": "overdrive",
+      "displayName": "Overdrive",
+      "description": "Helper skill and commands for installing and using the full Overdrive CLI skill system.",
+      "source": "./plugins/overdrive",
+      "version": "1.0.0",
+      "author": {
+        "name": "Radu Stefan Dumitru",
+        "url": "https://x.com/editor_stefan?s=11"
+      },
+      "homepage": "https://github.com/radustefandumitru/overdrive",
+      "repository": "https://github.com/radustefandumitru/overdrive",
+      "license": "Apache-2.0",
+      "category": "developer-tools",
+      "tags": [
+        "skills",
+        "coding-agents",
+        "workflow",
+        "router"
+      ]
+    }
+  ]
+}

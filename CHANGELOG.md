@@ -1,8 +1,13 @@
 # Changelog
 
-## Unreleased
+## v1.0.0-rc - 2026-06-05
 
-- No unreleased changes.
+- Rebranded AgenticSupercharge to Overdrive as a local release candidate, with canonical `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, `~/.overdrive/`, `OVERDRIVE_WORKFLOW`, package name `overdrive-cli`, and archive `Overdrive.zip`.
+- Added compatibility aliases for the old `agentic-supercharge` CLI, old `/as-*` slash commands, old `.agenticsupercharge/` project state, old `.agentic-supercharge.json` managed markers, and old `ai-skill-setup:global-guidelines` managed instruction blocks.
+- Added non-destructive workflow migration from `.agenticsupercharge/` to `.overdrive/` on Overdrive write actions while keeping both folders gitignored.
+- Switched the original Overdrive project license to Apache-2.0 and added `NOTICE`; third-party skills and references remain governed by their own licenses in `THIRD_PARTY_NOTICES.md`.
+- Added repo-local README assets, a polished Overdrive README landing page, and a thin Claude Code marketplace/plugin wrapper that points users to the full CLI install without bundling all 137 skills.
+- Rebuilt release packaging around `Overdrive.zip`; no public tag, GitHub release, hardening audit, or remote repo rename is part of this RC.
 
 ## v0.12.0 - 2026-06-02
 
@@ -16,7 +21,7 @@
 - Changed the optional dependency policy from "document only" to "attempt safe setup during install, then fail open": Graphify, Claude Video/media helpers, and Design Extract browser support now get non-privileged installer attempts unless `--no-tool-install` is set.
 - Added installer support for `graphifyy==0.1.14` through `pipx` or a managed user-space virtualenv, never global `pip`, `sudo`, or `--break-system-packages`.
 - Added safe helper setup paths for `yt-dlp`, `ffmpeg`, and Design Extract browser support while preserving runtime preflights, manual fallback commands, and no API-key collection.
-- Updated Graphify router/instruction guidance to prefer an existing project graph for codebase relationship questions, recommend Graphify's own watch/git-hook freshness flow when stale, and avoid any AgenticSupercharge background graph daemon.
+- Updated Graphify router/instruction guidance to prefer an existing project graph for codebase relationship questions, recommend Graphify's own watch/git-hook freshness flow when stale, and avoid any Overdrive background graph daemon.
 - Strengthened global objectivity guidance against sycophancy and weak-premise feedback loops, including proactive challenge for consequential, ambiguous, or irreversible decisions.
 - Updated docs, third-party notices, readiness checks, router catalog, and consistency tests for the v0.11 plug-and-play dependency policy.
 
@@ -25,7 +30,7 @@
 - Added four pinned MIT upstream skills: `prompt-master`, `humanizer`, `design-extract`, and `claude-video`, raising the manifest to 136 unique skills.
 - Added safety transforms for `design-extract` and `claude-video` so agents check availability, ask before setup, avoid writing secrets, and never auto-install packages, browsers, Homebrew/apt/winget/pip tooling, or MCPs.
 - Added an ethics note to `humanizer` so humanizing preserves meaning and facts without deceptive authorship, fake lived experience, or removing required AI disclosure.
-- Added `agentic-supercharge usage`, `/as-usage`, and workflow tests for local, read-only token usage reporting from Claude Code JSONL logs with best-effort AS route attribution and no prompt/message content printing.
+- Added `overdrive usage`, `/as-usage`, and workflow tests for local, read-only token usage reporting from Claude Code JSONL logs with best-effort AS route attribution and no prompt/message content printing.
 - Updated `skill-router`, smoke checks, router benchmark cases, docs, third-party notices, verified sources, skill readiness, and consistency checks for the v0.10 manifest and new routing boundaries.
 
 ## v0.9.0 - 2026-05-31
@@ -38,14 +43,14 @@
 ## v0.8.0 - 2026-05-31
 
 - Added prompt-cache-friendly guidance and `docs/prompt-caching.md` while keeping caching controlled by the host runtime/harness.
-- Added AS-Workflow `preferences.md` for lightweight per-project do-not rules and durable user preferences, with init/doctor/test coverage.
+- Added ovd-workflow `preferences.md` for lightweight per-project do-not rules and durable user preferences, with init/doctor/test coverage.
 - Strengthened global instructions for lean context, escalating ~60% / ~75% / ~85-90% context-budget heads-ups, native plan-mode versus `clarify-and-plan`, and native orchestration instead of custom orchestrators.
 - Kept the catalog at 131 unique skills: v0.8 adds no new skills and keeps context skills router-selectable rather than always-on.
 - Updated README examples, router/catalog guidance, attribution, and consistency checks for the context-efficiency release.
 
 ## v0.7.0 - 2026-05-31
 
-- Added AS-Workflow knowledge vault support with `.agenticsupercharge/knowledge/`, `.agenticsupercharge/knowledge-index.json`, `knowledge_autosummarize`, `agentic-supercharge knowledge`, doctor coverage, and workflow tests.
+- Added ovd-workflow knowledge vault support with `.overdrive/knowledge/`, `.overdrive/knowledge-index.json`, `knowledge_autosummarize`, `overdrive knowledge`, doctor coverage, and workflow tests.
 - Added local `convert-to-markdown` skill for token-efficient local PDF/Office/spreadsheet/data-file reading with optional Microsoft MarkItDown support.
 - Added local `reddit-research` skill for low-volume public-read-only Reddit/community signal with explicit best-effort and rate-limit caveats.
 - Added optional MarkItDown MCP and Browserbase connector documentation while keeping Context7 as the only prescribed MCP.
@@ -57,7 +62,7 @@
 - Added Jamie Mill's MIT `layers-skills` source pinned at `64b9202bf0506ad1418b9975681c95798725e25a`, importing all nine `layers-*` product-design reasoning skills.
 - Added local `liquid-glass-web`, an original progressive-enhancement skill for universal frosted glass, Chromium SVG-displacement refraction, and optional license-checked WebGL refraction.
 - Folded proximity-hover and CSS scroll-state sticky-navbar patterns into local animation skills with attribution and performance/browser-support caveats.
-- Added AS-Workflow `research.md` for objective project research notes and a lightweight `recordDecision` helper for dated decisions and contradiction prompts.
+- Added ovd-workflow `research.md` for objective project research notes and a lightweight `recordDecision` helper for dated decisions and contradiction prompts.
 - Strengthened global instruction templates with durable decision tracking, contradiction surfacing, loop/frustration stopping, parallel-subagent guidance, and honest per-runtime model/planning knob guidance.
 - Added a v0.6 router scorecard harness (`docs/scorecard-v0.6.md`, `evals/scorecard-results.json`, `scripts/build-scorecard.js`) without inventing benchmark scores.
 - Updated `skill-router`, smoke checks, router benchmark cases, docs, third-party notices, verified sources, README credits, and consistency checks for the 129-skill v0.6 manifest.
@@ -70,20 +75,20 @@
 - Updated `impeccable` to the verified `skill-v3.1.1` commit and refreshed its Apache-2.0 attribution.
 - Added local `what-should-i-consider` for objective architecture and plan pressure-testing.
 - Replaced the upstream `video-downloader` include with local `media-download`, a small yt-dlp wrapper for MP3 and high-quality MP4 downloads.
-- Added global instruction lines for objective pushback, research-before-guessing, concise output, and natural-language AS-Workflow status triggers.
+- Added global instruction lines for objective pushback, research-before-guessing, concise output, and natural-language ovd-workflow status triggers.
 - Added install-time skill selection with `--all`, `--skills`, and `--skip-skills`, while keeping full install as the recommended default.
 - Added a first-run installer welcome, subset-aware dry runs, router smoke coverage for new skills, and hook hardening so emitted command hooks include command strings.
-- Repositioned the README around AgenticSupercharge as a full workflow system, clarified managed skills versus native/plugin/MCP layers, and added Stefan's early-AI-adopter origin note.
+- Repositioned the README around Overdrive as a full workflow system, clarified managed skills versus native/plugin/MCP layers, and added Stefan's early-AI-adopter origin note.
 - Updated `skill-router` to recognize Claude Code's `security-guidance` plugin as a Claude-only preventative security layer alongside native `/security-review` and portable `security-review`.
 
 ## v0.4.0 - 2026-05-27
 
-- Added AS-Workflow, a lightweight local project-state layer backed by a gitignored `.agenticsupercharge/` folder for project state, decisions, file hashes, route traces, reports, active work, and handoff checkpoints.
-- Added persistent runtime installation under `~/.agentic-supercharge/runtime/current/` plus a managed CLI shim so hooks do not depend on temporary `npx` folders or disposable clones.
+- Added ovd-workflow, a lightweight local project-state layer backed by a gitignored `.overdrive/` folder for project state, decisions, file hashes, route traces, reports, active work, and handoff checkpoints.
+- Added persistent runtime installation under `~/.overdrive/runtime/current/` plus a managed CLI shim so hooks do not depend on temporary `npx` folders or disposable clones.
 - Added workflow commands: `status`, `doctor`, `resync`, `checkpoint`, and `route`.
-- Added non-blocking AS-Workflow hook integration for supported runtimes, with Claude slash commands and Cursor rule fallback where appropriate.
+- Added non-blocking ovd-workflow hook integration for supported runtimes, with Claude slash commands and Cursor rule fallback where appropriate.
 - Updated global instruction templates and `skill-router` to use flexible phased skill selection instead of a hard 1-3 skill cap.
-- Added AS-Workflow documentation and archive safety checks while keeping raw GSD material out of the public package.
+- Added ovd-workflow documentation and archive safety checks while keeping raw GSD material out of the public package.
 - Removed the private/offline bundled zip workflow and simplified distribution around the GitHub repo plus one public release archive.
 
 ## v0.3.0 - 2026-05-26
@@ -102,7 +107,7 @@
 - Added pinned upstream sources for `mvanhorn/last30days-skill` and `adamlyttleapps/claude-skill-app-onboarding-questionnaire`.
 - Optimized `skill-router` with sharper trigger rules, a "Resolving Trigger Overlap" section, new catalog rows, routing trace examples, and smoke checks for every new skill.
 - Strengthened global instruction templates with explicit options/tradeoff guidance, phased-work confirmation, Claude planning workflow notes, and a user-consent context-budget reminder.
-- Added `agentic-supercharge check-updates` and `./check-updates.sh`, plus passive update notices during install/verify.
+- Added `overdrive check-updates` and `./check-updates.sh`, plus passive update notices during install/verify.
 - Expanded optional MCP and external-tool documentation for GitHub, Supabase, Vercel, Firecrawl, Playwright MCP, voice dictation, Obsidian CLI, and Defuddle while keeping Context7 as the only default MCP recommendation.
 - Added `docs/skill-readiness.md` to document which skills are plug-and-play and which need optional external setup.
 - Updated README, SKILLS summaries, verified sources, third-party notices, publishing docs, and social post notes for the v0.2.0 workflow additions.
@@ -120,7 +125,7 @@
 - Added pinned official sources for Vercel Labs `find-skills` and OpenAI `playwright`.
 - Restored drifted local `playwright` copies to the upstream OpenAI skill instead of keeping local path edits.
 - Fixed an official Superpowers plugin cache drift by restoring its deleted `AGENTS.md` symlink.
-- Narrowed non-Claude path sanitization to generated runtime files so unrelated upstream skills stay byte-for-byte original apart from AgenticSupercharge marker files.
+- Narrowed non-Claude path sanitization to generated runtime files so unrelated upstream skills stay byte-for-byte original apart from Overdrive marker files.
 
 ## v0.1.2 - 2026-05-23
 
@@ -137,7 +142,7 @@
 
 - Added verified pinned upstream refs and pinned official installer package versions.
 - Added `--allow-upstream-drift` for users who intentionally want tracking branches or latest packages.
-- Added safe uninstall support through `uninstall.sh` and `agentic-supercharge uninstall`.
+- Added safe uninstall support through `uninstall.sh` and `overdrive uninstall`.
 - Added `SECURITY.md`, `VERIFIED_SOURCES.md`, CI workflow, and release-ready documentation polish.
 - Tightened Antigravity detection, managed-block marker handling, and defensive secret-file copy filters.
 - Added non-destructive installer, updater, verifier, router, global instruction templates, and public-safe local skills for the first public release.

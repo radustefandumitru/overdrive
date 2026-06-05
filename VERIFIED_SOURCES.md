@@ -2,7 +2,7 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-06-02
+Verified on: 2026-06-05
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|

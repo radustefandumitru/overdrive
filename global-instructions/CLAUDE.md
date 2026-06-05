@@ -1,4 +1,4 @@
-<!-- ai-skill-setup:global-guidelines:start -->
+<!-- overdrive:global-guidelines:start -->
 # Global Coding Agent Guidelines
 
 These guidelines are adapted from the Karpathy-inspired coding-agent guidance in `multica-ai/andrej-karpathy-skills`. They apply across projects and should be merged with more specific project instructions.
@@ -61,7 +61,7 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - `clarify-and-plan` adds requirement and ambiguity clarification that native plan modes do not force, and `planning-first` is the planning layer for agents without a native plan mode. Do not run two redundant planning passes: clarify, then plan, then build.
 - When Claude Code native review commands are available, use `/security-review` for security audits and `/code-review` for general code review.
 - For Codex, Cursor, Gemini CLI, Antigravity, shared `.agents`, or project-local agents, use the `planning-first` skill for complex multi-file work when no native planning mode is available.
-- For complex multi-step work, use the runtime's planning or model knob when available. AgenticSupercharge does not auto-switch models across providers; apply Claude Code `/model opusplan` or `/ultraplan`, Codex reasoning/model options, Gemini planning/model options, or Cursor model choices deliberately.
+- For complex multi-step work, use the runtime's planning or model knob when available. Overdrive does not auto-switch models across providers; apply Claude Code `/model opusplan` or `/ultraplan`, Codex reasoning/model options, Gemini planning/model options, or Cursor model choices deliberately.
 - For large, decomposable tasks, use the runtime's native orchestration where available, such as Claude dynamic workflows / Task subagents or Codex Goals, to run independent subtasks in parallel with clean contexts; lean on `multi-agent-patterns`. Do not build a custom orchestrator. Prefer cheaper or faster models for simple subtasks where the runtime supports that choice; do not assume every agent has subagents or per-task model routing.
 
 ## Context7 Documentation
@@ -84,23 +84,23 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - For a vague or underspecified request, sharpen the goal or ask one clarifying question before executing; do not silently guess.
 - Keep `context-optimization`, `context-compression`, and `clarify-and-plan` router-selectable for deep work; do not load them as always-on skills.
 - Keep global context small. Put project facts in project files and detailed workflows in skills.
-- For codebase relationship/orientation questions, if a Graphify graph already exists in the project, prefer querying it before broad `rg`; if stale, recommend Graphify's own `--watch` or git-hook workflow. Do not start a background indexer from AgenticSupercharge.
+- For codebase relationship/orientation questions, if a Graphify graph already exists in the project, prefer querying it before broad `rg`; if stale, recommend Graphify's own `--watch` or git-hook workflow. Do not start a background indexer from Overdrive.
 
-## AS-Workflow
+## ovd-workflow
 
-- If `.agenticsupercharge/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
-- Read `.agenticsupercharge/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
-- If `.agenticsupercharge/knowledge-index.json` exists and the task could benefit from local reference docs, inspect the index first, then load only the specific relevant source file or `markdownCache`. Do not dump the whole knowledge vault into context.
-- If `.agenticsupercharge/preferences.md` exists, read it at the start of meaningful work when it could prevent repeating prior mistakes.
-- When the user expresses a dislike, says "never do X", repeats a correction, or shows clear frustration, append a short dated rule to `.agenticsupercharge/preferences.md` when the workflow exists. If the new preference contradicts existing workflow state, ask before recording it. Keep it lightweight and never store secrets or sensitive data.
+- If `.overdrive/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
+- Read `.overdrive/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
+- If `.overdrive/knowledge-index.json` exists and the task could benefit from local reference docs, inspect the index first, then load only the specific relevant source file or `markdownCache`. Do not dump the whole knowledge vault into context.
+- If `.overdrive/preferences.md` exists, read it at the start of meaningful work when it could prevent repeating prior mistakes.
+- When the user expresses a dislike, says "never do X", repeats a correction, or shows clear frustration, append a short dated rule to `.overdrive/preferences.md` when the workflow exists. If the new preference contradicts existing workflow state, ask before recording it. Keep it lightweight and never store secrets or sensitive data.
 - For local PDFs, Office files, spreadsheets, HTML exports, or data files, prefer `convert-to-markdown`/MarkItDown before reading when it would reduce tokens or preserve structure.
 - After meaningful multi-step work, keep workflow notes short and current when practical: state, decisions, progress, route trace, or checkpoint.
-- When the user states a durable preference, constraint, or decision, append a short dated note to `.agenticsupercharge/decisions.md` when the workflow exists. If the new statement contradicts a recorded decision or constraint, surface the conflict and ask before overwriting it.
+- When the user states a durable preference, constraint, or decision, append a short dated note to `.overdrive/decisions.md` when the workflow exists. If the new statement contradicts a recorded decision or constraint, surface the conflict and ask before overwriting it.
 - If you notice an oscillating fix loop, such as fixing A breaking B and fixing B re-breaking A, or if the user signals frustration, stop and say so plainly. Propose a different approach such as a smaller repro, different method, online research, another skill, a fresh model/planning mode, or a checkpoint before continuing.
-- Use `agentic-supercharge status`, `agentic-supercharge doctor`, `agentic-supercharge resync`, or `agentic-supercharge checkpoint` when those commands are available and the workflow state matters.
-- When the user asks "show status", "what's going on", "AS status", or similar project-state questions, run or suggest `agentic-supercharge status` if available.
-- When the user asks "show usage", "what's burning tokens", "token usage", "Claude usage", or similar local usage questions, run or suggest `agentic-supercharge usage` if available. It is local, read-only, token-only, and should not print prompts or message content.
-- Do not commit `.agenticsupercharge/`. It is local project state and should be gitignored by default.
+- Use `overdrive status`, `overdrive doctor`, `overdrive resync`, or `overdrive checkpoint` when those commands are available and the workflow state matters.
+- When the user asks "show status", "what's going on", "OVD status", or similar project-state questions, run or suggest `overdrive status` if available.
+- When the user asks "show usage", "what's burning tokens", "token usage", "Claude usage", or similar local usage questions, run or suggest `overdrive usage` if available. It is local, read-only, token-only, and should not print prompts or message content.
+- Do not commit `.overdrive/`. It is local project state and should be gitignored by default.
 
 ## Context Budget
 
@@ -114,4 +114,4 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - Defer to the runtime's native compaction where it exists; this is a proactive prompt-level heads-up, not custom memory machinery. Use native context and memory commands when available instead of guessing: Claude Code `/memory` and `/compact`, Codex `/compact` and `/mcp`, Gemini CLI `/memory`, `/compress`, `/stats`, `/skills`, and `/mcp`.
 - Treat platform-specific context levers as platform-specific. Claude-only options such as MCP tool-search deferral (`ENABLE_TOOL_SEARCH=false`) or `disable-model-invocation` should not be presented as universal behavior.
 - Never compress silently. Compression loses detail, so the user should always consent.
-<!-- ai-skill-setup:global-guidelines:end -->
+<!-- overdrive:global-guidelines:end -->

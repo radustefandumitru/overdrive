@@ -1,14 +1,20 @@
 {
-  "name": "agentic-supercharge",
-  "version": "0.12.0",
-  "description": "Safe interactive installer for portable AI coding-agent skills across Claude Code, Codex, Gemini, Antigravity, Cursor, and local projects.",
-  "license": "MIT",
+  "name": "overdrive-cli",
+  "version": "1.0.0",
+  "description": "Overdrive installs and routes portable AI coding-agent skills across Claude Code, Codex, Gemini, Antigravity, Cursor, and local projects.",
+  "license": "Apache-2.0",
   "bin": {
+    "overdrive-cli": "bin/overdrive.js",
+    "overdrive": "bin/overdrive.js",
+    "ovd": "bin/overdrive.js",
     "agentic-supercharge": "bin/agentic-supercharge.js"
   },
   "files": [
+    ".claude-plugin/",
+    "assets/",
     "bin/",
     "lib/",
+    "plugins/",
     "scripts/",
     "evals/",
     "skills/",
@@ -22,6 +28,7 @@
     "SKILLS_SUMMARY.md",
     "SKILLS_TLDR.md",
     "SECURITY.md",
+    "NOTICE",
     "VERIFIED_SOURCES.md",
     "AGENTS_OPENAI_YAML.md",
     "CHANGELOG.md",
@@ -33,16 +40,16 @@
     "uninstall.sh"
   ],
   "scripts": {
-    "check": "node --check lib/installer.js && node --check lib/as-workflow.js && node --check bin/agentic-supercharge.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js && node --check scripts/test-as-workflow.js && node --check scripts/build-scorecard.js && node --check scripts/analyze-routes.js",
+    "check": "node --check lib/installer.js && node --check lib/ovd-workflow.js && node --check bin/overdrive.js && node --check scripts/check-consistency.js && node --check scripts/evaluate-router.js && node --check scripts/test-ovd-workflow.js && node --check scripts/build-scorecard.js && node --check scripts/analyze-routes.js",
     "consistency": "node scripts/check-consistency.js",
     "eval:router": "node scripts/evaluate-router.js",
-    "test:workflow": "node scripts/test-as-workflow.js",
-    "dry-run": "node bin/agentic-supercharge.js --dry-run",
-    "verify": "node bin/agentic-supercharge.js verify && npm run consistency && npm run eval:router && npm run test:workflow && npm run analyze:routes",
-    "check-updates": "node bin/agentic-supercharge.js check-updates",
-    "self-update": "node bin/agentic-supercharge.js self-update",
-    "update-skills": "node bin/agentic-supercharge.js update-skills",
-    "uninstall": "node bin/agentic-supercharge.js uninstall",
+    "test:workflow": "node scripts/test-ovd-workflow.js",
+    "dry-run": "node bin/overdrive.js --dry-run",
+    "verify": "node bin/overdrive.js verify && npm run consistency && npm run eval:router && npm run test:workflow && npm run analyze:routes",
+    "check-updates": "node bin/overdrive.js check-updates",
+    "self-update": "node bin/overdrive.js self-update",
+    "update-skills": "node bin/overdrive.js update-skills",
+    "uninstall": "node bin/overdrive.js uninstall",
     "scorecard": "node scripts/build-scorecard.js",
     "analyze:routes": "node scripts/analyze-routes.js"
   },
@@ -51,10 +58,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/radustefandumitru/AgenticSupercharge.git"
+    "url": "git+https://github.com/radustefandumitru/overdrive.git"
   },
   "bugs": {
-    "url": "https://github.com/radustefandumitru/AgenticSupercharge/issues"
+    "url": "https://github.com/radustefandumitru/overdrive/issues"
   },
-  "homepage": "https://github.com/radustefandumitru/AgenticSupercharge#readme"
+  "homepage": "https://github.com/radustefandumitru/overdrive#readme"
 }

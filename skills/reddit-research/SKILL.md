@@ -31,7 +31,7 @@ https://www.reddit.com/comments/<post_id>.json?limit=100&raw_json=1
 Use a descriptive User-Agent if making HTTP requests from scripts:
 
 ```text
-AgenticSupercharge research helper (local, read-only; contact: user-provided)
+Overdrive research helper (local, read-only; contact: user-provided)
 ```
 
 Do not use credentials, cookies, OAuth tokens, or user sessions unless the user explicitly asks for their own configured tooling and understands the privacy implications.
@@ -63,5 +63,5 @@ If public JSON fails:
 
 ## Attribution
 
-This is an original AgenticSupercharge skill using Reddit's public read-only JSON-style endpoints and Reddit's API documentation as reference. No Reddit code or credentials are bundled.
+This is an original Overdrive skill using Reddit's public read-only JSON-style endpoints and Reddit's API documentation as reference. No Reddit code or credentials are bundled.
 

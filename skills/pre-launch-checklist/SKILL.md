@@ -77,4 +77,4 @@ Offer one of these, depending on the user request:
 
 ## Attribution
 
-Original AgenticSupercharge skill by Stefan / Radu Stefan Dumitru. Inspired by public indie-builder launch checklist patterns and launch advice discussed by Hartdrawss and alphabatcher on X; no raw post text is redistributed.
+Original Overdrive skill by Stefan / Radu Stefan Dumitru. Inspired by public indie-builder launch checklist patterns and launch advice discussed by Hartdrawss and alphabatcher on X; no raw post text is redistributed.

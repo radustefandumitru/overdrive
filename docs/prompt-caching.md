@@ -2,14 +2,14 @@
 
 Prompt caching lets an LLM runtime reuse work from an unchanged prompt prefix. In practice, the model provider or agent harness may cache the internal key/value state for the stable beginning of a prompt, then only process the changed tail on later turns.
 
-AgenticSupercharge cannot switch prompt caching on or off. Claude Code, Codex/OpenAI-backed runtimes, and similar harnesses own that behavior. AgenticSupercharge can only make itself cache-friendly by keeping broad instructions stable, loading skills selectively, and storing project memory in files instead of repeatedly pasting large context.
+Overdrive cannot switch prompt caching on or off. Claude Code, Codex/OpenAI-backed runtimes, and similar harnesses own that behavior. Overdrive can only make itself cache-friendly by keeping broad instructions stable, loading skills selectively, and storing project memory in files instead of repeatedly pasting large context.
 
-## How AgenticSupercharge Helps
+## How Overdrive Helps
 
 - Global instruction blocks are static and do not contain timestamps, session IDs, counters, or per-run text.
 - `skill-router` selects only the relevant skill bodies instead of loading the full catalog.
 - Router output should use a stable order: clarification/planning first, then domain reasoning, implementation, validation, and handoff/launch checks.
-- AS-Workflow stores persistent project state in `.agenticsupercharge/`, so agents can read only the file they need instead of replaying old conversation.
+- ovd-workflow stores persistent project state in `.overdrive/`, so agents can read only the file they need instead of replaying old conversation.
 - Hook-provided context stays intentionally short and avoids frequently changing issue counts or detailed status text.
 
 ## Hygiene Rules
@@ -22,7 +22,7 @@ AgenticSupercharge cannot switch prompt caching on or off. Claude Code, Codex/Op
 
 ## Security Note
 
-Some prompt-caching research discusses timing side channels in multi-tenant hosted inference. That is a provider-side concern. AgenticSupercharge is a local developer tool and does not run shared inference infrastructure, so it does not add or solve that class of risk. The practical safety rule here is simpler: do not store secrets, tokens, credentials, private keys, or sensitive personal data in instructions, skills, workflow files, or knowledge vault notes.
+Some prompt-caching research discusses timing side channels in multi-tenant hosted inference. That is a provider-side concern. Overdrive is a local developer tool and does not run shared inference infrastructure, so it does not add or solve that class of risk. The practical safety rule here is simpler: do not store secrets, tokens, credentials, private keys, or sensitive personal data in instructions, skills, workflow files, or knowledge vault notes.
 
 ## Sources
 

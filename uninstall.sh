@@ -8,4 +8,4 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
-AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" uninstall "$@"
+OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" uninstall "$@"

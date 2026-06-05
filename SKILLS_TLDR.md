@@ -2,7 +2,7 @@
 
 Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 
-v0.12 adds native context-window guidance across supported runtimes and a local `pretext` skill for advanced text measurement/layout. The installer may still attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
+Overdrive v1 keeps the v0.12 skill set at 137 unique skills, but rebrands the system around `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, and `OVERDRIVE_WORKFLOW`. The installer may attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
 
 | Goal | Start With | Add When Needed |
 |---|---|---|
@@ -15,8 +15,8 @@ v0.12 adds native context-window guidance across supported runtimes and a local 
 | React code diagnostics | `react-doctor` | `planning-first` for larger refactors; `playwright-cli` for UI validation |
 | Recent market/community research | `last30days` | Context7 or official docs for library/API facts |
 | Reddit community signal | `reddit-research` | `last30days` for recency; customer-research/content strategy for synthesis |
-| Local PDF/Office/data docs | `convert-to-markdown` | AS-Workflow knowledge vault; `defuddle` for web pages |
-| Codebase or mixed-corpus relationship mapping | `graphify` | Normal `rg`/file reads if Graphify is unavailable; AS-Workflow knowledge vault for project memory/reference docs |
+| Local PDF/Office/data docs | `convert-to-markdown` | ovd-workflow knowledge vault; `defuddle` for web pages |
+| Codebase or mixed-corpus relationship mapping | `graphify` | Normal `rg`/file reads if Graphify is unavailable; ovd-workflow knowledge vault for project memory/reference docs |
 | Existing text sounds AI-written | `humanizer` | `stop-slop` for broader public-prose AI-tell cleanup |
 | App questionnaire onboarding | `app-onboarding-questionnaire` | frontend/design skills after the onboarding blueprint is confirmed |
 | Pre-launch readiness | `pre-launch-checklist` | `security-review`, marketing skills, `jack-seo-launch-audit`, or `playwright-cli` for focused checks |
@@ -32,12 +32,12 @@ v0.12 adds native context-window guidance across supported runtimes and a local 
 | Current docs or APIs | Context7 guidance in global instructions | `modern-web-guidance` for browser/platform decisions |
 | Browser validation | `playwright-cli` | OpenAI `playwright` wrapper as fallback; screenshots, snapshots, responsive checks, UI flow checks |
 | Discover more skills | `find-skills` | only when the user asks to find, compare, or install additional skills |
-| Context or token efficiency | `context-optimization` | `context-compression` only after user approval; AS-Workflow preferences/knowledge files when local project memory helps |
+| Context or token efficiency | `context-optimization` | `context-compression` only after user approval; ovd-workflow preferences/knowledge files when local project memory helps |
 | Runtime context behavior | native runtime commands | see `docs/context-runtime-matrix.md`; do not assume Claude-only context levers work everywhere |
 | Obsidian-adjacent files/research | `json-canvas`, `defuddle` | broader vault operations need a dedicated user/project Obsidian setup |
 | Image/video/media workflows | `banana`, Remotion skills, `media-download` | approval-gated external tools where configured; `yt-dlp` for downloads |
 | Video or screen-recording comprehension | `claude-video` | `media-download` only when the task is downloading/extracting media |
 | Slack GIF or emoji animation | `slack-gif-creator` | Banana/image tooling only if a custom source image is needed |
-| Project memory and handoff | AS-Workflow (`.agenticsupercharge/`) | `agentic-supercharge status`, `doctor`, `resync`, `knowledge`, `usage`, `checkpoint`; not a routed skill |
+| Project memory and handoff | ovd-workflow (`.overdrive/`) | `overdrive status`, `doctor`, `resync`, `knowledge`, `usage`, `checkpoint`; not a routed skill |
 
 The intended pattern is not "load everything." Let `skill-router` choose the minimum useful skill sequence, then proceed. Complex tasks can use more skills when they are phased and each one has a clear job.

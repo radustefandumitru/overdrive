@@ -5,20 +5,20 @@ KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 show_help() {
   cat <<'EOF'
-AgenticSupercharge updater
+Overdrive updater
 
 Default:
   ./update.sh
-    1. Pulls the latest AgenticSupercharge repo version when run from a git clone.
-    2. Updates AgenticSupercharge-managed skills from verified pinned sources.
+    1. Pulls the latest Overdrive repo version when run from a git clone.
+    2. Updates Overdrive-managed skills from verified pinned sources.
     3. Runs verify.sh.
 
 Options:
   --all-skills                 Refresh all matching skills from verified pinned sources using backup-and-replace.
-  --managed-only               Default. Update only AgenticSupercharge-managed skills.
+  --managed-only               Default. Update only Overdrive-managed skills.
   --skills name1,name2         Refresh only the comma-separated skill names.
   --skip-skills name1,name2    Refresh all except the comma-separated skill names.
-  --kit-only                   Update this AgenticSupercharge repo/package only.
+  --kit-only                   Update this Overdrive repo/package only.
   --skills-only                Update installed skills only; skip git self-update.
   --dry-run                    Preview without writing files.
   --no-verify                  Skip verify.sh after updating skills.
@@ -88,10 +88,10 @@ done
 
 if [[ "$SKIP_KIT" -eq 0 && "$DRY_RUN" -eq 0 && -t 0 && -t 1 ]]; then
   set +e
-  CHECK_OUTPUT="$(AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" check-updates 2>/dev/null)"
+  CHECK_OUTPUT="$(OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" check-updates 2>/dev/null)"
   CHECK_STATUS=$?
   set -e
-  if [[ "$CHECK_STATUS" -eq 1 && "$CHECK_OUTPUT" == *"A newer AgenticSupercharge version is available"* ]]; then
+  if [[ "$CHECK_STATUS" -eq 1 && "$CHECK_OUTPUT" == *"A newer Overdrive version is available"* ]]; then
     echo "$CHECK_OUTPUT"
     read -r -p "Apply now? [y/N] " APPLY_NOW
     case "$APPLY_NOW" in
@@ -110,18 +110,18 @@ if [[ "$SKIP_KIT" -eq 0 && "$DRY_RUN" -eq 0 && -t 0 && -t 1 ]]; then
 fi
 
 if [[ "$SKIP_KIT" -eq 0 ]]; then
-  echo "Updating AgenticSupercharge itself..."
-  AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" self-update "${SELF_ARGS[@]}"
+  echo "Updating Overdrive itself..."
+  OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" self-update "${SELF_ARGS[@]}"
   echo
 fi
 
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then
   if [[ "$ALL_SKILLS" -eq 1 ]]; then
     echo "Updating all matching skills from verified pinned sources with timestamped backups..."
-    AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" update-skills --all-skills "${SKILL_ARGS[@]}"
+    OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills --all-skills "${SKILL_ARGS[@]}"
   else
-    echo "Updating AgenticSupercharge-managed skills from verified pinned sources..."
-    AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/agentic-supercharge.js" update-skills "${SKILL_ARGS[@]}"
+    echo "Updating Overdrive-managed skills from verified pinned sources..."
+    OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills "${SKILL_ARGS[@]}"
   fi
   echo
 fi

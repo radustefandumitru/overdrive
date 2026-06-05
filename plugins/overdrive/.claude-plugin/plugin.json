@@ -1,0 +1,22 @@
+{
+  "name": "overdrive",
+  "displayName": "Overdrive",
+  "version": "1.0.0",
+  "description": "Thin Claude Code helper for the full Overdrive CLI installer, skill router, and ovd-workflow runtime.",
+  "author": {
+    "name": "Radu Stefan Dumitru",
+    "url": "https://x.com/editor_stefan?s=11"
+  },
+  "homepage": "https://github.com/radustefandumitru/overdrive",
+  "repository": "https://github.com/radustefandumitru/overdrive",
+  "license": "Apache-2.0",
+  "keywords": [
+    "overdrive",
+    "coding-agents",
+    "skills",
+    "workflow",
+    "router"
+  ],
+  "skills": "skills",
+  "commands": "commands"
+}

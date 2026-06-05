@@ -67,11 +67,11 @@ For rich inline text, inspect `@chenglou/pretext/rich-inline` and keep spans/seg
 
 - Pretext is not a full CSS layout engine. It is for text measurement/layout, not arbitrary flex/grid/block layout.
 - Browser font rendering, fallback fonts, and international text can still create differences; verify visually when precision matters.
-- Do not add global tooling or AgenticSupercharge installer setup for this. It is a normal per-project app dependency.
+- Do not add global tooling or Overdrive installer setup for this. It is a normal per-project app dependency.
 
 ## Attribution
 
-This skill is original AgenticSupercharge guidance for using Cheng Lou's MIT-licensed `@chenglou/pretext` library.
+This skill is original Overdrive guidance for using Cheng Lou's MIT-licensed `@chenglou/pretext` library.
 
 - GitHub: https://github.com/chenglou/pretext
 - npm package: `@chenglou/pretext`

@@ -51,4 +51,4 @@ Verify: <final acceptance checks>
 
 ## Attribution
 
-Original AgenticSupercharge skill by Stefan / Radu Stefan Dumitru, inspired by the Karpathy-style coding-agent guidance from `multica-ai/andrej-karpathy-skills`.
+Original Overdrive skill by Stefan / Radu Stefan Dumitru, inspired by the Karpathy-style coding-agent guidance from `multica-ai/andrej-karpathy-skills`.

@@ -1,6 +1,6 @@
 # agents/openai.yaml
 
-Some skills include an `agents/openai.yaml` metadata file. AgenticSupercharge keeps these files with each skill so OpenAI/Codex-style runtimes can read small structured metadata without parsing an entire skill body first.
+Some skills include an `agents/openai.yaml` metadata file. Overdrive keeps these files with each skill so OpenAI/Codex-style runtimes can read small structured metadata without parsing an entire skill body first.
 
 The current files are lightweight descriptors only. They are not secrets, MCP configs, tool credentials, or executable code.
 

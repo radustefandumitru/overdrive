@@ -1,15 +1,15 @@
 # Skill Readiness Audit
 
-AgenticSupercharge is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v0.12, it also documents native context-window behavior by runtime and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
+Overdrive is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v1, it also documents native context-window behavior by runtime and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
 
 ## Default Install Summary
 
 - Unique skills in the current manifest: 137
-- Locally authored AgenticSupercharge skills: 18
+- Locally authored Overdrive skills: 18
 - Upstream GitHub-sourced skills: 118
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
-- AS-Workflow runtime: installed under `~/.agentic-supercharge/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, preferences, route traces, and checkpoints.
+- ovd-workflow runtime: installed under `~/.overdrive/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, preferences, route traces, and checkpoints.
 
 Claude Code receives one fewer local skill because `security-review` is skipped there by policy in favor of Claude Code's native `/security-review` command.
 

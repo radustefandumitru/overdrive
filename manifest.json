@@ -1,17 +1,17 @@
 {
   "version": 6,
-  "name": "agentic-supercharge",
-  "description": "Safe interactive upstream-first AI skill setup for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
-  "schemaDescription": "Schema version 6 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, router smoke checks, and AS-Workflow runtime, preferences, and knowledge-vault metadata.",
-  "asWorkflow": {
+  "name": "overdrive",
+  "description": "Safe interactive skill installer, router, and workflow runtime for Claude Code, Codex, .agents, Gemini CLI, Antigravity, Cursor, and local projects.",
+  "schemaDescription": "Schema version 6 keeps verified pinned source refs/packages by default, adds official OpenAI and Vercel Labs skills sources, optional tracking refs/packages for --allow-upstream-drift, local public-safe skills, official installer metadata, root policies, exclusions, router smoke checks, and ovd-workflow runtime, preferences, and knowledge-vault metadata.",
+  "ovdWorkflow": {
     "version": 1,
-    "projectStateDir": ".agenticsupercharge",
-    "knowledgeDir": ".agenticsupercharge/knowledge",
-    "knowledgeIndex": ".agenticsupercharge/knowledge-index.json",
-    "runtimeRoot": "$HOME/.agentic-supercharge/runtime/current",
-    "shim": "$HOME/.agentic-supercharge/bin/agentic-supercharge",
-    "disableEnv": "AGENTIC_SUPERCHARGE_WORKFLOW=disabled",
-    "notes": "AS-Workflow is local project runtime state and is gitignored by default."
+    "projectStateDir": ".overdrive",
+    "knowledgeDir": ".overdrive/knowledge",
+    "knowledgeIndex": ".overdrive/knowledge-index.json",
+    "runtimeRoot": "$HOME/.overdrive/runtime/current",
+    "shim": "$HOME/.overdrive/bin/overdrive",
+    "disableEnv": "OVERDRIVE_WORKFLOW=disabled",
+    "notes": "ovd-workflow is local project runtime state and is gitignored by default."
   },
   "installRoots": [
     "$HOME/.claude/skills",
