@@ -1,3 +1,8 @@
+---
+description: Show the current ovd-workflow project status
+argument-hint: "[project path]"
+---
+
 Run:
 
 ```bash

@@ -1,3 +1,8 @@
+---
+description: Diagnose ovd-workflow project-state issues
+argument-hint: "[project path]"
+---
+
 Run:
 
 ```bash

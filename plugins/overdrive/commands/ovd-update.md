@@ -1,3 +1,8 @@
+---
+description: Check for verified Overdrive updates and skill source updates
+argument-hint: "[update options]"
+---
+
 Run:
 
 ```bash

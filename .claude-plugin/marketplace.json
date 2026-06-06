@@ -9,7 +9,6 @@
   "plugins": [
     {
       "name": "overdrive",
-      "displayName": "Overdrive",
       "description": "Helper skill and commands for installing and using the full Overdrive CLI skill system.",
       "source": "./plugins/overdrive",
       "version": "1.0.0",

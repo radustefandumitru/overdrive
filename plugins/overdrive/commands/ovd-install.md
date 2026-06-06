@@ -1,3 +1,8 @@
+---
+description: Install the full Overdrive CLI skill system safely
+argument-hint: "[install options]"
+---
+
 Explain the Overdrive install choices briefly, then recommend a dry run first.
 
 Use:
