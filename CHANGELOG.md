@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.1 - 2026-06-06
+
+- Fixed the thin Claude Code marketplace/plugin manifests so `claude plugin validate`, marketplace add, and plugin install pass with Claude's current plugin schema.
+- Added frontmatter metadata to the `/ovd-*` helper commands included in the Claude plugin wrapper.
+
 ## v1.0.0-rc - 2026-06-05
 
 - Rebranded AgenticSupercharge to Overdrive as a local release candidate, with canonical `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, `~/.overdrive/`, `OVERDRIVE_WORKFLOW`, package name `overdrive-cli`, and archive `Overdrive.zip`.

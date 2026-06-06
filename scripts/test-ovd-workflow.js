@@ -6,6 +6,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 const installer = require('../lib/installer');
 const workflow = require('../lib/ovd-workflow');
+const pkg = require('../package.json');
 
 const failures = [];
 
@@ -466,7 +467,7 @@ for (const name of ['ovd-status', 'ovd-resync', 'ovd-knowledge', 'ovd-doctor', '
 check('new overdrive shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/overdrive')));
 check('ovd shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/ovd')));
 check('legacy CLI shim delegates to Overdrive runtime', fs.existsSync(path.join(runtimeHome, '.agentic-supercharge/bin/agentic-supercharge')) && fs.readFileSync(path.join(runtimeHome, '.agentic-supercharge/bin/agentic-supercharge'), 'utf8').includes('Overdrive managed legacy CLI shim'));
-const runtimeVersionDir = path.join(runtimeHome, '.overdrive/runtime/1.0.0');
+const runtimeVersionDir = path.join(runtimeHome, `.overdrive/runtime/${pkg.version}`);
 const legacyRuntimeCurrent = path.join(runtimeHome, '.agentic-supercharge/runtime/current');
 check('legacy runtime current delegates to Overdrive runtime', fs.existsSync(path.join(legacyRuntimeCurrent, 'bin/agentic-supercharge.js')) && fs.realpathSync(legacyRuntimeCurrent).includes(`${path.sep}.overdrive${path.sep}runtime${path.sep}`));
 check('runtime payload includes manifest', fs.existsSync(path.join(runtimeVersionDir, 'manifest.json')));

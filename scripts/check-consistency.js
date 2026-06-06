@@ -95,7 +95,7 @@ const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
 console.log('Overdrive consistency check');
 
 check('package is overdrive-cli', pkg.name === 'overdrive-cli', `found ${pkg.name}`);
-check('package version is 1.0.0 RC', pkg.version === '1.0.0', `found ${pkg.version}`);
+check('package version is on the 1.0.x line', /^1\.0\.\d+$/.test(pkg.version), `found ${pkg.version}`);
 check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pkg.license}`);
 check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
 check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');
@@ -236,7 +236,7 @@ if (exists('.claude-plugin/marketplace.json')) {
 }
 if (exists('plugins/overdrive/.claude-plugin/plugin.json')) {
   const plugin = readJson('plugins/overdrive/.claude-plugin/plugin.json');
-  check('Claude plugin wrapper is overdrive v1', plugin.name === 'overdrive' && plugin.version === '1.0.0');
+  check('Claude plugin wrapper is overdrive v1', plugin.name === 'overdrive' && /^1\.0\.\d+$/.test(plugin.version || ''));
   check('Claude plugin wrapper uses Apache license', plugin.license === 'Apache-2.0');
 }
 check('Claude plugin helper skill exists', exists('plugins/overdrive/skills/overdrive/SKILL.md'));

@@ -1,6 +1,6 @@
 {
   "name": "overdrive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Thin Claude Code helper for the full Overdrive CLI installer, skill router, and ovd-workflow runtime.",
   "author": {
     "name": "Radu Stefan Dumitru",
