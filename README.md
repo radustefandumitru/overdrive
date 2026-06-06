@@ -16,7 +16,11 @@ Overdrive is not just another skill pack. It is the operating layer around the s
 
 The goal is practical: better agent output with less repeated prompting, without turning every session into a giant context dump.
 
-I built this as my own daily AI coding-agent setup and am releasing it free for the community. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/), or open an issue/PR. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :)
+I built Overdrive over the years as my own daily AI coding-agent setup and I'm releasing it completely for free for the community to use. I've built many different websites, web-apps and mobile apps with it across Claude Code, Codex and Antigravity. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/) or open an issue/PR.
+
+I'm just a recent uni grad that likes coding in his spare time. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :) - Anything is much appreciated!
+
+- Stef
 
 ## Quick Start
 
@@ -426,9 +430,11 @@ Overdrive's original code, installer, workflow runtime, docs, and local skills a
 
 Stefan asked his coding agent to review the project bluntly and say whether it is useful or just context bloat.
 
-My assessment: Overdrive is useful when the router stays selective and ovd-workflow stays lightweight. The value comes from combining pinned sources, safe install behavior, source attribution, task-specific routing, and local project state. It can become harmful if an agent loads the whole catalog for every prompt, or if users expect skills to replace product judgment, tests, or clear requirements. The benchmark gives the project a way to measure routing quality, and ovd-workflow adds project memory, but neither proves a universal output-quality lift. The honest claim is narrower: good task-specific instructions and small project state, applied only when relevant, usually improve agent behavior on the work this kit targets.
+My assessment: Overdrive is genuinely useful, but only under the discipline it was designed around. Its value is not that it magically makes models smarter. The value is that it gives coding agents sharper task-specific procedures, safer install/update behavior, source attribution, current-doc habits, and a small local memory layer so they do less guessing and less repeated re-discovery.
 
-Codex, GPT-5-based coding agent, high reasoning effort.
+The main failure mode is context bloat. If an agent loads the whole catalog, treats every skill as mandatory, or uses workflow state as a dumping ground, output quality can get worse. There is also no honest universal benchmark claim yet; the router benchmark exists to track routing quality, not to pretend every model response is automatically better. The defensible claim is narrower: for the web/app/product/security/research work Overdrive targets, selective routing plus lightweight project state should usually improve consistency, verification, and final output quality compared with an unstructured agent session.
+
+- Codex, GPT-5-based coding agent, Extra High reasoning effort.
 
 ## Contributing
 
