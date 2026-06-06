@@ -40,6 +40,17 @@ jobs:
       - name: Package dry run
         run: npm pack --dry-run
 
+      - name: Public package safety scan
+        run: |
+          draft="SOCIAL""_POSTS.md"
+          old_hyphen="agentic""-supercharge"
+          old_solid="agentic""supercharge"
+          old_block="ai""-skill-setup"
+          test -z "$(git ls-files | rg '(^|/)\.DS_Store$' || true)"
+          ! git ls-files | rg "$draft|$old_hyphen|$old_solid|$old_block"
+          ! rg -n "$draft|$old_hyphen|$old_solid|$old_block|/as-" . \
+            -g '!sources.lock.json' -g '!.git/**'
+
       - name: Installer dry runs
         run: |
           ./install.sh --list-targets

@@ -91,6 +91,11 @@ const pkg = readJson('package.json');
 const skills = collectManifestSkills(manifest);
 const uniqueSkills = new Set(skills.all);
 const allowedExpectedTerms = new Set(['approval', 'security-guidance']);
+const retiredDraftFile = ['SOCIAL', 'POSTS.md'].join('_');
+const retiredHyphenBrand = ['agentic', 'supercharge'].join('-');
+const retiredSolidBrand = ['agentic', 'supercharge'].join('');
+const retiredInstructionBlock = ['ai', 'skill', 'setup:global-guidelines'].join('-');
+const retiredSlashStatus = ['as', 'status'].join('-');
 
 console.log('Overdrive consistency check');
 
@@ -100,7 +105,7 @@ check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pk
 check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
 check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');
 check('package exposes overdrive-cli bin alias', pkg.bin?.['overdrive-cli'] === 'bin/overdrive.js');
-check('package exposes legacy agentic-supercharge bin alias', pkg.bin?.['agentic-supercharge'] === 'bin/agentic-supercharge.js');
+check('package exposes only canonical Overdrive bins', Object.keys(pkg.bin || {}).sort().join(',') === 'ovd,overdrive,overdrive-cli');
 check('manifest schema version is 6', manifest.version === 6, `found ${manifest.version}`);
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes ovd-workflow metadata', manifest.ovdWorkflow?.projectStateDir === '.overdrive' && /OVERDRIVE_WORKFLOW/.test(manifest.ovdWorkflow?.disableEnv || ''));
@@ -211,14 +216,14 @@ check('package files include docs/', packageFiles.has('docs/'));
 check('package files include assets/', packageFiles.has('assets/'));
 check('package files include plugin wrapper', packageFiles.has('plugins/') && packageFiles.has('.claude-plugin/'));
 check('package files include NOTICE', packageFiles.has('NOTICE'));
-check('package files exclude SOCIAL_POSTS.md', !packageFiles.has('SOCIAL_POSTS.md'));
+check('package files exclude removed social draft', !packageFiles.has(retiredDraftFile));
 check('package check script includes build-scorecard syntax check', /build-scorecard\.js/.test(pkg.scripts?.check || ''));
 check('package check script includes analyze-routes syntax check', /analyze-routes\.js/.test(pkg.scripts?.check || ''));
 check('package exposes scorecard script', /build-scorecard\.js/.test(pkg.scripts?.scorecard || ''));
 check('package exposes analyze routes script', /analyze-routes\.js/.test(pkg.scripts?.['analyze:routes'] || ''));
 check('analyze-routes script exists', exists('scripts/analyze-routes.js'));
-check('legacy CLI wrapper exists', exists('bin/agentic-supercharge.js'));
-check('legacy workflow wrapper exists', exists('lib/as-workflow.js'));
+check('no obsolete CLI wrapper exists', !exists(`bin/${retiredHyphenBrand}.js`));
+check('no obsolete workflow wrapper exists', !exists(`lib/${['as', 'workflow.js'].join('-')}`));
 for (const asset of [
   'assets/overdrive logo.png',
   'assets/overdrive-flow-diagram@2x.png',
@@ -258,7 +263,8 @@ check('README mentions Layers product-design skills', /layers-\*/i.test(readme) 
 check('README mentions Liquid Glass Web', /liquid-glass-web/i.test(readme) || /Liquid Glass/i.test(readme));
 check('README explains knowledge vault', /knowledge vault/i.test(readme) && /knowledge-index\.json/.test(readme));
 check('README embeds repo-local Overdrive assets', /assets\/overdrive%20logo\.png/.test(readme) && /assets\/overdrive-flow-diagram@2x\.png/.test(readme) && /assets\/overdrive-system-diagram@2x\.png/.test(readme) && /assets\/overdrive-architecture-diagram@2x\.png/.test(readme));
-check('README documents ovd aliases and legacy CLI compatibility', /ovd --help/.test(readme) && /agentic-supercharge --help/.test(readme) && /legacy compatibility alias/.test(readme));
+check('README documents canonical ovd aliases only', /ovd --help/.test(readme) && !readme.includes(`${retiredHyphenBrand} --help`));
+check('README exposes global guide and router in collapsible sections', /<summary>Installed global operating guide<\/summary>/.test(readme) && /<summary>Installed skill-router<\/summary>/.test(readme));
 check('README documents Claude plugin wrapper', /Claude Plugin Wrapper/.test(readme) && /\.claude-plugin\/marketplace\.json/.test(readme) && /does \*\*not\*\* bundle all 137 skills/.test(readme));
 check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
@@ -455,11 +461,11 @@ for (const skillName of ['layers-intro', 'layers-orient', 'layers-conceptual-mod
 }
 
 const installer = read('lib/installer.js');
-check('installer writes Overdrive markers and recognizes legacy markers', /\.overdrive\.json/.test(installer) && /\.agentic-supercharge\.json/.test(installer) && /function readMarker/.test(installer));
-check('installer replaces legacy managed instruction blocks', /legacyManagedBlockStart/.test(installer) && /ai-skill-setup:global-guidelines/.test(installer));
-check('installer installs ovd slash commands and as aliases', /ovd-status/.test(installer) && /as-status/.test(installer) && /Legacy alias for \/ovd-status/.test(installer));
+check('installer writes and reads only Overdrive markers', /\.overdrive\.json/.test(installer) && !installer.includes(retiredHyphenBrand) && /function readMarker/.test(installer));
+check('installer uses only Overdrive managed instruction blocks', /managedBlockStart/.test(installer) && !installer.includes(retiredInstructionBlock));
+check('installer installs canonical ovd slash commands only', /ovd-status/.test(installer) && !installer.includes(retiredSlashStatus));
 check('installer installs persistent overdrive and ovd shims', /writeWorkflowShim\(shim/.test(installer) && /writeWorkflowShim\(ovdShim/.test(installer));
-check('installer keeps legacy CLI shim as compatibility alias', /agentic-supercharge/.test(installer) && /Overdrive managed legacy CLI shim/.test(installer));
+check('installer does not install obsolete CLI shims', !/managed legacy CLI shim/.test(installer));
 check('installer copies package payload into persistent runtime', /function copyRuntimePayload/.test(installer) && /pkg\.files/.test(installer) && /manifest\.json/.test(installer));
 check('installer supports exact Graphify lowercase skill.md normalization', /function normalizeSkillFileCase/.test(installer) && /hasExactDirEntry/.test(installer) && /agentic-graphify-safe/.test(installer));
 check('installer supports v0.11 no-tool-install flag for helper and official installers', /--no-tool-install/.test(installer) && /options\.noToolInstall/.test(installer) && /Skipping official installer-backed sources because --no-tool-install/.test(installer));
@@ -469,8 +475,8 @@ check('installer Graphify setup avoids global pip and break-system-packages', /m
 check('installer Graphify setup prefers Python 3.10-3.12', /function selectGraphifyPython/.test(installer) && /Python 3\.10-3\.12/.test(installer) && /--python/.test(installer));
 check('installer supports v0.10 safety transforms', /agentic-design-extract-safe/.test(installer) && /agentic-claude-video-safe/.test(installer) && /agentic-humanizer-ethics/.test(installer));
 check('installer strips nested claude-video plugin payloads', /function stripClaudeVideoNestedPayload/.test(installer) && /\.claude-plugin/.test(installer) && /\.codex-plugin/.test(installer));
-check('installer uses tokenized workflow hook command matching', /function shellWords/.test(installer) && /isWorkflowCommand/.test(installer) && !/overdrive\|agentic-supercharge\)\(\?:\\\.js\)\?/.test(installer));
-check('workflow migration command is wired', /overdrive migrate/.test(installer) && /migrateCurrentProjectWorkflow/.test(installer));
+check('installer uses tokenized workflow hook command matching', /function shellWords/.test(installer) && /isWorkflowCommand/.test(installer) && !/overdrive\|/.test(installer));
+check('workflow migration command is absent', !/overdrive migrate/.test(installer) && !/migrateCurrentProjectWorkflow/.test(installer));
 check('installer Design Extract transform prefers system Chrome and public URLs', /--system-chrome/.test(installer) && /Only extract public pages/.test(installer));
 check('installer Design Extract browser setup does not install MCP or browser state', /never installs extensions, MCP servers, cookies, authenticated sessions, or global CLIs/.test(installer));
 check('installer Claude Video transform preserves preflight and key safety', /Overdrive normally attempts setup during install/.test(installer) && /do not ask the user to paste a key into chat/.test(installer));
@@ -479,7 +485,7 @@ check('installer optional setup avoids sudo execution', !/ops\.run\([^)]*sudo/.t
 const workflowTests = read('scripts/test-ovd-workflow.js');
 check('installer tests cover optional setup', /fakeToolOps/.test(workflowTests) && /--no-tool-install/.test(workflowTests) && /sudo/.test(workflowTests));
 check('behavioral tests cover exact SKILL.md casing', /exact SKILL\.md directory entry/.test(workflowTests) && /readdirSync/.test(workflowTests));
-check('behavioral tests cover hook idempotency and legacy cleanup', /seedLegacyWorkflowHooks/.test(workflowTests) && /exactly one managed workflow hook group/.test(workflowTests) && /no legacy agentic-supercharge hook commands/.test(workflowTests));
+check('behavioral tests cover hook idempotency and canonical commands', /seedDuplicateWorkflowHooks/.test(workflowTests) && /exactly one managed workflow hook group/.test(workflowTests) && /canonical Overdrive hook commands/.test(workflowTests));
 check('behavioral tests cover claude-video nested payload stripping', /claude-video transform strips nested command\/plugin payloads/.test(workflowTests));
 check('behavioral tests cover uninstall helper cleanup', /uninstall removes managed helper tools/.test(workflowTests));
 check('source fidelity report generator exists', exists('scripts/source-fidelity-report.js') && /source:fidelity/.test(read('package.json')));
@@ -497,8 +503,8 @@ check('ovd-workflow hook context avoids volatile issue counts', !/Workflow docto
 check('ovd-workflow exports recordDecision helper', /recordDecision/.test(ovdWorkflow) && /module\.exports[\s\S]*recordDecision/.test(ovdWorkflow));
 check('ovd-workflow exports usage helper', /function usage/.test(ovdWorkflow) && /formatUsage/.test(ovdWorkflow) && /module\.exports[\s\S]*usage/.test(ovdWorkflow));
 check('ovd-workflow usage avoids content printing in tests', /SECRET PROMPT CONTENT SHOULD NOT PRINT/.test(read('scripts/test-ovd-workflow.js')));
-check('ovd-workflow supports legacy project-state migration', /legacyWorkflowDirName = '\.agenticsupercharge'/.test(ovdWorkflow) && /function migrateLegacyWorkflow/.test(ovdWorkflow));
-check('ovd-workflow honors legacy disable env', /AGENTIC_SUPERCHARGE_WORKFLOW/.test(ovdWorkflow));
+check('ovd-workflow has no obsolete project-state migration', !ovdWorkflow.includes(retiredSolidBrand) && !/migrateLegacyWorkflow/.test(ovdWorkflow));
+check('ovd-workflow uses only OVERDRIVE_WORKFLOW disable env', /OVERDRIVE_WORKFLOW/.test(ovdWorkflow) && !/AGENTIC_SUPERCHARGE_WORKFLOW/.test(ovdWorkflow));
 check('ovd-workflow statusline uses OVD label', /OVD: off/.test(ovdWorkflow) && /OVD:\$\{active\}/.test(ovdWorkflow));
 
 const mcpDocs = read('MCP_AND_CONNECTORS.md');

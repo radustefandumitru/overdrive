@@ -1,5 +1,11 @@
 # Overdrive
 
+> I built Overdrive over the years as my own daily AI coding-agent setup and I'm releasing it completely for free for the community to use. I've built many different websites, web-apps and mobile apps with it across Claude Code, Codex and Antigravity. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/) or open an issue/PR.
+>
+> I'm just a recent uni grad that likes coding in his spare time. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :) - Anything is much appreciated!
+>
+> - Stef
+
 ![Overdrive logo](assets/overdrive%20logo.png)
 
 **Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with specialist skills, smarter routing, local project memory, and safer install/update behavior.
@@ -15,12 +21,6 @@ Overdrive is not just another skill pack. It is the operating layer around the s
 - **Installer safety** keeps sources pinned, avoids destructive overwrites by default, supports dry-runs, and uninstalls only managed files.
 
 The goal is practical: better agent output with less repeated prompting, without turning every session into a giant context dump.
-
-I built Overdrive over the years as my own daily AI coding-agent setup and I'm releasing it completely for free for the community to use. I've built many different websites, web-apps and mobile apps with it across Claude Code, Codex and Antigravity. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/) or open an issue/PR.
-
-I'm just a recent uni grad that likes coding in his spare time. If you want to buy me a coffee, you can do so [here](https://buymeacoffee.com/stefandumitru) :) - Anything is much appreciated!
-
-- Stef
 
 ## Quick Start
 
@@ -53,7 +53,6 @@ The npm package name is `overdrive-cli`. The CLI exposes these commands:
 overdrive --help
 ovd --help
 overdrive-cli --help
-agentic-supercharge --help   # legacy compatibility alias
 ```
 
 ## What Changes After Install
@@ -101,6 +100,270 @@ Skills answer **how should the agent do this kind of task?**
 `skill-router` answers **which specialist guidance is relevant now?**
 
 `ovd-workflow` answers **what is already happening in this project?**
+
+## Operating Guide And Router
+
+Overdrive installs a managed global operating guide and the `skill-router` skill. They are included here so users can inspect the actual behavior before installing.
+
+<details>
+<summary>Installed global operating guide</summary>
+
+````markdown
+<!-- overdrive:global-guidelines:start -->
+# Global Coding Agent Guidelines
+
+These guidelines are adapted from the Karpathy-inspired coding-agent guidance in `multica-ai/andrej-karpathy-skills`. They apply across projects and should be merged with more specific project instructions.
+
+Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For obvious one-line fixes, use judgment and keep moving.
+
+## Think Before Coding
+
+- Do not silently choose an interpretation when the request is ambiguous.
+- State important assumptions briefly before relying on them.
+- Ask when uncertainty would materially change the implementation.
+- When multiple viable approaches exist, present 2-3 options with tradeoffs and recommend one.
+- Surface tradeoffs and push back when a simpler or safer approach exists.
+- Stop and name confusion instead of coding around it.
+
+## Objectivity And Pushback
+
+- Default to objective, evidence-based reasoning. Do not blindly agree with the user, and say plainly when a plan, claim, or assumption is likely wrong.
+- When the user asks to pressure-test, critique, or stress-test a plan, attack the plan first: find weak assumptions, failure modes, missing decisions, and hidden costs. Then steelman the best version and give an honest recommendation.
+- Avoid the sycophancy / Dunning-Kruger feedback loop: do not validate or amplify an idea because the user is confident or enthusiastic. Judge it on the merits.
+- Before a consequential, ambiguous, or irreversible decision built on a weak premise, briefly surface the strongest objection and the better alternative, then proceed once the direction is clear.
+- When the user's preferred idea competes with a stronger one, recommend the stronger option and say why. Do not slow down trivial or clearly specified tasks with unnecessary challenge.
+- If you do not know how to do something, or the user explicitly asks you to research, start with current research using web search, Context7, or official docs before guessing.
+
+## Concise Output
+
+- Skip unnecessary preamble, generic affirmations, and restating the user's question.
+- Go straight to the answer or the next useful action.
+- Match output length to the task. Do not pad short answers, and do not collapse important implementation detail when the task needs depth.
+- These prompt-line principles are inspired by public guidance from Boris Cherny / Anthropic, shared via @AnatoliKopadze.
+
+## Simplicity First
+
+- Write the minimum code that solves the requested problem.
+- Do not add features, abstractions, configurability, dependencies, or error handling that were not asked for or clearly required.
+- Avoid one-use abstractions unless they remove real complexity.
+- If the solution is becoming much larger than the problem, simplify before continuing.
+
+## Surgical Changes
+
+- Touch only files and lines needed for the user's request.
+- Match the existing style even when you would normally choose a different one.
+- Do not refactor, reformat, rename, or delete adjacent code as a drive-by improvement.
+- Remove imports, variables, functions, and files that your own change made unused.
+- Mention unrelated dead code or suspicious behavior, but do not remove it unless asked.
+- Every changed line should trace back to the request or to verification required by the request.
+
+## Goal-Driven Execution
+
+- Convert vague implementation requests into concrete success criteria.
+- For bugs, prefer a failing reproduction or test before the fix when practical.
+- For refactors, preserve behavior and verify before and after when practical.
+- For multi-step work, use a short plan with verification points.
+- For complex phased work, break the work into explicit phases and confirm phase 1 before starting phase 2 when the next phase materially changes scope, architecture, data, auth, publishing, or irreversible state.
+- Keep looping until the stated goal is verified or a real blocker is named.
+
+## Planning Workflows
+
+- Use the runtime's native plan mode where available, such as Claude Code plan mode with `/model opusplan`; for complex Claude multi-system tasks, use `/ultraplan`. Do not use these for trivial one-line fixes or factual questions.
+- `clarify-and-plan` adds requirement and ambiguity clarification that native plan modes do not force, and `planning-first` is the planning layer for agents without a native plan mode. Do not run two redundant planning passes: clarify, then plan, then build.
+- When Claude Code native review commands are available, use `/security-review` for security audits and `/code-review` for general code review.
+- For Codex, Cursor, Gemini CLI, Antigravity, shared `.agents`, or project-local agents, use the `planning-first` skill for complex multi-file work when no native planning mode is available.
+- For complex multi-step work, use the runtime's planning or model knob when available. Overdrive does not auto-switch models across providers; apply Claude Code `/model opusplan` or `/ultraplan`, Codex reasoning/model options, Gemini planning/model options, or Cursor model choices deliberately.
+- For large, decomposable tasks, use the runtime's native orchestration where available, such as Claude dynamic workflows / Task subagents or Codex Goals, to run independent subtasks in parallel with clean contexts; lean on `multi-agent-patterns`. Do not build a custom orchestrator. Prefer cheaper or faster models for simple subtasks where the runtime supports that choice; do not assume every agent has subagents or per-task model routing.
+
+## Context7 Documentation
+
+- Use Context7 MCP for library, framework, SDK, API, CLI, cloud-service, setup, configuration, migration, or version-specific documentation tasks.
+- Prefer current official docs through Context7 over memory when available.
+- If Context7 is unavailable, say so briefly and use the safest official documentation fallback.
+- Never expose API keys, OAuth tokens, MCP secrets, service-role keys, connection strings, or personal app-session data.
+
+## Skills And Context
+
+- At the start of each non-trivial user request, consult `skill-router` as the default lightweight preflight to check whether any installed skills apply.
+- If the user explicitly names one or more skills, use those skills for the relevant part of the task and skip router selection for that part unless another unspecified part still needs routing.
+- If `skill-router` finds no useful match, proceed normally without loading extra skills.
+- When `skill-router` is only a setup step, name the chosen skill sequence briefly, then proceed with the task.
+- For tiny factual answers, casual conversation, or obvious one-command requests, skip visible routing unless a matching skill is clearly useful.
+- Do not load the full skill catalog by default. Load only the smallest useful skill set. Complex work may use more than three skills when genuinely needed, preferably phased instead of all at once.
+- Keep context lean: after a verbose tool output has been used, summarize or mask it rather than re-reading it; do not re-paste large unchanged content.
+- Prefer stable, front-loaded context: keep skills, instructions, and workflow state early and unchanged across turns so the harness's prompt cache stays warm; put the changing request last.
+- For a vague or underspecified request, sharpen the goal or ask one clarifying question before executing; do not silently guess.
+- Keep `context-optimization`, `context-compression`, and `clarify-and-plan` router-selectable for deep work; do not load them as always-on skills.
+- Keep global context small. Put project facts in project files and detailed workflows in skills.
+- For codebase relationship/orientation questions, if a Graphify graph already exists in the project, prefer querying it before broad `rg`; if stale, recommend Graphify's own `--watch` or git-hook workflow. Do not start a background indexer from Overdrive.
+
+## ovd-workflow
+
+- If `.overdrive/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.
+- Read `.overdrive/state.md` or the active work folder only when it helps the current task. Do not dump the whole workflow folder into context.
+- If `.overdrive/knowledge-index.json` exists and the task could benefit from local reference docs, inspect the index first, then load only the specific relevant source file or `markdownCache`. Do not dump the whole knowledge vault into context.
+- If `.overdrive/preferences.md` exists, read it at the start of meaningful work when it could prevent repeating prior mistakes.
+- When the user expresses a dislike, says "never do X", repeats a correction, or shows clear frustration, append a short dated rule to `.overdrive/preferences.md` when the workflow exists. If the new preference contradicts existing workflow state, ask before recording it. Keep it lightweight and never store secrets or sensitive data.
+- For local PDFs, Office files, spreadsheets, HTML exports, or data files, prefer `convert-to-markdown`/MarkItDown before reading when it would reduce tokens or preserve structure.
+- After meaningful multi-step work, keep workflow notes short and current when practical: state, decisions, progress, route trace, or checkpoint.
+- When the user states a durable preference, constraint, or decision, append a short dated note to `.overdrive/decisions.md` when the workflow exists. If the new statement contradicts a recorded decision or constraint, surface the conflict and ask before overwriting it.
+- If you notice an oscillating fix loop, such as fixing A breaking B and fixing B re-breaking A, or if the user signals frustration, stop and say so plainly. Propose a different approach such as a smaller repro, different method, online research, another skill, a fresh model/planning mode, or a checkpoint before continuing.
+- Use `overdrive status`, `overdrive doctor`, `overdrive resync`, or `overdrive checkpoint` when those commands are available and the workflow state matters.
+- When the user asks "show status", "what's going on", "OVD status", or similar project-state questions, run or suggest `overdrive status` if available.
+- When the user asks "show usage", "what's burning tokens", "token usage", "Claude usage", or similar local usage questions, run or suggest `overdrive usage` if available. It is local, read-only, token-only, and should not print prompts or message content.
+- Do not commit `.overdrive/`. It is local project state and should be gitignored by default.
+
+## Context Budget
+
+- Monitor estimated context use and re-check it on each substantial new request. Surface a brief, escalating heads-up as usage climbs, and re-surface it each time it crosses into a higher band, not just once:
+  - ~60%+ (caution): note that context is getting heavy; offer to compact/summarize (`context-compression` or the runtime's native compaction), start a fresh session with a handoff, or continue, especially before a big multi-step task.
+  - ~75%+ (warning): raise it again, more firmly. Recommend compacting or a fresh handoff before the next big step.
+  - ~85-90%+ (red zone): strongly urge compaction or a fresh session now, before continuing; instruction-following and output quality degrade sharply here.
+- Re-prompt when usage crosses each new band, even if the user previously chose to continue. Keep it brief, without nagging again within the same band.
+- If the user chooses compact, invoke `context-compression` or native compaction, then restate the active goal and verification checkpoints in 2-3 lines.
+- If the user chooses a fresh session, write a short handoff file with the active goal, key decisions, files touched, and next steps.
+- Defer to the runtime's native compaction where it exists; this is a proactive prompt-level heads-up, not custom memory machinery. Use native context and memory commands when available instead of guessing: Claude Code `/memory` and `/compact`, Codex `/compact` and `/mcp`, Gemini CLI `/memory`, `/compress`, `/stats`, `/skills`, and `/mcp`.
+- Treat platform-specific context levers as platform-specific. Claude-only options such as MCP tool-search deferral (`ENABLE_TOOL_SEARCH=false`) or `disable-model-invocation` should not be presented as universal behavior.
+- Never compress silently. Compression loses detail, so the user should always consent.
+<!-- overdrive:global-guidelines:end -->
+````
+
+</details>
+
+<details>
+<summary>Installed skill-router</summary>
+
+````markdown
+---
+name: skill-router
+description: Use as a lightweight preflight for non-trivial requests when no explicit skill was named and any installed skill might help. Route ambiguous or multi-phase work to clarify-and-plan/planning-first; prompt engineering to prompt-master; product-design layer reasoning to layers-intro plus the narrow layers-* skill; frontend/design/motion to Taste/Emil/fluid/liquid-glass-web/playwright; text measurement/layout performance to pretext; design-system extraction from public URLs to design-extract; video comprehension to claude-video; codebase relationship mapping and mixed-corpus graph questions to graphify when available; React diagnostics to react-doctor; security audits to Claude native /security-review, Claude security-guidance when available, or portable security-review; pressure-testing to what-should-i-consider; recent online research to last30days; Reddit/community research to reddit-research; local PDF/Office/data reference conversion to convert-to-markdown; app questionnaire onboarding to app-onboarding-questionnaire; launch readiness to pre-launch-checklist. Also route docs/specs, MCP servers, Slack GIFs, context compression, marketing/copy/humanizing, Obsidian JSON Canvas/Defuddle, media downloads, external app actions, browser automation, image generation, Remotion/video, Chrome extensions, and skill discovery. Advisory only: choose the smallest useful skill sequence, with no hard cap for genuinely complex work, and skip visible routing for tiny factual answers, casual conversation, obvious one-command requests, or task sections where the user already named the skill.
+---
+
+# Skill Router
+
+Use this skill to choose the right installed skill or skill sequence without loading unnecessary context. It is a routing layer, not a replacement for the routed skill.
+
+## Core Rules
+
+1. Begin non-trivial requests by consulting `skill-router` as a lightweight preflight to decide whether any installed skills apply. This means selecting a small skill set, not loading the full catalog.
+2. If the user explicitly names a skill, use that skill for the relevant task section and do not override it with router selection unless a different, unspecified section still needs routing.
+3. Prefer exact domain skills over broad design or planning skills.
+4. For ambiguous, high-impact, or multi-step requests, route to `clarify-and-plan` first when assumptions, tradeoffs, or phase boundaries need to be made explicit. Then add the relevant domain skill.
+5. For complex coding implementation on Codex, Cursor, Gemini, Antigravity, shared `.agents`, or local project agents, route to `planning-first` when the task spans multiple files, phases, migrations, refactors, or vague feature work. In Claude Code, prefer native `/model opusplan` or `/ultraplan` when available.
+6. For "what am I missing?", architecture pressure tests, plan critiques, hidden assumptions, or consequential technical/product decisions, use `what-should-i-consider`. Pair with `clarify-and-plan` only when the user also needs options or a phased plan.
+7. For security review, vulnerability audit, hardening, auth/authz, injection, XSS, RCE, secrets, data exposure, or supply-chain checks: on Claude Code prefer the native `/security-review` for explicit audits and PR/code reviews. When Claude Code's `security-guidance` plugin is installed, treat it as the preferred Claude-only preventative layer for generated-code warnings, diff/commit security feedback, and project-specific `claude-security-guidance.md` rules. On other agents use the portable `security-review` skill. Do not load Claude-native review commands and the portable skill for the same audit.
+8. For React diagnostics, `/doctor`, React lint/code quality cleanup, bundle/code-health scans, or "diagnose React issues", use `react-doctor`. Keep it React-specific; use broader planning/design/security skills for non-React work.
+9. For recent online/social/community research, current sentiment, trending repos, "what are people saying," or "last 30 days" requests, use `last30days` when installed. Treat paid/social sources as optional user-configured capabilities.
+10. For Reddit-specific research, subreddit mining, Reddit sentiment, thread/comment analysis, or "what are people saying on Reddit" requests, use `reddit-research`. Pair with `last30days` for current/recent sentiment. Keep it low-volume, public-read-only, and honest about rate limits or blocks.
+11. For local document references, PDFs, Office files, spreadsheets, presentations, HTML exports, CSV/data files, or ovd-workflow knowledge-vault ingest, use `convert-to-markdown` before reading native files when conversion would reduce context or preserve structure. Do not use it for code files or when visual layout fidelity is the task. For codebase relationship mapping, "how does this fit together?", "what connects X to Y?", or mixed code/docs corpus graph questions, use `graphify` when available. If a Graphify graph already exists in the project, prefer querying it before broad `rg`; if stale, recommend Graphify's own `--watch` or git-hook workflow. If Graphify is missing after installer setup or the user declines setup, fall back to normal repo exploration with `rg`, file reads, tests, and ovd-workflow state.
+12. For questionnaire-style onboarding flows for web/mobile/subscription apps, use `app-onboarding-questionnaire`. Pair with design or frontend implementation skills only after the flow strategy is clear.
+13. For launch readiness, shipping checklists, beta/public release, Product Hunt, App Store, SaaS launch, client handoff, monitoring, billing, privacy, or rollback preparation, use `pre-launch-checklist`. Pair with `security-review`, `jack-seo-launch-audit`, or marketing skills only for the relevant slice.
+14. For prompt writing, prompt improvement, meta-prompts, reusable AI instructions, or "make this prompt better" requests, use `prompt-master`. Use `clarify-and-plan` when the actual project requirements are ambiguous; use `prompt-master` when the deliverable is the prompt itself.
+15. For Jack Roberts inspired premium 3D/scroll websites, route to the narrow Jack skill first, then add the normal design/web validation stack:
+   - `jack-premium-site-system` for the full brand -> asset prompts -> scroll site -> SEO -> optional launch workflow.
+   - `jack-website-intelligence` for brand extraction, competitor research, client-facing strategy, and build briefs.
+   - `jack-scroll-asset-prompts` for assembled/exploded, before/after, or transition prompts for AI image/video generators.
+   - `jack-scroll-3d-sites` for video-on-scroll, frame-sequence canvas, GSAP/Framer Motion/Three.js scroll experiences.
+   - `jack-seo-launch-audit` for multi-page SEO, metadata, structured data, responsive checks, and launch readiness.
+16. For product-design layer reasoning, use Jamie Mill's Layers skills. Always include `layers-intro` before a layer-specific skill because it explains the framework dependency model.
+   - `layers-orient` when the user does not know where the product/design problem lives.
+   - `layers-observed-behaviour` for user behavior evidence, job-story candidates, and confidence.
+   - `layers-domain` for domain terminology, concept maps, nouns, and language conflicts.
+   - `layers-user-needs` for needs, pains, desires, and prioritised job stories.
+   - `layers-product-strategy` for opportunity selection, bets, and product/service strategy.
+   - `layers-conceptual-model` for objects, states, relationships, vocabulary, and product model coherence.
+   - `layers-interaction-flow` for flows, breadboards, edge cases, and open interaction decisions.
+   - `layers-surface` for surface decision inventory only after lower layers are reasonably clear.
+17. For visual/frontend work, prefer the community design stack over generic design defaults:
+   - Taste skills by default for real design references, premium visual direction, anti-slop landing pages, image-first frontend workflows, brand kits, and stronger style variants.
+   - `emil-design-eng` by default for buttons, hover/focus states, transitions, animations, micro-interactions, easing, component feel, and UI that should not feel static.
+   - `emil-animation-polish` for practical Emil-inspired web animation implementation: CSS transitions, custom easing, duration tuning, press feedback, hover/touch behavior, tooltip timing, origin-aware popovers, and smooth animation audits.
+   - `fluid-animations` when motion needs Apple-quality direct manipulation: spring behavior, interruptibility, gesture velocity, rubberbanding, snap points, spatially consistent transitions, or reduced-motion-safe tactile UI.
+	   - `liquid-glass-web` when the user asks for Liquid Glass, frosted glass, glassmorphism, translucent UI, SVG displacement, or WebGL refraction. It should choose Tier 1 universal frosted glass by default and enhance to Tier 2 or Tier 3 only when target browsers and performance justify it.
+	   - `pretext` when the hard problem is text measurement/layout performance: virtualized variable-height text rows, shrinkwrapped chat bubbles, multiline measurement without DOM reflow, auto-growing textareas, label overflow checks, or Canvas/SVG/WebGL text.
+	   - `design-extract` when the user wants to extract colors, fonts, spacing, components, Tailwind/shadcn tokens, or a design language from a public website URL. Treat the tool as optional: Overdrive attempts browser setup during install, the agent checks availability first, and extraction stays limited to public/authorized pages.
+   - `impeccable` mostly as an end-of-development polish, audit, critique, spacing, and typography pass. Ask for user feedback before broad font, hierarchy, or visual-identity changes unless the user explicitly asks the agent to decide.
+   - Anthropic/Claude `frontend-design` only as fallback if the community stack fails, is unavailable, or the user rejects the direction.
+18. Add implementation support skills only when the task needs them:
+   - `modern-web-guidance` for modern HTML/CSS/browser APIs, accessibility, forms, dialogs, popovers, performance, and Baseline compatibility.
+   - `playwright-cli` for official Playwright CLI browser validation, screenshots, snapshots, flows, data extraction, and debugging.
+   - `playwright` only as the pinned OpenAI wrapper/fallback when that specific wrapper is useful; otherwise prefer `playwright-cli`.
+19. Use Context Engineering skills when context quality, compression, prompt-cache hygiene, multi-agent architecture, memory, tool design, long-thread continuity, or evaluation is the problem. `context-optimization`, `context-compression`, and `clarify-and-plan` are situational tools, not always-on skills; use `context-compression` only when the user asks for compaction or accepts a context-budget reminder.
+20. Use Corey Haines marketing skills for SEO, CRO, copywriting, launches, pricing, ads, customer research, and growth strategy. Add `stop-slop` for public-facing prose and AI-tell cleanup. Use `humanizer` when the user gives existing text and asks to preserve meaning/facts while making it sound more natural, personal, or voice-matched; do not use it to fake authorship, fabricate lived experience, or remove required AI disclosure.
+21. Use `banana` for image-generation requests when its Claude Code/Gemini setup is available. In runtimes without Banana/API setup, route to the native image tool or ask for setup.
+22. Use Kepano's retained Obsidian-adjacent skills narrowly: `json-canvas` for JSON Canvas files and `defuddle` for clean web-to-markdown extraction when available. For broader Obsidian vault editing, proceed with normal Markdown/file tooling or ask the user to install a dedicated Obsidian workflow; snapshot real vaults before broad edits.
+23. Use `claude-video` for understanding videos, screen recordings, product demos, visual regressions in recordings, or `/watch`-style analysis. Overdrive attempts non-privileged ffmpeg/yt-dlp setup during install; Whisper keys remain user-configured and must never be collected from chat. Use `media-download` for downloading or extracting media files, not for comprehension.
+24. Use `media-download` for user-requested local media downloads, MP3 extraction, highest-quality MP4 downloads, or yt-dlp workflows. Respect platform terms and confirm permissions for restricted/copyrighted material.
+25. Use Anthropic example skills for their narrow official domains:
+   - `brand-guidelines` only when Anthropic branding, colors, typography, or company style guidelines are explicitly requested or appropriate.
+   - `doc-coauthoring` for substantial docs, proposals, PRDs, RFCs, technical specs, and decision docs.
+   - `mcp-builder` for MCP server design, tool schemas, API/service integrations, and MCP evaluation. Use Context7/current docs for SDK specifics.
+   - `slack-gif-creator` for Slack-ready GIFs, animated emoji, and short workspace reaction loops. Approval-gate any actual Slack upload/post.
+26. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
+27. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
+28. Use Vercel Labs `find-skills` only when the user wants to discover, compare, or install new skills. Do not run broad skill discovery for normal implementation tasks.
+29. Keep context small: route to the minimum sufficient skill sequence, state the order, and load only the reference needed for the conflict. Prefer stable, deterministic ordering: clarify/planning first, then product/domain reasoning, implementation, validation, launch/handoff, and context-management skills only when needed. There is no hard cap: genuinely complex tasks may use more skills when they are phased and each skill has a clear job.
+30. If `.overdrive/` exists and the runtime command is available, append a short route trace after choosing skills:
+   `overdrive route --skills "skill-a,skill-b" --reason "short reason"`.
+   Skip this silently if the command is unavailable or the workflow folder is absent.
+
+## Resolving Trigger Overlap
+
+- `clarify-and-plan` vs `planning-first`: use `clarify-and-plan` when the request is ambiguous or has meaningful options. Use `planning-first` when the direction is mostly clear but the implementation is complex. Use both in that order for broad "build/refactor this" requests.
+- `what-should-i-consider` vs `clarify-and-plan`: use `what-should-i-consider` to attack assumptions, risks, and missing decisions. Use `clarify-and-plan` to turn ambiguity into options and a phase plan.
+- `planning-first` vs domain skills: planning is the wrapper; the domain skill does the specialized work. Example: `planning-first` -> `design-taste-frontend` for a multi-page UI rebuild.
+- `security-guidance` vs Claude native `/security-review` vs portable `security-review`: use Claude's `security-guidance` plugin as an always-on/preventative Claude-only layer when available; use Claude's native `/security-review` for explicit security audits and PR/code reviews; use the portable `security-review` skill for Codex, Cursor, Gemini, Antigravity, and shared `.agents`.
+- `react-doctor` vs generic frontend/design skills: use `react-doctor` for React code quality diagnostics. Use Taste/Emil/Impeccable for visual/interaction quality and `security-review` for vulnerability review.
+- `layers-*` vs `clarify-and-plan`/`planning-first`: use Layers for product-design substance: observed behavior, domain language, user needs, strategy, conceptual model, interaction flow, and surface decisions. Use planning skills for process, implementation phases, and execution discipline.
+- `layers-surface` vs visual polish skills: use `layers-surface` to inventory surface-level product/design decisions. Use Taste, Emil, Impeccable, and `liquid-glass-web` for actual visual direction, motion, polish, and implementation.
+- `prompt-master` vs `clarify-and-plan`: use `prompt-master` when the output is an improved AI prompt, reusable instruction, or prompt template. Use `clarify-and-plan` when the agent needs to clarify the actual product/code requirements before doing work.
+- `humanizer` vs `stop-slop`: use `humanizer` for preserving facts and meaning while adapting existing text to a human voice. Use `stop-slop` for broader AI-tell cleanup, punchier public prose, and generic writing removal.
+- `design-extract` vs design-generation/polish skills: use `design-extract` to extract a design language from an existing public URL. Feed the findings into Taste/Impeccable/Emil when implementing or polishing a new UI.
+- `liquid-glass-web` vs `emil-animation-polish`/`fluid-animations`: use `liquid-glass-web` for glass/refraction tier selection and implementation. Use Emil/Fluid for how it moves, responds, and feels.
+- `pretext` vs design-generation/polish skills: use `pretext` for text layout math, measurement, virtualization, and reflow avoidance. Use Taste/Impeccable/Emil/Layers for visual direction, typography taste, product reasoning, and interaction polish.
+- `claude-video` vs `media-download`: use `claude-video` to understand a video or screen recording. Use `media-download` when the requested action is saving, extracting, or downloading media.
+- `pre-launch-checklist` vs `jack-seo-launch-audit`: use `pre-launch-checklist` for product/business readiness, monitoring, billing, privacy, rollback, support, and launch-day runbooks. Use `jack-seo-launch-audit` for animated/3D website SEO, metadata, structured data, performance, and responsive launch checks.
+- `last30days` vs normal web search: use `last30days` for time-boxed community/recent sentiment research. Use normal web/docs search or Context7 for official documentation and exact API/library references.
+- `reddit-research` vs `last30days`: use `reddit-research` when Reddit/subreddits/threads/comments are explicitly in scope. Add `last30days` when recency or broader community context matters.
+- `convert-to-markdown` vs `defuddle`: use `convert-to-markdown` for local files and ovd-workflow knowledge-vault ingest. Use `defuddle` for web pages that need clean article/content extraction.
+- `graphify` vs ovd-workflow knowledge vault: use `graphify` for on-demand queryable codebase or mixed-corpus relationship graphs. Prefer an existing Graphify graph before broad `rg` for relationship/orientation questions, but do not start a background indexer from Overdrive. Use ovd-workflow knowledge vault for local project reference docs, project memory, decisions, and indexed Markdown caches. Avoid routing both for the same request unless the user explicitly needs both code graph intelligence and local project-memory/reference-doc context.
+- `app-onboarding-questionnaire` vs marketing `onboarding`/`signup`: use `app-onboarding-questionnaire` for questionnaire-style app onboarding flows and screen-by-screen strategy. Use marketing `onboarding` or `signup` for growth optimization of existing onboarding/signup funnels.
+- `find-skills` vs `skill-router`: use `skill-router` to choose among installed skills. Use `find-skills` only to discover or install new skills.
+
+## Reference Routing
+
+- Read `references/frontend-design-routing.md` for frontend, product UI, landing page, brand, motion, image-first, or visual-quality conflicts.
+- Read `references/compatibility-audit.md` for source, platform, overlap, context-bloat, and approval-risk notes.
+- Read `references/sharing-and-transfer.md` when asked how to move this setup to another machine or teammate.
+- Read `references/catalog.md` for broad inventory, non-design routing, or when the user asks what every skill is for.
+- Read `references/routing-trace-examples.md` for example prompts and expected routing decisions.
+  The examples also show how ovd-workflow route traces should stay short enough for `.overdrive/routes.jsonl`.
+
+## Output Pattern
+
+When routing is the main task, answer with:
+
+```text
+Recommended skill(s): <skill names in order>
+Why: <one concise rationale>
+Use now: <which skill should be loaded/invoked first>
+Notes: <optional caveat about secondary skills or validation>
+```
+
+When routing is only a setup step before doing work, briefly name the chosen skill sequence, then proceed with the task using the relevant skill instructions.
+
+## Hard Avoids
+
+- Do not load the full catalog for every task.
+- Do not make router output noisy for tiny tasks; the default skill-router preflight can be silent when no skill applies.
+- Do not choose generic/Anthropic-style design guidance ahead of Taste skills, `emil-design-eng`, or `impeccable` for visual taste unless the user explicitly requests it.
+- Do not let `impeccable` make broad font/hierarchy/identity changes without user feedback unless the user explicitly asks the agent to decide.
+- Do not use `full-output-enforcement` unless the user needs complete unabridged output or previous output was truncated.
+- Do not use external action skills without approval.
+- Do not assume a shared setup includes MCP credentials, OAuth state, API keys, or personal connector sessions.
+````
+
+</details>
 
 ## Skill Library
 
@@ -158,7 +421,7 @@ On meaningful project work or explicit workflow commands, it can create:
   work/
 ```
 
-The folder is local runtime state and is gitignored by default. Overdrive also keeps the legacy `.agenticsupercharge/` folder gitignored and can non-destructively copy old managed state into `.overdrive/` when a write action initializes the new workflow.
+The folder is local runtime state and is gitignored by default. Overdrive adds `.overdrive/` to `.gitignore` when it initializes the workflow.
 
 Useful commands:
 
@@ -173,15 +436,13 @@ overdrive usage --days 30
 overdrive checkpoint --message "before refactor"
 ```
 
-Claude Code slash commands install as `/ovd-status`, `/ovd-resync`, `/ovd-knowledge`, `/ovd-doctor`, `/ovd-checkpoint`, and `/ovd-usage`. Legacy `/as-*` aliases remain as managed compatibility commands.
+Claude Code slash commands install as `/ovd-status`, `/ovd-resync`, `/ovd-knowledge`, `/ovd-doctor`, `/ovd-checkpoint`, and `/ovd-usage`.
 
 Disable hook/init behavior for a process with:
 
 ```bash
 OVERDRIVE_WORKFLOW=disabled
 ```
-
-The legacy `AGENTIC_SUPERCHARGE_WORKFLOW=disabled` env var is still honored for compatibility.
 
 For details, see [`docs/ovd-workflow.md`](docs/ovd-workflow.md).
 
@@ -198,10 +459,9 @@ Overdrive manages its own **managed skills** and instruction blocks. It does not
 | Skills | During install | Copies curated `SKILL.md` folders into selected agent roots. |
 | Instruction blocks | During install | Adds a managed global guidance block while preserving user content outside the block. |
 | Runtime | During install | Writes persistent helpers at `~/.overdrive/runtime/current/` plus `overdrive` and `ovd` CLI shims. |
-| Legacy alias | During install | Keeps `agentic-supercharge` as a compatibility alias to the new Overdrive runtime. |
 | Optional helper tools and installer-backed sources | During install, unless `--no-tool-install` is set | Attempts safe user-space setup for Graphify, video helpers, browser support, and official installer-backed skills. Missing tools become warnings, not install failures. |
 | Hooks/commands/rules | During global install, where supported | Let supported agents call ovd-workflow. Hooks are advisory and fail open. |
-| Project state | During meaningful project work or explicit workflow commands | Creates local `.overdrive/` state and adds `.overdrive/` plus `.agenticsupercharge/` to `.gitignore`. |
+| Project state | During meaningful project work or explicit workflow commands | Creates local `.overdrive/` state and adds `.overdrive/` to `.gitignore`. |
 
 Global skill roots:
 
@@ -243,10 +503,10 @@ Overdrive is non-destructive by default.
 |---|---|
 | `preserve` | Install missing skills, update Overdrive-managed skills, and skip unmarked folders. |
 | `backup-and-replace` | Move matching folders into `~/.overdrive/backups/...` before replacing them. |
-| `replace-managed-only` | Replace only folders that already contain an Overdrive or legacy managed marker. |
+| `replace-managed-only` | Replace only folders that already contain an Overdrive managed marker. |
 | `force` | Replace matching folders even if unmarked. This requires an explicit flag or confirmation. |
 
-Managed skill folders receive `.overdrive.json`. Legacy `.agentic-supercharge.json` markers still count as managed so old installs can be updated or uninstalled safely. Managed instruction blocks now use `overdrive:global-guidelines`; old `ai-skill-setup:global-guidelines` blocks are replaced rather than duplicated.
+Managed skill folders receive `.overdrive.json`. Managed instruction blocks use `overdrive:global-guidelines`; user content outside that block is preserved.
 
 Uninstall removes only managed folders, managed instruction blocks, managed hooks/rules/commands, managed runtime files, and Overdrive-managed helper venvs/shims under `~/.overdrive`. Shared Homebrew/winget tools are left in place because they may be used outside Overdrive:
 

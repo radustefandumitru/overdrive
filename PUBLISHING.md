@@ -164,17 +164,17 @@ Safe uninstall:
 
 ## Release Archive
 
-The public GitHub repo is the source of truth. If you need a zip for upload, review, or release assets, build one from committed files instead of zipping the working tree. Keep maintainer-only drafts such as `SOCIAL_POSTS.md` out of the archive:
+The public GitHub repo is the source of truth. If you need a zip for upload, review, or release assets, build one from committed files instead of zipping the working tree:
 
 ```bash
 cd /path/to/Overdrive
-git archive --format=zip --output ../Overdrive.zip --prefix=Overdrive/ HEAD -- . ':(exclude)SOCIAL_POSTS.md'
+git archive --format=zip --output ../Overdrive.zip --prefix=Overdrive/ HEAD
 ```
 
 Quickly inspect the archive before sharing it:
 
 ```bash
-if unzip -l ../Overdrive.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|(^|/)\\.overdrive/|overdrive-.*\\.tgz|SOCIAL_POSTS\\.md"; then
+if unzip -l ../Overdrive.zip | rg "bundled/skills|sources.lock|\\.DS_Store|(^|/)\\.git/|(^|/)\\.overdrive/|overdrive-.*\\.tgz"; then
   echo "Unexpected file found"
   exit 1
 fi

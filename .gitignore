@@ -1,7 +1,6 @@
 .DS_Store
 *.zip
 overdrive-*.tgz
-agentic-supercharge-*.tgz
 package-lock.json
 sources.lock.json
 
@@ -9,4 +8,3 @@ sources.lock.json
 # through manifest.json and pinned official installers.
 bundled/skills/
 .overdrive/
-.agenticsupercharge/

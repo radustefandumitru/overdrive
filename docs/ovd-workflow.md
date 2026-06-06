@@ -29,17 +29,7 @@ On the first meaningful project task, supported agents may create:
     _active.json
 ```
 
-The folder is local runtime state. The installer adds `.overdrive/` and the legacy `.agenticsupercharge/` path to `.gitignore` when it initializes the workflow.
-
-## Migration From AgenticSupercharge
-
-Overdrive v1 keeps migration deliberately conservative:
-
-- `.overdrive/` is the new canonical project-state folder.
-- If `.agenticsupercharge/` exists and `.overdrive/` does not, Overdrive copies the legacy folder into `.overdrive/` on install for the active project, on `overdrive migrate --apply`, or on a write action such as `overdrive checkpoint` or `overdrive resync --apply`.
-- The old `.agenticsupercharge/` folder is not deleted during the RC.
-- Old `.agentic-supercharge.json` markers count as managed, and new writes use `.overdrive.json`.
-- `AGENTIC_SUPERCHARGE_WORKFLOW=disabled` still disables workflow writes for compatibility, but `OVERDRIVE_WORKFLOW=disabled` is canonical.
+The folder is local runtime state. The installer adds `.overdrive/` to `.gitignore` when it initializes the workflow.
 
 ## Commands
 
@@ -48,8 +38,6 @@ Use these from a project folder:
 ```bash
 overdrive status
 overdrive doctor
-overdrive migrate --dry-run
-overdrive migrate --apply
 overdrive knowledge --dry-run
 overdrive knowledge --apply
 overdrive resync --dry-run
@@ -65,9 +53,7 @@ If `overdrive` is not on your `PATH`, installed hooks and slash commands use the
 ~/.overdrive/bin/overdrive
 ```
 
-`ovd` is installed as a short alias where Overdrive installs its runtime shim. The legacy `agentic-supercharge` CLI alias remains available for compatibility and delegates to the new Overdrive runtime.
-
-`overdrive migrate` is dry-run by default. Add `--apply` to copy legacy `.agenticsupercharge/` state into `.overdrive/`. It does not delete the legacy folder.
+`ovd` is installed as a short alias where Overdrive installs its runtime shim.
 
 ## How Agents Use It
 
@@ -93,8 +79,6 @@ Claude Code receives canonical `/ovd-*` commands where slash commands are instal
 - `/ovd-doctor`
 - `/ovd-checkpoint`
 - `/ovd-usage`
-
-Legacy `/as-*` aliases remain as managed compatibility commands.
 
 ## Knowledge Vault
 
@@ -142,12 +126,6 @@ OVERDRIVE_WORKFLOW=disabled
 ```
 
 This disables workflow hook/init behavior for that process.
-
-Legacy compatibility:
-
-```bash
-AGENTIC_SUPERCHARGE_WORKFLOW=disabled
-```
 
 ## What It Is Not
 

@@ -1,6 +1,6 @@
 # Overdrive Source Fidelity Report
 
-Generated: 2026-06-05T19:29:10.724Z
+Generated: 2026-06-06T15:23:46.642Z
 
 This report clones pinned upstream sources and compares included skill folders with the Overdrive-installed output after safety transforms. It is a maintainer audit aid, not a runtime dependency.
 

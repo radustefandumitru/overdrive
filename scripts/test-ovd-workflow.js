@@ -93,21 +93,20 @@ function collectInvalidCommandHooks(settings, file) {
 function countWorkflowHookGroups(settings) {
   const counts = {};
   for (const [event, groups] of Object.entries(settings.hooks || {})) {
-    counts[event] = (groups || []).filter((group) => (group.hooks || []).some((hook) => installer.isWorkflowCommand(hook.command) || /^(overdrive|agentic-supercharge)-/.test(hook.name || ''))).length;
+    counts[event] = (groups || []).filter((group) => (group.hooks || []).some((hook) => installer.isWorkflowCommand(hook.command) || /^overdrive-/.test(hook.name || ''))).length;
   }
   return counts;
 }
 
-function seedLegacyWorkflowHooks(file) {
+function seedDuplicateWorkflowHooks(file) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, `${JSON.stringify({
     hooks: {
       SessionStart: [
-        { matcher: 'startup|resume|clear', hooks: [{ type: 'command', command: "node '/tmp/.agentic-supercharge/runtime/current/bin/agentic-supercharge.js' hook --target 'claude' --event session-start" }] },
         { matcher: 'startup|resume|clear', hooks: [{ type: 'command', command: "node '/tmp/.overdrive/runtime/current/bin/overdrive.js' hook --target 'claude' --event session-start" }] }
       ],
       UserPromptSubmit: [
-        { matcher: '', hooks: [{ type: 'command', command: "node '/tmp/.agentic-supercharge/runtime/current/bin/agentic-supercharge.js' hook --target 'claude' --event prompt-submit" }] }
+        { matcher: '', hooks: [{ type: 'command', command: "node '/tmp/.overdrive/runtime/current/bin/ovd' hook --target 'claude' --event prompt-submit" }] }
       ],
       PostToolUse: [
         { matcher: 'Edit|Write', hooks: [{ type: 'command', command: "node '/tmp/.overdrive/runtime/current/bin/overdrive.js' hook --target 'claude' --event post-tool-use" }] }
@@ -204,24 +203,7 @@ check('config includes knowledge autosummarize default', JSON.parse(fs.readFileS
 check('research log includes objectivity mandate', fs.readFileSync(path.join(project, '.overdrive/research.md'), 'utf8').includes('objective, evidence-based standpoint'));
 check('preferences tracker includes do-not guidance', fs.readFileSync(path.join(project, '.overdrive/preferences.md'), 'utf8').includes('do-not rules'));
 check('init gitignores workflow', fs.readFileSync(path.join(project, '.gitignore'), 'utf8').includes('.overdrive/'));
-check('init gitignores legacy workflow for migration safety', fs.readFileSync(path.join(project, '.gitignore'), 'utf8').includes('.agenticsupercharge/'));
-
-const legacyProject = tempProject('ovd-workflow-legacy');
-fs.mkdirSync(path.join(legacyProject, '.agenticsupercharge'), { recursive: true });
-fs.writeFileSync(path.join(legacyProject, '.agenticsupercharge/state.md'), '# Legacy State\n\nCurrent focus: migrate.\n');
-fs.writeFileSync(path.join(legacyProject, '.agenticsupercharge/.agentic-supercharge.json'), '{"managedBy":"AgenticSupercharge"}\n');
-const legacyStatus = workflow.status({ projectDir: legacyProject });
-check('status does not silently migrate legacy workflow', legacyStatus.legacyAvailable === true && !fs.existsSync(path.join(legacyProject, '.overdrive')));
-const legacyDoctor = workflow.doctor({ projectDir: legacyProject });
-check('doctor reports legacy compatibility without blocking issue', legacyDoctor.legacyCompatible === true && legacyDoctor.issues.length === 0 && legacyDoctor.recommendations.length === 1);
-const legacyMigrateDry = workflow.migrate({ projectDir: legacyProject, apply: false });
-check('migrate defaults to dry-run', legacyMigrateDry.dryRun === true && legacyMigrateDry.migrated === true && !fs.existsSync(path.join(legacyProject, '.overdrive')));
-const legacyInit = workflow.initWorkflow({ projectDir: legacyProject, reason: 'legacy migration' });
-check('init migrates legacy workflow copy', legacyInit.migration?.migrated === true && fs.existsSync(path.join(legacyProject, '.overdrive/state.md')));
-check('legacy workflow remains after migration', fs.existsSync(path.join(legacyProject, '.agenticsupercharge/state.md')));
-check('migration writes new marker', fs.existsSync(path.join(legacyProject, '.overdrive/.overdrive.json')));
-const legacyGitignore = fs.readFileSync(path.join(legacyProject, '.gitignore'), 'utf8');
-check('migration gitignores both workflow folders', legacyGitignore.includes('.overdrive/') && legacyGitignore.includes('.agenticsupercharge/'));
+check('init writes exactly one workflow gitignore entry', fs.readFileSync(path.join(project, '.gitignore'), 'utf8').split(/\r?\n/).filter((line) => line.trim().startsWith('.overdrive')).length === 1);
 
 const knowledgeDir = path.join(project, '.overdrive/knowledge');
 fs.writeFileSync(path.join(knowledgeDir, 'brief.md'), '# Brief\n\nA short project reference.\n');
@@ -385,16 +367,6 @@ const hook = workflow.hook({
 });
 check('disabled hook does not initialize workflow', hook.disabled === true && !fs.existsSync(path.join(disabledProject, '.overdrive')));
 
-const legacyDisabledProject = tempProject('ovd-workflow-legacy-disabled');
-const legacyDisabledHook = workflow.hook({
-  projectDir: legacyDisabledProject,
-  event: 'prompt-submit',
-  target: 'claude',
-  stdin: JSON.stringify({ cwd: legacyDisabledProject, prompt: 'Build a reasonably complex feature and verify it.' }),
-  env: { ...process.env, AGENTIC_SUPERCHARGE_WORKFLOW: 'disabled' }
-});
-check('legacy disabled env still disables workflow', legacyDisabledHook.disabled === true && !fs.existsSync(path.join(legacyDisabledProject, '.overdrive')));
-
 const disabledCheckpointProject = tempProject('ovd-workflow-disabled-checkpoint');
 const disabledCheckpoint = workflow.checkpoint({
   projectDir: disabledCheckpointProject,
@@ -417,8 +389,8 @@ const runtimeHome = fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-workflow-runtime-
 const retiredSkill = path.join(runtimeHome, '.claude/skills/video-downloader');
 fs.mkdirSync(retiredSkill, { recursive: true });
 fs.writeFileSync(path.join(retiredSkill, '.overdrive.json'), '{"managedBy":"Overdrive"}\n');
-seedLegacyWorkflowHooks(path.join(runtimeHome, '.claude/settings.json'));
-seedLegacyWorkflowHooks(path.join(runtimeHome, '.codex/hooks.json'));
+seedDuplicateWorkflowHooks(path.join(runtimeHome, '.claude/settings.json'));
+seedDuplicateWorkflowHooks(path.join(runtimeHome, '.codex/hooks.json'));
 runNode([
   'bin/overdrive.js',
   '--scope', 'global',
@@ -458,22 +430,19 @@ for (const rel of hookSettings) {
   for (const event of rel.includes('.gemini') ? ['SessionStart', 'BeforeAgent', 'AfterTool'] : ['SessionStart', 'UserPromptSubmit', 'PostToolUse']) {
     check(`${rel} has exactly one managed workflow hook group for ${event}`, counts[event] === 1, JSON.stringify(counts));
   }
-  check(`${rel} has no legacy agentic-supercharge hook commands`, !JSON.stringify(settings).includes('agentic-supercharge'));
+  check(`${rel} has only canonical Overdrive hook commands`, !JSON.stringify(settings).includes('agentic'));
 }
 check('Cursor receives rule fallback only', fs.existsSync(path.join(runtimeHome, '.cursor/rules/overdrive-workflow.mdc')) && !fs.existsSync(path.join(runtimeHome, '.cursor/settings.json')));
-for (const name of ['ovd-status', 'ovd-resync', 'ovd-knowledge', 'ovd-doctor', 'ovd-checkpoint', 'ovd-usage', 'as-status', 'as-resync', 'as-knowledge', 'as-doctor', 'as-checkpoint', 'as-usage']) {
+for (const name of ['ovd-status', 'ovd-resync', 'ovd-knowledge', 'ovd-doctor', 'ovd-checkpoint', 'ovd-usage']) {
   check(`Claude command ${name} exists`, fs.existsSync(path.join(runtimeHome, `.claude/commands/${name}.md`)));
 }
 check('new overdrive shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/overdrive')));
 check('ovd shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/ovd')));
-check('legacy CLI shim delegates to Overdrive runtime', fs.existsSync(path.join(runtimeHome, '.agentic-supercharge/bin/agentic-supercharge')) && fs.readFileSync(path.join(runtimeHome, '.agentic-supercharge/bin/agentic-supercharge'), 'utf8').includes('Overdrive managed legacy CLI shim'));
 const runtimeVersionDir = path.join(runtimeHome, `.overdrive/runtime/${pkg.version}`);
-const legacyRuntimeCurrent = path.join(runtimeHome, '.agentic-supercharge/runtime/current');
-check('legacy runtime current delegates to Overdrive runtime', fs.existsSync(path.join(legacyRuntimeCurrent, 'bin/agentic-supercharge.js')) && fs.realpathSync(legacyRuntimeCurrent).includes(`${path.sep}.overdrive${path.sep}runtime${path.sep}`));
 check('runtime payload includes manifest', fs.existsSync(path.join(runtimeVersionDir, 'manifest.json')));
 check('runtime payload includes local skills', fs.existsSync(path.join(runtimeVersionDir, 'skills/skill-router/SKILL.md')));
 check('runtime payload includes global instructions', fs.existsSync(path.join(runtimeVersionDir, 'global-instructions/AGENTS.md')));
-check('runtime payload excludes workflow state', !fs.existsSync(path.join(runtimeVersionDir, '.overdrive')) && !fs.existsSync(path.join(runtimeVersionDir, '.agenticsupercharge')));
+check('runtime payload excludes workflow state', !fs.existsSync(path.join(runtimeVersionDir, '.overdrive')));
 const runtimeHelp = runCommand(path.join(runtimeHome, '.overdrive/bin/overdrive'), ['--help']);
 check('runtime overdrive shim prints help', runtimeHelp.stdout.includes('Overdrive') && runtimeHelp.stdout.includes('Usage:'));
 const runtimeAliasHelp = runCommand(path.join(runtimeHome, '.overdrive/bin/ovd'), ['--help']);

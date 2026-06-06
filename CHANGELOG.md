@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.2 - 2026-06-06
+
+- Removed pre-launch compatibility surfaces so the public package uses only canonical Overdrive names: `overdrive`, `ovd`, `overdrive-cli`, `.overdrive/`, `.overdrive.json`, `OVERDRIVE_WORKFLOW`, `/ovd-*`, and `ovd-workflow`.
+- Moved Stefan's README note to a top quote, added collapsible README sections for the installed global guide and `skill-router`, and removed redundant public draft files.
+- Strengthened package and repository checks for tracked junk, local runtime state, obsolete brand surfaces, archive exclusions, and canonical install/uninstall behavior.
+
 ## v1.0.1 - 2026-06-06
 
 - Fixed the thin Claude Code marketplace/plugin manifests so `claude plugin validate`, marketplace add, and plugin install pass with Claude's current plugin schema.
@@ -7,10 +13,8 @@
 
 ## v1.0.0-rc - 2026-06-05
 
-- Rebranded AgenticSupercharge to Overdrive as a local release candidate, with canonical `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, `~/.overdrive/`, `OVERDRIVE_WORKFLOW`, package name `overdrive-cli`, and archive `Overdrive.zip`.
-- Added compatibility aliases for the old `agentic-supercharge` CLI, old `/as-*` slash commands, old `.agenticsupercharge/` project state, old `.agentic-supercharge.json` managed markers, and old `ai-skill-setup:global-guidelines` managed instruction blocks.
-- Added non-destructive workflow migration from `.agenticsupercharge/` to `.overdrive/` on Overdrive write actions while keeping both folders gitignored.
-- Hardened the RC after audit: exact `SKILL.md` casing for lowercase upstream skill files, idempotent workflow hook cleanup, explicit `overdrive migrate`, stricter `--no-tool-install` semantics, safer `claude-video` payload stripping, managed helper-tool uninstall cleanup, and behavioral/source-fidelity tests for installed output.
+- Rebranded the project to Overdrive as a local release candidate, with canonical `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, `~/.overdrive/`, `OVERDRIVE_WORKFLOW`, package name `overdrive-cli`, and archive `Overdrive.zip`.
+- Hardened the RC after audit: exact `SKILL.md` casing for lowercase upstream skill files, idempotent workflow hook cleanup, stricter `--no-tool-install` semantics, safer `claude-video` payload stripping, managed helper-tool uninstall cleanup, and behavioral/source-fidelity tests for installed output.
 - Switched the original Overdrive project license to Apache-2.0 and added `NOTICE`; third-party skills and references remain governed by their own licenses in `THIRD_PARTY_NOTICES.md`.
 - Added repo-local README assets, a polished Overdrive README landing page, and a thin Claude Code marketplace/plugin wrapper that points users to the full CLI install without bundling all 137 skills.
 - Rebuilt release packaging around `Overdrive.zip`; no public tag, GitHub release, hardening audit, or remote repo rename is part of this RC.
@@ -36,7 +40,7 @@
 - Added four pinned MIT upstream skills: `prompt-master`, `humanizer`, `design-extract`, and `claude-video`, raising the manifest to 136 unique skills.
 - Added safety transforms for `design-extract` and `claude-video` so agents check availability, ask before setup, avoid writing secrets, and never auto-install packages, browsers, Homebrew/apt/winget/pip tooling, or MCPs.
 - Added an ethics note to `humanizer` so humanizing preserves meaning and facts without deceptive authorship, fake lived experience, or removing required AI disclosure.
-- Added `overdrive usage`, `/as-usage`, and workflow tests for local, read-only token usage reporting from Claude Code JSONL logs with best-effort AS route attribution and no prompt/message content printing.
+- Added `overdrive usage`, workflow command coverage, and workflow tests for local, read-only token usage reporting from Claude Code JSONL logs with best-effort route attribution and no prompt/message content printing.
 - Updated `skill-router`, smoke checks, router benchmark cases, docs, third-party notices, verified sources, skill readiness, and consistency checks for the v0.10 manifest and new routing boundaries.
 
 ## v0.9.0 - 2026-05-31
