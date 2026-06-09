@@ -1860,6 +1860,56 @@ Modified files:
 - Surface this Task 2.1 work to user for commit approval. Proposed commit boundary: "Phase 2 kickoff + Task 2.1 — tutorial + status display." Files listed under **Committed** above.
 - After Task 2.1 commit lands: Task 2.2 (INIT orchestration with migration detection). Per the readiness brief's suggested order, 2.2 stubs the call to 2.2.5 (real MIGRATE) so it can land independently.
 
+### 2026-06-09 — Session 4 continued (Phase 2 Task 2.2 COMPLETE — INIT orchestration + migration detection)
+
+**Did:**
+- Extended `lib/ovd-plan/workflow.js` (~280 new lines) with `runWorkflowInit(rootDir, opts)` plus four sub-task stubs (`runMigrateLegacy`, `runCodebaseMap`, `runPreferencesElicit`, `runRequirementsDraft`) and four action-path prompt builders (`migrationPrompt`, `mappingPrompt`, `preferencesPrompt`, `requirementsPrompt`).
+- Implemented INIT as a **turn-based state machine** with six steps (`detect → migration → mapping → preferences → requirements → complete`). Each CLI invocation advances by one step. The agent (slash command body) re-invokes with the user's chosen action; the CLI itself remains non-interactive, returning either an action-path prompt (when awaiting input) or a step-completion result (when a sub-step ran).
+- Migration detection routes off the project's classified state from Task 2.1's `inspectProject`:
+  - `legacy` → emit migration prompt (migrate / skip-migration / other).
+  - `initialized` → emit "already initialized" no-op result.
+  - `uninitialized / scaffolded / partial` → `ensureScaffolded` (idempotent), emit mapping prompt.
+- Each sub-step's prompt ends with the "Other — describe what you want" escape per Principle 3. The terminal `requirements` step omits `skip-all` from its allowed actions (no remaining canonical steps to skip); `mapping` and `preferences` include `skip-all` for early-abort.
+- Updated installer dispatch (`lib/installer.js`) to also expose positionals[1] as `step` and positionals[2] as `action` on planOptions. `nodeRef` still aliases positionals[1] for `/ovd-go` to consume — same data, named per command context.
+- Routed `subcommand === 'init'` to `runWorkflowInit` in `lib/ovd-plan/index.js`; other subcommands still hit the Phase 1 stub.
+- Added 99 new test checks to `scripts/test-ovd-plan-workflow.js` covering: INIT_STEPS / action enum constants, sub-task stub shapes, prompt builder shapes (escape-always-present invariant), four required verification scenarios (fresh / legacy+migrate / legacy+skip-migration / already-initialized), individual sub-step skipping, `skip-all` early-abort, unrecognized-action re-prompting (with note), `requirements` step refusing `skip-all`, end-to-end `formatInitResult` output, `ensureScaffolded` idempotency, dispatch routing (`init` → real handler, `map` → stub).
+
+**Verified:**
+- `npm run check` ✓ (22 files, no new file to add — workflow.js + test already in check chain).
+- `npm run test:ovd-plan` ✓ — **479 checks total** (59 + 104 + 28 + 39 + 53 + **196 new (97 Task 2.1 + 99 Task 2.2)**).
+- `npm run test:workflow` ✓ (no v1 regression).
+- `npm run eval:router` ✓ (269/269; no skill-router regression).
+- **Manual CLI smoke test of the full state machine** via `node bin/overdrive.js workflow init [step action] --project-dir <tmp>`:
+  - Fresh project → scaffold + mapping prompt.
+  - `init mapping proceed` → codebase-map stub logged + preferences prompt.
+  - `init preferences skip` → preferences-elicit [skipped] + requirements prompt.
+  - `init requirements proceed` → requirements-draft stub + "Init complete. Run /ovd-plan to begin deliberation."
+  - `init mapping bogus` → re-prompts mapping with `Note: Unrecognized action: bogus. Pick one of: proceed, skip, skip-all, other.`
+
+**Decided:**
+- **Turn-based state machine, not streaming dialogue.** The CLI is non-interactive (no stdin polling for user response); each invocation advances by one step. The agent drives transitions by re-invoking with `step` + `action` positionals. This mirrors Pattern 1 from Q1 (codebase mapping dispatch): CLI emits structured prompts; agent does the asking. Consistent shape across Phase 2 tasks.
+- **Sub-task stubs return `{ stub: true, note }`** so the orchestrator and tests can verify "this sub-step was called" without depending on the real implementation. Tasks 2.2.5/2.3/2.4/2.5 will replace each stub with their owning logic; the orchestrator wiring stays the same.
+- **Stubs live inline in `lib/ovd-plan/workflow.js`** rather than as per-task module placeholders. Phase 2 §326 keeps the new layer self-contained until the sub-tasks land; spreading stubs across files now would create cleanup work later. Each future task either replaces the stub inline or extracts to its own module — the orchestrator import stays internal.
+- **Positionals-as-step-and-action, not new CLI flags.** Two reasons: (a) keeps the global `parseArgs` slim — no new flags introduced; (b) shell composition reads naturally — `overdrive workflow init migration migrate` matches the way a user would speak the choice. The `step` + `action` aliasing in planOptions documents the convention so future Phase 2 commands can re-use it.
+- **`skip-all` only valid at non-terminal sub-steps.** The `requirements` step (the last canonical sub-step) doesn't expose `skip-all` because there's nothing left to skip — clicking it would be the same as clicking `skip`. The test verifies this rejection explicitly.
+
+**Committed:**
+- (not yet — proposing single-commit boundary for Task 2.2 per the commit-cleavage principle ([[feedback-commit-cleavage]]). Files in scope: `lib/ovd-plan/workflow.js` (mod, +~280), `scripts/test-ovd-plan-workflow.js` (mod, +~250 / 99 new checks), `lib/ovd-plan/index.js` (mod, +5 lines for init dispatch), `lib/installer.js` (mod, +2 lines for step/action in planOptions), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod, this entry). No new files; Task 2.1's `workflow.js` and test script just grew.)
+
+**Deviations from plan:**
+- **None.** All four required verification scenarios (fresh / legacy+migrate / legacy+skip-migration / already-initialized) pass. The orchestrator faithfully gates each canonical sub-step on user approval ("nothing implicit" per r3 §1.4 + impl plan Task 2.2 success criterion #2). Stubs are explicit per readiness brief ("2.2 needs the migration detection hook from 2.2.5 but doesn't need 2.2.5 to actually work yet — stub the migration call").
+- **Minor structural addition (strict superset, not deviation):** I exported the `INIT_STEPS`, `MIGRATION_ACTIONS`, `CANONICAL_ACTIONS`, `REQUIREMENTS_ACTIONS` constants so the test can assert against them as ground truth. Future Phase 2 tasks can also import them for cross-task consistency.
+
+**Key insights worth preserving:**
+- The turn-based state machine pattern decouples the **dialogue** (which the agent owns) from the **state** (which the CLI owns). The CLI never asks; it only reports what state it's in and what choices are available. This means: (a) the CLI works the same whether invoked by an LLM agent or a script; (b) tests don't need to mock stdin/prompt UI — they just walk the state machine programmatically. Worth preserving for Phase 3+ tasks that need similar interactive flows (deliberation, idea pipeline).
+- **The stub-tracking convention (`stub: true` + `note: 'Task X.Y placeholder...'`)** is small but loud. It makes it obvious in CLI output, in test assertions, and in JSON consumers when a downstream task hasn't landed yet. Future Phase 2 tasks (2.2.5, 2.3, 2.4, 2.5) just drop the `stub: true` marker when their real implementation replaces the stub. The orchestrator and tests need no rewiring.
+- **`skip-all` at non-terminal steps but not at the last sub-step** is a tiny UX detail that prevented action-path confusion. Users would otherwise have a `skip-all` option that means literally the same as `skip` — that's the kind of small inconsistency that erodes trust in the surface. The test for `requirements` rejecting `skip-all` enforces the invariant going forward.
+- **`ensureScaffolded` is now the canonical idempotent path** for any code that needs the new layout in place. It either calls `fsHelpers.scaffoldOverdrivePlan` (first time) or no-ops with `action: 'already-scaffolded'`. Phase 2 Tasks 2.3/2.4/2.5 can call this freely without worrying about double-scaffolding.
+
+**Next:**
+- Surface Task 2.2 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-2): INIT orchestration with migration detection`. All code + tests + this log entry go together per [[feedback-commit-cleavage]]; the legacy + 2026-06-06 spec docs stay untracked per project direction.
+- After Task 2.2 commit lands: **Task 2.2.5 — MIGRATE state** (real implementation of legacy `.overdrive/` migration per §5A.1). This is where the `runMigrateLegacy` stub gets replaced with the real per-file migration + archive logic, and where the test fixture directory `scripts/fixtures/ovd-plan/legacy-project/` gets shipped (per Q6 confirmation).
+
 ---
 
 ## 8. Glossary / quick decision reference
