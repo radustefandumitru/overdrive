@@ -1030,6 +1030,29 @@ Output: log paragraph identifying integration points.
   - Plain-language overview suitable for a new user.
   - Action-path examples included.
 
+##### Task 7.6 — Install/uninstall behavior cleanup (CLI hygiene)
+
+- **Deliverable:** Refactor of `lib/installer.js` (and supporting files) so that OVD CLI install/uninstall NEVER creates project-directory pollution. Specifically, no `.agents/` or `.cursor/` directories full of skill files should appear inside the project working directory as a side effect of running `overdrive` / `npx overdrive-cli` / equivalent. All CLI-installed agent state lives in global per-agent dirs (`~/.cursor/`, `~/.agents/`, `~/.claude/`, `~/.codex/`, `~/.gemini/`) only.
+- **Why this matters:** As of Phase 1 commit (2026-06-09), running OVD CLI during dev populates `.agents/` and `.cursor/` inside the project working directory with 1000+ skill files. Phase 1 gitignored these so they don't pollute commits, but they still pollute `git status` output, IDE indexing, file searches, and disk usage. The right behavior is to install to user-global locations only; project directories should never receive installer output unless the user explicitly opted into a project-local install.
+- **Scope:**
+  - Audit `lib/installer.js` for all paths it writes to. Identify which target paths are correctly user-global (e.g., `~/.cursor/skills/`, `~/.claude/skills/`) and which improperly write inside the current working directory.
+  - Refactor any project-relative install logic so it (a) only fires when the user explicitly opts in via flag (`--install-local` or similar), or (b) only fires when a project-local `.agents/skills/` or `.cursor/skills/` directory was pre-existing and clearly intentional. Default behavior is global-only.
+  - Update `overdrive uninstall` to remove from the same set of locations the install wrote to.
+  - Update installer messaging so it clearly indicates where skills are being installed.
+- **Success criteria:**
+  - Running `overdrive` (default install) on a fresh project does NOT create `.agents/` or `.cursor/` inside the project working directory.
+  - User-global install paths continue to work per existing v1 semantics; no regression for users who installed v1 previously.
+  - `overdrive uninstall` cleans user-global state.
+  - The `.gitignore` entries for `.agents/` and `.cursor/` (added in Phase 1 commit) can be removed (or kept as belt-and-suspenders defense).
+  - Existing installer tests continue to pass.
+- **Verification:**
+  - Fresh empty dir + `overdrive --dry-run` → reports no project-directory writes.
+  - Fresh empty dir + `overdrive` → no project pollution; agent-global dirs populated.
+  - Project with pre-existing `.agents/skills/` → preserves existing pattern only if the user explicitly opted in to local install.
+  - `overdrive uninstall` → user-global state cleaned, no project-directory side effects.
+- **Reference:** Identified during Phase 1 commit review (2026-06-09). User direction quoted verbatim: *"we will have to refine the install / uninstall for the CLI commands of OVD, since these appear in git as tracked items (1k+), and I don't think this should be the case in a well defined project (i don't exactly know - the installed skills, scripts, superpowers should live locally I suppose?)."*
+- **Why Phase 7 (last phase):** This is independent of the ovd-plan structural-layer work. Doesn't block any Phase 2-6 task. Best done as a final polish + hygiene pass before declaring v2 ready, after the rest of the v2 surface is stable.
+
 #### Phase 7 done definition
 
 - Smoke test passes end-to-end.
@@ -1037,6 +1060,7 @@ Output: log paragraph identifying integration points.
 - Verify command extended.
 - Test suite green.
 - README updated.
+- CLI install/uninstall no longer pollutes project directories with skill files.
 - Final commit, approved.
 
 ---
@@ -1671,6 +1695,58 @@ Modified files:
 **Next:**
 - Propose the consolidation commit to user for approval.
 - After commit, ready to begin Phase 2 in a new session if context allows, or in a future session per user pacing.
+
+### 2026-06-09 — Session 3 (Phase 1 follow-up: runtime-shim regression fix)
+
+**Context on resume:**
+- Fresh agent picked up on the `feature/ovd-plan` branch after commit `23f10e0` (Phase 1 + dossier).
+- Step 4 of the resume protocol (run all four regression checks) revealed `npm run test:workflow` failing with `MODULE_NOT_FOUND: js-yaml` from the installed runtime shim. `npm run check`, `npm run test:ovd-plan` (283 checks), and `npm run eval:router` (269 checks) all passed.
+- Per the resume protocol hard rule ("never silently adapt a task whose success criteria appear impossible"), stopped and surfaced to user before any further reading or work. User approved a scoped Phase 1 follow-up fix.
+
+**Root cause:**
+- `lib/installer.js` line 7 had a top-level `const ovdPlan = require('./ovd-plan');` (added in Task 1.6).
+- That eagerly chains `lib/ovd-plan/index.js` → `lib/ovd-plan/parser.js` → `require('js-yaml')` (added in Task 1.2).
+- The installer's `copyRuntimePayload` (and the global `shouldCopy` filter) strip `node_modules/` from the runtime payload — so the installed shim at `~/.overdrive/runtime/<ver>/lib/ovd-plan/parser.js` has no resolvable `js-yaml` and crashes on *any* invocation, including `overdrive --help`.
+- Test fixture `scripts/test-ovd-workflow.js` lines 446–449 invoke the installed shim's `--help` and assert it exits 0; that's what failed.
+
+**Did:**
+- **Part A (lazy-load):** in `lib/installer.js`, removed the top-level `const ovdPlan = require('./ovd-plan');` (line 7) and moved it inside the `if (ovdPlanCommands.has(command)) { … }` dispatch branch as the first statement. Only `plan`/`go`/`log`/`workflow` now load the parser; help/status/doctor/etc. do not.
+- **Part B (vendor runtime deps):** in `lib/installer.js`, extended `copyRuntimePayload` to call a new helper `copyRuntimeDependencies(ctx, runtimeDir, pkg)`. The helper does a BFS over `package.json#dependencies`, recursing via each dep's own `package.json#dependencies`, de-duped via a `Set`. For each declared dep, it copies `<kitDir>/node_modules/<name>/` to `<runtimeDir>/node_modules/<name>/` via `fs.cpSync` with a new filter `shouldCopyDependency` that drops `.git`, `.github`, `.DS_Store`, `CHANGELOG.md`, `bin/`, `.bin/`, and nested `node_modules/` (transitives walked explicitly). Source-tree `shouldCopy` left alone.
+- **Test belt-and-suspenders:** added one line to `scripts/test-ovd-workflow.js` after the existing runtime-payload assertions, checking that `node_modules/js-yaml/package.json` and `node_modules/js-yaml/lib` both exist in the runtime version directory.
+
+**Verified:**
+- After Part A only: `npm run test:workflow` → "ovd-workflow tests passed" (the help-shim assertions go green because they no longer transit parser.js).
+- After Part B: full chain green — `npm run check` ✓, `npm run test:ovd-plan` (283 checks) ✓, `npm run test:workflow` (now including the new js-yaml vendoring assertion) ✓, `npm run eval:router` (269 checks) ✓.
+- Manual sanity check via clean temp `$HOME`: installer wrote `~/.overdrive/runtime/1.0.2/node_modules/{js-yaml, argparse}/`; `js-yaml/{package.json, index.js, lib/, dist/, LICENSE, README.md}` all present; `bin/` and `CHANGELOG.md` correctly excluded; `node -e "require('js-yaml').load"` from the runtime dir returns a function (the failing path now resolves).
+- Confirmed transitive walk works: `argparse` (declared by `js-yaml` even though its library path doesn't load it) was vendored.
+
+**Decided:**
+- **Two-part fix, not single.** Part A alone makes the test green (since the shim only invokes `--help`), but Part B is the correctness fix — without it, `overdrive plan` etc. would still crash from the installed shim. Both were required to avoid a latent bug surfacing the moment a user runs an ovd-plan command from the global install.
+- **Dep traversal via `package.json#dependencies` rather than hard-coding `js-yaml`.** Future runtime deps will come along automatically; no further installer edits required when adding deps.
+- **Filter drops `bin/` but keeps `LICENSE`.** Runtime payload doesn't need third-party CLI binaries, but it should ship licenses alongside vendored code.
+- **No change to `shouldCopy`.** The source-tree copy still excludes `node_modules` (correct — kit's own `node_modules` is huge and irrelevant for the source-tree side). Vendoring is a separate code path that targets `runtimeDir/node_modules/` directly.
+
+**Side effect noted:**
+- During verification, the first manual sanity check had a shell-script bug (I set `$TMPHOME` but didn't pass it as `HOME=$TMPHOME` to the node invocation), which caused the installer to write to the agent's *actual* `$HOME/.overdrive/runtime/1.0.2/` for one run. Same version, idempotent install, no data loss — but flagged to user. The retry was clean.
+
+**Committed:**
+- **Commit 1 (fix):** `a6b0f4f` — `ovd-plan: lazy-load ovd-plan in installer + vendor js-yaml so runtime shim works`. `lib/installer.js` (lazy-load + new `copyRuntimeDependencies` / `shouldCopyDependency` helpers) + `scripts/test-ovd-workflow.js` (one-line vendoring assertion). 2 files changed, 39 insertions(+), 1 deletion(-).
+- **Commit 2 (docs):** this commit. Contains this Session 3 entry + the prior agent's Phase 7 Task 7.6 addition + the Phase 7 done-definition update. `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` only. Hash will be recorded in the Session 4 wrap-up entry after this commit lands.
+
+**Deviations from plan:**
+- This is a Phase 1 follow-up that was not in the original phase plan. It exists because Session 2's verification log (claims `node scripts/test-ovd-workflow.js ✓`) and the actual state on resume disagreed — the regression was present in commit `23f10e0` but somehow not caught in Session 2's verification pass. Possible explanations: (a) verification was incomplete in Session 2 (e.g., only `npm run check` actually ran), (b) `js-yaml` was added to `node_modules` between Phase 1 verification and the commit but the test wasn't re-run, (c) test execution env differed. Not worth post-morteming further — the new `runtime payload vendors js-yaml runtime dep` assertion will catch this regression class permanently.
+
+**Key insights worth preserving:**
+- The runtime shim's whole-point-of-existence is to run *without* the source kit being on the PATH or as an `npx` target. So if the shim breaks on `--help`, every downstream integration (Claude hooks, Codex hooks, statusline, …) breaks. This is exactly why `test:workflow` exercises the installed shim end-to-end. Lesson: never skip `test:workflow` on Phase 1 or any phase that touches `lib/ovd-plan/*`, `lib/installer.js`, or new dependencies.
+- The `node_modules` exclusion is intentional for source-tree copies (the kit's `node_modules/` is huge and not what you want in the runtime payload). But the *runtime* payload needs the dep tree vendored, separately. The two are different copy operations with different requirements; trying to share a single filter conflates them.
+- Manual sanity checks of installer behavior should always explicitly pass `HOME=<tmp>` to the node invocation. The bash `TMPHOME=$(mktemp -d)` idiom is misleading: setting a variable doesn't automatically scope subsequent commands. This bit me on the first attempt; documenting here so future sessions don't repeat it.
+- Lazy-loading of optional dispatch dependencies (Part A's pattern) is generally good practice for CLIs: it reduces cold-start cost for common commands (`--help`, `status`) and isolates failures to the specific subcommand path. Worth keeping in mind for future installer extensions.
+
+**Next:**
+- Propose Commit 1 (fix): `lib/installer.js` + `scripts/test-ovd-workflow.js`. Message: `ovd-plan: lazy-load ovd-plan in installer + vendor js-yaml so runtime shim works`. Wait for user approval.
+- Then propose Commit 2 (docs): `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md`. Message: `ovd-plan: docs (Phase 1 follow-up — Task 7.6 + log updates)`. Wait for user approval.
+- The two 2026-06-06 spec docs (`…-design.md`, `…-handoff.md`) stay untracked per user direction — they're not pipeline-architecture files and were excluded from Phase 1's commit deliberately.
+- After both commits land, resume protocol Step 5 onward: read r3 spec, then implementation plan §5 Phase 2 + §5A migration map + §7 log tail, then `09-phase-2-readiness.md`, then surface Phase 2 open questions, then begin Task 2.1.
 
 ---
 
