@@ -443,6 +443,7 @@ check('runtime payload includes manifest', fs.existsSync(path.join(runtimeVersio
 check('runtime payload includes local skills', fs.existsSync(path.join(runtimeVersionDir, 'skills/skill-router/SKILL.md')));
 check('runtime payload includes global instructions', fs.existsSync(path.join(runtimeVersionDir, 'global-instructions/AGENTS.md')));
 check('runtime payload excludes workflow state', !fs.existsSync(path.join(runtimeVersionDir, '.overdrive')));
+check('runtime payload vendors js-yaml runtime dep', fs.existsSync(path.join(runtimeVersionDir, 'node_modules/js-yaml/package.json')) && fs.existsSync(path.join(runtimeVersionDir, 'node_modules/js-yaml/lib')));
 const runtimeHelp = runCommand(path.join(runtimeHome, '.overdrive/bin/overdrive'), ['--help']);
 check('runtime overdrive shim prints help', runtimeHelp.stdout.includes('Overdrive') && runtimeHelp.stdout.includes('Usage:'));
 const runtimeAliasHelp = runCommand(path.join(runtimeHome, '.overdrive/bin/ovd'), ['--help']);
