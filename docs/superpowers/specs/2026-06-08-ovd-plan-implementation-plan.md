@@ -454,6 +454,8 @@ Output: log paragraph explaining what GSD does and how we adapt + extend.
 
 ##### Task 2.9 — Legacy slash command repurposing
 
+> **Status: DEFERRED to Phase 7 (decided 2026-06-09, Q5 confirmation).** `/ovd-status` depends on `/ovd-plan` (Phase 3); `/ovd-checkpoint` depends on `/ovd-log` (Phase 5). Wiring delegations now would point legacy commands at "not yet implemented" stubs. Repurposing happens in Phase 7 polish once the targets exist. Phase 2 done-definition explicitly accepts this deferral.
+
 - **Deliverable:** Update existing slash command markdown files in `plugins/overdrive/commands/` to delegate to new ovd-plan handlers per §5A.2 (Slash command migration map). Add new command files for the four new commands.
 - **Files updated (existing):**
   - `ovd-status.md` → body invokes `overdrive plan` (renders OVERDRIVE.md tree); one-line deprecation note.
@@ -480,7 +482,7 @@ Output: log paragraph explaining what GSD does and how we adapt + extend.
 - Refresh correctly updates only flagged mappers.
 - Preferences and requirements files produced via Socratic flows.
 - Legacy `.overdrive/` layout migrated cleanly when user approves; archived to `_legacy/` otherwise.
-- Legacy slash commands repurposed; deprecation notes visible.
+- Legacy slash command repurposing (Task 2.9) **deferred to Phase 7 polish** (Q5 confirmation 2026-06-09) — `/ovd-status`, `/ovd-checkpoint`, etc. retain their Phase 1 bodies through Phases 2–6 and get repurposed once `/ovd-plan` and `/ovd-log` actually exist to delegate to.
 - One commit per task, approved by user.
 
 ---
@@ -1747,6 +1749,116 @@ Modified files:
 - Then propose Commit 2 (docs): `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md`. Message: `ovd-plan: docs (Phase 1 follow-up — Task 7.6 + log updates)`. Wait for user approval.
 - The two 2026-06-06 spec docs (`…-design.md`, `…-handoff.md`) stay untracked per user direction — they're not pipeline-architecture files and were excluded from Phase 1's commit deliberately.
 - After both commits land, resume protocol Step 5 onward: read r3 spec, then implementation plan §5 Phase 2 + §5A migration map + §7 log tail, then `09-phase-2-readiness.md`, then surface Phase 2 open questions, then begin Task 2.1.
+
+### 2026-06-09 — Session 3 wrap-up (Phase 1 follow-up complete — both commits landed)
+
+**Did:**
+- Landed Commit 1 (`a6b0f4f`): fix only — `lib/installer.js` (lazy-load + `copyRuntimeDependencies` + `shouldCopyDependency`) and `scripts/test-ovd-workflow.js` (one-line vendoring assertion). 2 files changed, +39 / -1.
+- Landed Commit 2 (`599fc8f`): docs only — this implementation plan (Phase 7 Task 7.6 from prior agent + Phase 7 done-definition update + Session 3 entry referencing Commit 1's hash). 1 file changed, +76.
+- Two 2026-06-06 spec docs remained untracked per project direction; not part of either commit.
+
+**Verified (post-Commit-2):**
+- `npm run check` ✓ (all 20 files parse).
+- `npm run test:ovd-plan` ✓ (283 checks across 5 suites — fs 59, parser 104, writer 28, cache 39, skill-router 53).
+- `npm run test:workflow` ✓ (ovd-workflow tests passed, now including the new `runtime payload vendors js-yaml runtime dep` assertion).
+- `npm run eval:router` ✓ (router benchmark 269/269; 100% expected-skill coverage).
+
+**Branch state:**
+- `feature/ovd-plan` ahead of `main` by 3 commits: `23f10e0` (Phase 1 + dossier) → `a6b0f4f` (regression fix) → `599fc8f` (this docs commit).
+- Working tree clean except the two untracked 2026-06-06 spec docs (per project direction).
+- No push performed; user prefers explicit push approval (none given).
+
+**Key insights worth preserving:**
+- The resume protocol's Step 4 regression-checks block is load-bearing. On this resume it caught a Phase 1 latent bug within the first ~5 minutes of work. Without it, Phase 2 work would have started on a broken Phase 1 foundation, and Phase 2's tests would have been hard to trust.
+- The runtime payload's vendor-deps step is now an explicit contract via the test assertion. Future tasks that add runtime deps to `package.json` need no installer changes (the BFS walk handles them automatically), but the assertion will be a fail-safe if anyone accidentally regresses the helper.
+- The "two-commit, bisectable" instinct the prior advisor agent recommended was correct: Commit 1 alone tells the complete story of the fix in `git log -p`; Commit 2 is pure documentation. Future bisects against `test:workflow` will land on `a6b0f4f` with the full explanation in the commit message — not buried under docs noise.
+
+**Next:**
+- Phase 1 follow-up is complete. The branch is back to "Phase 1 + tests green; ready for Phase 2."
+- Per the user's order-of-operations Step 6: surface to user that Phase 1 follow-up is complete; pause for direction before reading r3 / impl plan §5 / Phase 2 readiness brief.
+- Resume protocol Step 5 onward will pick up at: read r3 spec → impl plan §5 Phase 2 + §5A migration map + §7 log tail → `09-phase-2-readiness.md` → surface Phase 2 open questions → Task 2.1.
+- Open question to user: should this Session 3 wrap-up entry get its own micro-commit, or be folded into the first Phase 2 commit alongside Task 2.1 work? My default is the latter (don't fragment the log into one-entry commits), but happy to commit now if preferred for bisect cleanliness.
+
+### 2026-06-09 — Session 4 (Phase 2 kickoff — orientation reads + 6 open-question confirmations)
+
+**Did:**
+- Resume protocol Step 5: read r3 spec (`2026-06-08-ovd-plan-pipeline-architecture-r3.md`, full 1463 lines), with focus on §0 (resolution table), §1 (operating principles), §2 (command surface), §4 (`/ovd-workflow`), §5.3 (Socratic protocol), §9 (file structure), §10 (node schema), §11 (skill-router protocol), §12 (full reposition policy).
+- Resume protocol Step 6: read impl plan §4 (cross-phase concerns), §5 Phase 2 (Tasks 2.1–2.9), §5A (Migration Map — file/slash/CLI sub-maps), §7 log tail (already touched during Session 3 fix work).
+- Resume protocol Step 7: read `09-phase-2-readiness.md` (374 lines).
+- Resume protocol Step 8: surfaced six Phase 2 open questions via action-path prompts; user confirmed all six per recommendations.
+
+**Decided (Phase 2 open-question confirmations, 2026-06-09):**
+- **Q1 — Codebase mapping dispatch (Task 2.3):** **Pattern 1.** CLI inspects project + emits a JSON dispatch plan (5 focused mapper prompts + module-tag scaffolding). The slash command body coordinates host-agent subagent dispatch via its task tool. No temporary metadata files on disk. Cleaner separation between CLI work (deterministic, scriptable) and agent work (LLM-driven).
+- **Q2 — Calibration placement (Tasks 2.4, 2.5):** **Placeholder now.** Phase 2 Socratic flows default to "plain language" unless the user signals technical depth; Phase 3 Task 3.2 builds the real three-axis calibration and refactors the Phase 2 flows then. Lets Phase 2 ship without a Phase 3 dependency.
+- **Q3 — Decisions log shape (Task 2.6 + migration):** **Legacy notes + table.** When migrating an existing project, preserve prose `.overdrive/decisions.md` verbatim under a top "Legacy notes" header; new entries from Task 2.6's `appendDecision` go into a structured markdown table below. No data lost; structure additive.
+- **Q4 — Drift bootstrap (Task 2.7):** **Flag all on first run.** Missing `.overdrive/codebase/_tags.json` → every mapper file is needs-refresh; full map runs; tags get generated as a byproduct. Subsequent runs use tags for incremental drift detection.
+- **Q5 — Task 2.9 timing:** **Deferred to Phase 7 polish.** `/ovd-status` and `/ovd-checkpoint` depend on `/ovd-plan` (Phase 3) and `/ovd-log` (Phase 5) existing. Wiring delegations in Phase 2 would point them at "not yet implemented" stubs. Phase 7 picks this up once targets exist. Phase 2 done-definition updated to accept this deferral; Task 2.9 annotated with deferral status.
+- **Q6 — MIGRATE test fixture (Task 2.2.5 verification):** **Ship a fixture directory tree.** `scripts/fixtures/ovd-plan/legacy-project/` will hold a committed representative pre-v2 layout (project.md, state.md, architecture.md, constraints.md, decisions.md, preferences.md, research.md, changelog.md, config.json, file-index.json, knowledge-index.json, routes.jsonl, work/_active.json, and supporting subdirs). Tests copy it to temp, run migration, assert new layout matches expected.
+
+**Edited:**
+- **Task 2.9 status note** — added "Status: DEFERRED to Phase 7" block at top of the task per Q5.
+- **Phase 2 done-definition** — replaced the "Legacy slash commands repurposed" bullet with explicit deferral language per Q5.
+
+**Verified:**
+- (no code change this session — orientation + decision-locking only)
+
+**Committed:**
+- (not committed yet — this entry + the Q5-driven edits sit in the working tree alongside the prior Session 3 wrap-up entry. Will be folded into the first Phase 2 commit per Session 3's default, unless user prefers a micro-commit now.)
+
+**Deviations from plan:**
+- **None substantively.** All six question answers matched the readiness brief's recommendations and the impl plan's existing scope. The only structural plan edit is the Task 2.9 deferral, which is a deliberate Q5 outcome.
+- **Minor observation flagged to user (not changed):** the readiness brief's "suggested task order within Phase 2" reorders `2.1 → 2.2 → 2.2.5 → 2.6 → 2.4 → 2.5 → 2.3 → 2.7 → 2.8 → 2.9` (helper-first, big-task-last). The impl plan §5 lists tasks numerically without mandating strict order within a phase. The brief's order respects dependency direction (2.6 before 2.4/2.5 since they consume the helper; 2.3 before 2.7/2.8 since they consume its tag output). I'll follow the brief's ordering unless the user redirects.
+
+**Key insights worth preserving:**
+- The user's six-question batch was textbook action-path discipline: each Q had a concrete recommended option, a real alternative, and a "describe other" escape. Six in two batches of three (the AskUserQuestion tool's 4-per-call cap forced this) felt natural — each batch grouped semantically related decisions.
+- The Pattern 1 vs Pattern 2 distinction for codebase mapping is load-bearing for Task 2.3 design. Pattern 1 means the CLI is purely deterministic (no LLM calls; emits a structured dispatch plan) and the slash command body is where the agent dispatch actually happens. This mirrors the skill-router helper pattern from Phase 1 Task 1.5 — same architectural shape ("CLI generates structured prompts; host agent does the work"). Consistency across helpers reduces cognitive load for future agents reading the codebase.
+- The Q5 deferral is more conservative than the original impl plan but is the right call. It also creates an explicit Phase 7 hand-off point: a "Task 7.7 — Legacy slash command repurposing per §5A.2" addition to Phase 7 will be a natural Phase 7 kick-off task. Worth surfacing to user when Phase 7 work begins (not now).
+
+**Next:**
+- Begin **Task 2.1 — Tutorial + status display** (smallest Phase 2 task per impl plan §5; recommended starting point per readiness brief).
+- Per Task 2.1 deliverable: create `lib/ovd-plan/workflow.js` exporting `runWorkflowDefault(rootDir, opts)`. Tutorial pass (~10 lines on the 4-command OVD model), status pass (inspect `.overdrive/`, report initialized state), action-path next-steps prompt per r3 §4.1.
+- Plan: test cases first (or in parallel with implementation), then implementation, then verification (`npm run check` + new test suite + existing regression suite), then propose Phase 2 commit boundary to user.
+- The Q1-Q6 confirmations and Phase 2 done-definition edits stay unstaged; first Phase 2 commit (likely Task 2.1) will include this Session 4 entry, the Session 3 wrap-up entry, and the Task 2.9 / done-definition edits as the doc portion alongside the new code.
+
+### 2026-06-09 — Session 4 continued (Phase 2 Task 2.1 COMPLETE — tutorial + status display)
+
+**Did:**
+- Wrote `lib/ovd-plan/workflow.js` (~225 lines) exporting `runWorkflowDefault(rootDir, opts)` plus helpers: `inspectProject`, `inspectCodebase`, `classifyFile`, `nextStepsFor`, `formatStatusBlock`, `formatWorkflowDefault`, and the constants `CODEBASE_FILES`, `TUTORIAL_LINES`, `STATES`.
+- Five project states distinguished: `uninitialized`, `legacy`, `scaffolded`, `partial`, `initialized` — each with its own dedicated next-steps action-path block per r3 §4.1.
+- 10-line tutorial covering the four commands (`/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`), the file structure (`OVERDRIVE.md` + `.overdrive/` contents), and the action-path / recursive-closure principles.
+- File classification helper (`classifyFile`) handles `missing` / `placeholder` / `populated` cleanly, with trim-tolerant placeholder matching so trailing-whitespace drift doesn't false-positive.
+- Wired `lib/ovd-plan/index.js::runWorkflow` to dispatch bare invocations (no subcommand) to `workflowModule.runWorkflowDefault` after resolving `rootDir` via `lib/ovd-workflow.js::resolveProjectDir` (the only import from the legacy module — the env-fallback logic stays in one place per Phase 2 §326 "preserved as imports"). Subcommands still hit the stub (Task 2.2+ owns them).
+- Updated installer dispatch (`lib/installer.js` line 398) to surface `result.text` to `printWorkflowResult`, so all ovd-plan handlers can supply pre-formatted human output. Forward-compatible — future task handlers can set `result.text` without further installer changes.
+- Added `lib/ovd-plan/workflow.js` to the `npm run check` chain and `scripts/test-ovd-plan-workflow.js` to the `test:ovd-plan` chain in `package.json`.
+- Wrote `scripts/test-ovd-plan-workflow.js` (~250 lines, 97 checks across 16 scenario groups): module exports, tutorial coverage, action-path escape on every state, file classification, codebase inspection counts, five-state inspection assertions, OVERDRIVE.md detection without .overdrive/, full result shape + text, null rootDir path, status-block formatting, end-to-end format, dispatch routing for bare vs subcommand.
+
+**Verified:**
+- `npm run check` ✓ (now covers 22 files: 21 previous + new workflow.js + new test script).
+- `npm run test:ovd-plan` ✓ — 380 checks total (59 + 104 + 28 + 39 + 53 + **97 new**).
+- `npm run test:workflow` ✓ (no regression; the existing v1 ovd-workflow test path still passes, and the runtime-shim vendoring assertion from Session 3 still holds).
+- `npm run eval:router` ✓ (269/269; no skill-router regression).
+- **Manual CLI smoke test** against the real bin: `node bin/overdrive.js workflow --project-dir <fresh-tmp>` prints the tutorial + uninitialized status + the four numbered next-steps options ending with the "Other — describe what you want" escape + the "Reply with the number..." instruction. `--json` mode emits the structured result. Subcommand `init` still routes to the stub as expected (Task 2.2 will replace).
+
+**Decided:**
+- **Single new file `lib/ovd-plan/workflow.js`** (not extension of legacy `lib/ovd-workflow.js`) per Phase 2 §319 "gut and rebuild rather than extend." Only import from the legacy module is `resolveProjectDir`, which Phase 2 §326 explicitly authorizes ("Existing utility functions ... preserved as imports").
+- **`result.text` as the new convention** for ovd-plan handler human output. Side effect: stub handlers print via their own `console.log` (Phase 1's legacy pattern) AND `printWorkflowResult` prints `''` for them, since they don't set `result.text`. Same behavior as before — no double-print regression. Future ovd-plan tasks should set `result.text` to participate in the cleaner pattern.
+- **Five-state classification** rather than a binary initialized/not. Lets the action-path prompt be precisely tailored to where the user is, per r3 §1.5 ("Transparency over autonomy when ambiguous"). The intermediate `scaffolded` and `partial` states each get their own next-steps block instead of being conflated with "uninitialized" or "initialized."
+- **Tutorial as data, not as template string.** `TUTORIAL_LINES` is an exported array so tests can verify line-by-line content and downstream tooling could reformat (e.g., wrap to terminal width) without re-parsing prose.
+
+**Committed:**
+- (not yet — proposing commit boundary at end of this entry. Files in scope: `lib/ovd-plan/workflow.js` (new), `scripts/test-ovd-plan-workflow.js` (new), `lib/ovd-plan/index.js` (mod), `lib/installer.js` (mod), `package.json` (mod), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod — Session 3 wrap-up + Session 4 + Task 2.9 deferral + Phase 2 done-definition + this Task 2.1 entry).)
+
+**Deviations from plan:**
+- **None.** Task 2.1 deliverable, success criteria, and verification all hit per impl plan §5 Phase 2 Task 2.1. Result shape extends the spec slightly (the spec called for tutorial + status + next-steps; I added `state` field as an enum on the result so downstream Tasks 2.2+ can branch on it without re-deriving). Strict superset — no behavior reduction.
+
+**Key insights worth preserving:**
+- The placeholder-detection heuristic (`actual === placeholder || actual.trim() === placeholder.trim()`) is small but load-bearing: it lets the system distinguish "user has touched this file" from "scaffolding wrote it and the user hasn't engaged yet." Tasks 2.4 and 2.5 (Socratic flows) will use the same heuristic when deciding whether to append vs overwrite.
+- The "every action path ends with `Other — describe what you want`" rule is now enforced by the test (`STATES.forEach` over `nextStepsFor`). If a future task adds a new state, the test will flag a missing escape automatically. That's a Phase 2-wide invariant codified.
+- The bridging between `runWorkflowDefault(rootDir, opts)` (spec-API shape) and `runWorkflow(options, env)` (dispatch-convention shape) happens in `lib/ovd-plan/index.js`. Future Tasks 2.2/2.3/etc. will likely add similar bridge calls — that file becomes the canonical dispatch boundary between the CLI surface and the per-command Node modules. Worth keeping it thin (just routing + projectDir resolution); business logic stays in the per-task modules.
+
+**Next:**
+- Surface this Task 2.1 work to user for commit approval. Proposed commit boundary: "Phase 2 kickoff + Task 2.1 — tutorial + status display." Files listed under **Committed** above.
+- After Task 2.1 commit lands: Task 2.2 (INIT orchestration with migration detection). Per the readiness brief's suggested order, 2.2 stubs the call to 2.2.5 (real MIGRATE) so it can land independently.
 
 ---
 
