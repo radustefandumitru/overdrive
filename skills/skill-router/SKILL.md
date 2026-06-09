@@ -116,6 +116,25 @@ Notes: <optional caveat about secondary skills or validation>
 
 When routing is only a setup step before doing work, briefly name the chosen skill sequence, then proceed with the task using the relevant skill instructions.
 
+## Planning-time vs execution-time routing (ovd-plan protocol)
+
+When invoked from `ovd-plan` during planning (the `RESOLVE SKILLS` sub-step of `/ovd-plan` Stage 5), end your response with a single JSON object on the last line — no fence, no trailing prose after it:
+
+```text
+{"skills":["..."],"confidence":"high|medium|low","rationale":"...","considered":["..."]}
+```
+
+Confidence semantics:
+- `high` — narrow scope + clear success criteria + well-understood domain + applicable codebase patterns. Execution uses this prior as canonical; do not reconsult the router for that leaf.
+- `medium` — moderate scope or one input is partial. Execution treats the prior as the starting set and may add 1-2 skills only on observed need; additions are captured as `skill-delta` to the session log under `.overdrive/sessions/`.
+- `low` — experimental, novel, or broad scope. Execution re-invokes the helper with current context and writes the result back to the leaf annotation as a delta.
+
+When the active leaf in `OVERDRIVE.md` already has a pre-resolved `skills:` annotation with `confidence: high`, do NOT reconsult the router for that leaf — load the named skills and execute. Reconsult only if the agent observes a need outside the prior set during execution.
+
+When `confidence: medium`, treat the prior as the starting set and add 1-2 more skills only on observed need. Capture additions as `skill-delta` to the session log.
+
+When `confidence: low` or the annotation is missing, perform full routing per the rules above and capture the result back to the leaf annotation as a delta.
+
 ## Hard Avoids
 
 - Do not load the full catalog for every task.

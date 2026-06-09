@@ -682,6 +682,18 @@ v0.12 adds native context-window guidance through [`docs/context-runtime-matrix.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
+## Coming Next: Overdrive v2 (in development)
+
+Overdrive v1 is the execution layer — 137 specialist skills, `skill-router`, a global operating guide, and lightweight project state in `.overdrive/`. It's strong at *doing* the work agents need to do, but it doesn't structure projects beyond the request currently in front of it.
+
+Overdrive v2 adds the missing structural layer: a planning, execution, and record pipeline that turns request-by-request agent work into a persistent, contract-driven project lifecycle. Four new commands (`/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`) with minimal flags layer on top of the existing skill catalog. Skills stay untouched; their use becomes pre-resolved at planning time, leaves carry self-contained contracts, and closure walks recursively up the tree with explicit user approval at every level.
+
+The shape is designed to match GSD's planning rigor while remaining radically simpler to use — same power, roughly 10% of the user-side effort. The internal granularity is architect-level; the user surface is plain language and never has more than a handful of commands.
+
+**Status:** active development on the `feature/ovd-plan` branch. Phase 1 of the implementation (parser, writer, hierarchical cache, skill-router helper, CLI command skeletons) is complete; 283 new tests pass with no regressions to the existing 269-check router benchmark or the existing `ovd-workflow` test suite. Phase 2 (the rebuilt `/ovd-workflow` command with codebase mapping and migration from the pre-v2 `.overdrive/` layout) is up next.
+
+For a public-facing overview of what v2 changes for users, see [`docs/ovd-plan-v2.md`](docs/ovd-plan-v2.md). For the full design and implementation records, see [`docs/superpowers/specs/`](docs/superpowers/specs/).
+
 ## License
 
 Overdrive's original code, installer, workflow runtime, docs, and local skills are licensed under Apache-2.0. Third-party skills, references, tools, and upstream projects keep their own licenses and attribution; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and [`VERIFIED_SOURCES.md`](VERIFIED_SOURCES.md).

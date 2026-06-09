@@ -8,3 +8,16 @@ sources.lock.json
 # through manifest.json and pinned official installers.
 bundled/skills/
 .overdrive/
+
+# npm runtime dependencies (first runtime dep landed with ovd-plan: js-yaml).
+node_modules/
+
+# Local AI dev environments and CLI-installed agent/skill state. These appear
+# when the OVD CLI is used during development; they belong on the dev machine,
+# not in the public repo.
+.agents/
+.cursor/
+
+# Internal AI handoff dossier. Resume-safe context preservation for future
+# agents working on this codebase; not for public consumption. Lives locally.
+docs/superpowers/handoff/
