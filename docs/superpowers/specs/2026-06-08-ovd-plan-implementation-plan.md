@@ -1910,6 +1910,67 @@ Modified files:
 - Surface Task 2.2 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-2): INIT orchestration with migration detection`. All code + tests + this log entry go together per [[feedback-commit-cleavage]]; the legacy + 2026-06-06 spec docs stay untracked per project direction.
 - After Task 2.2 commit lands: **Task 2.2.5 — MIGRATE state** (real implementation of legacy `.overdrive/` migration per §5A.1). This is where the `runMigrateLegacy` stub gets replaced with the real per-file migration + archive logic, and where the test fixture directory `scripts/fixtures/ovd-plan/legacy-project/` gets shipped (per Q6 confirmation).
 
+### 2026-06-10 — Session 5 (Phase 2 Task 2.2.5 COMPLETE — real MIGRATE state)
+
+**Did:**
+- Created `lib/ovd-plan/migrate.js` (~370 lines) with `runMigrateLegacy(rootDir, opts)` as the real Task 2.2.5 implementation per impl plan §5A.1. Two modes: `full` (per-file derivation + archive) and `archive-only` (archive only; no derivation). Returns a structured report (`migrated`, `archived`, `conflicts`, `summary`, `scaffolded`).
+- Per-file derivation per §5A.1:
+  - `project.md` → `OVERDRIVE.md` frontmatter `project:` + `description:` (extracts first H1 as title, first non-empty paragraph as description).
+  - `state.md` → `.overdrive/sessions/<ts>-legacy-state.md` only (preserves original prose verbatim under a migration header). **No frontmatter mutation** — per §5A.1, "Active focus → `active_node` (best-effort fuzzy match against tree if present, else free-text in session file)"; at migration time there's no tree yet, so the focus goes only to the session file. Phase 3's `/ovd-plan` will set `active_node:` properly once the tree exists.
+  - `architecture.md` → `.overdrive/codebase/architecture.md` (prepended `## Notes from previous workflow` header preserving the legacy prose verbatim).
+  - `constraints.md` → `.overdrive/preferences.md` under a `## Vetoes` section (appended; section created if missing).
+  - `decisions.md` (preserved-in-place; per Q3): if user prose is present, wrapped with `## Legacy notes` header at top + `## Structured log` with the v2 table beneath. If only a v1 or v2 placeholder is present, replaced with the v2 placeholder.
+  - `research.md` → `.overdrive/sessions/_research_legacy.md` (one-time archive of legacy research notes).
+  - `changelog.md` → `.overdrive/reports/_changelog_legacy.md` (one-time archive).
+  - `config.json` → merged v2 config (preserves all legacy keys, bumps `version: 2`, adds `migratedAt`, `migratedFromVersion`). Malformed legacy JSON tolerated — wrapped as `{ malformedLegacy: true }` + noted in the report.
+  - `file-index.json`, `knowledge-index.json`, `routes.jsonl`, `work/`, `.overdrive.json` → archived only (no derivation; replaced by mapper output + drift detection + session files + plan.cache.json + the new v2 marker scaffold).
+- `preferences.md`, `reports/`, `handoffs/`, `knowledge/` preserved in place — they're already r3-aligned per §5A.1.
+- **Order of operations** (load-bearing): `runMigrateLegacy` reads all legacy file contents into memory first, then archives originals, *then* runs derivation. This resolves the same-path collision for `config.json` (legacy v1 at `.overdrive/config.json` is moved to `_legacy/<ts>/config.json`; merged v2 is then written cleanly to the now-empty path).
+- **Conflict semantics**: if a new-layout target already exists (e.g., user manually created `OVERDRIVE.md` before migrating), the existing file is preserved and the would-be derivation is recorded in `report.conflicts[]`. Legacy original is still archived. No new-layout file is ever overwritten.
+- **Idempotency**: `isAlreadyMigrated(rootDir)` checks for `OVERDRIVE.md` + `.overdrive/codebase/` + absence of legacy markers; re-running migration on a migrated project returns `{ ok: true, alreadyMigrated: true }` with no further moves.
+- Wired into `lib/ovd-plan/workflow.js` by replacing the inline `runMigrateLegacy` stub with `migrateModule.runMigrateLegacy`. The orchestrator's log entry shape now reads `{ step: 'migrate', mode, migrated, archived, conflicts, note: summary }` instead of `{ step: 'migrate', stub: true, mode, note }` — the migration result's `summary` (e.g., `"8 migrated, 12 archived, mode=full"`) flows into the log entry's `note` field.
+- The orchestrator result also carries the full `migration` report when the migration step ran, so callers (tests / agents) can introspect counts + conflicts without re-parsing the log.
+- Shipped the committed fixture at `scripts/fixtures/ovd-plan/legacy-project/` per Q6 confirmation: a representative pre-v2 project with all 10 LEGACY_FILES + work/ subtree (`_active.json`, `scratchpad.md`) + r3-aligned files (`decisions.md` with prose, `preferences.md` with the legacy table, `reports/2026-05-04-v1-dashboard.md`, `handoffs/2026-05-12-pre-reposition.md`, `knowledge/onboarding.md`) + `.overdrive.json` marker + a project-signal `package.json`.
+- Wrote `scripts/test-ovd-plan-migrate.js` (~340 lines, **147 checks** across 19 scenario groups): module surface, timestamp shape, all four derivation helpers (`deriveProjectFromProjectMd`, `deriveStateFromStateMd`, `mergeConfig`, `appendUnderHeader`, `wrapLegacyDecisions`), `buildOverdriveMd` parser round-trip, `isAlreadyMigrated`, full end-to-end migration on the fixture (Scenario A with detailed asserts on every derived path + archive), archive-only mode (Scenario B), idempotency, OVERDRIVE.md conflict handling, empty `.overdrive/`, no `.overdrive/` at all (`nothingToMigrate`), malformed legacy `config.json`, null rootDir, `summarize` helper, fixture sanity.
+- Updated `scripts/test-ovd-plan-workflow.js` test #19 and Scenarios B.2/C.2 to reflect the post-stub orchestrator shape (`stub: true` no longer in migrate log entries; migrate counts and `result.migration` report now visible).
+
+**Verified:**
+- `npm run check` ✓ (24 files; added `lib/ovd-plan/migrate.js` + `scripts/test-ovd-plan-migrate.js`).
+- `npm run test:ovd-plan` ✓ — **630 checks total** (59 + 104 + 28 + 39 + 53 + **200** workflow + **147** migrate).
+- `npm run test:workflow` ✓ (no v1 regression).
+- `npm run eval:router` ✓ (269/269; no skill-router regression).
+- **Manual CLI smoke test** copied the fixture to a temp dir and walked the full flow:
+  - `overdrive workflow --project-dir <fixture>` → reports `Status: legacy`.
+  - `overdrive workflow init` → emits migration prompt with three options + Other escape.
+  - `overdrive workflow init migration migrate` → log shows `migrate: 8 migrated, 12 archived, mode=full` + scaffold skipped (already-scaffolded by derivation). Post-migration: `OVERDRIVE.md` at root with derived project name; `.overdrive/_legacy/<ts>/` contains the 10 archived files + work/ subtree + .overdrive.json marker (12 entries); `.overdrive/codebase/architecture.md` has the prepended header + legacy prose; `decisions.md` has Legacy notes + structured table; `preferences.md` has the original entries plus the constraints appended under `## Vetoes`; `sessions/_research_legacy.md` + `reports/_changelog_legacy.md` exist; `config.json` is the merged v2 (legacy keys preserved, `version: 2`, `migratedFromVersion: 1`); `reports/`, `handoffs/`, `knowledge/` preserved in place.
+  - Re-running `overdrive workflow init` shows `Status: partial` and emits the mapping prompt (codebase mapping is the natural next step; the migration didn't run mapper agents — that's Task 2.3). Detection correctly identifies the project as no longer legacy.
+
+**Decided:**
+- **Archive-first, derive-second** ordering inside `runMigrateLegacy`. The naive order (derive then archive) creates a same-path collision for `config.json` because the legacy and the merged v2 both target `.overdrive/config.json` — the archive step then re-moves the merged file. Reading legacy content into memory before archiving lets us archive first, then write derivations to clean paths, with zero collisions.
+- **`migrate.js` as its own module** (not inline in `workflow.js`). 370 lines of migration logic is enough to warrant separation; tests for migration semantics are cleaner with a dedicated test file (`scripts/test-ovd-plan-migrate.js`); the workflow orchestrator just imports `runMigrateLegacy` and treats it as a black box. Pattern matches Phase 1's separation of `fs.js`, `parser.js`, `writer.js`, `cache.js`, `skill-router.js`.
+- **`decisions.md` and `preferences.md` are r3-aligned and never archived**, even in `archive-only` mode. Both have valid r3 locations per §5A.1; archiving them would discard live user data. The `archive-only` mode preserves them verbatim; the `full` mode preserves them too but appends/wraps content. Defensible against the Task 2.2 action-path prompt text ("archive the legacy directory") because the "legacy directory" semantically means files that are *legacy-specific*, not r3-aligned files.
+- **`malformedLegacy: true` over throw**. Migration must not crash on real-world data drift; the user can clean up later. A note in `report.notes[]` surfaces the issue so it's visible.
+- **Per Q3 confirmation**: legacy prose `decisions.md` → "Legacy notes" header preserving the prose + "Structured log" header + the v2 table. v1 or v2 placeholders → replaced with the v2 placeholder (no wrap noise).
+- **`runMigrateLegacy` lives in `migrate.js`; `workflow.js` re-exports via `migrateModule.runMigrateLegacy`**. Keeps the orchestrator's import surface stable for any future test or consumer.
+
+**Committed:**
+- (not yet — proposing single-commit boundary per [[feedback-commit-cleavage]]. Files in scope: `lib/ovd-plan/migrate.js` (new), `scripts/test-ovd-plan-migrate.js` (new), `scripts/fixtures/ovd-plan/legacy-project/` (new, 19 files), `lib/ovd-plan/workflow.js` (mod — stub → delegate + log shape), `scripts/test-ovd-plan-workflow.js` (mod — test #19 + B.2/C.2 updated), `package.json` (mod — check + test:ovd-plan chains), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod, this entry).)
+
+**Deviations from plan:**
+- **None substantively.** All four impl plan §5 Task 2.2.5 success criteria pass: every listed old file handled; no new-layout file overwritten (conflicts surfaced); archive dir created with timestamped path; idempotent re-runs.
+- **One implementation detail not spelled out in §5A.1:** the order-of-operations (archive first, derive second). The plan doesn't specify; the natural-reading order would be derive-then-archive, but that breaks for `config.json`. Documented in the decisions block above as the canonical order.
+- **Modest scope extension (strict superset):** the result now carries a `summary` string (e.g., `"8 migrated, 12 archived, mode=full"`) that the orchestrator promotes into its log entry's `note` field. Not in the spec; useful for human readability without changing data shape.
+
+**Key insights worth preserving:**
+- **The same-path collision pattern** generalizes beyond `config.json`. Any future migration that derives a new file at the same path as a legacy file (e.g., if `state.md` ever migrates back to itself, or a new `config-v3` schema collides) will need the same archive-first, derive-second order. The runMigrateLegacy structure makes this explicit and avoidable.
+- **The fixture directory is the migration's contract**. The committed `scripts/fixtures/ovd-plan/legacy-project/` is what "a representative pre-v2 project" looks like; any future change to the migration logic must keep the fixture's full-migration outputs stable (or update the fixture *and* the impl plan). This is essentially a golden-file test for the entire migration surface.
+- **`isAlreadyMigrated` is the canonical "is this project on r3?" check**. It's three-part: OVERDRIVE.md present + .overdrive/codebase/ present + no legacy markers. Phase 2 Tasks 2.3/2.4/2.5 can use it to skip re-running heavy operations. Worth keeping prominent in the module's exports.
+- **Per-file actions are enumerated in `report.migrated[].action`** (`frontmatter-derived`, `session-file`, `header-prepended`, `appended-under-vetoes`, `legacy-notes-wrapped`, `normalized-placeholder`, `preserved-in-place`, `one-time-archive`, `merged-v2`). Future analytics or debugging can pivot on this enum without re-deriving from file paths. Worth keeping stable across versions.
+
+**Next:**
+- Surface Task 2.2.5 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-2.5): MIGRATE state — real legacy → r3 layout migration`. All code + tests + fixture + this log entry go together; the 2026-06-06 spec docs stay untracked per project direction.
+- After Task 2.2.5 commit lands: **Task 2.6 — DECISIONS LOG** (small, append-only helper that Tasks 2.4/2.5/3.x will reuse). Per the readiness brief's suggested order, this lands before the Socratic flows.
+
 ---
 
 ## 8. Glossary / quick decision reference

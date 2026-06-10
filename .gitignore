@@ -9,6 +9,12 @@ sources.lock.json
 bundled/skills/
 .overdrive/
 
+# Carve-out: committed test fixtures may legitimately contain `.overdrive/`
+# trees (representing legacy or in-flight project state) that must travel
+# with the repo. Without this exception the rule above would hide them.
+!scripts/fixtures/**/.overdrive/
+!scripts/fixtures/**/.overdrive/**
+
 # npm runtime dependencies (first runtime dep landed with ovd-plan: js-yaml).
 node_modules/
 

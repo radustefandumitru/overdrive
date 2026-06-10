@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "workflow_visibility": "visible",
+  "auto_update_architecture": "ask",
+  "context_budget_threshold": 0.6,
+  "git_mode": "none",
+  "active_work_resolution": "heuristic-then-ask",
+  "auto_archive_closed_after_days": 30,
+  "model_profile": "balanced",
+  "knowledge_autosummarize": "ask"
+}

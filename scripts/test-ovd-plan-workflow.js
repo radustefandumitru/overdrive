@@ -424,16 +424,19 @@ console.log('ovd-plan workflow tests');
   check('REQUIREMENTS_ACTIONS has no skip-all (terminal sub-step)', !REQUIREMENTS_ACTIONS.includes('skip-all') && REQUIREMENTS_ACTIONS.includes('proceed') && REQUIREMENTS_ACTIONS.includes('skip'));
 }
 
-// --- 19. Sub-task stubs: shape and stub: true marker ---
+// --- 19. Sub-task stubs (runMigrateLegacy is now real; others still stubs) ---
 {
-  const m = runMigrateLegacy('/tmp/x', { mode: 'full' });
-  check('runMigrateLegacy: ok=true', m.ok === true);
-  check('runMigrateLegacy: stub=true', m.stub === true);
-  check('runMigrateLegacy: mode=full', m.mode === 'full');
-  check('runMigrateLegacy: archive-only mode passes through', runMigrateLegacy('/tmp/x', { mode: 'archive-only' }).mode === 'archive-only');
-  check('runCodebaseMap: stub=true', runCodebaseMap('/tmp/x').stub === true);
-  check('runPreferencesElicit: stub=true', runPreferencesElicit('/tmp/x').stub === true);
-  check('runRequirementsDraft: stub=true', runRequirementsDraft('/tmp/x').stub === true);
+  // runMigrateLegacy is the real Task 2.2.5 implementation; full coverage lives in scripts/test-ovd-plan-migrate.js.
+  // Here we just confirm the orchestrator-visible no-op shape when there's nothing to migrate.
+  const m = runMigrateLegacy('/tmp/nonexistent-ovd-vendor', { mode: 'full' });
+  check('runMigrateLegacy: ok=true on nothing-to-migrate', m.ok === true);
+  check('runMigrateLegacy: no stub flag (Task 2.2.5 landed)', m.stub !== true);
+  check('runMigrateLegacy: nothingToMigrate=true when .overdrive/ absent', m.nothingToMigrate === true);
+  check('runMigrateLegacy: summary string present', typeof m.summary === 'string' && m.summary.length > 0);
+  // Remaining sub-task stubs (2.3 / 2.4 / 2.5) still hold the stub marker.
+  check('runCodebaseMap: still stub (Task 2.3 pending)', runCodebaseMap('/tmp/x').stub === true);
+  check('runPreferencesElicit: still stub (Task 2.4 pending)', runPreferencesElicit('/tmp/x').stub === true);
+  check('runRequirementsDraft: still stub (Task 2.5 pending)', runRequirementsDraft('/tmp/x').stub === true);
 }
 
 // --- 20. Action-path prompt builders: shape ---
@@ -520,10 +523,12 @@ console.log('ovd-plan workflow tests');
     check('B.1: prompt.step=migration', r1.prompt && r1.prompt.step === 'migration');
     check('B.1: prompt.actions includes migrate', r1.prompt.actions.includes('migrate'));
 
-    // Step 2: migrate → migrate stub + scaffold + mapping prompt
+    // Step 2: migrate → real migrate runs + scaffold + mapping prompt
     const r2 = runWorkflowInit(projectDir, { step: 'migration', action: 'migrate' });
     check('B.2: currentStep=mapping (after migrate)', r2.currentStep === 'mapping');
-    check('B.2: log contains migrate stub in full mode', r2.log.some((e) => e.step === 'migrate' && e.stub === true && e.mode === 'full'));
+    check('B.2: log contains migrate in full mode', r2.log.some((e) => e.step === 'migrate' && e.mode === 'full'));
+    check('B.2: log migrate entry tracks counts', r2.log.some((e) => e.step === 'migrate' && typeof e.migrated === 'number' && typeof e.archived === 'number'));
+    check('B.2: result carries migration report', r2.migration && Array.isArray(r2.migration.migrated));
     check('B.2: log contains scaffold', r2.log.some((e) => e.step === 'scaffold'));
 
     // Continue: mapping proceed → preferences prompt
@@ -548,7 +553,9 @@ console.log('ovd-plan workflow tests');
 
     const r2 = runWorkflowInit(projectDir, { step: 'migration', action: 'skip-migration' });
     check('C.2: currentStep=mapping', r2.currentStep === 'mapping');
-    check('C.2: log contains migrate stub in archive-only mode', r2.log.some((e) => e.step === 'migrate' && e.stub === true && e.mode === 'archive-only'));
+    check('C.2: log contains migrate in archive-only mode', r2.log.some((e) => e.step === 'migrate' && e.mode === 'archive-only'));
+    check('C.2: log migrate entry tracks counts', r2.log.some((e) => e.step === 'migrate' && typeof e.migrated === 'number' && typeof e.archived === 'number'));
+    check('C.2: result carries migration report', r2.migration && Array.isArray(r2.migration.archived));
     check('C.2: scaffold ran after archive-only', r2.log.some((e) => e.step === 'scaffold'));
   } finally {
     cleanup(tmpRoot);

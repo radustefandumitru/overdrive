@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-12T16:20:00Z",
+  "files": [
+    { "path": "src/App.tsx", "size": 412, "sha": "abc123" },
+    { "path": "src/components/Dashboard.tsx", "size": 1820, "sha": "def456" }
+  ]
+}
