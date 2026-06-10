@@ -1971,6 +1971,52 @@ Modified files:
 - Surface Task 2.2.5 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-2.5): MIGRATE state — real legacy → r3 layout migration`. All code + tests + fixture + this log entry go together; the 2026-06-06 spec docs stay untracked per project direction.
 - After Task 2.2.5 commit lands: **Task 2.6 — DECISIONS LOG** (small, append-only helper that Tasks 2.4/2.5/3.x will reuse). Per the readiness brief's suggested order, this lands before the Socratic flows.
 
+### 2026-06-10 — Session 6 (Phase 2 Task 2.6 COMPLETE — decisions log helper)
+
+**Did:**
+- Created `lib/ovd-plan/decisions-log.js` (~135 lines) exporting `appendDecision(rootDir, entry)`, `readDecisions(rootDir)`, plus the supporting helpers (`buildRow`, `escapeCell`, `findTableSpan`, `parseRow`, `buildPlaceholderWithFirstRow`, `decisionsPath`, `todayDate`) and the format constants (`TABLE_HEADER`, `TABLE_DIVIDER`, `DIVIDER_PATTERN`, `ROW_PATTERN`).
+- `appendDecision` handles three states cleanly:
+  - **Fresh / empty file** → writes the v2 placeholder (header + descriptive paragraph + table header + divider) and the first row. Result: `{ action: 'created', totalRows: 1 }`.
+  - **Existing file with table** (placeholder, populated, or legacy-wrapped) → finds the divider via `DIVIDER_PATTERN`, walks downward until the run of `|...|` rows ends, splices the new row after the last existing row. Result: `{ action: 'appended', totalRows: <count> }`.
+  - **Existing file without a table** (prose-only) → appends the table structure (header + divider + row) at the end. Result: `{ action: 'table-appended', totalRows: 1 }`.
+- Append-only semantics: identical entries appended twice produce two rows (no de-duplication). The helper is the canonical write API; the caller decides whether duplicates matter.
+- Markdown table safety: pipes (`|`) inside any cell value are escaped to `\|`; newlines (`\n`, `\r\n`) are replaced with `<br>` so the row stays a single line. `readDecisions` un-escapes both on read-back, so round-trips preserve user content exactly.
+- Compatible with the migration-produced layout (Q3): when `decisions.md` has a "Legacy notes" section at top + a "Structured log" section with the v2 table below, `appendDecision` finds the structured table and appends without disturbing the legacy notes prose.
+- `readDecisions(rootDir)` parses the table back into structured `{ date, node, decision, rationale }` objects (in insertion order). Designed for Task 2.4 / 2.5 / 3.x callers that need to display recent decisions during Socratic flows or planning.
+- Wired into `lib/ovd-plan/index.js`: top-level `appendDecision` / `readDecisions` exports for convenient call sites, plus a `decisionsLog: decisionsLogModule` namespace export for code that wants the constants or helpers.
+- Wrote `scripts/test-ovd-plan-decisions.js` (~280 lines, **81 checks across 21 scenarios**): module surface, todayDate shape, escapeCell edge cases (null/undefined/number/pipe/newline/CRLF), buildRow shape + defaults, placeholder-builder structure, findTableSpan boundary cases, parseRow round-trip (including pipe + newline preservation), validation (null rootDir / missing decision / empty decision), fresh-file `created` path, multi-append `totalRows` increments + insertion order, existing-placeholder `appended` path, legacy-wrapped file (Legacy notes + Structured log) append, prose-only `table-appended` path, pipe-escaping in file + un-escaping on read, multiline rationale `<br>` ↔ `\n`, `readDecisions` for missing/no-table/null-rootDir, append-only (no dedup), index.js dispatch via `ovdPlan.appendDecision` / `ovdPlan.readDecisions` / `ovdPlan.decisionsLog.*`, `decisionsPath` path resolution.
+
+**Verified:**
+- `npm run check` ✓ (26 files now in chain — added `lib/ovd-plan/decisions-log.js` + `scripts/test-ovd-plan-decisions.js`).
+- `npm run test:ovd-plan` ✓ — **714 checks total** (59 + 104 + 28 + 39 + 53 + 200 + 150 + **81 new**).
+- `npm run test:workflow` ✓ (no v1 regression).
+- `npm run eval:router` ✓ (269/269).
+
+**Decided:**
+- **Dedicated module (`decisions-log.js`)** rather than inline in `workflow.js`. Same reasoning as `migrate.js`: Tasks 2.4/2.5/3.x will call `appendDecision` from outside the workflow orchestrator, so coupling it to `workflow.js` would force unnecessary imports. The module is small (~135 lines including helpers) but the API boundary is clean.
+- **Two-level export surface** — `ovdPlan.appendDecision` for direct calls (the 95% case) plus `ovdPlan.decisionsLog` as a namespace for callers that need constants (e.g., a UI renderer that wants to render the same table header). Mirrors the `ovdPlan.workflow` / `ovdPlan.skillRouter` precedent.
+- **Pipe + newline escape strategy**: backslash-escape pipes, `<br>`-replace newlines. Both round-trip cleanly via `readDecisions`. Chose `<br>` over `\n` because `\n` literal inside a Markdown table cell breaks the table; `<br>` renders as a line break in any markdown viewer and is recoverable by the parser.
+- **Append-only by contract.** No de-dup; callers can check with `readDecisions` first if they need it. Keeps the helper's responsibility narrow.
+- **`DIVIDER_PATTERN` accepts loose alignment markers** (`:---`, `---:`, `:---:`) so the helper works against tables produced by hand or other tools, not just our exact v2 placeholder.
+
+**Committed:**
+- (not yet — proposing single-commit boundary per [[feedback-commit-cleavage]]. Files in scope: `lib/ovd-plan/decisions-log.js` (new), `scripts/test-ovd-plan-decisions.js` (new), `lib/ovd-plan/index.js` (mod — require + exports), `package.json` (mod — check + test:ovd-plan chains), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod, this entry).)
+
+**Deviations from plan:**
+- **None.** Task 2.6 deliverable and success criteria all met:
+  - Append never overwrites existing entries → enforced by splicing the new row after the last existing row, never inside or replacing.
+  - Table header created on first write; not duplicated thereafter → verified by tests (action transitions from `created` to `appended` and the file content has exactly one header).
+  - Used by every other phase that records decisions → exported at top-level for `ovdPlan.appendDecision` call sites (Phase 3/4/5 can adopt directly).
+
+**Key insights worth preserving:**
+- **`appendDecision` is now the canonical write surface for `.overdrive/decisions.md`.** Migration's `wrapLegacyDecisions` produces a file with an empty structured table at the bottom; `appendDecision` extends that table without re-writing the file. Phase 3's `/ovd-plan` (when it records design decisions during deliberation) should call `appendDecision` rather than hand-writing markdown. Phase 4's `/ovd-go` similarly when execution-time decisions surface.
+- **The `Legacy notes + Structured log` layout from Q3 confirms its design value here.** A user migrating from v1 keeps their prose decisions intact (Legacy notes section) AND the structured table grows naturally as the project continues. `appendDecision`'s `findTableSpan` walks past any prose to land at the table; no ambiguity.
+- **`<br>` for newlines is a small but load-bearing detail.** Markdown tables don't tolerate raw newlines inside cells; `<br>` is the standard escape. Future Socratic flows in Tasks 2.4/2.5 can accept multi-line rationale from the user without breaking the table.
+
+**Next:**
+- Surface Task 2.6 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-6): decisions log helper (appendDecision / readDecisions)`. All code + tests + this log entry go together; the 2026-06-06 spec docs stay untracked.
+- After Task 2.6 commit lands: **Task 2.4 — PREFERENCES ELICIT** (Socratic flow capturing vetoes, coding style, workflow, communication into `.overdrive/preferences.md`). Per readiness brief, the Socratic flow uses the simple placeholder calibration (default plain language); Phase 3 Task 3.2 wires in the real calibration system later. Task 2.6's `appendDecision` is available for any decisions surfaced during the elicitation.
+
 ---
 
 ## 8. Glossary / quick decision reference
