@@ -409,11 +409,12 @@ console.log('ovd-plan workflow tests');
   }
 }
 
-// --- 17. index.js dispatch: unknown subcommand → still stub ---
+// --- 17. index.js dispatch: subcommand=map → runCodebaseMap (Task 2.3 landed) ---
 {
   const ovdPlan = require('../lib/ovd-plan');
   const result = ovdPlan.runWorkflow({ projectDir: process.cwd(), subcommand: 'map' }, process.env);
-  check('dispatch (subcommand=map): status=stub (Task 2.3 not built yet)', result.status === 'stub');
+  check('dispatch (subcommand=map): status=codebase-map (not stub)', result.status === 'codebase-map');
+  check('dispatch (subcommand=map): plan mode by default', result.mode === 'plan');
 }
 
 // --- 18. Constants: INIT_STEPS / action enums shape ---
@@ -424,7 +425,7 @@ console.log('ovd-plan workflow tests');
   check('REQUIREMENTS_ACTIONS has no skip-all (terminal sub-step)', !REQUIREMENTS_ACTIONS.includes('skip-all') && REQUIREMENTS_ACTIONS.includes('proceed') && REQUIREMENTS_ACTIONS.includes('skip'));
 }
 
-// --- 19. Sub-task stubs (runMigrateLegacy is now real; others still stubs) ---
+// --- 19. Sub-task handlers (all real after Task 2.3 landed) ---
 {
   // runMigrateLegacy is the real Task 2.2.5 implementation; full coverage lives in scripts/test-ovd-plan-migrate.js.
   // Here we just confirm the orchestrator-visible no-op shape when there's nothing to migrate.
@@ -433,8 +434,10 @@ console.log('ovd-plan workflow tests');
   check('runMigrateLegacy: no stub flag (Task 2.2.5 landed)', m.stub !== true);
   check('runMigrateLegacy: nothingToMigrate=true when .overdrive/ absent', m.nothingToMigrate === true);
   check('runMigrateLegacy: summary string present', typeof m.summary === 'string' && m.summary.length > 0);
-  // Remaining sub-task stub (Task 2.3) still holds the stub marker.
-  check('runCodebaseMap: still stub (Task 2.3 pending)', runCodebaseMap('/tmp/x').stub === true);
+  // runCodebaseMap (Task 2.3) is real; full coverage lives in scripts/test-ovd-plan-codebase-map.js.
+  const map = runCodebaseMap('/tmp/nonexistent-ovd-map', {});
+  check('runCodebaseMap: no stub flag (Task 2.3 landed)', map.stub !== true);
+  check('runCodebaseMap: returns plan mode by default', map.mode === 'plan');
   // runPreferencesElicit (Task 2.4) and runRequirementsDraft (Task 2.5) are real; full coverage lives in their dedicated test files.
   const prefs = runPreferencesElicit('/tmp/nonexistent-ovd-prefs', {});
   check('runPreferencesElicit: no stub flag (Task 2.4 landed)', prefs.stub !== true);
@@ -492,7 +495,7 @@ console.log('ovd-plan workflow tests');
     // Step 2: mapping proceed → preferences prompt
     const r2 = runWorkflowInit(projectDir, { step: 'mapping', action: 'proceed' });
     check('A.2: currentStep=preferences', r2.currentStep === 'preferences');
-    check('A.2: log contains codebase-map stub call', r2.log.some((e) => e.step === 'codebase-map' && e.stub === true));
+    check('A.2: log contains codebase-map step (Task 2.3 real handler)', r2.log.some((e) => e.step === 'codebase-map' && e.stub !== true));
     check('A.2: prompt.step=preferences', r2.prompt && r2.prompt.step === 'preferences');
 
     // Step 3: preferences proceed → requirements prompt

@@ -2118,6 +2118,184 @@ Modified files:
 - Surface Task 2.5 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-5): requirements draft (plan + commit modes)`. All code + tests + this log entry go together; the 2026-06-06 spec docs stay untracked.
 - After Task 2.5 commit lands: per the readiness brief, the next Phase 2 tasks in dependency order are **Task 2.3 — CODEBASE MAP** (5 parallel mapper agents via Q1 Pattern 1; the dispatch shape is already proven by Tasks 2.4 + 2.5), then **Task 2.7 — Drift detection** (depends on 2.3's tag output), then **Task 2.8 — MAP REFRESH** (depends on 2.7). Task 2.9 (legacy slash command repurposing) is deferred to Phase 7 per Q5 confirmation.
 
+### 2026-06-11 — Phase 2 mid-phase wrap-up (5/8 tasks done; Task 2.3 onward to next session)
+
+**Context:** Session 8 ended right after Task 2.5 commit `a5fa5ba`. Context budget hit ~80% — too tight to start Task 2.3 (codebase mapping, design-heavy, needs ~50% of a fresh session per the readiness brief). User instructed: stop here, write this wrap-up, hand off to next session.
+
+This entry sits **uncommitted** in the working tree on purpose. The next session folds it into the Task 2.3 commit (along with the Task 2.3 work + Task 2.3 session entry).
+
+**Phase 2 progress: 5 of 8 net tasks complete.**
+
+Done so far (numerical):
+- **Task 2.1** — `/ovd-workflow` tutorial + status display (`runWorkflowDefault`). Commit `2b6db6e`.
+- **Task 2.2** — INIT orchestration with migration detection (`runWorkflowInit` turn-based state machine; six steps; stubs for sub-tasks). Commit `ed9cb3f`.
+- **Task 2.2.5** — MIGRATE state (real per-file migration + archive per §5A.1; committed fixture at `scripts/fixtures/ovd-plan/legacy-project/`; archive-first/derive-second order resolves same-path collision for `config.json`). Commit `f710436`.
+- **Task 2.6** — Decisions log helper (`appendDecision` / `readDecisions`; markdown table safety with pipe escape + `<br>` newlines; legacy-wrapped layout compatibility). Commit `f29cb16`.
+- **Task 2.4** — Preferences elicit Socratic flow (plan + commit modes; `--entries-json` flag introduced; 4 categories per r3 §4.5). Commit `1902a9e`.
+- **Task 2.5** — Requirements draft Socratic flow (verbatim mirror of Task 2.4 with 3 categories per r3 §4.5; hyphenated + multi-word headers). Commit `a5fa5ba`.
+
+Remaining in Phase 2:
+- **Task 2.3 — CODEBASE MAP** (design-heavy; 5 parallel mapper agents producing `architecture.md` / `patterns.md` / `tech-stack.md` / `quality.md` / `concerns.md`; Pattern 1 dispatch from Q1 confirmation). The next session should surface the Task 2.3 design choices upfront (mapper prompt design; per-mapper module-tag schema for drift detection; output format consistency across mappers).
+- **Task 2.7 — Drift detection** (depends on 2.3's tag output; per-mapper-file `needsRefresh` signal; first-run = flag-everything per Q4 confirmation).
+- **Task 2.8 — MAP REFRESH** (depends on 2.7; incremental re-run of only the flagged mapper files; preserves discovered-during-execution sections that Phase 4 will append).
+- **Task 2.9 — Legacy slash command repurposing** — DEFERRED to Phase 7 per Q5 confirmation. Not part of remaining Phase 2 scope.
+
+**The five Q1–Q6 decisions are all locked and applied:**
+1. **Q1 (codebase mapping dispatch):** Pattern 1 — CLI emits dispatch plan; slash command body coordinates host-agent subagent dispatch. *Now proven by Tasks 2.4 + 2.5's two-mode plan/commit pattern (CLI emits plan; agent drives Socratic dialogue; commit happens via `--entries-json`).* Task 2.3 follows the same shape: CLI emits 5 focused mapper prompts + module-tag scaffold; agent dispatches subagents and writes results back.
+2. **Q2 (calibration placement):** Placeholder calibration in Phase 2; real three-axis system in Phase 3 Task 3.2. Tasks 2.4 + 2.5 ship with plain-language defaults; Phase 3 swap is local to the prompt-building logic.
+3. **Q3 (decisions log shape):** Legacy notes + structured table. Implemented in `migrate.js::wrapLegacyDecisions` and respected by Task 2.6's `appendDecision` (walks past Legacy notes prose to land at the Structured log table).
+4. **Q4 (drift bootstrap):** Flag everything on first run. Task 2.7 will encode this when it lands.
+5. **Q5 (Task 2.9 timing):** Defer to Phase 7. Task 2.9 stub in §5 explicitly notes the deferral; Phase 2 done-definition accepts it.
+6. **Q6 (MIGRATE fixture):** Ship `scripts/fixtures/ovd-plan/legacy-project/`. Done at Task 2.2.5; 19 files committed.
+
+**Architectural patterns established for Phase 2 — these MUST carry into Task 2.3 and beyond:**
+
+- **Pattern 1 dispatch (Q1).** CLI is non-interactive; agent drives interactive work. CLI emits structured plans (categories with questions/prompts; dispatch plans with subagent prompts) and accepts batched results via flags (`--entries-json`). Tasks 2.4 + 2.5 are the precedent; Task 2.3 follows.
+- **Single canonical primitives, reused across handlers.** `appendUnderHeader` (from `migrate.js`) has now served three consumers: migration's constraints → preferences/Vetoes; Task 2.4's preferences commit; Task 2.5's requirements commit. `normalizeEntries` shape (string → array; trim + empty-filter; reject non-object/number; unknown categories logged without failing) is duplicated identically in `preferences-elicit.js` and `requirements-draft.js`. If a third Socratic flow appears, extract to a shared `lib/ovd-plan/elicit-helpers.js`.
+- **JSON parse guard at the dispatch layer, BEFORE any file write.** Bad payload → `{ ok: false, reason, text }` with no partial write. Tasks 2.4 + 2.5 both implement this. Task 2.3 should follow if it accepts any agent-batched payload.
+- **Migration-compat tested explicitly.** Each Phase 2 task that writes to a `.overdrive/*` file gets a test that asserts a pre-existing (migration-produced) file is extended cleanly, not replaced. The cross-task seam is easy to break; explicit tests pay off.
+- **Log-push compatibility: `note: sub.summary || sub.note`.** The orchestrator in `runWorkflowInit` accepts both stub-shape (`stub: true; note: '<placeholder text>'`) and real-handler-shape (`summary: 'N entries across M categories'`) without orchestrator changes. Task 2.3 lands without touching the orchestrator — it just stops returning `stub: true` and starts returning `summary`.
+- **Two-mode plan/commit for Socratic flows.** Plan mode is `default` (no opts.entries; no `--entries-json`); commit mode requires entries. The dispatch layer decides via `options.entriesJson` presence OR `options.step === 'commit'`. This contract is encoded twice now (2.4 + 2.5); it's canonical.
+
+**Aggregate test count after Task 2.5 commit: 885 passing.**
+
+Breakdown:
+- `npm run test:ovd-plan` (885 total):
+  - fs: 59
+  - parser: 104
+  - writer: 28
+  - cache: 39
+  - skill-router: 53
+  - workflow: 203
+  - migrate: 150
+  - decisions-log: 81
+  - preferences-elicit: 80
+  - requirements-draft: 88
+- `npm run test:workflow`: 4 checks pass (existing v1 ovd-workflow tests; unchanged across Phase 2).
+- `npm run eval:router`: 269/269 (100% expected-skill coverage; unchanged).
+- `npm run check`: 30 files parse cleanly.
+
+**Branch state at session end (uncommitted bits):**
+
+- `feature/ovd-plan` is 8 commits ahead of `main`:
+  ```
+  a5fa5ba  ovd-plan(phase-2.task-5): requirements draft (plan + commit modes)
+  1902a9e  ovd-plan(phase-2.task-4): preferences elicit (plan + commit modes)
+  f29cb16  ovd-plan(phase-2.task-6): decisions log helper
+  f710436  ovd-plan(phase-2.task-2.5): MIGRATE state -- real legacy -> r3 layout migration
+  ed9cb3f  ovd-plan(phase-2.task-2): INIT orchestration with migration detection
+  2b6db6e  ovd-plan(phase-2.task-1): tutorial + status display for /ovd-workflow
+  599fc8f  ovd-plan: docs (Phase 1 follow-up -- Task 7.6 + log updates)
+  a6b0f4f  ovd-plan: lazy-load ovd-plan in installer + vendor js-yaml so runtime shim works
+  23f10e0  ovd-plan: Phase 1 foundation + Overdrive v2 design records
+  ```
+- Working tree at session end:
+  - **M** `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` — this Phase 2 mid-phase wrap-up entry. Uncommitted; for the next session to fold into the Task 2.3 commit.
+  - **??** `docs/superpowers/specs/2026-06-06-ovd-plan-design.md` — still untracked per project direction.
+  - **??** `docs/superpowers/specs/2026-06-06-ovd-plan-handoff.md` — still untracked per project direction.
+- No push. The user has not asked for one; per the hard rules, no push without explicit approval.
+
+**Next session pickup point:**
+
+1. Resume protocol: read this entry first, then the most recent Session 8 + Session 7 + earlier sessions if needed. The §7 log is the canonical "where are we" reference.
+2. Verify the four regression checks are still green (they should be — no work between this entry and the next session).
+3. **Begin Task 2.3 — CODEBASE MAP.** Per Q1 (Pattern 1), the design surface to confirm with the user upfront:
+   - **Mapper prompt design.** Each of the 5 mappers (`architecture` / `patterns` / `tech-stack` / `quality` / `concerns`) needs a focused prompt that scopes its analysis. The prompts should be similar in shape (overview / components / evidence with file paths and line numbers / risks per r3 §4.3) but differ in their core question. Confirm prompt-per-mapper as the right granularity vs a single all-domains prompt with a focus-area hint.
+   - **Module-tag schema for drift detection.** Each mapper records the set of source modules it analyzed. Schema for `.overdrive/codebase/_tags.json`: per-mapper-file, list of source paths. Confirm the path-glob shape (e.g., `src/**/*` vs explicit per-file lists) and whether tags include hashes for change detection.
+   - **CLI vs agent boundary.** The CLI emits the dispatch plan (5 prompts + tag scaffolding). The slash command body coordinates the host agent's subagent dispatch (host agent's task tool runs 5 subagents in parallel). The CLI does not invoke LLMs. Confirm the exact subagent-dispatch markup in the slash command body so the host agent reliably parses + dispatches.
+   - **Output format consistency.** The 5 mapper outputs need to share structural shape (overview / components / evidence / risks). Confirm whether the CLI provides a template the subagents must fill, or whether it just specifies the sections and trusts subagents to format consistently.
+   - **Token-budget hygiene.** Per r3 §4.3, each mapper is "token-bounded, scoped." Confirm the scoping mechanism (file-glob hints? per-mapper file-set selection? trust subagents to scope themselves?).
+4. After surfacing the above to the user and getting answers, the implementation follows the Task 2.4/2.5 skeleton: a new `lib/ovd-plan/codebase-map.js` with two modes (plan emission + result write-back), `runCodebaseMap(rootDir, opts)` replacing the stub in `workflow.js`, `subcommand === 'map'` route in `index.js`, tests in `scripts/test-ovd-plan-codebase-map.js`, fixture if useful.
+5. The Task 2.3 commit folds in this Phase 2 mid-phase wrap-up entry (currently uncommitted) along with the Task 2.3 work + Task 2.3 session entry, per [[feedback-commit-cleavage]] (mid-phase wrap-up is "Phase 2 in-progress documentation" which belongs with the next Task 2.3 work that picks up from it).
+
+**Do NOT in the next session:**
+
+- Start drafting subagent prompts before surfacing the design choices to the user.
+- Skip the Q1-confirmed Pattern 1 dispatch shape (CLI is non-interactive; agent drives).
+- Touch the orchestrator's log-push contract — Task 2.3's real handler should drop `stub: true` and return `summary` like Tasks 2.2.5 / 2.4 / 2.5 do.
+- Push to remote without explicit user approval.
+
+**Phase 2 done-definition status:**
+
+Per impl plan §5 Phase 2 done definition:
+- ✓ `overdrive workflow` bare → tutorial + status + action-path next-steps.
+- ✓ `overdrive workflow init` → full init orchestration with user approval at each step + migration detection.
+- ⏳ `overdrive workflow map` → 5 mappers in parallel + 5 files. **Task 2.3 (next session).**
+- ⏳ Drift detection → only affected mappers flagged. **Task 2.7 (next session).**
+- ⏳ Refresh → only flagged mappers updated. **Task 2.8 (next session).**
+- ✓ Preferences + requirements via Socratic flows.
+- ✓ Legacy `.overdrive/` migrated cleanly OR archived per user choice.
+- ✓ Task 2.9 deferral accepted in done-definition.
+- ✓ One commit per task, approved by user.
+
+3 of 9 done-definition items remaining; all three concentrated in the codebase-mapping + drift-detection trio (Task 2.3 / 2.7 / 2.8).
+
+### 2026-06-11 — Session 9 (Phase 2 Task 2.3 COMPLETE — codebase-map dispatcher)
+
+**Did:**
+- Created `lib/ovd-plan/codebase-mapper.js` (~340 lines) implementing the Pattern 1 (Q1) dispatch helper for `/ovd-workflow map` per r3 §4.3. Plan mode emits a structured dispatch artifact (5 mapper prompts + tag scaffold metadata); commit mode normalizes the agent-returned `entries` payload and writes `.overdrive/codebase/_tags.json` (per-mapper source paths + scannedAt timestamp) for Task 2.7 drift detection to consume. The CLI does NOT write the mapper `.md` files — those are the subagents' deliverables per Pattern 1.
+- Five mappers per r3 §4.3: `architecture` / `patterns` / `techStack` / `quality` / `concerns`. `techStack` → `tech-stack.md` (hyphenated filename) is the only key→filename divergence; everything else is a direct one-word match. Each mapper carries: key (camelCase JS identifier), header (`# <Title>`), filename, focus (one-line description), and prompt (a ~12-line focused subagent prompt that embeds the 4 required output sections — Overview / Components / Evidence / Risks — plus the evidence requirement with file paths + line numbers, scope hint, sparse-handling rule, token budget hint, and the commit-payload key naming convention).
+- Tag schema: `{ scannedAt: ISO, mappers: { <key>: { file: <filename>, sources: [path, ...] } } }`. Flat per design Q2 — sufficient for Task 2.7's primary path-overlap signal; file hashes / file-tree snapshot deliberately deferred to Tasks 2.7 / 2.8 where they are consumed.
+- Sparse-codebase handling: agent subagents that find insufficient evidence write the 4 sections as `## Insufficient evidence` plus a one-paragraph reason. The 5-file contract from r3 §4.3 ("All 5 files exist after run") is preserved regardless of codebase size. `detectMapperState` recognizes the `insufficient-evidence` state distinctly from `missing` / `placeholder` / `populated` so the plan can show prior runs accurately.
+- Re-run semantics: Task 2.3 always overwrites (always-re-run per design Q5). The plan's instructions explicitly call out that incremental refresh is the separate `MAP REFRESH` command (Task 2.8). Pre-existing user-written mapper files are NOT touched by commit mode — only `_tags.json` is written. The subagents own writing the mapper files; if they overwrite, that's their re-run; if they preserve, that's the agent's call. The CLI stays narrow.
+- Wired into `lib/ovd-plan/workflow.js`: replaced the inline `runCodebaseMap` stub (was `{ stub: true, status: 'codebase-map-stub', note: '<placeholder>' }`) with `const codebaseMapperModule = require('./codebase-mapper'); const runCodebaseMap = codebaseMapperModule.runCodebaseMap;`. Canonical step config's runner became `(root) => runCodebaseMap(root, {})` — matching the Task 2.4 / 2.5 pattern (explicit empty opts → plan mode). The orchestrator's log-push contract (`note: sub.summary || sub.note`) needed no change: the new handler emits `summary` like Tasks 2.4/2.5 do.
+- Wired into `lib/ovd-plan/index.js`: added `subcommand === 'map'` route mirroring the preferences / requirements skeleton. The JSON-parse-error guard at the dispatch layer is duplicated for map with status string `'codebase-map'`. No new CLI flags — `--entries-json` from Task 2.4 is reused.
+- Updated `scripts/test-ovd-plan-workflow.js`: test #17 now asserts `subcommand=map` returns `status: 'codebase-map'` + `mode: 'plan'` (was: still stub). Test #19 split out the runCodebaseMap "no stub" assertion + plan-mode default, parallel to runPreferencesElicit / runRequirementsDraft. Scenario A.2 assertion updated to `e.step === 'codebase-map' && e.stub !== true` (was: still expecting stub).
+- Wrote `scripts/test-ovd-plan-codebase-map.js` (~390 lines, **135 checks across 22 scenarios**): module surface (5 mappers; keys + headers + filenames including hyphenated tech-stack.md; every prompt mentions the 4 sections + Insufficient evidence + the commit payload key), path helpers (codebaseDir / tagsPath / mapperPath including unknown→null), detectMapperState (empty / populated / placeholder / insufficient-evidence / missing), buildPlan shape + instructions richness (parallel dispatch + task tool + commit syntax + Task 2.7 reference + overwrite semantics), normalizeEntries happy path + validation (null / undefined / array / string / non-object mapper value / non-string sources / numeric / unknown key tolerance) + tolerance (string→array promotion / whitespace trim / null mapper / missing keys default to empty), applyEntries fresh-write + overwrite (always-re-run), runCodebaseMap plan mode + commit mode + missing-files warning + malformed entries + null rootDir, dispatch routing (subcommand=map plan + commit + malformed JSON parse guard + step=commit positional), namespace + top-level exports, formatPlan + formatCommit output (including WARNING + Task 2.7 mention), **end-to-end roundtrip** (plan emit → simulate 5 subagents writing files → commit → re-plan shows updated states), **migration-compat** (pre-existing user-written architecture.md preserved verbatim across commit; commit only writes `_tags.json`), readTagsFile (nominal + null on absent + null on corrupt JSON without throw).
+- Updated `package.json`: added `lib/ovd-plan/codebase-mapper.js` + `scripts/test-ovd-plan-codebase-map.js` to the `check` chain (31 files); added the test runner to `test:ovd-plan` chain.
+
+**Verified:**
+- `npm run check` ✓ (31 files now in chain).
+- `npm run test:ovd-plan` ✓ — **1020 checks total**:
+  - fs: 59
+  - parser: 104
+  - writer: 28
+  - cache: 39
+  - skill-router: 53
+  - workflow: 204 (was 203; +1 from the new test 17 / test 19 split — test 17 +2, test 19 -1)
+  - migrate: 150
+  - decisions-log: 81
+  - preferences-elicit: 80
+  - requirements-draft: 88
+  - **codebase-mapper: 135 (new)**
+- `npm run test:workflow` ✓ — `ovd-workflow tests passed` (no v1 regression; the `workflow map` subcommand surface change is internal to ovd-plan and doesn't touch the v1 ovd-workflow handlers).
+- `npm run eval:router` ✓ — 269/269 (no SKILL.md edits; router benchmark untouched).
+- **CLI smoke tests (live `bin/overdrive.js workflow map`)**:
+  - Plan mode (`overdrive workflow map --project-dir <tmp>`): emitted the full dispatch artifact — directory + tags-file path + 5 mappers (each shown as `[key] (filename.md) — missing`) + the commit-mode example with all 5 keys. Crucially: `ls -la .overdrive/codebase/` confirmed plan mode wrote NO files (the dir stayed empty). Confirms the design: plan emission is read-only; only the subagents (and then commit mode) touch the codebase/ dir.
+  - Commit mode (`overdrive workflow map commit --project-dir <tmp> --entries-json '{"architecture":{"sources":["lib/installer.js","lib/ovd-plan/index.js"]},...}'`): wrote `_tags.json` with the exact expected JSON shape (scannedAt + per-mapper { file, sources }); `concerns.sources: []` recorded correctly; missingFiles warning fired for all 5 mapper files (since we didn't pre-create them in the smoke); Task 2.7 reference shown in output. The recorded paths match the user-supplied list verbatim.
+
+**Decided:**
+- **In-module prompt constants (design Q1).** Each mapper's subagent prompt lives as a multi-line string in `MAPPERS[].prompt` inside `codebase-mapper.js`, parallel to how `preferences-elicit.js` and `requirements-draft.js` keep their Socratic questions inline. Reasons: (1) tests can assert prompt content directly (no I/O dependency); (2) prompts evolve in lockstep with the dispatch logic that builds the artifact; (3) no new file-existence error path; (4) matches the Phase 2 precedent (Tasks 2.4 / 2.5). If a Phase 3+ task needs to expose / customize the prompts externally, that's the natural extraction point.
+- **Flat tag schema (design Q2).** `_tags.json` records `{ scannedAt, mappers: { <key>: { file, sources: [path, ...] } } }`. No per-source hashes, no file-tree snapshot, no per-source `scannedAt`. Sufficient for Task 2.7's primary signal (touched-path overlap per r3 §4.4). If Task 2.7 finds path-overlap insufficient, hashes can be added as an additive field then; the current schema is forward-compatible.
+- **JSON-only dispatch artifact (design Q3).** Plan mode returns `{ ok, status, mode, rootDir, plan: { mode, dir, tagsPath, tagsExist, mappers, instructions }, summary, text }`. The `text` field is a human-readable rendering of the same JSON for the user's terminal; the `plan` object is what the host agent parses. No separate markdown summary block — that's the agent's job in the chat surface, not the CLI's.
+- **Sparse-codebase = stub file with `## Insufficient evidence` (design Q4).** Subagents that find insufficient evidence write a single `## Insufficient evidence` section with a one-paragraph reason. The 5-file contract from r3 §4.3 (All 5 files exist after run) is preserved. `detectMapperState` distinguishes this state from `missing` / `placeholder` / `populated` so a later run can see at a glance that the mapper had nothing to add (rather than that the agent forgot to dispatch it).
+- **Always-re-run, overwrite (design Q5).** `/ovd-workflow map` is the explicit "give me a full picture" command; if the user runs it twice, that's the user's choice to refresh. Skip-if-no-drift logic belongs to Task 2.8 (`MAP REFRESH`); baking it into Task 2.3 would muddy the Task 2.3 / 2.7 / 2.8 layering. The agent writes the mapper files (so it can overwrite or preserve per its own logic); the CLI's `applyEntries` ALWAYS rewrites `_tags.json` so the scannedAt + sources reflect the latest run.
+- **Pattern 1 dispatch confirmed across THREE tasks now.** Tasks 2.4 (preferences), 2.5 (requirements), and 2.3 (codebase map) all use the plan→commit two-mode shape with `--entries-json` as the structured payload flag. The dispatch contract is now genuinely canonical for Phase 2+. The differences per task are entirely in the `entries` shape (categories array → `{ <key>: [...] }` vs. mappers → `{ <key>: { sources: [...] } }`); the dispatch + parse-guard + commit-mode plumbing is identical.
+- **Subagent writes the .md files, NOT the CLI.** The CLI's commit mode is intentionally narrow: it ONLY writes `_tags.json`. The subagents (dispatched by the host agent via its task tool) own the mapper `.md` files. Smoke tests confirmed pre-existing user-written `architecture.md` survives commit untouched. This preserves the per-r3 §4.4 invariant: "the agent never autonomously rewrites map files unless the user requested it." Map commit is a tag-recording operation, not a file-rewriting operation.
+
+**Committed:**
+- (not yet — proposing single-commit boundary per [[feedback-commit-cleavage]]. Files in scope: `lib/ovd-plan/codebase-mapper.js` (new), `scripts/test-ovd-plan-codebase-map.js` (new), `lib/ovd-plan/workflow.js` (mod — stub deleted; module require added; canonical step runner wraps with `(root) => runCodebaseMap(root, {})`), `lib/ovd-plan/index.js` (mod — require + dispatch route + JSON-parse-guard + namespace export + top-level runCodebaseMap export), `scripts/test-ovd-plan-workflow.js` (mod — test #17 rewritten for non-stub assertion + plan mode default; test #19 split out runCodebaseMap from the "still stub" group; Scenario A.2 updated), `package.json` (mod — check + test:ovd-plan chains), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod — this entry + the Phase 2 mid-phase wrap-up entry from the prior session folds in here per the explicit instruction in that wrap-up).)
+
+**Deviations from plan:**
+- **None.** Task 2.3 success criteria all met:
+  - All 5 files exist after run → CLI design preserves the 5-file contract via subagents + sparse-handling stubs; `_tags.json` records the per-mapper bookkeeping.
+  - Token-bounded per mapper → each prompt explicitly notes "~2-4k output tokens. Be terse." The scope hint is mapper-specific so subagents don't load the whole tree.
+  - Evidence cites specific file paths → every prompt mandates `## Evidence` section with `- path/to/file.js:42-89 — describes X` format; subagents that skip this are out of contract.
+  - Module tags recorded for drift detection → `_tags.json` schema captures per-mapper `sources: [path, ...]` for Task 2.7 to consume.
+- **Modest scope extension:** Added `detectMapperState` (with the `insufficient-evidence` state) + missing-files warning in commit mode. Neither is strictly required by §5 Task 2.3 success criteria, but both are needed for the Phase 2 mid-phase wrap-up's "re-plan shows existing state" UX (so users running `map` a second time can see at a glance what was already done) and for the commit-mode safety net (a tags commit without the .md files being on disk yet is a coordination bug worth flagging — the warning recommends re-dispatching the subagents).
+
+**Key insights worth preserving:**
+- **The CLI-vs-agent boundary is the sharp line in Pattern 1.** CLI never invokes LLMs. CLI either emits a plan (read-only) or processes a structured agent-returned payload (write-only on its narrow target file). For codebase mapping, this means: CLI writes ONLY `_tags.json`; subagents write ALL the mapper `.md` files. The smoke test where the CLI commit fired the "files missing" warning while still writing `_tags.json` shows the boundary holding: the CLI did its narrow job; the user can see exactly what's missing and dispatch the subagents.
+- **Each new Phase 2 handler should drop `stub: true` and emit `summary`.** The orchestrator's log-push contract is now `note: sub.summary || sub.note`. Task 2.3 added one more handler conforming to this. The remaining stubs in `workflow.js` are: NONE for Phase 2. (Task 2.7 and 2.8 add NEW handlers; they don't replace stubs.)
+- **`fs.NEW_LAYOUT_PLACEHOLDER_FILES` does NOT include the 5 codebase mapper files.** The scaffolder creates `.overdrive/codebase/` as an empty directory; the mapper files appear only when subagents write them. This was important for Task 2.3 because it means `detectMapperState` on a freshly scaffolded project returns all-missing — and the Phase 2 mid-phase wrap-up's note about "first-run drift = flag everything" (Q4 confirmation) is the right behavior: nothing to diff against on the first run.
+- **`_tags.json` is committed (carve-out: `!.overdrive/codebase/`).** That means drift detection in Task 2.7 works across sessions and across machines. A teammate cloning the repo after running `map` will inherit the source-tag snapshot.
+- **The dispatch artifact's `instructions` array is the agent's runbook.** Plan mode emits 8 instructions covering: dispatch parallelism, subagent file-writing responsibility, evidence requirement, sparse handling, commit payload format with example, drift detection (Task 2.7) reference, and full-overwrite re-run semantics with the Task 2.8 pointer for incremental refresh. The slash command body (when it lands in Task 2.9 / Phase 7) will rely on this `instructions` array being self-explanatory — the agent reads them and acts.
+
+**Next:**
+- Surface Task 2.3 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-3): codebase-map dispatcher (5 mappers; Pattern 1)`. All code + tests + this log entry + the Phase 2 mid-phase wrap-up entry from the prior session go together per [[feedback-commit-cleavage]] (the wrap-up is "Phase 2 in-progress documentation" which belongs with the Task 2.3 work that picks up from it).
+- After Task 2.3 commit lands: per the readiness brief, **Task 2.7 — Drift detection** is next. It consumes `_tags.json` written by Task 2.3 and produces `{ needsRefresh: string[], reason: string }`. Per Q4 confirmation: first-run (no `_tags.json` on disk) = flag everything. Per r3 §4.4: primary signal = touched-path overlap with sources arrays; secondary signal = file-tree hash diff. Then **Task 2.8 — MAP REFRESH** uses Task 2.7's output to incrementally re-run only the affected mappers (which itself emits a NARROWED dispatch artifact — same shape as Task 2.3's plan, but with `mappers` filtered to just the flagged ones — so the host agent only spawns subagents for those).
+- After Task 2.8 ships, Phase 2 done-definition is met. At that point, surface to user that Phase 2 is complete and recommend a fresh-context handoff to Phase 3 (per the handoff prompt's guidance — Phase 3 is structurally different from Phase 2, natural handoff boundary).
+
 ---
 
 ## 8. Glossary / quick decision reference
