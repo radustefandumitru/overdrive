@@ -2017,6 +2017,58 @@ Modified files:
 - Surface Task 2.6 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-6): decisions log helper (appendDecision / readDecisions)`. All code + tests + this log entry go together; the 2026-06-06 spec docs stay untracked.
 - After Task 2.6 commit lands: **Task 2.4 — PREFERENCES ELICIT** (Socratic flow capturing vetoes, coding style, workflow, communication into `.overdrive/preferences.md`). Per readiness brief, the Socratic flow uses the simple placeholder calibration (default plain language); Phase 3 Task 3.2 wires in the real calibration system later. Task 2.6's `appendDecision` is available for any decisions surfaced during the elicitation.
 
+### 2026-06-10 — Session 7 (Phase 2 Task 2.4 COMPLETE — preferences elicit Socratic flow)
+
+**Did:**
+- Created `lib/ovd-plan/preferences-elicit.js` (~190 lines) implementing the Socratic elicitation flow per r3 §4.5 + Q2 confirmation (placeholder calibration; no real three-axis calibration system until Phase 3 Task 3.2).
+- **Two-mode CLI helper** mirroring Q1's Pattern 1 (codebase mapping): the CLI is non-interactive; the agent drives the actual Socratic conversation. Modes:
+  - **`plan`** (default) — emits a structured prompting plan: 4 categories (`vetoes`, `codingStyle`, `workflow`, `communication`), per-category header + seed question + 4 example anchors, current file state (`missing` / `placeholder` / `populated`) so the agent doesn't re-ask what's already captured, and explicit commit-mode instructions for the agent to follow.
+  - **`commit`** — accepts a structured `entries` object keyed by category, normalizes per-category values (strings → 1-elem arrays; arrays → trimmed + empty-filtered), and appends each non-empty entry as a `- bullet` under its `## Section` header in `.overdrive/preferences.md`. Returns counts per category + summary line.
+- Reuses `appendUnderHeader` from `lib/ovd-plan/migrate.js` (the canonical implementation already used for migration's constraints-to-Vetoes path) so the surface behaves identically whether prefs originate from migration or fresh elicitation.
+- CLI surface: `overdrive workflow preferences` for plan, `overdrive workflow preferences commit --entries-json '<JSON>'` for commit. Added `--entries-json` as a new flag in `parseArgs` (alongside the existing `--message`, `--reason`, etc.); flowed through `workflowOptions` and into the index.js dispatch. JSON parse errors are caught at the dispatch layer with a helpful error message; the file is never partially written on a bad payload.
+- Wired into `lib/ovd-plan/index.js` with a new `subcommand === 'preferences'` route (plan/commit decided by presence of `--entries-json` or `step === 'commit'`). Plus top-level `runPreferencesElicit` export and a `preferencesElicit: preferencesElicitModule` namespace for callers needing `CATEGORIES` / `CATEGORY_HEADERS` constants.
+- The orchestrator's preferences-proceed branch in `runWorkflowInit` now invokes the real handler in plan mode (no longer the stub). Its log entry uses `note: sub.summary || sub.note` to accept both shapes — `summary` for real handlers, `note` for the remaining stubs (Tasks 2.3 / 2.5).
+- Stub-marker check in `scripts/test-ovd-plan-workflow.js` test #19 split: runMigrateLegacy and runPreferencesElicit are real now (no `stub: true`); runCodebaseMap (Task 2.3) and runRequirementsDraft (Task 2.5) remain stubs.
+- Scenario A.3 assertion (`log contains preferences-elicit stub`) updated to assert the real handler ran (`e.stub !== true`).
+- Wrote `scripts/test-ovd-plan-preferences.js` (~310 lines, **80 checks across 19 scenarios**): module surface (CATEGORIES / CATEGORY_KEYS / CATEGORY_HEADERS), preferencesPath, detectCategoryState for missing/placeholder/populated, buildPlan shape + populated-section detection, normalizeEntries happy path + validation tolerance (non-object → false, array → false, number value → false, unknown category gets recorded + dropped, empty-string entries trimmed + filtered), applyEntries fresh-file + preserve-existing + multi-bullet, runPreferencesElicit plan mode + commit mode (4 entries across 3 categories) + invalid entries + null rootDir, dispatch routing for plan mode + commit mode + malformed `--entries-json`, namespace + top-level exports, formatPlan/formatCommit output shape, **migration-compat scenario** (a preferences.md produced by Task 2.2.5's constraints migration is correctly extended without disturbing the legacy v1 table or constraint prose).
+
+**Verified:**
+- `npm run check` ✓ (28 files now in chain — added `lib/ovd-plan/preferences-elicit.js` + `scripts/test-ovd-plan-preferences.js`).
+- `npm run test:ovd-plan` ✓ — **795 checks total** (59 + 104 + 28 + 39 + 53 + 201 workflow + 150 migrate + 81 decisions + **80 new preferences**). Workflow gained +1 from the test-#19 expansion (split runPreferencesElicit assertions).
+- `npm run test:workflow` ✓ (no v1 regression — `--entries-json` flag is additive).
+- `npm run eval:router` ✓ (269/269).
+- **Manual CLI smoke test**:
+  - `overdrive workflow preferences --project-dir <tmp>` — emits the full plan with all 4 categories, their current state (`missing` for a fresh project), seed questions, and example anchors. Trailing line tells the agent how to call `commit --entries-json '<JSON>'`.
+  - `overdrive workflow preferences commit --project-dir <tmp> --entries-json '{"vetoes":[...],...}'` — writes the entries cleanly to `.overdrive/preferences.md`; output reports totals per category. File-read confirms each bullet lands under the correct `##` section.
+  - `overdrive workflow preferences commit --entries-json '{ broken'` — fails fast with `Invalid --entries-json: Expected property name or '}' in JSON at position 2`. No file write.
+
+**Decided:**
+- **Two-mode helper (plan + commit), not a turn-based state machine.** Mirrors Q1 Pattern 1 for codebase mapping — the agent owns the dialogue; the CLI emits structure + writes structure. Avoids shell-quoting hell for multi-line / multi-category user responses (`--entries-json` carries the whole payload as one quoted JSON string). The state-machine pattern from Task 2.2's INIT orchestration applies to *gating* sub-steps, not to *driving Socratic conversations inside a sub-step*.
+- **`appendUnderHeader` reused from `migrate.js`** instead of duplicated. Single source of truth for the "find `## Section`, append body, create section if missing" semantics. If a future markdown utility module emerges, both call sites move together cleanly.
+- **Entry normalization is permissive on input shape (string OR array of strings) but strict on top-level shape (object only, with known category keys).** Unknown categories are recorded in `unknownCategories[]` but don't fail the commit — the known categories still apply. This lets future schema extensions (e.g., a new `testing` category) coexist with older client agents.
+- **JSON parse errors at the dispatch layer, not deeper.** The parse happens in `index.js::runWorkflow` *before* calling `runPreferencesElicit`, so a bad payload never touches the file or the per-category writer. Reported as `{ ok: false, status: 'preferences-elicit', mode: 'commit', reason, text }`.
+- **`CATEGORY_KEYS` is camelCase (`codingStyle`)** rather than kebab-case (`coding-style`) so JSON payloads are clean JavaScript identifiers. The literal `## Section` header is title-case (`Coding style`) per r3 §4.5 / placeholder format. `CATEGORY_HEADERS` is the explicit mapping between the two.
+- **Plan-mode `instructions[]` is a structured array, not a single prose blob.** Lets the agent emit them as a numbered list or skip rendering if the UX warrants. Keeps the contract explicit for future agents reading the plan structure programmatically.
+
+**Committed:**
+- (not yet — proposing single-commit boundary per [[feedback-commit-cleavage]]. Files in scope: `lib/ovd-plan/preferences-elicit.js` (new), `scripts/test-ovd-plan-preferences.js` (new), `lib/ovd-plan/workflow.js` (mod — stub → delegate; canonical log push accepts `summary || note`), `lib/ovd-plan/index.js` (mod — require + exports + subcommand route + JSON parse guard), `lib/installer.js` (mod — `--entries-json` flag + `workflowOptions` propagation), `scripts/test-ovd-plan-workflow.js` (mod — test #19 + Scenario A.3 updated), `package.json` (mod — check + test:ovd-plan chains), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod, this entry).)
+
+**Deviations from plan:**
+- **None substantively.** Task 2.4 success criteria all met:
+  - User-driven, one question at a time, never barrages → enforced by the agent-side dialogue + the plan's `instructions` block explicitly stating "one question per turn."
+  - If user has nothing to say, accepts empty/default → normalizeEntries treats `null`/empty arrays as no-op per category, no bullets added.
+  - Produces structured markdown file with sectioned categories → preserved by reusing the v2 placeholder layout + appendUnderHeader.
+- **Modest scope extension (strict superset):** added a `migration-compat` test scenario that wasn't required by the spec, asserting that a preferences.md produced by Task 2.2.5 (legacy v1 table + migrated constraints under `## Vetoes`) is extended cleanly by `runPreferencesElicit(commit)`. Same kind of cross-task seam check the migration test established for OVERDRIVE.md round-trip.
+
+**Key insights worth preserving:**
+- **The plan/commit pattern is the canonical shape for Phase 2 Socratic flows.** Task 2.5 (Requirements draft) should ship the same way: same 2-mode helper, same `--entries-json` payload, different category set (`functional`, `nonFunctional`, `outOfScope`). The `appendUnderHeader` reuse + the `normalizeEntries` validation surface + the test fixture structure are all reusable. If Task 2.5 deviates from this shape, that's a real divergence worth flagging.
+- **`--entries-json` is now the canonical Phase 2 mechanism for batch user-data submission.** Future tasks that need similar structured input (e.g., a "set initial scope" prompt, a "capture decisions made elsewhere" import) should reuse this flag rather than inventing new ones. Single shell-quoting story for the whole CLI surface.
+- **The orchestrator's log push (`note: sub.summary || sub.note`) is the bridging contract** between old-stub shape and new-real-handler shape. Tasks 2.3 / 2.5 don't need orchestrator changes when they land — they just stop returning `stub: true` and start returning `summary`; the log entry shape stays stable.
+
+**Next:**
+- Surface Task 2.4 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-4): preferences elicit (plan + commit modes)`. All code + tests + this log entry go together; the 2026-06-06 spec docs stay untracked.
+- After Task 2.4 commit lands: **Task 2.5 — REQUIREMENTS DRAFT** (Socratic flow capturing functional / non-functional / out-of-scope requirements into `.overdrive/requirements.md`). Same two-mode shape as Task 2.4 with a different category set per r3 §4.5; the `appendUnderHeader` + `normalizeEntries` + `--entries-json` machinery is fully reusable. Estimated scope: ~60% of Task 2.4's effort (smaller category set, no new CLI flags needed).
+
 ---
 
 ## 8. Glossary / quick decision reference

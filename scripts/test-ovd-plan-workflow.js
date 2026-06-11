@@ -433,10 +433,13 @@ console.log('ovd-plan workflow tests');
   check('runMigrateLegacy: no stub flag (Task 2.2.5 landed)', m.stub !== true);
   check('runMigrateLegacy: nothingToMigrate=true when .overdrive/ absent', m.nothingToMigrate === true);
   check('runMigrateLegacy: summary string present', typeof m.summary === 'string' && m.summary.length > 0);
-  // Remaining sub-task stubs (2.3 / 2.4 / 2.5) still hold the stub marker.
+  // Remaining sub-task stubs (Tasks 2.3 / 2.5) still hold the stub marker.
   check('runCodebaseMap: still stub (Task 2.3 pending)', runCodebaseMap('/tmp/x').stub === true);
-  check('runPreferencesElicit: still stub (Task 2.4 pending)', runPreferencesElicit('/tmp/x').stub === true);
   check('runRequirementsDraft: still stub (Task 2.5 pending)', runRequirementsDraft('/tmp/x').stub === true);
+  // runPreferencesElicit (Task 2.4) is real now; full coverage lives in scripts/test-ovd-plan-preferences.js.
+  const prefs = runPreferencesElicit('/tmp/nonexistent-ovd-prefs', {});
+  check('runPreferencesElicit: no stub flag (Task 2.4 landed)', prefs.stub !== true);
+  check('runPreferencesElicit: returns plan mode by default', prefs.mode === 'plan');
 }
 
 // --- 20. Action-path prompt builders: shape ---
@@ -493,7 +496,7 @@ console.log('ovd-plan workflow tests');
     // Step 3: preferences proceed → requirements prompt
     const r3 = runWorkflowInit(projectDir, { step: 'preferences', action: 'proceed' });
     check('A.3: currentStep=requirements', r3.currentStep === 'requirements');
-    check('A.3: log contains preferences-elicit stub', r3.log.some((e) => e.step === 'preferences-elicit' && e.stub === true));
+    check('A.3: log contains preferences-elicit step (Task 2.4 real handler)', r3.log.some((e) => e.step === 'preferences-elicit' && e.stub !== true));
 
     // Step 4: requirements proceed → complete
     const r4 = runWorkflowInit(projectDir, { step: 'requirements', action: 'proceed' });
