@@ -2069,6 +2069,55 @@ Modified files:
 - Surface Task 2.4 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-4): preferences elicit (plan + commit modes)`. All code + tests + this log entry go together; the 2026-06-06 spec docs stay untracked.
 - After Task 2.4 commit lands: **Task 2.5 — REQUIREMENTS DRAFT** (Socratic flow capturing functional / non-functional / out-of-scope requirements into `.overdrive/requirements.md`). Same two-mode shape as Task 2.4 with a different category set per r3 §4.5; the `appendUnderHeader` + `normalizeEntries` + `--entries-json` machinery is fully reusable. Estimated scope: ~60% of Task 2.4's effort (smaller category set, no new CLI flags needed).
 
+### 2026-06-11 — Session 8 (Phase 2 Task 2.5 COMPLETE — requirements draft Socratic flow)
+
+**Did:**
+- Created `lib/ovd-plan/requirements-draft.js` (~220 lines) implementing the Socratic flow for `.overdrive/requirements.md` per r3 §4.5. Mirrors `preferences-elicit.js` shape exactly — two modes (plan / commit), same dispatch contract, same `appendUnderHeader` reuse, same `normalizeEntries` tolerance semantics — so the user-facing UX is identical to a returning user who has already gone through preferences.
+- Three categories per r3 §4.5: `functional` (## Functional), `nonFunctional` (## Non-functional, hyphenated), `outOfScope` (## Out of scope, multi-word). Headers match the v2 placeholder file `fs.NEW_LAYOUT_PLACEHOLDER_FILES['requirements.md']`.
+- Plan mode includes a slightly richer `instructions[]` than preferences:
+  - Standard "one question per turn" guidance.
+  - Decompose-long-answers-into-atomic-bullets rule (requirements should be one short sentence each, not multi-clause).
+  - Non-functional probe-the-dimensions hint (perf / security / a11y / scalability / observability) so the agent doesn't let the user skip past common bars.
+  - Out-of-scope treat-as-boundary-marker hint (capture any "we won't do X" the user offers in conversation, even informally).
+- Commit mode is identical in structure to preferences: takes `entries` keyed by `functional` / `nonFunctional` / `outOfScope`, normalizes (string → array; trim + empty-filter; reject non-object top-level; reject non-string array contents; record unknown categories without failing), and appends each non-empty bullet under its `## Section`.
+- Wired into `lib/ovd-plan/index.js` with a new `subcommand === 'requirements'` route. The JSON-parse-error guard at the dispatch layer (already established for preferences) is duplicated for requirements with status string `'requirements-draft'`. No new CLI flags needed — `--entries-json` introduced in Task 2.4 is fully reusable.
+- Replaced the inline `runRequirementsDraft` stub in `lib/ovd-plan/workflow.js` with a delegate to the new module. The canonical step config's runner is now `(root) => runRequirementsDraft(root, {})` matching the preferences pattern (explicit empty opts for plan mode).
+- Updated `scripts/test-ovd-plan-workflow.js`: test #19 now asserts runRequirementsDraft has no stub flag (parallel to the runPreferencesElicit assertion). Scenario A.4 assertion updated to require the real handler ran (`e.stub !== true`).
+- Wrote `scripts/test-ovd-plan-requirements.js` (~310 lines, **88 checks across 19 scenarios**): module surface (3 categories, expected keys + headers including hyphen + multi-word), placeholder-file headers cross-check, requirementsPath resolution, detectCategoryState for missing/placeholder/populated (with explicit assertions on the hyphenated and multi-word headers), buildPlan shape + instructions richness, normalizeEntries happy path + validation + tolerance (non-object, array, null, number value, unknown category, empty-string trimming), applyEntries fresh-file + preserve-existing, runRequirementsDraft plan + commit + invalid + null rootDir, dispatch routing for plan + commit + malformed JSON, namespace + top-level exports, formatPlan/formatCommit output (including hyphenated-header rendering), **end-to-end roundtrip** (plan-state changes from missing → populated after commit; empty-category commit leaves that category as placeholder), **migration-compat** (pre-existing requirements.md with user content is extended, not replaced).
+
+**Verified:**
+- `npm run check` ✓ (30 files now in chain — added `lib/ovd-plan/requirements-draft.js` + `scripts/test-ovd-plan-requirements.js`).
+- `npm run test:ovd-plan` ✓ — **885 checks total** (59 + 104 + 28 + 39 + 53 + 203 workflow + 150 migrate + 81 decisions + 80 preferences + **88 new requirements**; workflow gained +2 from the new runRequirementsDraft assertions in test #19).
+- `npm run test:workflow` ✓ (no v1 regression — `--entries-json` reuse means no new flag surface).
+- `npm run eval:router` ✓ (269/269).
+- **CLI smoke test**:
+  - `overdrive workflow requirements --project-dir <tmp>` — emits plan with all 3 categories + their full questions + example anchors + `missing` state for a fresh project. The hyphenated "Non-functional" and multi-word "Out of scope" headers render correctly.
+  - `overdrive workflow requirements commit --project-dir <tmp> --entries-json '{"functional":["SSO sign-in","CSV export"],"nonFunctional":["WCAG AA","p95 <300ms"],"outOfScope":["no IE11"]}'` — writes 5 entries cleanly to `requirements.md` under correct sections. File read confirms placeholder structure preserved + bullets land in right places (including under `## Non-functional` and `## Out of scope`).
+
+**Decided:**
+- **Verbatim mirror of Task 2.4 shape, no refactoring to a shared elicit utility.** The two modules diverge in: (a) category dictionary, (b) one extra `instructions[]` line for non-functional probing. Extracting a shared base would be premature abstraction with only 2 callers and meaningful per-flow content. If Task 3.x or beyond adds a third Socratic flow with similar shape, that's the natural extraction point.
+- **Hyphenated header (`Non-functional`) confirmed safe in the regex.** `new RegExp('^##\\s+Non-functional\\s*$', 'm')` matches literally because `-` outside character classes is literal. Same for multi-word `Out of scope` — spaces match spaces. Tests assert this explicitly so a future header-renaming regression is caught.
+- **`instructions[]` content per-flow.** preferences and requirements share the "ONE question per turn" / "skip means empty array" base, but requirements adds the decompose-into-atomic-bullets rule and the non-functional dimension probe. These are flow-specific Socratic hygiene rules; they belong with the flow that needs them.
+- **CLI flag set unchanged.** `--entries-json` covers both Task 2.4 and Task 2.5. If Task 2.3 (codebase mapping) or future Task 3.x needs a different structured payload, evaluate whether `--entries-json` generalizes vs introducing a parallel flag. Default position: reuse `--entries-json`.
+
+**Committed:**
+- (not yet — proposing single-commit boundary per [[feedback-commit-cleavage]]. Files in scope: `lib/ovd-plan/requirements-draft.js` (new), `scripts/test-ovd-plan-requirements.js` (new), `lib/ovd-plan/workflow.js` (mod — stub → delegate + runner update), `lib/ovd-plan/index.js` (mod — require + exports + dispatch route + JSON parse guard), `scripts/test-ovd-plan-workflow.js` (mod — test #19 split for runRequirementsDraft; Scenario A.4 updated), `package.json` (mod — check + test:ovd-plan chains), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod, this entry).)
+
+**Deviations from plan:**
+- **None.** Task 2.5 success criteria all met:
+  - Same Socratic discipline as preferences → mirror module structure + identical instructions[] base.
+  - Distinguishes functional from non-functional explicitly → 3 separate categories, 3 distinct `## Section` headers, 3 separate prompting questions.
+- **Modest scope extension (strict superset, parallel to Task 2.4):** migration-compat test scenario added — a pre-existing requirements.md (which can come from any source: prior session, human edit, Task 2.2.5 migration) is extended cleanly without disturbing existing content.
+
+**Key insights worth preserving:**
+- **The plan/commit pattern is now confirmed cross-flow.** Two consecutive Phase 2 tasks (2.4 preferences, 2.5 requirements) used the identical skeleton successfully. This is the canonical Socratic-flow CLI contract; future Phase 3+ tasks adding similar dialogue surfaces should default to this shape unless they have a concrete reason to diverge.
+- **`appendUnderHeader` from migrate.js has now served three consumers** (migration's constraints→preferences/Vetoes; Task 2.4's preferences commit; Task 2.5's requirements commit). It's load-bearing infrastructure now — any future change to its semantics needs to land with explicit consideration of all three call sites + cross-task tests.
+- **Phase 2 has now established the "stub today, real handler tomorrow" transition cleanly** for three stubs (`runMigrateLegacy` → Task 2.2.5, `runPreferencesElicit` → Task 2.4, `runRequirementsDraft` → Task 2.5). The remaining stub in `workflow.js` is `runCodebaseMap` for Task 2.3, which uses the same orchestrator-log-push contract (`note: sub.summary || sub.note`). Task 2.3 lands without touching the orchestrator.
+
+**Next:**
+- Surface Task 2.5 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-5): requirements draft (plan + commit modes)`. All code + tests + this log entry go together; the 2026-06-06 spec docs stay untracked.
+- After Task 2.5 commit lands: per the readiness brief, the next Phase 2 tasks in dependency order are **Task 2.3 — CODEBASE MAP** (5 parallel mapper agents via Q1 Pattern 1; the dispatch shape is already proven by Tasks 2.4 + 2.5), then **Task 2.7 — Drift detection** (depends on 2.3's tag output), then **Task 2.8 — MAP REFRESH** (depends on 2.7). Task 2.9 (legacy slash command repurposing) is deferred to Phase 7 per Q5 confirmation.
+
 ---
 
 ## 8. Glossary / quick decision reference

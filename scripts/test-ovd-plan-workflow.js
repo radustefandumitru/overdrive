@@ -433,13 +433,15 @@ console.log('ovd-plan workflow tests');
   check('runMigrateLegacy: no stub flag (Task 2.2.5 landed)', m.stub !== true);
   check('runMigrateLegacy: nothingToMigrate=true when .overdrive/ absent', m.nothingToMigrate === true);
   check('runMigrateLegacy: summary string present', typeof m.summary === 'string' && m.summary.length > 0);
-  // Remaining sub-task stubs (Tasks 2.3 / 2.5) still hold the stub marker.
+  // Remaining sub-task stub (Task 2.3) still holds the stub marker.
   check('runCodebaseMap: still stub (Task 2.3 pending)', runCodebaseMap('/tmp/x').stub === true);
-  check('runRequirementsDraft: still stub (Task 2.5 pending)', runRequirementsDraft('/tmp/x').stub === true);
-  // runPreferencesElicit (Task 2.4) is real now; full coverage lives in scripts/test-ovd-plan-preferences.js.
+  // runPreferencesElicit (Task 2.4) and runRequirementsDraft (Task 2.5) are real; full coverage lives in their dedicated test files.
   const prefs = runPreferencesElicit('/tmp/nonexistent-ovd-prefs', {});
   check('runPreferencesElicit: no stub flag (Task 2.4 landed)', prefs.stub !== true);
   check('runPreferencesElicit: returns plan mode by default', prefs.mode === 'plan');
+  const reqs = runRequirementsDraft('/tmp/nonexistent-ovd-reqs', {});
+  check('runRequirementsDraft: no stub flag (Task 2.5 landed)', reqs.stub !== true);
+  check('runRequirementsDraft: returns plan mode by default', reqs.mode === 'plan');
 }
 
 // --- 20. Action-path prompt builders: shape ---
@@ -502,7 +504,7 @@ console.log('ovd-plan workflow tests');
     const r4 = runWorkflowInit(projectDir, { step: 'requirements', action: 'proceed' });
     check('A.4: currentStep=complete', r4.currentStep === 'complete');
     check('A.4: done=true', r4.done === true);
-    check('A.4: log contains requirements-draft stub', r4.log.some((e) => e.step === 'requirements-draft' && e.stub === true));
+    check('A.4: log contains requirements-draft step (Task 2.5 real handler)', r4.log.some((e) => e.step === 'requirements-draft' && e.stub !== true));
     check('A.4: text mentions /ovd-plan as next', r4.text.includes('/ovd-plan'));
   } finally {
     cleanup(tmpRoot);
