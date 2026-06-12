@@ -2352,6 +2352,111 @@ Per impl plan §5 Phase 2 done definition:
 - After Task 2.7 commit lands: **Task 2.8 — MAP REFRESH** is next. It consumes drift output and emits a NARROWED dispatch artifact — same shape as Task 2.3's plan, but with `mappers` filtered to just the keys in `needsRefresh`. Internally calls detectDrift to discover what needs refresh (the user can pass changedPaths explicitly OR Task 2.8 calls detectDrift with empty changedPaths to use the file-tree signal alone). Then it emits the narrowed plan for the agent to dispatch only the affected subagents. After their commits land, Task 2.8 verifies the narrow-write contract (mapper.sources updated for refreshed mappers; untouched mappers' sources verbatim).
 - After Task 2.8 ships, Phase 2 done-definition is met; recommend Phase 3 handoff per the readiness brief.
 
+### 2026-06-12 — Session 11 (Phase 2 Task 2.8 COMPLETE — MAP REFRESH; **PHASE 2 DONE**)
+
+**Did:**
+- Created `lib/ovd-plan/codebase-refresh.js` (~280 lines) implementing `runRefreshMap(rootDir, opts)` per r3 §4.4 + impl plan §5 Task 2.8. Two modes (plan + commit) mirroring Task 2.3's shape, plus a third synthesis mode (caller passes either explicit `mappers` or `changedPaths` for drift, never both).
+- Hybrid input semantics (design Q1 lock): `determineNeedsRefresh(rootDir, opts)` accepts `{ mappers: [keys] }` for explicit caller intent, `{ changedPaths: [paths] }` for drift-derived discovery, or `{}` (drift with empty changedPaths → file-tree signal only). Error on both supplied; error on unknown mapper keys; error on non-array mappers. Phase 4's /ovd-go will pass changedPaths from leaf.scope.in; CLI/manual users pass `mappers`; tests assert all three paths.
+- Plan mode emits a narrowed dispatch artifact (same shape as Task 2.3's plan, but `mappers[]` filtered to only `needsRefresh` keys). Augments each mapper's prompt with `REFRESH_PROMPT_SUFFIX` — a 5-bullet REFRESH MODE instruction telling the subagent to read the existing .md file, preserve any `## Discovered during execution` section verbatim, and rewrite the four standard sections (Overview / Components / Evidence / Risks). The CLI never reads or rewrites .md files; the preservation contract lives in the prompt per design Q2 lock (subagent owns the preserve; CLI-vs-agent boundary maintained).
+- Commit mode merges into `_tags.json` (design Q3 lock): reads existing file, replaces `mappers[<key>].sources` only for refreshed keys, leaves untouched mappers verbatim, advances `scannedAt`, **preserves `fileTreeSignature` (Task 2.7's territory)**. Rejects if `_tags.json` doesn't exist (refresh requires Task 2.3 to have run first; error message tells the user to run `/ovd-workflow map` first). The narrow-merge contract is tested explicitly: `JSON.stringify(raw.mappers.patterns.sources)` byte-equality across a refresh that touched only architecture.
+- Empty-needsRefresh handling (design Q4 lock): `ok: true, mode: 'plan', needsRefresh: [], skipped: <all 5>, summary: 'refresh: nothing flagged; codebase analysis is current.'` — no-op plan with explicit "current" signal; slash command body can short-circuit without dispatching. Tests assert the plan object has `mappers: []` and an `instructions` array (instructions guide the slash command body to skip dispatch).
+- `normalizeRefreshEntries` mirrors the codebase-mapper shape with two additions: (a) `allowedKeys` parameter for commit-mode safety (entries for keys outside the refresh plan are silently routed to `disallowedKeys`), (b) returns the same `unknownCategories` tolerance path for completely-foreign keys. Commit mode currently does NOT pass `allowedKeys` from runRefreshMap — design intent is "callers can commit any valid mapper subset; the refresh PLAN is advisory not enforced." If Phase 3+ needs stricter "must match plan keys exactly," that's a one-line addition.
+- Wired into `lib/ovd-plan/index.js`: added `subcommand === 'refresh'` route with the standard JSON-parse guard. Plan mode reads `entries.mappers` (array of keys) OR `entries.changedPaths` (array of paths) — both Optional. Commit mode (triggered by positional `commit` → `options.step === 'commit'`) reads the entries object as `{ <key>: { sources: [...] } }`. Reuses `--entries-json` flag (the carrier carries different shapes per mode, distinguished by `step`). Added `codebaseRefresh` namespace export + `runRefreshMap` top-level export.
+- NOT wired into the orchestrator's INIT step config. Same rationale as Task 2.7 (drift): refresh is a utility called by user-initiated `/ovd-workflow refresh`, Phase 4's `/ovd-go` leaf-complete, and Phase 5's `/ovd-log handoff`. Not part of fresh-project init.
+- Wrote `scripts/test-ovd-plan-refresh.js` (~590 lines, **124 checks across 25 scenarios**): module surface (REFRESH_PROMPT_SUFFIX content + function exports), determineNeedsRefresh (explicit happy + dedup + key-order + unknown-key + non-array + both-supplied + changedPaths-delegates-to-drift + empty-opts-defaults-to-drift), buildRefreshPlan (1-flagged + all-5-flagged + prompt-augmentation-correct + skipped-list-correct + instruction-array-content + dispatch-count-mention + preserve-discovered-mention + MERGE-semantic-mention), normalizeRefreshEntries (happy + tolerance + non-object/array/string error + non-string-source error + unknown-key tolerance + allowedKeys disallowed-key routing), applyRefreshEntries (merge happy path with byte-equality on untouched mappers + scannedAt advance + fileTreeSignature preservation + missing-tags error + corrupt-JSON error), runRefreshMap plan mode + commit mode + null-rootDir + bad-entries + both-supplied + unknown-key, dispatch routing (subcommand=refresh plan-explicit + plan-default + commit + bad-JSON guard), **end-to-end roundtrip** (initial map commit → drift bootstrap → simulated subagent writes architecture.md with a Discovered section → refresh plan with explicit architecture → simulated refreshed subagent rewrites file preserving Discovered → refresh commit → assert merged tags + preserved discovered section in .md), namespace + top-level exports, formatPlan + formatCommit output (including the "preserved verbatim" + "scannedAt advanced" messaging).
+- Updated `package.json`: added `lib/ovd-plan/codebase-refresh.js` + `scripts/test-ovd-plan-refresh.js` to check chain (35 files); added test runner to test:ovd-plan chain.
+
+**Verified:**
+- `npm run check` ✓ (35 files).
+- `npm run test:ovd-plan` ✓ — **1244 checks total** (was 1119; +124 codebase-refresh new; +1 codebase-mapper test count holds — no other test file delta). Per-file: fs 59, parser 104, writer 28, cache 39, skill-router 53, workflow 204, migrate 150, decisions 81, preferences 80, requirements 88, codebase-mapper 135, drift 99, **refresh 124 (new)**.
+- `npm run test:workflow` ✓ — `ovd-workflow tests passed` (no v1 regression).
+- `npm run eval:router` ✓ — 269/269 (no SKILL.md edits).
+- **CLI smoke (live `bin/overdrive.js workflow refresh`)** covering the three critical states end-to-end with a real `_tags.json` chained from Task 2.3's commit + Task 2.7's signature bootstrap:
+  - **Refresh plan with explicit `{"mappers":["architecture"]}`**: dispatch artifact lists architecture only + "Skipped (preserved verbatim): patterns, techStack, quality, concerns." + reminds the subagent about preserving `## Discovered during execution`. Reason: "caller specified 1 mapper(s): architecture."
+  - **Refresh plan with no opts (clean steady state)**: "refresh: nothing flagged; codebase analysis is current. No subagents to dispatch." — the no-op path. Reason: "no changed paths supplied; nothing to diff" (drift returned empty).
+  - **Refresh commit with `{"architecture":{"sources":["lib/installer.js","lib/new.js"]}}`**: per-mapper output shows architecture refreshed (2 sources) + 4 mappers preserved with their original counts (`scripts/x.js`, `package.json`, `__tests__/x.test.js`, `docs/SEC.md`). The dumped `_tags.json` confirms: architecture.sources replaced; patterns/techStack/quality/concerns.sources byte-equal to the prior commit; `fileTreeSignature.hash = 747d813a...` preserved verbatim from the drift bootstrap; `scannedAt` advanced to 2026-06-12T... ISO.
+
+**Decided:**
+- **Hybrid input semantics (design Q1 lock).** Phase 4 /ovd-go knows leaf.scope.in; CLI users know which mappers they explicitly want to refresh. Both paths first-class. Error-on-both prevents ambiguity. Default-to-drift-with-empty-changedPaths (when neither supplied) gives a useful "what mappers does the file-tree signal alone flag right now?" affordance. The CLI dispatch packs this via `--entries-json` carrying `mappers` OR `changedPaths` at the top level — same flag, two shapes, distinguished by absence.
+- **Subagent owns the discovered-content preservation (design Q2 lock).** Maintains the CLI-vs-agent boundary from Task 2.3: CLI emits structured artifacts; subagents own .md writes. The CLI does NOT parse markdown to extract sections. Failure mode is "subagent forgets to preserve" — solved by an explicit 5-bullet REFRESH MODE block appended to each mapper's prompt + an integration test that simulates the subagent receiving the prompt and demonstrates the preservation outcome end-to-end. The roundtrip test in test-ovd-plan-refresh.js explicitly asserts the architecture.md file still has the `## Discovered during execution` section after refresh.
+- **Refresh has its own MERGE commit (design Q3 lock).** Task 2.3's commit overwrites (full re-run semantic); Task 2.8's commit merges (incremental update semantic). Different write semantics → different commit routes. `runRefreshMap` commit mode is the dedicated merge entry point; reusing `runCodebaseMap` commit would have forced every caller to manually re-supply untouched mapper sources, which is exactly the kind of brittle orchestration discipline this whole phase has been avoiding. The merge implementation reads existing `_tags.json`, validates the entries, replaces sources only for refreshed keys, preserves every other field (mapper.file, untouched mapper.sources, fileTreeSignature, any future top-level fields), and advances scannedAt to now.
+- **Empty needsRefresh = ok:true no-op plan (design Q4 lock).** No-drift is a normal expected state, not a failure. Treating it as ok:false would be inconsistent with `detectDrift` (which returns ok:true + empty needsRefresh in the same scenario). The no-op plan carries instructions that guide the slash command body to short-circuit without dispatching subagents — predictable end-to-end behavior even when there's nothing to do.
+- **The 5 mapper prompts are now load-bearing across two tasks (2.3 + 2.8).** Task 2.8 reuses `codebaseMapper.MAPPERS[].prompt` verbatim and appends `REFRESH_PROMPT_SUFFIX`. Any future change to the base prompts will affect both fresh maps and refreshes. Tests assert the suffix is appended cleanly (`plan.mappers[0].prompt.endsWith(REFRESH_PROMPT_SUFFIX)`) so the contract is enforced.
+- **The narrow-merge write semantics are tested by byte-equality.** Multiple tests assert `JSON.stringify(raw.mappers.patterns.sources)` matches the pre-commit value EXACTLY. This catches any future regression where merge accidentally rewrites untouched mappers (e.g., re-stringifying via the in-memory object instead of preserving the source array reference).
+
+**Committed:**
+- (not yet — proposing single-commit boundary per [[feedback-commit-cleavage]]. Files in scope: `lib/ovd-plan/codebase-refresh.js` (new), `scripts/test-ovd-plan-refresh.js` (new), `lib/ovd-plan/index.js` (mod — require + dispatch route + namespace + top-level export), `package.json` (mod — check + test:ovd-plan chains), `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` (mod — this entry).)
+
+**Deviations from plan:**
+- **None.** Task 2.8 success criteria all met:
+  - Untouched mapper files preserved verbatim → merge tests assert byte-equality; smoke run confirmed via dumped _tags.json.
+  - Refreshed mapper writes new content + updated module tags → applyRefreshEntries replaces sources atomically; smoke run confirmed architecture.sources advanced from `lib/old.js` to `lib/installer.js, lib/new.js`.
+  - Discovered-during-execution sections preserved across refresh → REFRESH_PROMPT_SUFFIX instructs subagents; roundtrip test demonstrates end-to-end preservation; CLI itself never touches .md files (per the CLI-vs-agent boundary).
+- **Modest scope extension:** Added `perMapper` reporting in the commit output (action: 'refreshed' / 'preserved' / 'absent') and `disallowedKeys` channel in normalizeRefreshEntries. Neither is required by the §5 deliverable signature; both improve UX for callers needing to surface "what just happened" to the user.
+
+**Key insights worth preserving:**
+- **Task 2.8 is the keystone: it ties Tasks 2.3 + 2.7 into a complete drift→refresh workflow.** The data flow now is: `/ovd-workflow map` → Task 2.3 writes per-mapper sources + initial state → time passes, code changes → `/ovd-workflow drift` (Task 2.7) computes needsRefresh from changedPaths and file-tree signature → `/ovd-workflow refresh` (Task 2.8) reuses needsRefresh to emit a narrowed dispatch artifact → subagents re-analyze only the affected areas → refresh commit merges back into _tags.json. Each task has a narrow surface and one clear responsibility; they compose cleanly.
+- **The `--entries-json` flag continues to scale.** Five Phase 2 handlers now ship structured payloads through this single flag, each with a different schema: preferences (`{ <category>: [...] }`), requirements (`{ <category>: [...] }`), codebase-map (`{ <key>: { sources: [...] } }`), drift (`{ changedPaths: [...] }`), refresh plan (`{ mappers?: [...], changedPaths?: [...] }`), refresh commit (`{ <key>: { sources: [...] } }`). The dispatch layer's parse-guard pattern handled every one uniformly. If Phase 3+ introduces yet another schema, the carrier is proven.
+- **The CLI-vs-agent boundary held across the whole phase.** No CLI handler reads or rewrites the mapper `.md` files. Every .md write is a subagent responsibility, instructed via the dispatch artifact's prompt. The CLI's only file write to `.overdrive/codebase/` is `_tags.json`. This is the architectural invariant that keeps the system testable (CLI is pure-function-y; subagent reasoning is mocked via simulated file writes in tests) and aligned with r3 §4.4 ("the agent never autonomously rewrites map files unless the user requested it").
+- **Two narrow-write contracts now coexist in `_tags.json`**: Task 2.7's `fileTreeSignature` write (idempotent; only touches that one field) and Task 2.8's per-mapper-sources merge write (only touches the refreshed keys). Both contracts are explicitly tested for byte-equality on untouched fields. If a future task needs to write another `_tags.json` field, the precedent is set: narrow-write, idempotent where possible, tested for sibling-field survival.
+
+**Next:**
+- Surface Task 2.8 work for commit approval. Proposed boundary: single commit `ovd-plan(phase-2.task-8): MAP REFRESH (narrowed dispatch + merge commit)`. All code + tests + this log entry go together per [[feedback-commit-cleavage]].
+- After Task 2.8 commit lands: **Phase 2 done-definition is fully met.** Surface to the user that Phase 2 is complete and recommend a fresh-context handoff to Phase 3 (per the handoff prompt's guidance — Phase 3 is structurally different from Phase 2: Socratic deliberation, blind-spot expansion, RESOLVE SKILLS sub-step, etc. Fresh context is the right move there).
+
+### 2026-06-12 — Phase 2 wrap-up (8/8 tasks done; Task 2.9 deferred to Phase 7)
+
+**Phase 2 progress: 8 of 8 net tasks complete.** Per impl plan §5 Phase 2 done definition:
+
+- ✓ `overdrive workflow` bare → tutorial + status + action-path next-steps (Task 2.1).
+- ✓ `overdrive workflow init` → full init orchestration with user approval at each step + migration detection (Tasks 2.2 + 2.2.5).
+- ✓ `overdrive workflow map` → Pattern 1 dispatcher (5 mappers in parallel; structured plan emission; commit mode writes `_tags.json`) (Task 2.3).
+- ✓ Drift detection (`/ovd-workflow drift`) → primary touched-path overlap + secondary file-tree signature (Task 2.7).
+- ✓ Refresh (`/ovd-workflow refresh`) → narrowed dispatch + merge commit; preserves untouched mappers, signature, and discovered-during-execution sections (Task 2.8).
+- ✓ Preferences + requirements via Socratic flows (Tasks 2.4 + 2.5).
+- ✓ Decisions log helper (`appendDecision` / `readDecisions`) (Task 2.6).
+- ✓ Legacy `.overdrive/` migrated cleanly OR archived per user choice (Task 2.2.5).
+- ✓ Task 2.9 deferral accepted in done-definition (per Q5 confirmation 2026-06-09; revisit in Phase 7 once `/ovd-plan` and `/ovd-log` exist as delegation targets).
+- ✓ One commit per task, approved by user.
+
+**Aggregate test count after Phase 2: 1244 ovd-plan checks** across 13 test files. Plus 4 workflow regression checks + 269 router benchmark checks. Plus 35 files in the `npm run check` parse chain.
+
+**The five canonical architectural patterns established for Phase 2 are now load-bearing for Phase 3+:**
+1. **Pattern 1 dispatch (Q1):** CLI is non-interactive; agent drives interactive work. CLI emits structured plans + commits. Now proven across 5 handlers (preferences, requirements, codebase-map, drift, refresh).
+2. **Single canonical primitives, reused across handlers:** `appendUnderHeader` (4 consumers), `normalizeEntries` shape (3 consumers — Task 2.3 / 2.4 / 2.5; refresh has its own variant), drift detection consumed by refresh.
+3. **JSON parse guard at the dispatch layer, BEFORE any file write:** every subcommand follows this. Bad payload → `{ ok: false, reason, text }` with no partial write.
+4. **Migration-compat tested explicitly:** every Phase 2 task that writes to a `.overdrive/*` file has a test asserting a pre-existing (migration-produced or user-edited) file is extended/preserved cleanly, not replaced.
+5. **The `--entries-json` flag is the generic structured-payload carrier.** Five distinct schemas now ride this single flag, distinguished by mode/subcommand. No new CLI flags introduced in Phase 2 beyond `--entries-json` + the existing `--project-dir`.
+
+**The CLI-vs-agent boundary is fully realized.** No CLI handler writes any `.overdrive/codebase/*.md` file. The only CLI writes under `.overdrive/codebase/` are `_tags.json` (mapper.sources by Task 2.3; fileTreeSignature by Task 2.7; merged mapper.sources by Task 2.8). All mapper .md content is owned by subagents dispatched per the Pattern 1 plan emission.
+
+**Branch state at session end (uncommitted bits, AFTER the Task 2.8 commit lands):**
+- `feature/ovd-plan` will be 10 commits ahead of `main`:
+  ```
+  <pending>  ovd-plan(phase-2.task-8): MAP REFRESH (narrowed dispatch + merge commit)
+  5a9bcba    ovd-plan(phase-2.task-7): drift detection (touched-path overlap + file-tree signature)
+  85697bf    ovd-plan(phase-2.task-3): codebase-map dispatcher (5 mappers; Pattern 1)
+  a5fa5ba    ovd-plan(phase-2.task-5): requirements draft (plan + commit modes)
+  1902a9e    ovd-plan(phase-2.task-4): preferences elicit (plan + commit modes)
+  f29cb16    ovd-plan(phase-2.task-6): decisions log helper
+  f710436    ovd-plan(phase-2.task-2.5): MIGRATE state -- real legacy -> r3 layout migration
+  ed9cb3f    ovd-plan(phase-2.task-2): INIT orchestration with migration detection
+  2b6db6e    ovd-plan(phase-2.task-1): tutorial + status display for /ovd-workflow
+  599fc8f    ovd-plan: docs (Phase 1 follow-up -- Task 7.6 + log updates)
+  a6b0f4f    ovd-plan: lazy-load ovd-plan in installer + vendor js-yaml so runtime shim works
+  23f10e0    ovd-plan: Phase 1 foundation + Overdrive v2 design records
+  ```
+- Working tree after the Task 2.8 commit: clean except the two pre-existing untracked 2026-06-06 spec docs (untouched per project direction throughout the phase).
+- No push. Per hard rules: no push without explicit user approval.
+
+**Recommendation for the next session (Phase 3 kickoff):**
+Phase 3 implements `/ovd-plan` — the Socratic deliberation + blind-spot expansion + RESOLVE SKILLS sub-step. This is structurally different from Phase 2: Phase 2 was utility-handler-heavy (each task a focused single-responsibility module); Phase 3 is dialogue-driven and stateful (deliberation-state persistence, multi-session re-entry, idea→edit context handoff between chats). Fresh context for Phase 3 is the natural move:
+1. The current session has done 3 full Task cycles (2.3 + 2.7 + 2.8) plus the initial dossier read; context is heavy.
+2. Phase 3's design questions (Q12 multi-session re-entry; Q8 idea/edit flow; Q9 blind-spot brevity; the RESOLVE SKILLS sub-step) deserve a fresh design-question pass without competing for budget.
+3. The handoff dossier (`docs/superpowers/handoff/`) + spec r3 + this impl plan log are sufficient for any fresh-context agent to pick up at Phase 3 kickoff.
+
+Phase 3 kickoff in the next session should: read the resume protocol → read the most-recent log entries → confirm Phase 2 commits landed clean → surface Phase 3 design choices (Q8 / Q9 / Q12 + the RESOLVE SKILLS sub-step shape) before any code.
+
 ---
 
 ## 8. Glossary / quick decision reference
