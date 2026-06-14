@@ -672,9 +672,25 @@ console.log('integration');
   r = deliberate.applyPlanTurn(projectDir, {
     milestone_id: 'III',
     leaves: [{ id: 'III.1', title: 'L', description: 'd', scope: { in: ['x'], out: [] }, success: ['s'], verify: { method: 'm', fallback: 'f', review_required: true }, deps: [] }],
-    transition: 'present'
+    transition: 'plan_skills'
   }, { now: FIXED_NOW });
-  check('int: Plan III → present ok', r.ok === true && r.stage === 'present');
+  check('int: Plan III → plan_skills ok (Slice B sub-step)', r.ok === true && r.stage === 'plan_skills');
+  // 4.5. Skip Stage 5.5 RESOLVE SKILLS — plan-skills.js owns its own full-cycle tests.
+  // Bulk-clear pending_skill_resolution + advance stage to 'present' via direct state mutation.
+  {
+    const { openState, commitState } = require('../lib/ovd-plan/deliberation-state');
+    const op = openState(projectDir);
+    const t = op.innerObj.proposed_tree;
+    for (const m of t.milestones) {
+      if (Array.isArray(m.children)) {
+        for (const lf of m.children) {
+          if (lf) delete lf.pending_skill_resolution;
+        }
+      }
+    }
+    op.innerObj.stage = 'present';
+    commitState(projectDir, op);
+  }
   // 5. Present approve → commit
   r = deliberate.applyPresentTurn(projectDir, { kind: 'approve' }, { now: FIXED_NOW });
   check('int: present approve → commit', r.ok === true && r.stage === 'commit');
@@ -693,7 +709,10 @@ console.log('integration');
   check('int: agent-inserted leaf annotations.inserted_reason preserved', typeof leafSec.annotations.inserted_reason === 'string' && leafSec.annotations.inserted_reason.length > 0);
   check('int: agent-inserted leaf annotations.category=security (Q3.4.7 additive)', leafSec.annotations.category === 'security');
   check('int: agent-inserted leaf annotations.internal_analysis preserved (Q3.4.7 additive)', typeof leafSec.annotations.internal_analysis === 'string' && /credential-stuffing/.test(leafSec.annotations.internal_analysis));
-  check('int: agent-inserted leaf has pending_skill_resolution (Slice B seam)', leafSec.annotations.pending_skill_resolution === true);
+  // Slice B seam: pending_skill_resolution is the placeholder Slice A + Task 3.4 write;
+  // Stage 5.5 (Slice B) clears it when resolution lands. In this integration test, the
+  // 4.5 skipPlanSkills block clears the flag uniformly across user-planned and agent-inserted leaves.
+  check('int: agent-inserted leaf no longer pending_skill_resolution (cleared by 5.5)', !('pending_skill_resolution' in leafSec.annotations));
   // Tree has milestone III (new agent-inserted milestone)
   const treeIII = parsed.tree.children.find((m) => m.annotations && m.annotations.inserted_by === 'agent');
   check('int: tree.children includes new agent-inserted milestone', !!treeIII);

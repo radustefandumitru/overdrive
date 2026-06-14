@@ -79,6 +79,27 @@ function skipBlindSpot(projectDir) {
   commitState(projectDir, opened);
 }
 
+// Test-internal helper: skip plan_skills stage by bulk-clearing pending_skill_resolution
+// on every leaf and advancing to 'present'. Plan-skills module owns its own tests for
+// the full Stage 5.5 cycle (per-leaf router calls + inbox unknown-skills log);
+// deliberate's tests use this skip to exercise Stage 7 / Stage 8 in isolation.
+function skipPlanSkills(projectDir) {
+  const { openState, commitState } = require('../lib/ovd-plan/deliberation-state');
+  const opened = openState(projectDir);
+  const tree = opened.innerObj.proposed_tree;
+  if (tree && Array.isArray(tree.milestones)) {
+    for (const m of tree.milestones) {
+      if (Array.isArray(m.children)) {
+        for (const leaf of m.children) {
+          if (leaf) delete leaf.pending_skill_resolution;
+        }
+      }
+    }
+  }
+  opened.innerObj.stage = 'present';
+  commitState(projectDir, opened);
+}
+
 const FIXED_NOW = '2026-06-13T11:00:00.000Z';
 const FIXED_NOW_2 = '2026-06-13T11:05:00.000Z';
 
@@ -117,13 +138,16 @@ check('STAGES contains elicit', STAGES.includes('elicit'));
 check('STAGES contains blind_spot', STAGES.includes('blind_spot'));
 check('STAGES contains spec', STAGES.includes('spec'));
 check('STAGES contains plan', STAGES.includes('plan'));
+check('STAGES contains plan_skills', STAGES.includes('plan_skills'));
 check('STAGES contains present', STAGES.includes('present'));
 check('STAGES contains commit', STAGES.includes('commit'));
 check('STAGES contains committed', STAGES.includes('committed'));
-check('STAGES has 7 entries', STAGES.length === 7);
+check('STAGES has 8 entries', STAGES.length === 8);
 check('STAGES order: elicit before spec', STAGES.indexOf('elicit') < STAGES.indexOf('spec'));
 check('STAGES order: spec before blind_spot', STAGES.indexOf('spec') < STAGES.indexOf('blind_spot'));
 check('STAGES order: blind_spot before plan', STAGES.indexOf('blind_spot') < STAGES.indexOf('plan'));
+check('STAGES order: plan before plan_skills', STAGES.indexOf('plan') < STAGES.indexOf('plan_skills'));
+check('STAGES order: plan_skills before present', STAGES.indexOf('plan_skills') < STAGES.indexOf('present'));
 check('exports STATE_KEYS', Array.isArray(STATE_KEYS) && STATE_KEYS.length >= 8);
 check('STATE_KEYS includes calibration', STATE_KEYS.includes('calibration'));
 check('STATE_KEYS includes stage', STATE_KEYS.includes('stage'));
@@ -458,12 +482,12 @@ function seedToPlan(projectDir) {
   const r = applyPlanTurn(projectDir, {
     milestone_id: 'II',
     leaves: [freshLeaf('II.1', 'D1')],
-    transition: 'present'
+    transition: 'plan_skills'
   }, { now: FIXED_NOW_2 });
-  check('plan-final stage=present', r.stage === 'present');
+  check('plan-final stage=plan_skills', r.stage === 'plan_skills');
   check('plan-final transitioned', r.transitioned === true);
   const persisted = readDeliberationState(projectDir);
-  check('persisted stage=present', persisted.stage === 'present');
+  check('persisted stage=plan_skills', persisted.stage === 'plan_skills');
   check('persisted current_proposal_revision=3', persisted.current_proposal_revision === 3);
   cleanup(tmpRoot);
 }
@@ -516,7 +540,10 @@ console.log('Stage 7 Present');
 function seedToPresent(projectDir) {
   seedToPlan(projectDir);
   applyPlanTurn(projectDir, { milestone_id: 'I', leaves: [freshLeaf('I.1', 'L1')] }, { now: FIXED_NOW });
-  applyPlanTurn(projectDir, { milestone_id: 'II', leaves: [freshLeaf('II.1', 'D1')], transition: 'present' }, { now: FIXED_NOW_2 });
+  applyPlanTurn(projectDir, { milestone_id: 'II', leaves: [freshLeaf('II.1', 'D1')], transition: 'plan_skills' }, { now: FIXED_NOW_2 });
+  // Slice B sits between Plan and Present in STAGES. plan-skills module owns its own
+  // Stage 5.5 tests; deliberate's tests skip past plan_skills to exercise Present in isolation.
+  skipPlanSkills(projectDir);
 }
 {
   const { projectDir, tmpRoot } = makeTempProject('present-plan');
@@ -651,7 +678,12 @@ function seedToCommit(projectDir) {
   check('tree milestone[0] leaf has success', Array.isArray(parsed.tree.children[0].children[0].annotations.success));
   check('tree milestone[0] leaf has verify.method', parsed.tree.children[0].children[0].annotations.verify.method === 'vitest');
   check('tree milestone[0] leaf has deps', Array.isArray(parsed.tree.children[0].children[0].annotations.deps));
-  check('tree milestone[0] leaf has pending_skill_resolution', parsed.tree.children[0].children[0].annotations.pending_skill_resolution === true);
+  // Post-Slice-B: pending_skill_resolution is cleared by Stage 5.5 (or skipPlanSkills in this test).
+  // The annotation field is absent on the persisted leaf; skills/confidence remain as the
+  // Slice A placeholder ([], 'low') in this skip-flow (plan-skills.js test owns the resolve-fill case).
+  check('tree milestone[0] leaf has no pending_skill_resolution (cleared by 5.5)', !('pending_skill_resolution' in parsed.tree.children[0].children[0].annotations));
+  check('tree milestone[0] leaf still has placeholder skills:[]', Array.isArray(parsed.tree.children[0].children[0].annotations.skills) && parsed.tree.children[0].children[0].annotations.skills.length === 0);
+  check('tree milestone[0] leaf still has placeholder confidence=low', parsed.tree.children[0].children[0].annotations.confidence === 'low');
   check('frontmatter current_milestone=I', parsed.frontmatter.current_milestone === 'I');
   // proposed_tree cleared from deliberation-state
   const persisted = readDeliberationState(projectDir);
@@ -788,9 +820,11 @@ console.log('integration happy path');
   // 4. Plan milestone I
   r = applyPlanTurn(projectDir, { milestone_id: 'I', leaves: [freshLeaf('I.1', 'Setup auth')] }, { now: FIXED_NOW });
   check('int: plan I ok', r.ok === true);
-  // 5. Plan milestone II → present
-  r = applyPlanTurn(projectDir, { milestone_id: 'II', leaves: [freshLeaf('II.1', 'Stats widget')], transition: 'present' }, { now: FIXED_NOW });
-  check('int: plan II → present ok', r.ok === true && r.stage === 'present');
+  // 5. Plan milestone II → plan_skills (Slice B sub-step)
+  r = applyPlanTurn(projectDir, { milestone_id: 'II', leaves: [freshLeaf('II.1', 'Stats widget')], transition: 'plan_skills' }, { now: FIXED_NOW });
+  check('int: plan II → plan_skills ok', r.ok === true && r.stage === 'plan_skills');
+  // 5.5. Skip plan_skills (full Stage 5.5 cycle owned by plan-skills.js test)
+  skipPlanSkills(projectDir);
   // 6. Present approve → commit
   r = applyPresentTurn(projectDir, { kind: 'approve' }, { now: FIXED_NOW });
   check('int: present approve → commit ok', r.ok === true && r.stage === 'commit');
@@ -864,6 +898,22 @@ console.log('helpers');
   check('buildLeafAnnotations: scope.out array', Array.isArray(ann.scope.out));
   check('buildLeafAnnotations: verify object', ann.verify && ann.verify.method === 'vitest');
   check('buildLeafAnnotations: success preserved', ann.success.length === 1);
+  check('buildLeafAnnotations: no rationale when leaf lacks it', !('rationale' in ann));
+  check('buildLeafAnnotations: no considered when leaf lacks it', !('considered' in ann));
+}
+{
+  // Slice B annotation extension: rationale + considered ride through when present on leaf.
+  const resolvedLeaf = Object.assign(freshLeaf('I.1', 'L'), {
+    skills: ['frontend-design'],
+    confidence: 'high',
+    rationale: 'UI scope with clear contract',
+    considered: ['react', 'taste']
+  });
+  const ann2 = buildLeafAnnotations(resolvedLeaf);
+  check('buildLeafAnnotations: skills copied verbatim', JSON.stringify(ann2.skills) === '["frontend-design"]');
+  check('buildLeafAnnotations: confidence copied verbatim', ann2.confidence === 'high');
+  check('buildLeafAnnotations: rationale copied verbatim', ann2.rationale === 'UI scope with clear contract');
+  check('buildLeafAnnotations: considered copied verbatim', JSON.stringify(ann2.considered) === '["react","taste"]');
 }
 {
   const node = buildMilestoneNode({ id: 'I', title: 'F', description: 'desc', children: [freshLeaf('I.1', 'L')] }, 1);
