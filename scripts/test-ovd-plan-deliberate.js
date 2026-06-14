@@ -66,6 +66,19 @@ function cleanup(tmpRoot) { fs.rmSync(tmpRoot, { recursive: true, force: true })
 function writePlan(projectDir, content) { fs.writeFileSync(path.join(projectDir, 'OVERDRIVE.md'), content); }
 function readPlan(projectDir) { return fs.readFileSync(path.join(projectDir, 'OVERDRIVE.md'), 'utf8'); }
 
+// Test-internal helper: skip blind_spot stage by direct state mutation.
+// Blind-spot module owns its own tests for the full Stage 3 cycle (insert + prune);
+// deliberate's tests use this skip to exercise the rest of the state machine in isolation.
+// Per spec resolution (Q3.4.1-followup): blind_spot sits between spec and plan in STAGES,
+// so this helper transitions blind_spot → plan (not blind_spot → spec).
+function skipBlindSpot(projectDir) {
+  const { openState, commitState } = require('../lib/ovd-plan/deliberation-state');
+  const opened = openState(projectDir);
+  opened.innerObj.stage = 'plan';
+  if (opened.innerObj.blind_spot_inserted !== undefined) delete opened.innerObj.blind_spot_inserted;
+  commitState(projectDir, opened);
+}
+
 const FIXED_NOW = '2026-06-13T11:00:00.000Z';
 const FIXED_NOW_2 = '2026-06-13T11:05:00.000Z';
 
@@ -101,12 +114,16 @@ function freshLeaf(id, title) {
 console.log('module surface');
 check('exports STAGES (array)', Array.isArray(STAGES));
 check('STAGES contains elicit', STAGES.includes('elicit'));
+check('STAGES contains blind_spot', STAGES.includes('blind_spot'));
 check('STAGES contains spec', STAGES.includes('spec'));
 check('STAGES contains plan', STAGES.includes('plan'));
 check('STAGES contains present', STAGES.includes('present'));
 check('STAGES contains commit', STAGES.includes('commit'));
 check('STAGES contains committed', STAGES.includes('committed'));
-check('STAGES has 6 entries', STAGES.length === 6);
+check('STAGES has 7 entries', STAGES.length === 7);
+check('STAGES order: elicit before spec', STAGES.indexOf('elicit') < STAGES.indexOf('spec'));
+check('STAGES order: spec before blind_spot', STAGES.indexOf('spec') < STAGES.indexOf('blind_spot'));
+check('STAGES order: blind_spot before plan', STAGES.indexOf('blind_spot') < STAGES.indexOf('plan'));
 check('exports STATE_KEYS', Array.isArray(STATE_KEYS) && STATE_KEYS.length >= 8);
 check('STATE_KEYS includes calibration', STATE_KEYS.includes('calibration'));
 check('STATE_KEYS includes stage', STATE_KEYS.includes('stage'));
@@ -231,15 +248,16 @@ console.log('Stage 2 Elicit — commit');
   cleanup(tmpRoot);
 }
 {
-  // Transition to spec
+  // Transition to spec (Stage 4)
   const { projectDir, tmpRoot } = makeTempProject('elicit-commit-transition');
   writePlan(projectDir, FIXTURE_WITH_CAL);
   applyElicitTurn(projectDir, { answer: 'Answer 1', turn_id: 1 }, { now: FIXED_NOW });
   const r = applyElicitTurn(projectDir, { answer: 'Answer 2', turn_id: 2, transition: 'spec' }, { now: FIXED_NOW_2 });
   check('elicit-transition: stage=spec', r.stage === 'spec');
   check('elicit-transition: transitioned=true', r.transitioned === true);
+  check('elicit-transition: text mentions Stage 4', /Stage 4|Spec/.test(r.text));
   const persisted = readDeliberationState(projectDir);
-  check('persisted: stage advanced', persisted.stage === 'spec');
+  check('persisted: stage advanced to spec', persisted.stage === 'spec');
   check('persisted: turn_count=2', persisted.turn_count === 2);
   cleanup(tmpRoot);
 }
@@ -279,18 +297,20 @@ console.log('Stage 2 Elicit — commit');
   r = applyElicitTurn(projectDir, { answer: 'A', turn_id: 1.5 });
   check('elicit reject non-integer turn_id', r.ok === false && r.reason === 'missing-turn-id');
   r = applyElicitTurn(projectDir, { answer: 'A', turn_id: 1, transition: 'plan' });
-  check('elicit reject invalid transition', r.ok === false && r.reason === 'invalid-transition');
+  check('elicit reject invalid transition (plan)', r.ok === false && r.reason === 'invalid-transition');
+  r = applyElicitTurn(projectDir, { answer: 'A', turn_id: 1, transition: 'blind_spot' });
+  check('elicit reject invalid transition (blind_spot — only via spec)', r.ok === false && r.reason === 'invalid-transition');
   r = applyElicitTurn(projectDir, { answer: 'A', turn_id: 5 });
   check('elicit reject turn-id-mismatch', r.ok === false && r.reason === 'turn-id-mismatch');
   cleanup(tmpRoot);
 }
 {
-  // Stage mismatch: try to elicit when stage='spec'
+  // Stage mismatch: try to elicit when stage='spec' (post-transition)
   const { projectDir, tmpRoot } = makeTempProject('elicit-stage-mismatch');
   writePlan(projectDir, FIXTURE_WITH_CAL);
   applyElicitTurn(projectDir, { answer: 'A', turn_id: 1, transition: 'spec' }, { now: FIXED_NOW });
   const r = applyElicitTurn(projectDir, { answer: 'B', turn_id: 2 }, { now: FIXED_NOW_2 });
-  check('elicit stage-mismatch', r.ok === false && r.reason === 'stage-mismatch');
+  check('elicit stage-mismatch (now spec)', r.ok === false && r.reason === 'stage-mismatch');
   cleanup(tmpRoot);
 }
 
@@ -321,11 +341,12 @@ function seedToSpec(projectDir) {
       { id: 'I', title: 'Foundation', description: 'Auth + DB.', ambiguity_score: 2 },
       { id: 'II', title: 'Dashboard', description: 'Stats widgets.', ambiguity_score: 3 }
     ],
-    transition: 'plan'
+    transition: 'blind_spot'
   }, { now: FIXED_NOW_2 });
   check('spec-commit happy ok', r.ok === true);
-  check('spec-commit stage=plan', r.stage === 'plan');
+  check('spec-commit stage=blind_spot', r.stage === 'blind_spot');
   check('spec-commit transitioned', r.transitioned === true);
+  check('spec-commit text mentions Stage 3', /Stage 3|Blind-spot/.test(r.text));
   check('spec-commit milestonesWritten=2', r.milestonesWritten === 2);
   const persisted = readDeliberationState(projectDir);
   check('persisted proposed_tree has 2 milestones', persisted.proposed_tree.milestones.length === 2);
@@ -371,8 +392,10 @@ function seedToSpec(projectDir) {
   check('spec reject ambig too low', r.ok === false && r.reason === 'invalid-ambiguity-score');
   r = applySpecTurn(projectDir, { milestones: [{ id: 'I', title: 't', description: 'd', ambiguity_score: 6 }] });
   check('spec reject ambig too high', r.ok === false && r.reason === 'invalid-ambiguity-score');
+  r = applySpecTurn(projectDir, { milestones: [{ id: 'I', title: 't', description: 'd', ambiguity_score: 1 }], transition: 'plan' });
+  check('spec reject invalid transition (plan — must go via blind_spot)', r.ok === false && r.reason === 'invalid-transition');
   r = applySpecTurn(projectDir, { milestones: [{ id: 'I', title: 't', description: 'd', ambiguity_score: 1 }], transition: 'present' });
-  check('spec reject invalid transition', r.ok === false && r.reason === 'invalid-transition');
+  check('spec reject invalid transition (present)', r.ok === false && r.reason === 'invalid-transition');
   cleanup(tmpRoot);
 }
 
@@ -387,8 +410,11 @@ function seedToPlan(projectDir) {
       { id: 'I', title: 'Foundation', description: 'Auth + DB.', ambiguity_score: 2 },
       { id: 'II', title: 'Dashboard', description: 'Stats widgets.', ambiguity_score: 2 }
     ],
-    transition: 'plan'
+    transition: 'blind_spot'
   }, { now: FIXED_NOW_2 });
+  // Per spec resolution (Q3.4.1-followup): blind_spot sits between spec and plan;
+  // deliberate's tests skip the Stage 3 cycle to reach Plan (blind-spot.js owns its own tests).
+  skipBlindSpot(projectDir);
 }
 {
   const { projectDir, tmpRoot } = makeTempProject('plan-mode');
@@ -667,6 +693,17 @@ console.log('runDeliberate dispatch');
   cleanup(tmpRoot);
 }
 {
+  // dispatch routes to blind-spot module when stage='blind_spot' (post Spec transition)
+  const { projectDir, tmpRoot } = makeTempProject('dispatch-bare-blind-spot');
+  writePlan(projectDir, FIXTURE_WITH_CAL);
+  applyElicitTurn(projectDir, { answer: 'A', turn_id: 1, transition: 'spec' }, { now: FIXED_NOW });
+  applySpecTurn(projectDir, { milestones: [{ id: 'I', title: 'Foundation', description: 'Auth.', ambiguity_score: 2 }], transition: 'blind_spot' }, { now: FIXED_NOW });
+  const r = runDeliberate(projectDir);
+  check('dispatch bare at blind_spot: ok=true (delegates to blind-spot module)', r.ok === true);
+  check('dispatch bare at blind_spot: plan mode', r.mode === 'plan');
+  cleanup(tmpRoot);
+}
+{
   const { projectDir, tmpRoot } = makeTempProject('dispatch-commit-elicit');
   writePlan(projectDir, FIXTURE_WITH_CAL);
   const r = runDeliberate(projectDir, { mode: 'commit', entries: { answer: 'A', turn_id: 1 }, now: FIXED_NOW });
@@ -737,15 +774,17 @@ console.log('integration happy path');
   // 2. Elicit turn 2 → transition spec
   r = applyElicitTurn(projectDir, { answer: 'Supabase auth.', turn_id: 2, transition: 'spec' }, { now: FIXED_NOW });
   check('int: elicit 2 → spec ok', r.ok === true && r.stage === 'spec');
-  // 3. Spec → plan
+  // 3. Spec → blind_spot (per Q3.4.1-followup spec resolution)
   r = applySpecTurn(projectDir, {
     milestones: [
       { id: 'I', title: 'Auth', description: 'Login with Supabase.', ambiguity_score: 2 },
       { id: 'II', title: 'Dashboard', description: 'Show stats.', ambiguity_score: 2 }
     ],
-    transition: 'plan'
+    transition: 'blind_spot'
   }, { now: FIXED_NOW });
-  check('int: spec → plan ok', r.ok === true && r.stage === 'plan');
+  check('int: spec → blind_spot ok', r.ok === true && r.stage === 'blind_spot');
+  // 3.5. Skip blind_spot (full Stage 3 cycle owned by blind-spot.js test)
+  skipBlindSpot(projectDir);
   // 4. Plan milestone I
   r = applyPlanTurn(projectDir, { milestone_id: 'I', leaves: [freshLeaf('I.1', 'Setup auth')] }, { now: FIXED_NOW });
   check('int: plan I ok', r.ok === true);
