@@ -25,6 +25,7 @@ const {
   applyPresentTurn,
   buildCommitTurn,
   applyCommitTurn,
+  runVerifyStage,
   runDeliberate,
   formatPlan,
   formatCommit,
@@ -79,10 +80,12 @@ function skipBlindSpot(projectDir) {
   commitState(projectDir, opened);
 }
 
-// Test-internal helper: skip plan_skills stage by bulk-clearing pending_skill_resolution
-// on every leaf and advancing to 'present'. Plan-skills module owns its own tests for
-// the full Stage 5.5 cycle (per-leaf router calls + inbox unknown-skills log);
-// deliberate's tests use this skip to exercise Stage 7 / Stage 8 in isolation.
+// Test-internal helper: skip plan_skills (and the downstream Stage 6 Verify wrapper)
+// by bulk-clearing pending_skill_resolution on every leaf and advancing directly to
+// 'present'. Plan-skills owns its own tests for the full Stage 5.5 cycle; plan-quality
+// (consumed by runVerifyStage) owns its own tests for the Stage 6 audit. Deliberate's
+// downstream Stage 7 / Stage 8 tests use this fast-forward helper to avoid running
+// the verify audit (which requires .overdrive/requirements.md fixtures).
 function skipPlanSkills(projectDir) {
   const { openState, commitState } = require('../lib/ovd-plan/deliberation-state');
   const opened = openState(projectDir);
@@ -139,15 +142,17 @@ check('STAGES contains blind_spot', STAGES.includes('blind_spot'));
 check('STAGES contains spec', STAGES.includes('spec'));
 check('STAGES contains plan', STAGES.includes('plan'));
 check('STAGES contains plan_skills', STAGES.includes('plan_skills'));
+check('STAGES contains verify', STAGES.includes('verify'));
 check('STAGES contains present', STAGES.includes('present'));
 check('STAGES contains commit', STAGES.includes('commit'));
 check('STAGES contains committed', STAGES.includes('committed'));
-check('STAGES has 8 entries', STAGES.length === 8);
+check('STAGES has 9 entries', STAGES.length === 9);
 check('STAGES order: elicit before spec', STAGES.indexOf('elicit') < STAGES.indexOf('spec'));
 check('STAGES order: spec before blind_spot', STAGES.indexOf('spec') < STAGES.indexOf('blind_spot'));
 check('STAGES order: blind_spot before plan', STAGES.indexOf('blind_spot') < STAGES.indexOf('plan'));
 check('STAGES order: plan before plan_skills', STAGES.indexOf('plan') < STAGES.indexOf('plan_skills'));
-check('STAGES order: plan_skills before present', STAGES.indexOf('plan_skills') < STAGES.indexOf('present'));
+check('STAGES order: plan_skills before verify', STAGES.indexOf('plan_skills') < STAGES.indexOf('verify'));
+check('STAGES order: verify before present', STAGES.indexOf('verify') < STAGES.indexOf('present'));
 check('exports STATE_KEYS', Array.isArray(STATE_KEYS) && STATE_KEYS.length >= 8);
 check('STATE_KEYS includes calibration', STATE_KEYS.includes('calibration'));
 check('STATE_KEYS includes stage', STATE_KEYS.includes('stage'));
@@ -164,6 +169,7 @@ for (const s of stageHandlers) {
   check(`apply${s}Turn is a function`, typeof deliberate[`apply${s}Turn`] === 'function');
 }
 check('runDeliberate function', typeof runDeliberate === 'function');
+check('runVerifyStage function', typeof runVerifyStage === 'function');
 check('formatPlan function', typeof formatPlan === 'function');
 check('formatCommit function', typeof formatCommit === 'function');
 check('currentStage helper', typeof currentStage === 'function');
@@ -530,6 +536,167 @@ function seedToPlan(projectDir) {
   writePlan(projectDir, FIXTURE_WITH_CAL);
   const r = applyPlanTurn(projectDir, { milestone_id: 'I', leaves: [freshLeaf('I.1', 'L')] });
   check('plan-stage-mismatch', r.ok === false && r.reason === 'stage-mismatch');
+  cleanup(tmpRoot);
+}
+
+// ===========================================================================
+// Stage 6 Verify — runVerifyStage wrapper around plan-quality with auto-advance
+// ===========================================================================
+// Slice C — runVerifyStage owns the deliberation-state stage transition; the
+// underlying audit (coverage / leaf_completeness / goal_backward) lives in
+// plan-quality.js and is exhaustively tested there. These tests verify the
+// wrapper's narrow contract: plan-mode passthrough, commit-mode auto-advance on
+// clean envelope, stay-at-verify on any open item. Per Q3.8.1 boundary lock,
+// plan-quality.js stays standalone — the transition logic lives here.
+console.log('Stage 6 Verify (runVerifyStage)');
+
+const VERIFY_REQS = '# Requirements\n\n## Functional\n- req zero\n\n## Non-functional\n- nf one\n\n## Out of scope\n- oos one\n';
+
+function fixtureVerifyStage(projectDir, opts = {}) {
+  const drop = opts.dropLeafField || null;
+  const lines = [];
+  lines.push(`${FRONT}# T`);
+  lines.push('');
+  lines.push('<!-- ovd-plan:deliberation-state:start -->');
+  lines.push('stage: verify');
+  lines.push('proposed_tree:');
+  lines.push('  milestones:');
+  lines.push('    - id: "I"');
+  lines.push('      title: "M I"');
+  lines.push('      description: "milestone I"');
+  lines.push('      children:');
+  lines.push('        - id: "I.1"');
+  lines.push('          title: "L 1"');
+  lines.push('          description: "leaf 1"');
+  lines.push('          scope:');
+  lines.push('            in: ["src/"]');
+  lines.push('            out: []');
+  if (drop !== 'success') {
+    lines.push('          success: ["works"]');
+  }
+  lines.push('          verify:');
+  lines.push('            method: "vitest"');
+  lines.push('            fallback: "agent_self_check_against_success"');
+  lines.push('            review_required: true');
+  lines.push('          deps: []');
+  lines.push('          skills: ["frontend-design"]');
+  lines.push('          confidence: "high"');
+  lines.push('          rationale: "narrow"');
+  lines.push('          considered: []');
+  lines.push('  last_revision: 1');
+  lines.push('current_proposal_revision: 1');
+  lines.push('<!-- ovd-plan:deliberation-state:end -->');
+  fs.writeFileSync(path.join(projectDir, 'OVERDRIVE.md'), lines.join('\n'));
+  const reqsPath = path.join(projectDir, '.overdrive', 'requirements.md');
+  fs.mkdirSync(path.dirname(reqsPath), { recursive: true });
+  fs.writeFileSync(reqsPath, VERIFY_REQS);
+}
+
+const CLEAN_VERIFY_PAYLOAD = {
+  trace: { '0': ['I.1'] },
+  uncovered_indices: [],
+  milestone_verdicts: [{ milestone_id: 'I', verdict: 'pass', notes: 'all covered' }]
+};
+
+// Plan-mode passthrough: no transition; returns plan-quality envelope verbatim.
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-plan-mode');
+  fixtureVerifyStage(projectDir);
+  const r = runVerifyStage(projectDir, {});
+  check('verify plan-mode: ok', r && r.ok === true);
+  check('verify plan-mode: status=plan-quality', r.status === 'plan-quality');
+  check('verify plan-mode: mode=plan', r.mode === 'plan');
+  check('verify plan-mode: not transitioned', r.transitioned !== true);
+  const persisted = readDeliberationState(projectDir);
+  check('verify plan-mode: stage unchanged', persisted.stage === 'verify');
+  cleanup(tmpRoot);
+}
+
+// Commit-mode + clean envelope: auto-advance verify → present.
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-clean');
+  fixtureVerifyStage(projectDir);
+  const r = runVerifyStage(projectDir, { mode: 'commit', entries: CLEAN_VERIFY_PAYLOAD, now: FIXED_NOW });
+  check('verify clean: ok', r && r.ok === true);
+  check('verify clean: stage=present (auto-advance)', r.stage === 'present');
+  check('verify clean: transitioned=true', r.transitioned === true);
+  check('verify clean: text mentions audit clean', /Audit clean/.test(r.text));
+  check('verify clean: text mentions Stage 7', /Stage 7/.test(r.text));
+  const persisted = readDeliberationState(projectDir);
+  check('verify clean: persisted stage=present', persisted.stage === 'present');
+  cleanup(tmpRoot);
+}
+
+// Commit-mode + uncovered functional req: stays at 'verify'.
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-uncovered');
+  fixtureVerifyStage(projectDir);
+  const r = runVerifyStage(projectDir, {
+    mode: 'commit',
+    entries: { trace: {}, uncovered_indices: [0], milestone_verdicts: [{ milestone_id: 'I', verdict: 'pass', notes: 'partial' }] },
+    now: FIXED_NOW
+  });
+  check('verify uncovered: ok', r && r.ok === true);
+  check('verify uncovered: stage=verify', r.stage === 'verify');
+  check('verify uncovered: transitioned=false', r.transitioned === false);
+  check('verify uncovered: text mentions open items', /open items/.test(r.text));
+  const persisted = readDeliberationState(projectDir);
+  check('verify uncovered: persisted stage stays verify', persisted.stage === 'verify');
+  cleanup(tmpRoot);
+}
+
+// Commit-mode + non-pass verdict (gap): stays at 'verify'.
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-gap');
+  fixtureVerifyStage(projectDir);
+  const r = runVerifyStage(projectDir, {
+    mode: 'commit',
+    entries: { trace: { '0': ['I.1'] }, uncovered_indices: [], milestone_verdicts: [{ milestone_id: 'I', verdict: 'gap', notes: 'gap found' }] },
+    now: FIXED_NOW
+  });
+  check('verify gap: ok', r && r.ok === true);
+  check('verify gap: stage stays verify', r.stage === 'verify');
+  check('verify gap: transitioned=false', r.transitioned === false);
+  const persisted = readDeliberationState(projectDir);
+  check('verify gap: persisted stage stays verify', persisted.stage === 'verify');
+  cleanup(tmpRoot);
+}
+
+// Commit-mode + leaf missing required field: stays at 'verify'.
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-failed-leaf');
+  fixtureVerifyStage(projectDir, { dropLeafField: 'success' });
+  const r = runVerifyStage(projectDir, {
+    mode: 'commit',
+    entries: CLEAN_VERIFY_PAYLOAD,
+    now: FIXED_NOW
+  });
+  check('verify failed-leaf: ok', r && r.ok === true);
+  check('verify failed-leaf: stage stays verify', r.stage === 'verify');
+  check('verify failed-leaf: transitioned=false', r.transitioned === false);
+  const persisted = readDeliberationState(projectDir);
+  check('verify failed-leaf: persisted stage stays verify', persisted.stage === 'verify');
+  cleanup(tmpRoot);
+}
+
+// runDeliberate dispatch — stage=verify routes through runVerifyStage in both modes.
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-dispatch-plan');
+  fixtureVerifyStage(projectDir);
+  const r = runDeliberate(projectDir, {});
+  check('verify dispatch plan: status=plan-quality (delegated via runVerifyStage)', r && r.status === 'plan-quality');
+  check('verify dispatch plan: ok', r.ok === true);
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('verify-dispatch-commit');
+  fixtureVerifyStage(projectDir);
+  const r = runDeliberate(projectDir, { mode: 'commit', entries: CLEAN_VERIFY_PAYLOAD, now: FIXED_NOW });
+  check('verify dispatch commit: status=plan-quality (delegated)', r && r.status === 'plan-quality');
+  check('verify dispatch commit: stage=present (auto-advance via dispatch)', r.stage === 'present');
+  check('verify dispatch commit: transitioned=true', r.transitioned === true);
+  const persisted = readDeliberationState(projectDir);
+  check('verify dispatch commit: persisted stage=present', persisted.stage === 'present');
   cleanup(tmpRoot);
 }
 

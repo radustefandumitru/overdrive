@@ -561,7 +561,7 @@ console.log('applyPlanSkillsTurn — happy paths');
   cleanup(tmpRoot);
 }
 {
-  // Resolve the last leaf: implicit transition to 'present'.
+  // Resolve the last leaf: implicit transition to 'verify' (Slice C — Stage 6 precedes Stage 7).
   const { projectDir, tmpRoot } = makeTempProject('apply-resolve-last');
   writePlan(projectDir, fixtureWithPendingLeaves());
   writeStubCatalog(projectDir);
@@ -576,12 +576,12 @@ console.log('applyPlanSkillsTurn — happy paths');
     host_agent_response: '{"skills":["playwright"],"confidence":"medium","rationale":"r2","considered":[]}'
   }, { now: FIXED_NOW_2 });
   check('apply resolve last: ok', r.ok === true);
-  check('apply resolve last: stage=present', r.stage === 'present');
+  check('apply resolve last: stage=verify', r.stage === 'verify');
   check('apply resolve last: transitioned=true', r.transitioned === true);
   check('apply resolve last: remaining_leaf_ids=[]', JSON.stringify(r.remaining_leaf_ids) === '[]');
-  check('apply resolve last: text mentions transition to Stage 7', /Stage 7|Present/.test(r.text));
+  check('apply resolve last: text mentions transition to Stage 6', /Stage 6|Verify/.test(r.text));
   const persisted = readDeliberationState(projectDir);
-  check('persisted: stage=present', persisted.stage === 'present');
+  check('persisted: stage=verify', persisted.stage === 'verify');
   check('persisted: both leaves resolved', JSON.stringify(persisted.proposed_tree.milestones[0].children[0].skills) === '["frontend-design"]' && JSON.stringify(persisted.proposed_tree.milestones[1].children[0].skills) === '["playwright"]');
   cleanup(tmpRoot);
 }
@@ -787,10 +787,10 @@ console.log('integration');
     host_agent_response: '{"skills":["playwright"],"confidence":"medium","rationale":"e2e","considered":[]}'
   }, { now: FIXED_NOW_2 });
   check('int: II.1 resolved ok', r.ok === true);
-  check('int: II.1 transition to present', r.stage === 'present' && r.transitioned === true);
+  check('int: II.1 transition to verify', r.stage === 'verify' && r.transitioned === true);
   // Verify proposed_tree state after both resolutions.
   const persisted = readDeliberationState(projectDir);
-  check('int: stage=present', persisted.stage === 'present');
+  check('int: stage=verify', persisted.stage === 'verify');
   check('int: I.1 skills=[frontend-design]', JSON.stringify(persisted.proposed_tree.milestones[0].children[0].skills) === '["frontend-design"]');
   check('int: I.1 confidence=high', persisted.proposed_tree.milestones[0].children[0].confidence === 'high');
   check('int: I.1 considered=[react]', JSON.stringify(persisted.proposed_tree.milestones[0].children[0].considered) === '["react"]');
@@ -865,7 +865,7 @@ proposed_tree:
     host_agent_response: '{"skills":["frontend-design"],"confidence":"high","rationale":"a11y pass","considered":[]}'
   }, { now: FIXED_NOW_2 });
   check('uniform: I.4 (agent) resolved', r.ok === true);
-  check('uniform: I.4 transition to present', r.stage === 'present' && r.transitioned === true);
+  check('uniform: I.4 transition to verify', r.stage === 'verify' && r.transitioned === true);
   const persisted = readDeliberationState(projectDir);
   // Verify the agent-inserted leaf retained ALL its Task 3.4 fields PLUS the new skill fields.
   const i4 = persisted.proposed_tree.milestones[0].children[1];
@@ -938,7 +938,7 @@ proposed_tree:
   check('partial: I.1 was not touched', JSON.stringify(readDeliberationState(projectDir).proposed_tree.milestones[0].children[0].skills) === '["frontend-design"]');
   // Resolve I.3 → transition.
   r = applyPlanSkillsTurn(projectDir, { leaf_id: 'I.3', host_agent_response: '{"skills":["react"],"confidence":"low","rationale":"r","considered":[]}' }, { now: FIXED_NOW_2 });
-  check('partial: I.3 resolved + transition', r.ok === true && r.stage === 'present' && r.transitioned === true);
+  check('partial: I.3 resolved + transition', r.ok === true && r.stage === 'verify' && r.transitioned === true);
   const persisted = readDeliberationState(projectDir);
   check('partial: I.1 rationale untouched', persisted.proposed_tree.milestones[0].children[0].rationale === 'previously resolved');
   check('partial: I.2 skills set', JSON.stringify(persisted.proposed_tree.milestones[0].children[1].skills) === '["taste"]');

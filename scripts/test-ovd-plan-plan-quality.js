@@ -851,6 +851,68 @@ console.log('runPlanQualityCheck orchestrator');
 }
 
 // ===========================================================================
+// /ovd-plan verify subcommand (Slice C — retrospective audit route via runPlan)
+// ===========================================================================
+// Slice C added an `/ovd-plan verify` route in lib/ovd-plan/index.js that calls
+// runPlanQualityCheck directly (no runVerifyStage wrapper, no deliberation-state
+// transition). These tests verify the route: Pattern 4 JSON guard, plan-mode +
+// commit-mode dispatch, and the retrospective-audit invariant — deliberation-state
+// stage is NOT mutated by `/ovd-plan verify` even on a clean envelope.
+console.log('/ovd-plan verify subcommand (Slice C)');
+const { readDeliberationState: readDS } = require('../lib/ovd-plan/deliberation-state');
+{
+  // Pattern 4 JSON guard at subcommand boundary — bad JSON rejected with no write.
+  const { projectDir, tmpRoot } = makeTempProject('verify-cmd-bad-json');
+  fixtureProposedTree(projectDir, [{ id: 'I', title: 'F', description: 'd', children: [{ id: 'I.1' }] }]);
+  writeReqs(projectDir, REQS_FUNCTIONAL_ONLY);
+  const r = ovdPlan.runPlan({ subcommand: 'verify', entriesJson: '{not valid' , projectDir });
+  check('verify cmd bad-json: ok=false', r && r.ok === false);
+  check('verify cmd bad-json: status=plan-quality', r.status === 'plan-quality');
+  check('verify cmd bad-json: reason mentions JSON', /not valid JSON/.test(r.reason));
+  // No sessions file written by a rejected dispatch.
+  const sessionsDir = path.join(projectDir, SESSIONS_REL);
+  check('verify cmd bad-json: no sessions written', !fs.existsSync(sessionsDir));
+  cleanup(tmpRoot);
+}
+{
+  // Plan-mode dispatch — returns plan-quality envelope (mode=plan).
+  const { projectDir, tmpRoot } = makeTempProject('verify-cmd-plan');
+  fixtureProposedTree(projectDir, [{ id: 'I', title: 'F', description: 'd', children: [{ id: 'I.1' }] }]);
+  writeReqs(projectDir, REQS_FUNCTIONAL_ONLY);
+  const r = ovdPlan.runPlan({ subcommand: 'verify', projectDir });
+  check('verify cmd plan: ok', r && r.ok === true);
+  check('verify cmd plan: status=plan-quality', r.status === 'plan-quality');
+  check('verify cmd plan: mode=plan', r.mode === 'plan');
+  // No transition (retrospective semantics).
+  const persisted = readDS(projectDir);
+  check('verify cmd plan: stage unchanged (still plan_skills)', persisted.stage === 'plan_skills');
+  cleanup(tmpRoot);
+}
+{
+  // Commit-mode dispatch — returns plan-quality envelope (mode=commit) and writes report.
+  // CRITICAL retrospective invariant: deliberation-state.stage is NOT mutated by the
+  // subcommand path even on a clean envelope (transition only happens via runVerifyStage).
+  const { projectDir, tmpRoot } = makeTempProject('verify-cmd-commit');
+  fixtureProposedTree(projectDir, [{ id: 'I', title: 'F', description: 'd', children: [{ id: 'I.1' }] }]);
+  writeReqs(projectDir, REQS_FUNCTIONAL_ONLY);
+  const entriesJson = JSON.stringify({
+    trace: { '0': ['I.1'], '1': ['I.1'] },
+    uncovered_indices: [],
+    milestone_verdicts: [{ milestone_id: 'I', verdict: 'pass', notes: 'covered' }]
+  });
+  const r = ovdPlan.runPlan({ subcommand: 'verify', entriesJson, projectDir });
+  check('verify cmd commit: ok', r && r.ok === true);
+  check('verify cmd commit: status=plan-quality', r.status === 'plan-quality');
+  check('verify cmd commit: mode=commit', r.mode === 'commit');
+  check('verify cmd commit: report_path returned', typeof r.report_path === 'string' && r.report_path.includes('plan-quality'));
+  // Retrospective invariant: NO deliberation-state stage transition (Q3.3C.5' lock).
+  const persisted = readDS(projectDir);
+  check('verify cmd commit: stage unchanged (retrospective — no transition)', persisted.stage === 'plan_skills');
+  check('verify cmd commit: no transitioned=true on subcommand path', r.transitioned !== true);
+  cleanup(tmpRoot);
+}
+
+// ===========================================================================
 // Migration-compat seam — no requirements / no tree → error envelopes, no write
 // ===========================================================================
 console.log('migration-compat seam');
