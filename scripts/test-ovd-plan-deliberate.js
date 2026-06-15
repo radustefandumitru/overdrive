@@ -153,7 +153,7 @@ check('STAGES order: blind_spot before plan', STAGES.indexOf('blind_spot') < STA
 check('STAGES order: plan before plan_skills', STAGES.indexOf('plan') < STAGES.indexOf('plan_skills'));
 check('STAGES order: plan_skills before verify', STAGES.indexOf('plan_skills') < STAGES.indexOf('verify'));
 check('STAGES order: verify before present', STAGES.indexOf('verify') < STAGES.indexOf('present'));
-check('exports STATE_KEYS', Array.isArray(STATE_KEYS) && STATE_KEYS.length >= 8);
+check('exports STATE_KEYS', Array.isArray(STATE_KEYS) && STATE_KEYS.length >= 11);
 check('STATE_KEYS includes calibration', STATE_KEYS.includes('calibration'));
 check('STATE_KEYS includes stage', STATE_KEYS.includes('stage'));
 check('STATE_KEYS includes turn_count', STATE_KEYS.includes('turn_count'));
@@ -162,6 +162,8 @@ check('STATE_KEYS includes proposed_tree', STATE_KEYS.includes('proposed_tree'))
 check('STATE_KEYS includes open_threads', STATE_KEYS.includes('open_threads'));
 check('STATE_KEYS includes current_proposal_revision', STATE_KEYS.includes('current_proposal_revision'));
 check('STATE_KEYS includes last_action', STATE_KEYS.includes('last_action'));
+check('STATE_KEYS includes pending_reentry (Task 3.9)', STATE_KEYS.includes('pending_reentry'));
+check('STATE_KEYS includes awaiting_restart_confirm (Task 3.9)', STATE_KEYS.includes('awaiting_restart_confirm'));
 check('exports LEAF_REQUIRED_FIELDS', Array.isArray(LEAF_REQUIRED_FIELDS) && LEAF_REQUIRED_FIELDS.length >= 7);
 const stageHandlers = ['Elicit', 'Spec', 'Plan', 'Present', 'Commit'];
 for (const s of stageHandlers) {
@@ -887,7 +889,10 @@ console.log('runDeliberate dispatch');
   const { projectDir, tmpRoot } = makeTempProject('dispatch-bare-spec');
   writePlan(projectDir, FIXTURE_WITH_CAL);
   applyElicitTurn(projectDir, { answer: 'A', turn_id: 1, transition: 'spec' }, { now: FIXED_NOW });
-  const r = runDeliberate(projectDir);
+  // skipReentry: this test exercises stage routing, not Task 3.9 intercept;
+  // applyElicitTurn set last_action=FIXED_NOW (frozen test clock), real wall
+  // clock would exceed the 1h threshold and fire re-entry. Test-only opt-out.
+  const r = runDeliberate(projectDir, { skipReentry: true });
   check('dispatch bare at spec: routes to spec plan', r.stage === 'spec' && r.mode === 'plan');
   cleanup(tmpRoot);
 }
@@ -897,7 +902,7 @@ console.log('runDeliberate dispatch');
   writePlan(projectDir, FIXTURE_WITH_CAL);
   applyElicitTurn(projectDir, { answer: 'A', turn_id: 1, transition: 'spec' }, { now: FIXED_NOW });
   applySpecTurn(projectDir, { milestones: [{ id: 'I', title: 'Foundation', description: 'Auth.', ambiguity_score: 2 }], transition: 'blind_spot' }, { now: FIXED_NOW });
-  const r = runDeliberate(projectDir);
+  const r = runDeliberate(projectDir, { skipReentry: true });
   check('dispatch bare at blind_spot: ok=true (delegates to blind-spot module)', r.ok === true);
   check('dispatch bare at blind_spot: plan mode', r.mode === 'plan');
   cleanup(tmpRoot);
