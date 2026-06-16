@@ -410,7 +410,16 @@ console.log('renderApplySummary');
   const entries = { topic: 't', findings: 'f', next_action: null };
   const text = renderApplySummary(entries, { kind: 'substantive', filePath: '/abs', relPath: 'rel.md', slug: 'slug' });
   check('substantive summary: text mentions sessions file', text.includes('rel.md'));
-  check('substantive summary: 3 next-step options', text.includes('/ovd-plan edit') && text.includes('/ovd-log handoff') && text.includes('/ovd-plan idea'));
+  // Phase 3 completion (Remediation B): action-path render is the §5-canonical
+  // 4 options — (1) edit / (2) handoff / (3) more research / (4) other — per
+  // r3 §5.5 + Pattern 7 transparency.
+  check('substantive summary: 4 numbered action paths',
+    text.includes('(1) /ovd-plan edit')
+    && text.includes('(2) /ovd-log handoff')
+    && text.includes('(3) /ovd-plan research')
+    && text.includes('(4) other'));
+  check('substantive summary: idea follow-up surfaced inside (4) other',
+    text.includes('/ovd-plan idea'));
   check('substantive summary: no recommendation marker when next_action=null', !text.includes('(recommended)'));
 }
 {
@@ -419,20 +428,24 @@ console.log('renderApplySummary');
   // Check exactly one line carries (recommended), and that line starts with the edit option.
   const recLines = text.split('\n').filter((l) => l.includes('(recommended)'));
   check('next_action=edit → exactly one (recommended) line', recLines.length === 1);
-  check('next_action=edit → recommended line starts with /ovd-plan edit', recLines[0] && /^\s*→\s+\/ovd-plan edit/.test(recLines[0]));
+  check('next_action=edit → recommended line is the /ovd-plan edit option (1)', recLines[0] && /^\s*\(1\)\s+\/ovd-plan edit/.test(recLines[0]));
 }
 {
   const entries = { topic: 't', findings: 'f', next_action: 'handoff' };
   const text = renderApplySummary(entries, { kind: 'substantive', filePath: '/abs', relPath: 'rel.md', slug: 'slug' });
   const recLines = text.split('\n').filter((l) => l.includes('(recommended)'));
   check('next_action=handoff → exactly one (recommended) line', recLines.length === 1);
-  check('next_action=handoff → recommended line starts with /ovd-log handoff', recLines[0] && /^\s*→\s+\/ovd-log handoff/.test(recLines[0]));
+  check('next_action=handoff → recommended line is the /ovd-log handoff option (2)', recLines[0] && /^\s*\(2\)\s+\/ovd-log handoff/.test(recLines[0]));
 }
 {
   const entries = { topic: 'CSP headers', findings: 'Default-src self.', next_action: null };
   const text = renderApplySummary(entries, { kind: 'one-liner', inboxHeader: 'Research findings (lightweight)', truncatedTopic: 'CSP headers' });
   check('one-liner summary mentions inbox header', text.includes('Research findings (lightweight)'));
-  check('one-liner summary: 3 next-step options', text.includes('/ovd-plan edit') && text.includes('/ovd-log handoff') && text.includes('/ovd-plan idea'));
+  check('one-liner summary: 4 numbered action paths',
+    text.includes('(1) /ovd-plan edit')
+    && text.includes('(2) /ovd-log handoff')
+    && text.includes('(3) /ovd-plan research')
+    && text.includes('(4) other'));
   check('one-liner summary: no truncation note when topic unchanged', !text.includes('Topic truncated'));
 }
 

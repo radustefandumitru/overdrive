@@ -322,9 +322,12 @@ console.log('ovd-plan display tests');
     active.split('\n').filter((l) => l.includes(ACTIVE_TRAILER)).length === 1);
 
   const agentTree = renderTreeBody(parseOverdriveMd(FIXTURE_AGENT_INSERTED).tree);
-  check('renderTreeBody(agent-inserted): includes "[agent]" tag', agentTree.includes('[agent]'));
+  check('renderTreeBody(agent-inserted): includes "[proposed-by-agent:" tag', agentTree.includes('[proposed-by-agent:'));
   check('renderTreeBody(agent-inserted): tag count matches 2 inserted nodes',
-    (agentTree.match(/\[agent\]/g) || []).length === 2);
+    (agentTree.match(/\[proposed-by-agent:/g) || []).length === 2);
+  check('renderTreeBody(agent-inserted): tag carries the inserted_reason',
+    agentTree.includes('[proposed-by-agent: required for protected routes]')
+    && agentTree.includes('[proposed-by-agent: WCAG AA required]'));
 
   const deep = renderTreeBody(parseOverdriveMd(FIXTURE_DEEP).tree);
   const deepLines = deep.split('\n').filter((l) => l.trim());
@@ -432,8 +435,14 @@ console.log('ovd-plan display tests');
 {
   const { projectDir, tmpRoot } = makeTempProject('dispatch-bare-no-plan');
   const result = ovdPlan.runPlan({ projectDir, projectDirProvided: true }, process.env);
-  check('runPlan(bare, no OVERDRIVE.md): falls through to stub for Task 3.3 routing',
-    result.status === 'stub' || (result.ok === false && result.reason === 'missing-plan'));
+  // Phase 3 completion (Remediation A): bare /ovd-plan now routes to the
+  // empty-plan action path per readiness brief 12 §5.1 Branch 3.
+  check('runPlan(bare, no OVERDRIVE.md): emits empty-plan action path',
+    result.ok === true && result.status === 'plan' && result.route === 'empty-plan');
+  check('runPlan(bare, no OVERDRIVE.md): text lists 3 action paths',
+    result.text.includes('(1) /ovd-plan deliberate')
+    && result.text.includes('(2) /ovd-plan import')
+    && result.text.includes('(3) other'));
   cleanup(tmpRoot);
 }
 {
@@ -523,7 +532,7 @@ inserted_by: agent
     '✓ I  Foundation',
     '  ✓ I.1  Scaffolding',
     '~ II  Dashboard',
-    '  ? II.1  Stats [agent]   → ACTIVE',
+    '  ? II.1  Stats [proposed-by-agent: (reason missing)]   → ACTIVE',
     '  · II.2  Nav',
     '',
     'Active: II.1 Stats (awaiting-review)',

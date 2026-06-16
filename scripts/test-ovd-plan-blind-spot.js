@@ -458,7 +458,7 @@ console.log('buildBlindSpotTurn — prune phase');
   check('prune: phase=prune', r.phase === 'prune');
   check('prune: insertedNodes array', Array.isArray(r.insertedNodes));
   check('prune: 3 inserted nodes listed', r.insertedNodes.length === 3);
-  check('prune: text mentions [agent] tag', /\[agent\]/.test(r.text));
+  check('prune: text mentions [proposed-by-agent:] tag', /\[proposed-by-agent:/.test(r.text));
   check('prune: text mentions all 3 inserted IDs', /II\.4/.test(r.text) && /I\.4/.test(r.text) && /III/.test(r.text));
   check('prune: action paths present', /\(1\) Approve all/.test(r.text) && /\(2\) Prune/.test(r.text) && /\(3\) Re-analyze/.test(r.text));
   check('prune: describe-other escape', /describe other/i.test(r.text));
