@@ -3193,6 +3193,218 @@ Phase 3 kickoff in the next session should: read the resume protocol → read th
 
 ---
 
+### 2026-06-16 — Phase 3 wrap-up (9/9 + completion commit landed; methodologies promoted; ready for Phase 4)
+
+**Phase 3 progress: 9 of 9 tasks complete + 1 completion commit reconciling against §5 done-definition and readiness brief 12 §5.1.** Per impl plan §5 Phase 3 done definition:
+
+- ✓ Task 3.1 — `DISPLAY` (visual tree render with hierarchical IDs, `← ACTIVE` marker, status counts, action-path trailing recommendation).
+- ✓ Task 3.2 — User calibration sub-system (3 axes: domain/technical/scope; observation-driven; verbosity override; persists to deliberation-state).
+- ✓ Task 3.3 — Socratic protocol delivered in **three slices**:
+  - **Slice A** — happy-path stages 2/4/5-partial/7/8 with deliberation-state schema + `proposed_tree` landing + 6-stage STAGES.
+  - **Slice B** — Stage 5.5 RESOLVE SKILLS sub-step (per-leaf canonical; calls Phase 1 Task 1.5 `resolvePriorSet`; CLI-as-custodian per Q3.3B.6; structural enforcement of `→ present` transition).
+  - **Slice C** — Stage 6 Verify wiring + `/ovd-plan verify` user-facing subcommand (retrospective audit; tree-source precedence; canonical action paths).
+- ✓ Task 3.4 — Blind-spot expansion (Stage 3 — internal exhaustive 11-category checklist; external one-line-per-inserted-node; `inserted_reason` preserved; Q9 dual-presentation lock).
+- ✓ Task 3.5 — `IDEA` pipeline (4 action paths approved/continue/research/reject; Q8 new-chat handoff no auto-route; word-boundary-truncated `IDEA:` Node-column format; `appendUnderHeader` regex-escape inline bugfix).
+- ✓ Task 3.6 — `EDIT` pipeline (5 operation kinds; Q3.3A.4 envelope reused; atomic-batch via `entries.operations[]`; two-phase `confirm` flag; narrative diff per Q3.6.3; structural-only decisions log; cache invalidation; DOC UPDATE one-line stub — Phase 5 Task 5.7 wires the full flow per Q3.6.1 follow-up).
+- ✓ Task 3.7 — `RESEARCH` pipeline (hybrid output by agent-classified `kind`; substantive → `.overdrive/sessions/`; one-liner → inbox; canonical 4 action paths per completion commit Remediation B).
+- ✓ Task 3.8 — Plan-quality check (Stage 6 — coverage + leaf-completeness + goal-backward; Pattern 1 bundled dispatch; tree-source precedence; trace-key validation per Q3.8.10).
+- ✓ Task 3.9 — Deliberation-state persistence + re-entry (multi-session per r3 §5.7; stale-state detection; 4 action paths approved/review/restart/reconcile; null-guard + explicit-cancel refinements).
+- ✓ **Completion commit** (`c0f1fce`, 2026-06-16) — three remediations reconciling against §5 + readiness brief 12: (A) bare `/ovd-plan` 3-way routing (committed-tree → DISPLAY / paused → re-entry / empty → 3-option action-path); (B) Task 3.7 RESEARCH 4 canonical action paths per §5; (E) verbose `[proposed-by-agent: <reason>]` tag per r3 §10.4 across `blind-spot.js` + `display.js`.
+- ✓ One commit per task (12 total counting 3 slices + completion) — each approved by user.
+
+**Aggregate test state after Phase 3 completion: 3354 ovd-plan checks across 24 test suites.** (Was 1244 at Phase 2 end.) Per-suite breakdown:
+
+| Suite | Checks |
+|---|---|
+| fs | 59 |
+| parser | 104 |
+| writer | 28 |
+| cache | 39 |
+| skill-router | 53 |
+| workflow | 204 |
+| migrate | 150 |
+| decisions | 81 |
+| preferences | 80 |
+| requirements | 88 |
+| codebase-mapper | 135 |
+| drift | 99 |
+| refresh | 124 |
+| **display** | **139** (was 137; +2 completion: agent-tag verbose + bare-no-plan route) |
+| deliberation-state | 93 |
+| calibrate | 103 |
+| deliberate | 325 |
+| blind-spot | 242 |
+| plan-skills | 196 |
+| plan-quality | 208 |
+| reentry | 227 |
+| idea | 169 |
+| edit | 221 |
+| **research** | **187** (was 186; +1 completion: 4-option assertion expansion) |
+
+Plus 4 workflow regression checks + 269 router benchmark checks. `npm run check` parses 53 source/script files clean.
+
+**Phase 3 commit chronology (12 commits on `feature/ovd-plan`, newest first):**
+
+```
+c0f1fce  ovd-plan(phase-3.completion): bare routing + research action-paths + verbose blind-spot tags
+66dbbd1  ovd-plan(phase-3.task-7): RESEARCH pipeline (hybrid output per Q3.7 + new-chat handoff per r3 §5.5)
+cde9326  ovd-plan(phase-3.task-6): EDIT pipeline (structural tree mutations + narrative diff per Q3.6 locks)
+b6051a7  ovd-plan(phase-3.task-5): IDEA pipeline (Stage IDEA — impact + tradeoffs + action paths per Q8 new-chat handoff)
+1f31d6f  ovd-plan(phase-3.task-9): deliberation-state re-entry + stale-state detection (multi-session per r3 §5.7)
+ab01574  ovd-plan(phase-3.task-3.slice-c): Stage 6 Verify wiring + /ovd-plan verify subcommand
+74b9fc8  ovd-plan(phase-3.task-8): plan-quality check (Stage 6 — coverage + leaf-completeness + goal-backward)
+96c622b  ovd-plan(phase-3.task-3.slice-b): RESOLVE SKILLS sub-step (planning-time canonical, per-leaf)
+0adbbc9  ovd-plan(phase-3.task-4): blind-spot expansion (Stage 3 — exhaustive internally, terse externally)
+1fd28a1  ovd-plan(phase-3.task-3.slice-a): Socratic happy path (stages 2/4/5-partial/7/8)
+c54335f  ovd-plan(phase-3.task-2): calibration sub-system (3 axes + verbosity override)
+13cf63a  ovd-plan(phase-3.task-1): DISPLAY (visual tree render)
+```
+
+**Branch state at Phase 3 end:**
+- `feature/ovd-plan` is 24 commits ahead of `main` (12 from Phase 1/2 + 12 from Phase 3).
+- Working tree clean except the two pre-existing untracked 2026-06-06 spec docs (untouched throughout Phase 3).
+- No push. Per hard rules: no push without explicit user approval.
+
+---
+
+#### Comprehensive review reconciliation (2026-06-16 in-chat review → completion commit)
+
+The pre-Phase-3-close comprehensive review surfaced 6 concerns + 3 r4 amendment candidates against the §5 plan and readiness brief 12. Orchestrator reclassifications + remediations landed as one batched completion commit (`c0f1fce`):
+
+| Concern | Reclassification | Resolution |
+|---|---|---|
+| A — bare `/ovd-plan` routing | **PARTIAL → Required fix.** Readiness brief 12 §5.1 specifies bare-on-empty action-path + bare-on-paused re-entry; both missing. | Remediation A in completion commit. 3-branch routing now wired. |
+| B — Task 3.7 missing "more research" + "other" options | Required fix per Pattern 7 (non-negotiable). | Remediation B in completion commit. §5-canonical 4 options shipped verbatim. |
+| C — Task 3.7 no node-attachment output mode | Phase 7 deferral accepted. §6 entry required. | Q3.7.1-followup added to §6. r4 may add `references.research[]` schema if user wants the surface formalized pre-Phase-7. |
+| D — Task 3.6 DOC UPDATE is one-line stub | **Phase 5 dependency, NOT Phase 7.** Phase 5 Task 5.7 builds `runDocUpdate`. Task 3.6 wires when Phase 5 ships. | Q3.6.1-followup added to §6 with Phase 5 target verbatim. |
+| E — Task 3.4 `[agent]` vs `[proposed-by-agent: <reason>]` | Orchestrator call: **ship verbose form.** r3 §10.4 wins on Pattern 7 transparency over §5.3.4's terse example. | Remediation E in completion commit + Q3.4.2-followup added to §6 for r4 §5.3.4 example alignment. |
+| F — Task 3.5 `reject` vs `other` naming | As-is; internal naming OK. | No change. |
+
+---
+
+#### Methodologies promoted to LOCKED at Phase 3 end
+
+**(1) 3-factor estimation model with FIXED-SHAPE vs BRANCHING render sub-distinction.**
+
+The model classifies each task module by which factor classes it hits:
+- **Factor (1):** validation matrix (Pattern 4 normalize + per-field/per-kind checks; bounded by enum size).
+- **Factor (2):** substantial user-facing render (action paths, diff preview, summary text — sub-distinction below).
+- **Factor (3):** structural mutation logic (tree mutation, state-machine transition, atomic-batch apply).
+
+**Phase 3's 11 data points + sub-distinction discovery:**
+
+| Task | Factors hit | Render shape | Brief band (lines) | Actual lines | Deviation |
+|---|---|---|---|---|---|
+| 3.1 DISPLAY | (2) | FIXED-SHAPE | 200-300 | ~280 | in band |
+| 3.2 calibration | (1)(2) | FIXED-SHAPE | 250-350 | ~346 | upper band |
+| 3.3 Slice A | (1)(3) heavy | — | 500-700 | ~600 | in band |
+| 3.4 blind-spot | (1)(2)(3) | BRANCHING (per-category) | 500-700 | ~510 | low end |
+| 3.3 Slice B | (1)(2) | FIXED-SHAPE | 400-500 | ~440 | in band |
+| 3.8 plan-quality | (1)(2)(3) | **BRANCHING (per-stage)** | 400-500 | ~735 | **84% over** |
+| 3.3 Slice C | (1)(2) | FIXED-SHAPE | 200-300 | ~270 | in band |
+| 3.9 reentry | (1)(2)(3) | BRANCHING decomposed | 500-700 | ~620 | in band |
+| 3.5 IDEA | (1)(2) | FIXED-SHAPE | 400-600 | ~328 | **18% under** |
+| 3.6 EDIT | (1)(2)(3) | FIXED-SHAPE | 500-700 | ~530 | low end |
+| 3.7 RESEARCH | (1)(2) | FIXED-SHAPE | 400-500 | ~390 | low end |
+
+**Sub-distinction validated across 8 FIXED-SHAPE data points + 3 BRANCHING data points:**
+- **FIXED-SHAPE render** (single template per kind/option, bounded total): use brief estimate as-is. All 8 FIXED-SHAPE landings came within or near the band's low end.
+- **BRANCHING render** (per-stage / per-domain / per-category switch with rich inner content): apply 40-60% over-estimate. Task 3.8 inlined `renderReport` ran 84% over; Task 3.9 decomposed renderers into per-domain helpers and came in at 17% over midpoint — **decomposition mitigates branching overhead** (Phase 7 polish candidate: refactor 3.8's `renderReport` into per-domain helpers matching 3.9's shape).
+
+**Locked methodology for Phase 4/5/etc:** before locking a line estimate, classify the render shape. FIXED-SHAPE → trust brief; BRANCHING → apply 40-60% over-estimate AND ask whether helpers can decompose the render.
+
+**(2) Pre-flight surface-conflicts-before-code at 10th-instance maturity.**
+
+The discipline: before writing any task code, the implementer surfaces a tight design proposal listing concrete picks + flagging *genuine open choices* (often 1-3 per task at this maturity). Orchestrator confirms or refines; refinements applied inline; code starts only after green-on-green-on-green confirmation.
+
+**Instances tracked across Phase 3:**
+
+| # | Task | Open choice surfaced | Orchestrator response |
+|---|---|---|---|
+| 1 | 3.3 Slice A (Q3.3A.10) | r3 §10.1 vs writer canonical field names | Locked + §6 follow-up |
+| 2 | 3.4 (Q3.4.1) | r3 §5.3 numerical vs §5.3.4 data-flow stage ordering | Locked + §6 follow-up |
+| 3 | 3.3 Slice B (Q3.3B.5) | codebase context one-file-vs-both | Locked |
+| 4 | 3.3 Slice B (Q3.3B.7-bis) | catalog-empty fail-fast vs silent-fallback | Locked |
+| 5 | 3.8 (Q3.8.3/4/10) | coverage scope + tree source + trace-key validation | Locked |
+| 6 | 3.3 Slice C (Q3.3C-A/B/C/D) | 4 brief-vs-canonical conflicts | Canonical wins; §6 follow-up |
+| 7 | 3.9 (Q3.9.1' + Q3.9.6') | null-guard + explicit-cancel refinements | Both applied inline |
+| 8 | 3.5 (Q3.5.A) | decisions.md Node-column format | Locked + word-boundary refinement |
+| 9 | 3.6 (Q3.6) | 5 picks (op enum + atomic batch + two-phase + cache + DOC UPDATE) | All approved as-is (zero refinements) |
+| 10 | 3.7 (Q3.7) | 5 picks (kind self-classify + slug + filename + action paths + soft-fail) | All approved + 3 inline refinements |
+
+**Maturity inflection from instances 1-6 to 7-10:** instances 1-6 caught spec-vs-code gaps requiring r4 amendments; instances 7-10 ratified-against-precedent with only minor refinements. The discipline shifted from "catch errors before they ship" to "confirm green-on-green-on-green against well-charted precedent." **Phase 4 readiness baseline: pre-flight is now load-bearing for slice quality.** Phase 7 polish candidate: codify the kickoff-brief template addition that invites pre-flight questions per task.
+
+---
+
+#### Accumulated §6 follow-ups (consolidated at Phase 3 close)
+
+Reproduced from §6 for visibility. None are blockers; address after the 7 phases if the user wants them.
+
+| # | Origin | Item | Recommended fix |
+|---|---|---|---|
+| Q8 | r3 §13.3 | auto-route IDEA → EDIT for trivially small changes | Decide later if friction warrants the shortcut |
+| Q9 | r3 §13.3 | per-project configurable blind-spot categories | r3 §13.3 |
+| Q14 | r3 §13.3 | closure-prompt format at recursion-root | r3 §13.3 |
+| Q17 | r3 §13.3 | superseded sketch file disposition (keep/archive/delete) | r3 §13.3 |
+| Q3.3A.10 | Phase 3 Slice A | r3 §10.1 leaf field names ↔ writer canonical | **r4 amendment** updating §10.1 example to writer-canonical names |
+| Q3.4.1 | Phase 3 Task 3.4 | r3 §5.3 numerical-stage vs §5.3.4 data-flow ordering | **r4 amendment** renumbering §5.3 stages to match data flow |
+| Q3.3C | Phase 3 Slice C | r3 has no §X covering `/ovd-plan verify` user-facing surface | **r4 amendment** adding §6.7 (or §5.8) |
+| **Q3.4.2** | Phase 3 completion | r3 §5.3.4 example uses `[agent]`; §10.4 specifies `[proposed-by-agent: <reason>]`; code ships verbose form | **r4 amendment** aligning §5.3.4 example with §10.4 |
+| **Q3.7.1** | Phase 3 completion (Concern C) | RESEARCH no node-attachment output mode | **Phase 7 deferral**; r4 may add `references.research[]` schema |
+| **Q3.6.1** | Phase 3 completion (Concern D) | EDIT full DOC UPDATE wiring | **Phase 5 Task 5.7 dependency** — wires when Phase 5's `runDocUpdate` ships |
+
+**Four of these (Q3.3A.10 / Q3.4.1 / Q3.3C / Q3.4.2) are independent r3-side amendments that can land as one r4 revision pass.** Q3.7.1 + Q3.6.1 are cross-phase code dependencies (Phase 7 / Phase 5 respectively). **Decision deferral confirmed**: Phase 3 chose code-side stability over spec adherence, scoped each gap into §6 per Failure Mode #8 (unscoped deferral disappearing).
+
+---
+
+#### Phase 4 readiness sketch (`/ovd-go` execution surface)
+
+**Phase 3 surfaces Phase 4 will consume:**
+- `proposed_tree` / committed `parsed.tree.children` shape (Phase 1 + Slice A): leaves carry full contract (`success` / `scope` / `deps` / `verify` / `skills`), `inserted_by` / `inserted_reason` (Task 3.4), `pending_skill_resolution` flag.
+- `lib/ovd-plan/skill-router.js::resolvePriorSet()` (Phase 1 Task 1.5; canonical at planning time per Slice B; **execution-time delta path is Phase 4's responsibility per r3 §11.2**).
+- `cache.js::closureCheck` + `isNodeClosed` (Phase 1; consumed by Phase 4's recursive-close mechanism per r3 §6.5).
+- `decisions-log.js::appendDecision` (Phase 2 Task 2.6).
+- `deliberation-state` infrastructure (Task 3.9; Phase 4 may extend with execution-state OR keep them separate).
+- `EDIT` pipeline (Task 3.6; consumed by Phase 4 when execution surfaces a leaf needing structural change).
+
+**Phase 4 task list per impl plan §5:**
+- Task 4.1 — `/ovd-go` bare dispatch (DISPLAY-DRIVEN BY-DEFAULT per r3 §6.1).
+- Task 4.2 — `LEAF EXECUTE` (Pattern 1 dispatch; skill prior set + execution loop).
+- Task 4.3 — `LEAF VERIFY` (auto-verify method + agent self-check fallback per r3 §6.6).
+- Task 4.4 — `LEAF DELTA` (skill-router delta path per r3 §11.2).
+- Task 4.5 — `LEAF SECURITY` (threat-vs-mitigation matrix per r3 §6.6).
+- Task 4.6 — `CLUSTER VERIFY` (recursive close + closure prompt at root per r3 §6.5).
+- Task 4.7 — `assessScope` (small-mode auto-detection per Q15 lock).
+- Task 4.8 — `monitorSmallScope` (small-mode growth detection per Q15 lock).
+- Task 4.9 — `runFixLoop` (2-attempt cap + escalation per Q11 lock).
+
+**Methodologies to carry forward from Phase 3:**
+1. **3-factor estimation model with FIXED-SHAPE vs BRANCHING sub-distinction.**
+2. **Pre-flight surface-conflicts-before-code** — one Q&A batch per task BEFORE any code.
+3. **Pattern 1 dispatch (CLI emits plan + commits structured payload)** + **Pattern 4 JSON parse guard** — load-bearing for every new subcommand.
+4. **`feedback_commit_cleavage`** — code + docs explaining THIS code go together; unrelated docs split.
+5. **Test-first / locked-design tripwires** — every task lands with a per-suite test file pinning §6-scoped resolutions.
+
+**Phase 4 recommended kickoff sequence:**
+1. Read resume protocol (`docs/superpowers/handoff/08-resume-protocol.md`).
+2. Read this wrap-up entry + readiness brief 13 (`docs/superpowers/handoff/13-phase-4-readiness.md`).
+3. Confirm Phase 3 commits landed clean via `git log` + run the 4-command regression baseline.
+4. Read r3 §6 (`/ovd-go` state machine) end-to-end.
+5. Surface Phase 4 Task 4.1 design choices BEFORE any code (matching the Phase 3 discipline).
+
+**Phase 4 has zero pre-blockers on r4 amendments.** Phase 4 can proceed against current r3 + current code; the 4 r3-side r4 amendments (Q3.3A.10 / Q3.4.1 / Q3.3C / Q3.4.2) can land as a single r4 pass at the user's convenience, before or after Phase 4. The 2 cross-phase code follow-ups (Q3.7.1 / Q3.6.1) are tracked for Phase 5 / Phase 7 respectively.
+
+---
+
+#### Phase 3 conclusion
+
+`/ovd-plan` is feature-complete for the v1 design: deliberation (Stages 2/3/4/5/5.5/6/7/8) + display + calibration + idea + edit + research + re-entry + the 3-branch bare-command routing. The Socratic pipeline is unified under a single command; blind-spot expansion materializes as tree nodes with verbose r3-§10.4-canonical tags; calibration is structured on 3 axes; the IDEA → new-chat → EDIT handoff preserves context cleanliness; RESEARCH ships hybrid output by agent-classification with the §5-canonical 4 action paths; EDIT supports 5 op kinds with narrative diff + atomic-batch + structural-only decisions logging; plan-quality verifies coverage + leaf-completeness + goal-backward; multi-session re-entry honors "summary → confirmation → continue" with stale-state detection.
+
+**Two methodologies promoted to LOCKED at Phase 3 end** (3-factor estimation + pre-flight surface-conflicts-before-code) are Phase 4 readiness baseline. **Six §6 follow-ups carry over** (Q3.3A.10 / Q3.4.1 / Q3.3C / Q3.4.2 → r4 amendments; Q3.6.1 → Phase 5 Task 5.7 dependency; Q3.7.1 → Phase 7 deferral).
+
+Ready for Phase 4 (`/ovd-go`) in a fresh session.
+
+---
 
 ## 8. Glossary / quick decision reference
 
