@@ -533,6 +533,31 @@ console.log('Locked-design pre-flight tripwires');
 }
 
 // ---------------------------------------------------------------------------
+// 17. Migration-compat seam (Pattern 5)
+// ---------------------------------------------------------------------------
+// idea writes to decisions.md (approved) + OVERDRIVE.md inbox (reject). Both must
+// work on a Phase-2-migrated layout (frontmatter + root heading only; no tree,
+// no deliberation-state block) without crashing or clobbering the migrated root.
+console.log('Migration-compat seam (Pattern 5)');
+{
+  const migrationLike = '---\novd-plan: true\nversion: 3\nproject: "Migrated"\nactive_node: ""\n---\n\n# Migrated\n';
+  const { projectDir, tmpRoot } = makeTempProject('idea-migration-compat');
+  writePlan(projectDir, migrationLike);
+  // approved → decision recorded to decisions.md regardless of absent tree
+  const approved = applyIdeaApproved(projectDir, { action: 'approved', idea_text: 'add telemetry', impact_summary: 'cross-cutting', tradeoffs: 'minor', suggested_route: 'opt-in flag' }, { now: FIXED_NOW });
+  check('migration-shape: approved → ok=true', approved.ok === true);
+  const decisions = readDecisions(projectDir);
+  check('migration-shape: decisions.md written with IDEA row', typeof decisions === 'string' && decisions.includes('IDEA: add telemetry'));
+  // reject → inbox appended to the migrated OVERDRIVE.md without clobbering the root
+  const rejected = applyIdeaReject(projectDir, { action: 'reject', idea_text: 'add blockchain', rejection_reason: 'out of scope' }, { now: FIXED_NOW });
+  check('migration-shape: reject → ok=true', rejected.ok === true);
+  const plan = readPlan(projectDir);
+  check('migration-shape: inbox header written', plan.includes(`## ${INBOX_HEADER_IDEA_REJECTED}`));
+  check('migration-shape: migrated root heading preserved', plan.includes('# Migrated'));
+  cleanup(tmpRoot);
+}
+
+// ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
 console.log(`\n${passed} checks passed.`);
