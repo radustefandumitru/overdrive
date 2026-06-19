@@ -769,7 +769,9 @@ Output: log paragraph mapping our states to GSD's commands; note our divergences
   - ID match exact when format matches.
   - Title fuzzy match returns top candidates.
   - >1 match → user picks from numbered list.
-- **Verification:** unit test against fixture tree.
+  - **Tie-break before prompting (Q4.10 lock, Session 19):** when fuzzy matches remain ambiguous, apply `depth (leaves > containers) → active milestone → pending status`; only prompt if still ambiguous after these.
+  - **Auto-pick announcement (Q4.10 orchestrator amendment — Pattern 7):** when the tie-break resolves to a single auto-pick, the result MUST be announced with a cancel option before execution proceeds (e.g. "Matched II.2.a Widget layout design — reply 'continue' to proceed or describe a different target"). Never silently execute an auto-resolved node-ref. ≈5–10 lines + ≈3 test checks.
+- **Verification:** unit test against fixture tree (incl. tie-break ordering + announce/cancel hygiene).
 - **Reference:** r3 §6.8.
 
 #### Phase 4 done definition
@@ -3403,6 +3405,26 @@ Reproduced from §6 for visibility. None are blockers; address after the 7 phase
 **Two methodologies promoted to LOCKED at Phase 3 end** (3-factor estimation + pre-flight surface-conflicts-before-code) are Phase 4 readiness baseline. **Six §6 follow-ups carry over** (Q3.3A.10 / Q3.4.1 / Q3.3C / Q3.4.2 → r4 amendments; Q3.6.1 → Phase 5 Task 5.7 dependency; Q3.7.1 → Phase 7 deferral).
 
 Ready for Phase 4 (`/ovd-go`) in a fresh session.
+
+### 2026-06-19 — Session 19 (Phase 4 kickoff — design Q&A batch + Task 4.1 COMPLETE — ORIENT default)
+
+**Phase 4 design Q&A batch surfaced + locked before code (Q4.1–Q4.11; pre-flight methodology — 11th instance).** Applied Methodology 2 (pre-flight surface-conflicts): 7 of 11 are confirmation-class (anchored by RESOLVED ledger decisions — Q4.1/Q7, Q4.3/Q7, Q4.4/Q14, Q4.5/Q4+Q14, Q4.7/Q15, Q4.8/Q11, Q4.2/r3 §6.8) and adopted as brief-recommended; 4 were surfaced as genuine open choices and locked by the user:
+- **Q4.6** `--small` boundary: `files_touched ≤ 1 AND no shared-contract files` (conservative; tighten in Phase 7).
+- **Q4.9** DECISION POINT taxonomy: 5 pre-defined kinds (scope-overflow / ambiguous-spec / missing-dependency / contract-conflict / other) + free-form body (tags feed Phase 5 LEARNINGS EXTRACT).
+- **Q4.10** Node-ref fuzzy tie-break: depth (leaves > containers) → active milestone → pending status → else prompt. **Locked WITH an orchestrator amendment (Pattern 7 hygiene): the auto-pick MUST be announced + offer a cancel before executing** — otherwise the auto-tie-break is a silent decision. Contract: *announce + allow cancel before execute* (implementer picks phrasing; lower-friction "Matched X — reply 'continue' or describe a different target"). Spec note added to §5 Task 4.11 (≈5–10 lines + ≈3 test checks when 4.11 lands).
+- **Q4.11** SKILL DELTA runtime: capture-and-continue; surface in the AWAITING REVIEW summary; user may 'replan' if it signals a planning gap (honors the planning-time-canonical contract; no mid-leaf interrupt).
+
+**Task 4.1 — `runGoDefault` (ORIENT default, r3 §6.1/§6.2).** Created `lib/ovd-plan/orient.js` (~340 lines). Bare `/ovd-go` reads OVERDRIVE.md + the most recent `.overdrive/sessions/` (fallback `.overdrive/handoffs/`) capture + surfaces the active node's `scope.in` files (writer-canonical per Q3.3A.10 — read the F1-corrected brief-13:89), then renders an orientation with status-keyed 5–6 numbered action paths (Pattern 7; the `active-awaiting-review` branch matches the r3 §6.2 worked example's 6 options). **Pattern 1 honored:** the CLI surfaces *which* scope files are in play (+ existence flag) but does NOT read or dump their contents — the host agent reads them. **Pattern 2 reuse:** tree analysis delegates to `display.js` (`analyzeTree` / `findActiveNode` / `getProjectTitle`); only `findActiveMilestone` (depth-2 ancestor) + the ORIENT action-path renderer are new. Bare `/ovd-go` wired in `index.js` (`runGo` → `orientModule.runGoDefault`); subcommands (execute/verify/`<ref>`) still fall through to the stub until their tasks land. Shortcut forms (`continue`, `<node-ref>`) bypass ORIENT and route directly — wired in Tasks 4.2/4.11.
+
+**Tests:** `scripts/test-ovd-plan-orient.js` — **113 checks across 12 scenario groups**: module surface (12); findLatestFile (latest-by-mtime + pattern filter + missing dir); extractCaptureSummary (frontmatter/heading/comment skip + bullet strip + bounded); readLatestCapture; findActiveMilestone (leaf→depth-2 ancestor + no-active + null-tree); activeScopeFiles (array + null + non-array + non-string filter); renderOrientActionPaths (all 7 kinds × numbered-options + Pattern-7 "Other" escape; awaiting-review = 6 options matching §6.2); buildOrientation (project/milestone/active-leaf/last-session/awaiting-count/scope-files-with-existence/Pattern-1-no-content-dump); runGoDefault (invalid-dir + missing-plan + parse-error + happy awaiting-review + never-auto-executes); dispatch via `ovdPlan.runGo` (bare→orient, subcommand→stub); 3 action-path kinds end-to-end (in-progress/blocked/all-closed); **migration-compat seam (Pattern 5)** — Phase-2-migrated OVERDRIVE.md (frontmatter + root only) → ok=true, kind empty, no crash.
+
+**Estimation (3-factor model):** orient.js hit factor (2) render with **FIXED-SHAPE per-kind** action paths (bounded option list per kind, like EDIT's `renderNarrativeDiff`) → landed ~340 lines, consistent with the FIXED-SHAPE in-band prediction. Test count 113 sits in the Pattern-8 band. 12th FIXED-SHAPE-class data point.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 3359 → 3472 checks across 25 suites** (+113, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/orient.js` (new), `scripts/test-ovd-plan-orient.js` (new), `lib/ovd-plan/index.js` (mod — require + runGo dispatch + namespace export), `package.json` (mod — check chain + test:ovd-plan runner), this §7 entry + the §5 Task 4.11 Q4.10 spec note (doc). Commit boundary proposed at end of this entry (one commit per task, user-approved).
+
+**Next:** Task 4.11 (node-ref fuzzy matching) per the readiness-brief order (4.1 → 4.11 → 4.2 …), carrying the Q4.10 announce-cancel contract.
 
 ---
 
