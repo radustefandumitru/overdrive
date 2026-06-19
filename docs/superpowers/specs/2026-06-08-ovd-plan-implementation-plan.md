@@ -3426,6 +3426,22 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 4.11 (node-ref fuzzy matching) per the readiness-brief order (4.1 → 4.11 → 4.2 …), carrying the Q4.10 announce-cancel contract.
 
+### 2026-06-19 — Session 19 continued (Phase 4 Task 4.11 COMPLETE — node-ref fuzzy matching)
+
+**Pre-flight (Methodology 2 — 12th instance):** surfaced 4 picks; 3 confirmation-class (fuzzy = case-insensitive substring; new module `noderef.js`; search all nodes incl. containers per r3 §6.8) + **1 genuine extension of the Q4.10 amendment**: announce-cancel applies to ALL fuzzy-derived single picks (`title-single` + `tie-broken`), while exact-ID matches skip the announce (the user was explicit). Adopted as the Pattern-7-consistent reading; the matcher exposes `autoResolved` (true for fuzzy-single + tie-broken, false for id-exact + ambiguous).
+
+**Task 4.11 — `resolveNodeRef` (r3 §6.8 + Q4.10).** Created `lib/ovd-plan/noderef.js` (~215 lines). `resolveNodeRef(tree, ref)` is a PURE matcher returning `{ matchType, matches, ambiguous, autoResolved, tieBreak[], reason }`: exact hierarchical ID (case-insensitive) → `id-exact`; else case-insensitive title substring → `title-single` (1 match) / tie-break (>1) / `none` (0). **Q4.10 tie-break** (`applyTieBreak`): progressive narrowing `leaves > containers → active milestone → pending status`, with a `tieBreak[]` trace; if it can't narrow to one → `ambiguous` (numbered disambiguation). `renderNodeRefResolution` emits: id-exact "Resolved …" (no announce); auto-resolved "Matched …" + the Q4.10 **announce + (1) continue / (2) pick different / (3) other** (tie-broken also shows the auto-select trace); ambiguous → numbered list + Other + "Reply with a number"; none → guidance. **Pattern 2 reuse:** `display.findActiveNode` + `orient.findActiveMilestone` (the latter doubles as "depth-2 ancestor of any node"). **Pattern 1:** pure matcher; `runGoNodeRef` reads/parses OVERDRIVE.md but does no LLM work; execution of the resolved node is a separate dispatch (Task 4.2). Wired `/ovd-go <text>` (no subcommand) → `runGoNodeRef` in `index.js`; `continue`/`test`/`verify` subcommands still stubbed.
+
+**Tests:** `scripts/test-ovd-plan-noderef.js` — **85 checks across 12 groups**: module surface; isLeaf + flattenNodes (excludes root, depth-correct); id-exact (+ case-insensitive); title-single (autoResolved); tie-broken (all 3 tiers narrow 'widget' → II.2.a with full trace); applyTieBreak tier isolation (leaves / active-milestone / pending each in isolation); ambiguous + none + empty-ref; nodeLabel + renderNodeRefResolution (id-exact no-announce / tie-broken announce+trace / title-single announce-no-trace / ambiguous numbered / none guidance — Pattern 7 throughout); runGoNodeRef (invalid-dir / missing-ref / missing-plan / parse-error / id-exact / fuzzy-single / no-match); dispatch via `ovdPlan.runGo({ text })`; **migration-compat seam (Pattern 5)** — migrated layout (no tree) → `none`, no crash; edge cases (null tree, container-only tier-1 no-op, no-active tier-2 skip, defensive nodeLabel).
+
+**Estimation (3-factor model):** noderef.js hit factor (2) render **FIXED-SHAPE per-matchType** (bounded template per type) + light factor (1); no factor (3) (pure matcher, no tree mutation) → ~215 lines, consistent with the FIXED-SHAPE prediction. Initial 76 checks topped up to 85 to clear the Pattern-8 ≥80 undercoverage bar (genuine edge-case coverage, not padding). 13th FIXED-SHAPE-class data point.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 3472 → 3557 checks across 26 suites** (+85, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/noderef.js` (new), `scripts/test-ovd-plan-noderef.js` (new), `lib/ovd-plan/index.js` (mod — require + `/ovd-go <ref>` dispatch + namespace export), `package.json` (mod — check chain + test runner), this §7 entry (doc). Commit boundary proposed at end of this entry.
+
+**Next:** Task 4.2 (LEAF EXECUTE with skill-router integration) — consumes the resolved node-ref + reads `leaf.skills` as the high-confidence prior (r3 §11.2; honor `confidence: high`, SKILL DELTA is the exception per Q4.11).
+
 ---
 
 ## 8. Glossary / quick decision reference
