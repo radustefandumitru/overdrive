@@ -341,8 +341,8 @@ console.log('Dispatch via runGo');
   const r = ovdPlan.runGo({ projectDir }, process.env);
   check('bare runGo → orient', r.ok === true && r.mode === 'orient');
   check('bare runGo → pending-no-active kind', r.kind === 'pending-no-active');
-  const stub = ovdPlan.runGo({ subcommand: 'verify', text: 'II.2.a' }, process.env);
-  check('unimplemented subcommand → stub (verify is Task 4.3)', stub.status === 'stub');
+  const stub = ovdPlan.runGo({ subcommand: '__unimplemented__', text: 'II.2.a' }, process.env);
+  check('unrecognized subcommand → stub', stub.status === 'stub');
   cleanup(tmpRoot);
 }
 
