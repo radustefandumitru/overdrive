@@ -3561,6 +3561,47 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Tasks 4.7 + 4.8 (`--small` auto-detection + scope-growth) — the last Phase-4 pair. 4.7 `assessScope` (Q4.6: recommend `--small` when files_touched ≤ 1 AND no shared-contract files); 4.8 `monitorSmallScope` (Q4.7: path-pattern allow-list + multi-consumer-export); both transparent (FM #6 — never silent switch).
 
+### 2026-06-20 — Session 19 continued (Phase 4 Tasks 4.7 + 4.8 COMPLETE — `--small` pair → PHASE 4 = 11/11 DONE)
+
+**Pre-flight (Methodology 2 — 20th instance):** confirmation-class, no spec conflict. Single cohesive module `small.js` for the `--small` concern (4.7 + 4.8 share `isSharedContract`). Both are PURE assessors — read state + return a recommendation; **never mutate the tree or flip modes** (FM #6 — transparent recommendation, the user picks).
+
+**Tasks 4.7 + 4.8 — `small.js` (~170 lines).** **4.7** `assessScope(rootDir, leafId)` reads the leaf's `scope.in` (writer-canonical) and applies the Q4.6 heuristic via `assessScopeFiles`: recommend `--small` iff `files_touched ≤ 1` (`SMALL_FILE_CAP`) AND no shared-contract files; renders the r3 §6.7 prompt (small → approved/full/other; not-small → approved-full/force-small/other — both transparent). **4.8** `monitorSmallScope(sessionState)` applies the Q4.7 growth heuristic via `evaluateGrowth`: `exceeded` when a shared contract is touched OR files_touched > 3 (`GROWTH_FILE_THRESHOLD`); renders the switch prompt (switch/keep-small/replan/other) or an OK line. `isSharedContract` = the Q4.7 allow-list (`*.d.ts` / `*.proto` / `interfaces/` / `contracts/` / `types/` / `schema`-substring). **Pattern 2 reuse:** `execute.findLeaf`/`leafContract`, `noderef.isLeaf`, `deliberation-state.openState`. Wired `/ovd-go assess <ref>` (4.7) + `/ovd-go monitor --entries-json {files_touched}` (4.8, stateless).
+
+**Tests:** `scripts/test-ovd-plan-small.js` — **82 checks across 9 groups**: module surface (Q4.6/Q4.7 thresholds); isSharedContract (all 6 patterns + path-segment precision: `myinterfaces.ts` NOT shared, `interfaces/` IS); assessScopeFiles (single/zero→small, 2+→full, shared→full, filtering); assessScope (leaf small/shared/multi-file + errors); evaluateGrowth (1/3-at-threshold/4-exceeds/shared-1-file/empty/invalid); monitorSmallScope (exceeded prompt + within-scope OK + shared); dispatch via `ovdPlan.runGo` (assess/monitor/bad-JSON); **migration-compat seam (Pattern 5)**; edge cases + boundaries.
+
+**Estimation (3-factor model):** small.js hit factor (1) light only — two pure heuristic assessors, NO factor (2) branching render (fixed prompt templates) and NO factor (3) (no mutation) → ~170 lines, the lightest Phase-4 module, tied with decision.js shape. 21st data point.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 4162 → 4244 checks across 34 suites** (+82 small, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/small.js` (new), `scripts/test-ovd-plan-small.js` (new), `lib/ovd-plan/index.js` (mod — require + assess/monitor dispatch + 3 exports), `package.json` (mod), this §7 entry + the Phase 4 wrap-up below (doc). Commit boundary proposed at end of this entry.
+
+### 2026-06-20 — Phase 4 wrap-up (11/11 tasks complete; `/ovd-go` execution surface done)
+
+**Phase 4 = 11 of 11 tasks complete.** Per impl plan §5 Phase 4 done-definition:
+- ✓ Bare `/ovd-go` presents orientation + action-path prompt; never silently executes (4.1).
+- ✓ Leaf execution reads the pre-resolved skills annotation as the prior (4.2; r3 §11.2 — no router call on the canonical path).
+- ✓ Awaiting-review always prompts; never auto-promotes; ambiguous re-prompts (4.4 / hard rule 8).
+- ✓ Iteration loop captures feedback to `iterations[]` and re-executes with the delta (4.5).
+- ✓ Recursive close walks up with per-level prompts; shared with Phase 5 (4.6; FM #2 — single impl on `cache.closureCheck`).
+- ✓ `--small` auto-detection + scope-growth, both transparent (4.7 / 4.8; FM #6).
+- ✓ Two-attempt FIX cap with structured escalation (4.9; r3 §6.9 / Q11).
+- ✓ Node-ref fuzzy matching with tie-break + announce/cancel (4.11; Q4.10).
+- ✓ LEAF VERIFY method dispatch with transparent fallback (4.3; Q4.2).
+- ✓ DECISION POINT with recommended-option discipline (4.10; Q4.9).
+- ✓ One commit per task, all user-approved.
+
+**Commit chronology (9 commits, in order):** `1916ac0` (4.1 ORIENT) → `28e501f` (4.11 node-ref) → `35ceaf5` (4.2 LEAF EXECUTE) → `8c5b834` (4.3 LEAF VERIFY) → `cc045b0` (4.4 AWAITING REVIEW) → `0a82e43` (4.5 ITERATION) → `e0e8b73` (4.6 recursive close) → `301b9cd` (4.9 FIX) → `1a4cfac` (4.10 DECISION POINT) → [4.7+4.8 small, this commit].
+
+**Aggregate test state:** ovd-plan **4244 checks across 34 suites** (Phase 4 added 9 handler suites: orient/noderef/execute/verify/review/iterate/closure/fix/decision/small — 10 modules, the execute+small modules each covering paired tasks). `npm run check` exit 0; `test:workflow` pass; `eval:router` 269 pass.
+
+**Architectural invariants held across Phase 4:** CLI never makes LLM calls or executes tasks (Pattern 1 — every handler is plan/commit dispatch, the agent does the work between); all status transitions go through the writer round-trip (hard rule 7 — `openState`/`commitState`); every handler that writes has a migration-compat seam test (Pattern 5); only `--entries-json` introduced as a behavioral flag (Pattern 3); every user-facing pause has numbered options + describe-other (Pattern 7).
+
+**Methodologies (18-methodologies-locked.md) held:** 3-factor estimation validated across 10 more data points (every Phase-4 module came in-band — all FIXED-SHAPE or no-render; the model's "FIXED-SHAPE → trust brief" prediction held 10/10). Pre-flight surface-conflicts at instances 11–20: surfaced 4 §6 follow-ups (Q4.2.1 route() wording, Q4.3.1 §6.8 method-table citation, Q4.4.1 classifier-locus — all reconciled in-code; Q4.10 announce-cancel amendment applied) + the Q4.6–Q4.11 lock batch.
+
+**§6 follow-ups accumulated in Phase 4** (all r4-amendment or already-reconciled; none block Phase 5): Q4.2.1 (impl-plan `route()` wording stale vs r3 §11.1), Q4.3.1 (impl-plan cites non-existent r3 §6.8 method table), Q4.4.1 (classifier-locus framing — reconciled by hybrid, no change strictly required).
+
+**Ready for Phase 5 (`/ovd-log` — lightweight save + recursive closure + handoff) in a fresh session.** Phase 5 Task 5.5 imports the Phase 4 `closure.js` (shared utility); Task 5.7 builds `runDocUpdate` (the Q3.6.1 EDIT dependency). Recommend a fresh-context handoff per the readiness-brief pattern.
+
 ---
 
 ## 8. Glossary / quick decision reference
