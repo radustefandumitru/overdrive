@@ -3497,6 +3497,22 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 4.5 (ITERATION LOOP) — captures feedback to `leaf.iterations[]` (r3 §10.6), transitions to `in-progress`, re-enters LEAF EXECUTE with the feedback as a delta. Consumes the `iterate` classification from this task.
 
+### 2026-06-20 — Session 19 continued (Phase 4 Task 4.5 COMPLETE — ITERATION LOOP)
+
+**Pre-flight (Methodology 2 — 16th instance):** confirmation-class, no spec conflict (first Phase-4 task with zero §6 follow-up). Picks: PLAN = iteration-history view; COMMIT = capture feedback + transition + re-execute-with-delta; reuse `execute.buildExecutePlan` for the re-execute base (Pattern 2); delta-not-redo enforced by prompt structure (brief-13).
+
+**Task 4.5 — `iterate.js` (~210 lines).** `iterateOnLeaf` (COMMIT) appends `{session, feedback, delta_applied:'pending'}` to the leaf's `iterations[]` annotation (r3 §10.6) via the **semantic writer round-trip** (`openState`/`commitState` — so the exact iteration state survives context clears, r3 §8.1 resume), sets status → `in-progress`, writes a session capture, and emits a **re-execute plan carrying the delta**: a header with the current feedback + (from iteration 2 on) the prior iterations as "context — do NOT re-do", the "apply ONLY this delta" discipline, then the embedded `execute.buildExecutePlan` output (Pattern 2 reuse). `buildIteratePlan` (PLAN) renders the iteration history + how to iterate. **Pattern 2 reuse:** `execute.findLeaf`/`buildExecutePlan`, `noderef.isLeaf`, `deliberation-state.openState/commitState`, `research.isoToFilenameSafe`. `appendIteration` preserves all other annotation fields (skills/scope/confidence verified unclobbered). Wired `/ovd-go iterate <ref>` (plan = history) + `--entries-json` (commit). Consumes Task 4.4's `iterate` classification (the agent, after review→iterate, calls iterate with the feedback).
+
+**Tests:** `scripts/test-ovd-plan-iterate.js` — **81 checks across 10 groups**: module surface; getIterations/appendIteration (creates array, count, default+explicit delta_applied, field preservation); renderIterationHistory; buildIteratePlan (history + errors); normalizeIterateEntries (Pattern 4: missing leaf_id/feedback, trim, non-string); iterateOnLeaf (capture → **iterations[] + status persisted**, re-execute plan with delta, session file, errors); **multi-iteration cycle + resume (FM #3 / §8.1)** — two iterations persist in order, prior shown as do-not-redo context; runIterate dispatch + `ovdPlan.runGo`; **migration-compat seam (Pattern 5)**; edge cases (annotation preservation, first-iteration-no-prior-block, explicit delta, session naming).
+
+**Estimation (3-factor model):** iterate.js hit factor (1) light + factor (3) annotation mutation + factor (2) FIXED-SHAPE render (history + delta templates, reusing execute's plan) → ~210 lines, in-band. Test topped 66 → 81 to clear the Pattern-8 ≥80 bar. 17th data point.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 3838 → 3919 checks across 30 suites** (+81 iterate, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/iterate.js` (new), `scripts/test-ovd-plan-iterate.js` (new), `lib/ovd-plan/index.js` (mod — require + iterate dispatch + export), `package.json` (mod), this §7 entry (doc). Commit boundary proposed at end of this entry.
+
+**Next:** Task 4.6 (recursive close) — the shared utility (`lib/ovd-plan/cache.js::closureCheck` or a new `closure.js`) used by BOTH `/ovd-go` and Phase 5 `/ovd-log`; walks up presenting closure prompts per r3 §7.5/§6.5; consumes the `approved`→`done` transitions from Task 4.4. **Don't fork** the closure logic (FM #2).
+
 ---
 
 ## 8. Glossary / quick decision reference
