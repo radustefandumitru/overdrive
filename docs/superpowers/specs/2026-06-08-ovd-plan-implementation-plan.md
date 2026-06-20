@@ -3513,6 +3513,22 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 4.6 (recursive close) — the shared utility (`lib/ovd-plan/cache.js::closureCheck` or a new `closure.js`) used by BOTH `/ovd-go` and Phase 5 `/ovd-log`; walks up presenting closure prompts per r3 §7.5/§6.5; consumes the `approved`→`done` transitions from Task 4.4. **Don't fork** the closure logic (FM #2).
 
+### 2026-06-20 — Session 19 continued (Phase 4 Task 4.6 COMPLETE — recursive close, shared utility)
+
+**Pre-flight (Methodology 2 — 17th instance):** shared-utility placement = new `lib/ovd-plan/closure.js` importing the existing `cache.closureCheck` engine (Task 1.4) — so Phase 5 `/ovd-log` (Task 5.5) imports `closure.js` without pulling `/ovd-go`'s dispatch (FM #2: single implementation, don't fork). The eligibility engine already exists; this task adds the walk-and-prompt FLOW.
+
+**Task 4.6 — `closure.js` (~210 lines).** `recursiveCloseFlow(rootDir, justClosedNodeId)` (PLAN) calls `cache.closureCheck` (which walks ancestors via the recursive `isNodeClosed` — a container with all-closed children counts as closed) and presents the r3 §7.5 prompt for the innermost eligible ancestor: `(1) verify (cluster) (2) close (3) hold (4) other`, with option 2 naming the next ancestor. `applyClosureDecision` (COMMIT, `{node_id, decision}`): **close** re-confirms eligibility (children all closed) then sets `status=done` via the writer round-trip (Pattern 2) and **re-runs the flow to present the NEXT level** (never auto-advances — each level is a separate user-approved commit, r3 §7.5); **hold** stops; **verify** routes to `/ovd-go verify <id>` (cluster verification) first. Walk stops at the first ancestor with open siblings or at root. **Root-as-terminal design decision:** `closureCheck` includes the root (id `'(root)'`) in its eligible set, but the flow treats root-eligible as a terminal **`project-complete`** state ("all milestones done — run /ovd-log handoff"), never presenting a `'(root)'` close prompt (which would fail `findNode`) — honors r3 §7.5 "until root reached" as a stop, not a close target. **Pattern 2 reuse:** `cache.closureCheck`/`isNodeClosed`, `noderef.flattenNodes`, `deliberation-state.openState/commitState`. Wired `/ovd-go close <just-closed-ref>` (plan) + `--entries-json {node_id, decision}` (commit).
+
+**Tests:** `scripts/test-ovd-plan-closure.js` — **80 checks across 9 groups**: module surface; findNode (container/leaf/deep/not-found); recursiveCloseFlow (closure-prompt chain + prompt template + open-siblings no-closure + node-not-found + missing-ref/plan); normalizeClosureEntries (Pattern 4); applyClosureDecision (hold/verify no-change + close persists + ineligible children-open reject + not-a-container + node-not-found); **multi-level walk** (close II.2 → II → walk complete) + **deep 4-level nesting** (I.1.a → I.1 → I → project-complete) + renderClosurePrompt unit + project-complete + skipped-sibling-counts-as-closed; runClose dispatch + `ovdPlan.runGo`; **migration-compat seam (Pattern 5)**.
+
+**Estimation (3-factor model):** closure.js hit factor (1) validation + factor (3) status mutation + factor (2) FIXED-SHAPE render (prompt template) → ~210 lines, in-band. The engine reuse (closureCheck) kept it lean. 18th data point. Two implementation refinements surfaced while writing tests (not spec gaps): (a) root-as-terminal handling above; (b) `closure-prompt` returns the *presentable* chain (root excluded), not the raw engine output — both corrected before ship.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 3919 → 3999 checks across 31 suites** (+80 closure, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/closure.js` (new), `scripts/test-ovd-plan-closure.js` (new), `lib/ovd-plan/index.js` (mod — require + close dispatch + export), `package.json` (mod), this §7 entry (doc). Commit boundary proposed at end of this entry.
+
+**Next:** Task 4.9 (two-attempt FIX escalation) per the readiness-brief order (… 4.6 → 4.9 → 4.10 → 4.7 → 4.8). Consumes verify `fail` (Task 4.3); caps at 2 attempts then escalates with structured diagnosis (r3 §6.9 / Q11); FM #7 confidence-laundering (verify is the truth, not agent confidence).
+
 ---
 
 ## 8. Glossary / quick decision reference
