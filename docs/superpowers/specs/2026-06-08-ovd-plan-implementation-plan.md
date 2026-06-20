@@ -3545,6 +3545,22 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 4.10 (DECISION POINT) — pauses mid-leaf on ambiguity; 5 pre-defined kinds (Q4.9 lock: scope-overflow / ambiguous-spec / missing-dependency / contract-conflict / other) + free-form; always recommended-option + alternatives + describe-other (Pattern 7). Then 4.7 / 4.8 (`--small`).
 
+### 2026-06-20 — Session 19 continued (Phase 4 Task 4.10 COMPLETE — DECISION POINT)
+
+**Pre-flight (Methodology 2 — 19th instance):** confirmation-class. DECISION POINT is lighter — it does NOT mutate the tree: SURFACE is a pure render of the agent's decision payload (Pattern 1 — agent has mid-execution context); RESOLVE records the choice to `decisions.md` via `appendDecision` (Pattern 2/6), embedding the kind tag for Phase 5 LEARNINGS EXTRACT (Q4.9).
+
+**Task 4.10 — `decision.js` (~180 lines).** `surfaceDecisionPoint(entries)` validates + renders the standardized prompt from the agent's payload `{leaf_id, kind, ambiguity, recommended:{label,reasoning}, alternatives[]}`: the recommended option is always `(1)` with reasoning + a `[recommended]` tag, alternatives follow, then a numbered describe-other escape (Pattern 7 — options are never equal; the CLI **rejects a payload with no `recommended`**, enforcing the recommended-option discipline at the code layer). `KINDS` = the Q4.9 5-set (scope-overflow / ambiguous-spec / missing-dependency / contract-conflict / other). `resolveDecisionPoint(rootDir, entries)` records the choice to `.overdrive/decisions.md` via the canonical `appendDecision` as `DECISION POINT [<kind>]: <chosen>` (node=leaf_id, rationale) — the kind tag lets Phase 5 LEARNINGS EXTRACT aggregate decision-point patterns. No status mutation (the leaf stays in-progress; execution resumes after the choice). **Pattern 2 reuse:** `decisions-log.appendDecision`. Wired `/ovd-go decision <ref> --entries-json` (surface payload OR resolution, dispatched by presence of `chosen`).
+
+**Tests:** `scripts/test-ovd-plan-decision.js` — **81 checks across 9 groups**: module surface (5 KINDS); renderDecisionPrompt (recommended-as-(1) + tag + alternatives + other + reply); normalizeDecisionPayload (**Pattern 7: missing/label-less/reasoning-less recommended rejected** + invalid kind + missing ambiguity + alternatives filtered); surfaceDecisionPoint (render + option_count + errors); normalizeResolution; resolveDecisionPoint (**decisions.md kind-tagged row + node + rationale + date**, file created); runDecision dispatch (surface vs resolve by `chosen`; missing/array entries) + `ovdPlan.runGo`; **migration-compat seam (Pattern 5)** — resolve on a bare project creates decisions.md; all-5-kinds accepted + multi-row append.
+
+**Estimation (3-factor model):** decision.js hit factor (1) validation + factor (2) FIXED-SHAPE render; NO factor (3) (no tree mutation — render + log append) → ~180 lines, the lightest Phase-4 handler so far, consistent with no-state-machine. 20th data point.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 4081 → 4162 checks across 33 suites** (+81 decision, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/decision.js` (new), `scripts/test-ovd-plan-decision.js` (new), `lib/ovd-plan/index.js` (mod — require + decision dispatch + export), `package.json` (mod), this §7 entry (doc). Commit boundary proposed at end of this entry.
+
+**Next:** Tasks 4.7 + 4.8 (`--small` auto-detection + scope-growth) — the last Phase-4 pair. 4.7 `assessScope` (Q4.6: recommend `--small` when files_touched ≤ 1 AND no shared-contract files); 4.8 `monitorSmallScope` (Q4.7: path-pattern allow-list + multi-consumer-export); both transparent (FM #6 — never silent switch).
+
 ---
 
 ## 8. Glossary / quick decision reference
