@@ -3529,6 +3529,22 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 4.9 (two-attempt FIX escalation) per the readiness-brief order (… 4.6 → 4.9 → 4.10 → 4.7 → 4.8). Consumes verify `fail` (Task 4.3); caps at 2 attempts then escalates with structured diagnosis (r3 §6.9 / Q11); FM #7 confidence-laundering (verify is the truth, not agent confidence).
 
+### 2026-06-20 — Session 19 continued (Phase 4 Task 4.9 COMPLETE — two-attempt FIX escalation)
+
+**Pre-flight (Methodology 2 — 18th instance):** confirmation-class, no spec conflict. Pattern-1 dispatch tracking `fix_attempts[]` on the leaf annotation (writer round-trip, so the 2-cap survives context clears). PLAN emits the attempt-N fix plan (or escalation at cap); COMMIT records the attempt + branches; plus an escalation-decision handler (skip/replan/try-once-more).
+
+**Task 4.9 — `fix.js` (~230 lines).** `buildFixPlan` (PLAN) emits attempt N/2: attempt 1 = targeted fix; attempt 2 = "try a DIFFERENT approach" citing attempt 1's approach + error (Q4.8 — the CLI tracks prior approaches; doesn't enforce diff at code level). At cap (2 attempts) it emits the escalation instead. `applyFixAttempt` (COMMIT, `{approach,result,error?,log_excerpt?}`) appends to `fix_attempts[]` and branches: **pass** → status `awaiting-review` (FM #7: only result:pass — the re-verify actually passed — promotes); **fail & attempt<2** → retry prompt; **fail & attempt==2** → escalation report (`{attempts, hypothesis}` + r3 §6.9 action-path). A 3rd attempt is rejected (`cap-reached`). `applyEscalationDecision` resolves the escalation: **skip** → status `blocked` (FM #8 — only on explicit choice); **replan** → route to `/ovd-plan edit`; **try-once-more** → clears `fix_attempts[]` (user-granted reset). **Pattern 2 reuse:** `execute.findLeaf`, `noderef.isLeaf`, `deliberation-state.openState/commitState`. Wired `/ovd-go fix <ref>` (plan) + `--entries-json` (commit — attempt result OR escalation decision, dispatched by entries shape).
+
+**Tests:** `scripts/test-ovd-plan-fix.js` — **82 checks across 9 groups**: module surface (MAX_ATTEMPTS=2); getFixAttempts + renderEscalation (attempts list + hypothesis + §6.9 options); buildFixPlan (attempt 1 targeted / attempt 2 cites-prior-DIFFERENT / escalation-at-cap / errors); normalizeFixEntries (Pattern 4); **applyFixAttempt full sequence** (pass→awaiting-review, fail→retry, fail+fail→escalate, fail+pass→"required 2 attempts", cap-reached on 3rd, errors); applyEscalationDecision (skip→blocked, replan→route, try-once-more→reset+fresh-attempt-allowed); runFix dispatch + `ovdPlan.runGo` (routes escalation_decision vs attempt vs plan); **migration-compat seam (Pattern 5)**; edge cases.
+
+**Estimation (3-factor model):** fix.js hit factor (1) validation + factor (3) status/annotation mutation + factor (2) FIXED-SHAPE render (attempt + escalation templates) → ~230 lines, in-band. 19th data point.
+
+**Regression:** `npm run check` exit 0; **ovd-plan 3999 → 4081 checks across 32 suites** (+82 fix, +1 suite); `test:workflow` pass; `eval:router` 269 pass. No regressions.
+
+**Files:** `lib/ovd-plan/fix.js` (new), `scripts/test-ovd-plan-fix.js` (new), `lib/ovd-plan/index.js` (mod — require + fix dispatch + export), `package.json` (mod), this §7 entry (doc). Commit boundary proposed at end of this entry.
+
+**Next:** Task 4.10 (DECISION POINT) — pauses mid-leaf on ambiguity; 5 pre-defined kinds (Q4.9 lock: scope-overflow / ambiguous-spec / missing-dependency / contract-conflict / other) + free-form; always recommended-option + alternatives + describe-other (Pattern 7). Then 4.7 / 4.8 (`--small`).
+
 ---
 
 ## 8. Glossary / quick decision reference
