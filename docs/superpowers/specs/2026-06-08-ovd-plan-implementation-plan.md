@@ -3646,6 +3646,14 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.2 — `HANDOFF` full 11-step pipeline (r3 §7.6), landed as slices A (steps 1–5: summarise → state → follow-ups → doc-update → handoff file), B (steps 6–10: recursive close + milestone close), C (step 11: commit). Consumes 5.1/5.5/5.7 + (for B) 5.6 + (for C) 5.8. Then 5.6 → 5.8.
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.8 COMPLETE — COMMIT integration) [dependency-first reorder]
+
+**Sequencing:** built the two standalone HANDOFF dependencies (5.8 COMMIT, then 5.6 MILESTONE CLOSE) BEFORE 5.2, so HANDOFF slices B/C compose real implementations rather than stubs. Same end-state as the brief's interleaved A→5.6→B→5.8→C; cleaner (no re-touching 5.2). Order is now 5.8 → 5.6 → 5.2.
+
+**Task 5.8 — `commit.js` (~150 lines), TDD (41 checks).** Enforces the locked git-approval rule (`feedback_git_commits.md`) **structurally**: PLAN (`buildCommitPlan`) proposes message + file list + numbered action-path and executes nothing; COMMIT (`applyCommit`) runs git **only when `confirm` is set** (the slash-command body sets it only after the user picks "(1) commit"). **NEVER `--no-verify` / `--no-gpg-sign`** — asserted in tests across all git argv; hooks/signing honored. git runs through an **injectable runner** (`opts.runGit`; default `spawnSync`) so tests use a mock and never touch a real repo. Message = Q5.7 three-form convention (`checkpoint —` / `(phase-N.handoff)` / `(milestone-N.close)`); explicit message wins; explicit-but-blank message rejected (no silent default). git-add failure aborts before commit; commit failure (e.g. hook rejection) surfaces stderr. Wired internal `/ovd-log commit` (PLAN default, `--confirm` executes) + exported `runCommit` for HANDOFF step 11. New suite total **4592** ovd-plan checks.
+
+**Next:** Task 5.6 — `MILESTONE CLOSE` cascade (`runMilestoneClose`): LEARNINGS EXTRACT → RELEASE PREP (if release milestone) → ARCHIVE (verbatim, no summarization per Q5.6/hard rule 7) → milestone summary to `.overdrive/reports/milestone-N-summary.md`. Then 5.2 HANDOFF composes everything.
+
 ---
 
 ## 8. Glossary / quick decision reference
