@@ -161,7 +161,7 @@ function listHandoffs(p) { const d = handoffsDir(p); return fs.existsSync(d) ? f
   check('handoff file has highlight', body.includes('shipped II.2.a'));
   check('handoff file has follow-up', body.includes('II.2.b') && body.includes('perf budget?'));
   check('result reports handoff_file', /handoffs/.test(res.handoff_file));
-  check('result flags close-check next', /close/i.test(res.text));
+  check('result ran close check inline (no closures here)', res.closure === 'no-closure' && /step 11/.test(res.text), JSON.stringify({ closure: res.closure }));
   cleanup(tmpRoot);
 })();
 
@@ -189,6 +189,85 @@ function listHandoffs(p) { const d = handoffsDir(p); return fs.existsSync(d) ? f
   }, { now: '2026-06-21T16:00:00.000Z' });
   check('bad ref → not ok', res.ok === false);
   check('bad ref → no handoff file', listHandoffs(projectDir).length === 0);
+  cleanup(tmpRoot);
+})();
+
+// --- Slice B: step 6 recursive close check ------------------------------
+// Closing II.2.a → II.2 has all children done (II.2.b done) → II.2 closure
+// candidate; II has open sibling II.3 → walk stops at II.2 (a cluster, not a
+// milestone), so steps 7–10 do NOT run.
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceB-cluster');
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['done II.2.a'] },
+    state: { status_changes: [{ id: 'II.2.a', status: 'done' }] },
+    closed_leaf: 'II.2.a'
+  }, { now: '2026-06-21T16:00:00.000Z' });
+  check('sliceB cluster ok', res.ok === true);
+  check('sliceB step 6 completed', res.steps_completed.includes(6));
+  check('sliceB closure mode closure-prompt', res.closure === 'closure-prompt', res.closure);
+  check('sliceB close prompt mentions II.2', /II\.2\b/.test(res.text));
+  check('sliceB steps 7-10 NOT run (cluster, not milestone)', !res.steps_completed.includes(7));
+  cleanup(tmpRoot);
+})();
+
+// no closed_leaf → step 6 no-closure
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceB-noclose');
+  const res = applyHandoff(projectDir, { summary: { highlights: ['x'] }, state: { status_changes: [{ id: 'II.2.a', status: 'awaiting-review' }] } }, { now: '2026-06-21T16:00:00.000Z' });
+  check('sliceB no-closure ok', res.ok === true);
+  check('sliceB step 6 ran', res.steps_completed.includes(6));
+  check('sliceB no-closure mode', res.closure === 'no-closure');
+  check('sliceB no milestone steps', !res.steps_completed.includes(7));
+  cleanup(tmpRoot);
+})();
+
+// --- Slice B: steps 7–10 milestone close (reached + pre-approved) --------
+// Milestone with two direct leaves; closing the last makes the milestone
+// eligible. With milestone_close entries present the cascade runs.
+const MS_FIXTURE = `${FRONT}# Test Project
+
+## I. Foundation [done]
+
+### I.1 Setup [done]
+
+## II. Dashboard [in-progress]
+
+### II.1 Data [done]
+
+### II.2 Stats [in-progress] ← ACTIVE
+`;
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceB-milestone', MS_FIXTURE);
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['finished dashboard'] },
+    state: { status_changes: [{ id: 'II.2', status: 'done' }] },
+    closed_leaf: 'II.2',
+    milestone_close: { learnings: { what_worked: ['clean closure'] }, disposition: 'done' }
+  }, { now: '2026-06-21T16:00:00.000Z' });
+
+  check('sliceB milestone ok', res.ok === true, JSON.stringify(res));
+  check('sliceB steps 7-10 completed', [7, 8, 9, 10].every((s) => res.steps_completed.includes(s)), JSON.stringify(res.steps_completed));
+  check('sliceB milestone_close result present', res.milestone_close && res.milestone_close.ok === true);
+  check('sliceB II archived (removed from active tree)', nodeBy(projectDir, 'II') === null);
+  check('sliceB archive section present', /<!-- ovd-plan:archive:start -->/.test(readPlan(projectDir)));
+  check('sliceB milestone summary written', fs.existsSync(path.join(projectDir, '.overdrive', 'reports', 'milestone-II-summary.md')));
+  check('sliceB text notes milestone close', /milestone/i.test(res.text));
+  cleanup(tmpRoot);
+})();
+
+// milestone reached but NO milestone_close entries → 7-10 skipped, prompt surfaced
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceB-noapprove', MS_FIXTURE);
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['x'] },
+    state: { status_changes: [{ id: 'II.2', status: 'done' }] },
+    closed_leaf: 'II.2'
+  }, { now: '2026-06-21T16:00:00.000Z' });
+  check('sliceB no-approve ok', res.ok === true);
+  check('sliceB no-approve steps 7-10 skipped', !res.steps_completed.includes(7));
+  check('sliceB no-approve II still in tree', nodeBy(projectDir, 'II') !== null);
+  check('sliceB no-approve surfaces closure prompt', res.closure === 'closure-prompt');
   cleanup(tmpRoot);
 })();
 
