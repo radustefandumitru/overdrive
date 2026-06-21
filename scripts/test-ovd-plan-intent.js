@@ -29,7 +29,8 @@ const {
   isExplicitCommand,
   routeOrPrompt,
   gatherProjectState,
-  runIntent
+  runIntent,
+  recordIntentCorrection
 } = intent;
 
 const ovdPlan = require('../lib/ovd-plan');
@@ -434,11 +435,106 @@ check('ovdPlan exposes runIntent', typeof ovdPlan.runIntent === 'function');
 }
 
 // ---------------------------------------------------------------------------
+// Task 6.4 — recordIntentCorrection (mis-classification logging → session capture)
+// ---------------------------------------------------------------------------
+check('recordIntentCorrection is a function', typeof recordIntentCorrection === 'function');
+
+function readSession(projectDir) {
+  const dir = path.join(projectDir, '.overdrive', 'sessions');
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.md')).sort();
+  return fs.readFileSync(path.join(dir, files[files.length - 1]), 'utf8');
+}
+const FIXED = '2026-06-21T12:00:00.000Z';
+const FIXED2 = '2026-06-21T12:05:00.000Z';
+
+{
+  // Records a correction; creates a session file if none; writes under the section.
+  const proj = makeTempProject('correction');
+  const res = recordIntentCorrection(proj.projectDir, {
+    originalMessage: 'reduce the title font', classifiedAs: '/ovd-plan idea', correctedTo: '/ovd-go --small'
+  }, { now: FIXED });
+  check('recordIntentCorrection ok', res.ok === true);
+  check('recordIntentCorrection reports the file', typeof res.file === 'string' && res.file.includes('sessions'));
+  const content = readSession(proj.projectDir);
+  check('session has the intent-corrections section', /^##\s+intent-corrections\s*$/im.test(content));
+  check('entry records the original message', content.includes('reduce the title font'));
+  check('entry records the classified route', content.includes('/ovd-plan idea'));
+  check('entry records the corrected route', content.includes('/ovd-go --small'));
+  // Pattern 6 — log-push compat: result exposes summary AND note.
+  check('result exposes summary (Pattern 6)', typeof res.summary === 'string' && res.summary.length > 0);
+  check('result exposes note (Pattern 6)', typeof res.note === 'string' && res.note.length > 0);
+  cleanup(proj.tmpRoot);
+}
+
+{
+  // Multiple corrections accumulate under a single header.
+  const proj = makeTempProject('correction-multi');
+  recordIntentCorrection(proj.projectDir, { originalMessage: 'msg one', classifiedAs: '/ovd-plan idea', correctedTo: '/ovd-go --small' }, { now: FIXED });
+  recordIntentCorrection(proj.projectDir, { originalMessage: 'msg two', classifiedAs: '/ovd-log', correctedTo: '/ovd-log handoff' }, { now: FIXED2 });
+  const content = readSession(proj.projectDir);
+  check('multi-correction has exactly one section header', (content.match(/^##\s+intent-corrections\s*$/gim) || []).length === 1);
+  check('multi-correction keeps both entries', content.includes('msg one') && content.includes('msg two'));
+  cleanup(proj.tmpRoot);
+}
+
+{
+  // Validation — every field required.
+  const proj = makeTempProject('correction-invalid');
+  check('rejects missing originalMessage', recordIntentCorrection(proj.projectDir, { classifiedAs: '/ovd-log', correctedTo: '/ovd-go' }, { now: FIXED }).ok === false);
+  check('rejects missing classifiedAs', recordIntentCorrection(proj.projectDir, { originalMessage: 'x', correctedTo: '/ovd-go' }, { now: FIXED }).ok === false);
+  check('rejects missing correctedTo', recordIntentCorrection(proj.projectDir, { originalMessage: 'x', classifiedAs: '/ovd-log' }, { now: FIXED }).ok === false);
+  check('rejects non-object', recordIntentCorrection(proj.projectDir, null, { now: FIXED }).ok === false);
+  cleanup(proj.tmpRoot);
+}
+
+{
+  // Newline sanitization — a multi-line message becomes a single-line entry.
+  const proj = makeTempProject('correction-newline');
+  recordIntentCorrection(proj.projectDir, { originalMessage: 'line one\nline two', classifiedAs: '/ovd-plan idea', correctedTo: '/ovd-go --small' }, { now: FIXED });
+  const content = readSession(proj.projectDir);
+  const entryLine = content.split('\n').find((l) => l.includes('line one'));
+  check('entry is single-line (no embedded newline)', entryLine && entryLine.includes('line two'));
+  cleanup(proj.tmpRoot);
+}
+
+{
+  // Pattern 5 — migration-compat seam: a DEFAULT-save session (Activity log + Save
+  // block) must keep its sections intact when an intent-correction is appended.
+  const proj = makeTempProject('correction-seam');
+  const dir = path.join(proj.projectDir, '.overdrive', 'sessions');
+  fs.mkdirSync(dir, { recursive: true });
+  const seed = '# Session 2026-06-21 11:00\n\n## Activity log\n\n[2026-06-21 11:00] did a thing\n\n## Save 2026-06-21 11:30\n\n- state: in-progress\n';
+  fs.writeFileSync(path.join(dir, '2026-06-21-11-00.md'), seed);
+  const res = recordIntentCorrection(proj.projectDir, { originalMessage: 'seam test', classifiedAs: '/ovd-plan idea', correctedTo: '/ovd-go --small' }, { now: FIXED });
+  check('seam: correction ok against existing session', res.ok === true);
+  const content = readSession(proj.projectDir);
+  check('seam: Activity log section preserved', content.includes('## Activity log') && content.includes('did a thing'));
+  check('seam: Save block preserved', content.includes('## Save 2026-06-21 11:30') && content.includes('state: in-progress'));
+  check('seam: intent-corrections section added', /^##\s+intent-corrections\s*$/im.test(content) && content.includes('seam test'));
+  cleanup(proj.tmpRoot);
+}
+
+{
+  // Dispatch: overdrive plan intent --entries-json '{"action":"correction",...}'.
+  const proj = makeTempProject('correction-dispatch');
+  const res = ovdPlan.runPlan({
+    subcommand: 'intent',
+    entriesJson: JSON.stringify({ action: 'correction', original_message: 'dispatch msg', classified_as: '/ovd-plan idea', corrected_to: '/ovd-go --small' }),
+    projectDir: proj.projectDir
+  }, process.env);
+  check('dispatch records a correction', res.ok === true && res.action === 'correction');
+  const content = readSession(proj.projectDir);
+  check('dispatch wrote the correction entry', content.includes('dispatch msg') && /^##\s+intent-corrections\s*$/im.test(content));
+  cleanup(proj.tmpRoot);
+}
+
+// ---------------------------------------------------------------------------
 // Top-level + namespace exports
 // ---------------------------------------------------------------------------
 check('ovdPlan exposes intent module', ovdPlan.intent === intent);
 check('ovdPlan exposes classifyIntent', ovdPlan.classifyIntent === classifyIntent);
 check('ovdPlan exposes renderAmbiguityPrompt', ovdPlan.renderAmbiguityPrompt === renderAmbiguityPrompt);
+check('ovdPlan exposes recordIntentCorrection', ovdPlan.recordIntentCorrection === recordIntentCorrection);
 
 // ---------------------------------------------------------------------------
 // CLASSIFICATION MATRIX — 20+ message → expected-route pairs (contract fixture)

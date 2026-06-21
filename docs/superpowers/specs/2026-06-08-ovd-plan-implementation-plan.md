@@ -3736,6 +3736,32 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 ---
 
+### 2026-06-21 — Session 21 continued (Phase 6 Task 6.4 COMPLETE — mis-classification logging → PHASE 6 DONE)
+
+- **Task 6.4 — Mis-classification logging. COMPLETE (TDD, two RED→GREEN cycles).**
+  - **Write path (`intent.js`):** `recordIntentCorrection(rootDir, {originalMessage, classifiedAs, correctedTo}, opts)` appends a structured bullet under a `## intent-corrections` section of the current session file. **Reuses canonical primitives — no fork (Pattern 2):** `ensureSessionFile` (from `log-capture.js`, Phase 5-owned) find-or-creates the session; `appendUnderHeader` (from `migrate.js`) manages the section (creates it, preserves all sibling sections). Newline-sanitized (`oneLine`). Validates all three fields. **Pattern 6 — log-push compat:** the result exposes both `summary` and `note` (same human-readable string) so a `sub.summary || sub.note` consumer (`workflow.js:525`) degrades gracefully. Q6.6 (session capture only) + Q6.10 (logging only, no auto-retune) honored. Dispatch: `runIntent` routes `entries.action === 'correction'` here (independent of the classify-message guard; original message rides the payload) → `overdrive plan intent --entries-json '{"action":"correction",...}'`.
+  - **Aggregation (`milestone-close.js`) — closes the F3 deferral:** `countIntentCorrections(rootDir)` scans session files for the `→ corrected to ` marker (mirrors `countSkillDeltaMentions`); added to `gatherSignals` as `intentCorrections` and surfaced in the LEARNINGS EXTRACT "Signals (computed)" block (`- Intent mis-classifications logged: N`, with a review nudge when > 0). This realizes "aggregated at LEARNINGS EXTRACT" concretely; recurring routing mistakes surface for review (no auto-retune).
+  - **Command bodies:** appended the correction-recording instruction to the "Intent routing" preamble in all four bodies (the loop-closing instruction so the agent logs corrections).
+- **Tests:** intent **158 → 181** (+23: write/create/multi-accumulate/validation/newline-sanitize; **Pattern 5 migration-compat seam** — correction against a session carrying `## Activity log` + `## Save` blocks preserves both; Pattern 6 summary+note; dispatch via `runPlan`). milestone-close **58 → 61** (+3: `intentCorrections` default 0; counts across sessions; PLAN surfaces the signal).
+- **Verification:** ovd-plan **4913 → 4939**; `consistency` (1181, validates the command-body edits), `test:workflow`, `eval:router` (269), `check` exit 0 — all green.
+- **Not yet committed** — awaiting user approval.
+
+---
+
+### 2026-06-21 — PHASE 6 WRAP-UP (Intent Detection Layer complete — 4/4 tasks)
+
+**Phase 6 done.** The natural-language router now sits in front of every command. `lib/ovd-plan/intent.js` (~one module, agent-side classification per Pattern 1) delivers: 6.1 classifier core (`classifyIntent` + hardcoded `ROUTE_CATALOG` + `buildClassificationPrompt` + Pattern-4 `normalizeClassification`); 6.2 `renderAmbiguityPrompt` (r3 §3.2, Pattern 7, no preference markers); 6.3 `routeOrPrompt` branching (bypass/execute/prompt/clarify) + `isExplicitCommand` (Q6.9) + `gatherProjectState` + `plan intent` dispatch + slash-body free-form preamble; 6.4 `recordIntentCorrection` + LEARNINGS aggregation signal.
+
+**Architectural invariants held at close:** CLI never classifies (agent-side); categorical confidence only (Q6.2); explicit `/ovd-*` always bypass (r3 §3.4 / Q6.9); action-path prompts always carry 2–4 numbered options + describe escape (Pattern 7); never silent on ambiguity; mis-classifications log only — no auto-retune (Q6.10). All 11 Q6.x design answers implemented as locked.
+
+**Suite at Phase 6 close:** intent **181** checks (new); ovd-plan total **4755 → 4939**; `consistency` 1181, `test:workflow`, `eval:router` 269, `check` exit 0 — all green.
+
+**Deferred / follow-ups (unchanged or new):** EDIT (Task 3.6) → `runDocUpdate` wiring (1-line swap, FM #8); Q5.9 sentinel TTL/PID auto-recovery → Phase 7; recurring-mis-classification auto-shortcut suggestion → post-v1 (Q6.10); route-catalog promotion to config → Phase 7 only if maintenance pressure warrants (Q6.1).
+
+**Ready for Phase 7 (Polish + integration) in a fresh session.**
+
+---
+
 ## 8. Glossary / quick decision reference
 
 - **OVERDRIVE.md** — root plan tree file, human-readable Markdown, committed to git.

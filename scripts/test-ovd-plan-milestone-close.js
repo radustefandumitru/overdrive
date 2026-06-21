@@ -93,6 +93,24 @@ function reportPath(p, n) { return path.join(p, '.overdrive', 'reports', `milest
   check('signals done count 2', sig.statusCounts.done === 2, JSON.stringify(sig.statusCounts));
   check('signals total iterations 3', sig.totalIterations === 3, String(sig.totalIterations));
   check('signals all closed', sig.allClosed === true);
+  check('signals intentCorrections defaults to 0', sig.intentCorrections === 0, String(sig.intentCorrections));
+  cleanup(tmpRoot);
+})();
+
+// --- intent-corrections aggregation signal (Phase 6 Task 6.4 / F3) ------
+(function () {
+  const { projectDir, tmpRoot } = makeProject('intent-corrections');
+  const sdir = path.join(projectDir, '.overdrive', 'sessions');
+  fs.mkdirSync(sdir, { recursive: true });
+  fs.writeFileSync(path.join(sdir, '2026-06-21-10-00.md'),
+    '# Session 2026-06-21 10:00\n\n## intent-corrections\n\n' +
+    '- [2026-06-21 10:00] classified "x" as `/ovd-plan idea` → corrected to `/ovd-go --small`\n' +
+    '- [2026-06-21 10:05] classified "y" as `/ovd-log` → corrected to `/ovd-log handoff`\n');
+  const milestone = findNode(projectDir, 'II');
+  const sig = gatherSignals(projectDir, milestone);
+  check('signals count intent corrections across sessions', sig.intentCorrections === 2, String(sig.intentCorrections));
+  const res = buildMilestoneClosePlan(projectDir, { milestoneId: 'II' });
+  check('plan surfaces the intent-corrections signal', /mis-classification/i.test(res.text) && /2/.test(res.text));
   cleanup(tmpRoot);
 })();
 
