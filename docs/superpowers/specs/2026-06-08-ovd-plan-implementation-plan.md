@@ -3695,6 +3695,21 @@ The Phase 5 retrospective review (`docs/superpowers/handoff/reviews/2026-06-21-p
 
 ---
 
+### 2026-06-21 — Session 21 (PHASE 6 kickoff — design Q&A locked + Task 6.1 COMPLETE)
+
+Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environment + green baseline (`check` exit 0, ovd-plan **4755**, `test:workflow` passed, `eval:router` 269) before any reads. Read resume protocol, INDEX, r3 §3/§3.4/§8.3, impl plan §5 Phase 6, the Phase 6 readiness brief (`15-phase-6-readiness.md`), orchestrator Patterns 1–8 (`11-`), decisions Q6, and `idea.js`/`skill-router.js`/`installer.js` dispatch idioms.
+
+- **Design Q&A batch (Q6.1–Q6.11) surfaced with recommendations and LOCKED by user (all as recommended).** Notables: Q6.2 categorical confidence only (hard lock); Q6.4 — verified **no Phase 1 classifier stub exists** (`grep classifyIntent` → none), so the interface is introduced here; Q6.7 calibration affects presentation depth only (not route); Q6.8 hard cap 4; Q6.9 bypass = message starts with `/` AND parses as a valid command; Q6.10 auto-retune out of v1. **One implementation choice surfaced + locked:** CLI surface = a new `plan intent` subcommand (reuses `--entries-json`, no new top-level command — keeps the intent layer invisible per the brief).
+- **Task 6.1 — Classifier core. COMPLETE (TDD).** New module `lib/ovd-plan/intent.js`. Structure mirrors `skill-router.js` (Pattern 1: CLI builds the prompt, agent classifies, CLI validates) but the structured result rides `--entries-json` (Pattern 3) like `idea.js` — **no `skill-router.js` reuse** (different surface/consumer per FM #2). Surface: `STATUS`, hardcoded `ROUTE_CATALOG` (16 routes, Q6.1), `CONFIDENCE_VALUES` (categorical Set), `catalogRoutes`/`isKnownRoute`, `summarizeState` (best-effort state-context render), `buildClassificationPrompt({message,state})` (catalog + state + 4 axes per r3 §3.3 + JSON contract; explicitly requests **no numeric score**), `normalizeClassification` (Pattern-4 guard: unambiguous⇒exactly-1-candidate & route===candidates[0]; ambiguous⇒0–1 very-low-confidence OR 2+; all candidate routes must be known), and the `classifyIntent(message,state,options)` orchestrator (`requires-host-agent` without an answer → prompt; `validation-failed`/resolved otherwise).
+- **No keyword table in `intent.js`** — the classification matrix lives in the TEST as a contract fixture (analogous to `evals/router-benchmark.json`), validating catalog completeness against documented routing intent. The CLI never pattern-matches the message.
+- **Tests:** `scripts/test-ovd-plan-intent.js` — **102 checks** (module surface; catalog integrity + required-route coverage; `summarizeState` present/absent/partial; prompt contains message+catalog+4 axes+JSON spec + no-numeric-score guard + quote/newline tolerance; `normalizeClassification` invalid/valid/very-low-confidence; `classifyIntent` orchestrator paths; namespace exports; **29-case classification matrix** ≥20 with scenario classes idea/surgical/save/ambiguous/near-miss/bypass + bypass-leads-with-slash assertions). Registered in `package.json` `check` + `test:ovd-plan`. Namespace exports added to `index.js` (`intent`, `classifyIntent`).
+- **Verification:** new suite total **4755 → 4857 ovd-plan checks**; `test:workflow`, `eval:router` (269), `check` exit 0 — all green. **No dispatch wiring yet** (the `plan intent` subcommand + slash-body integration land in Task 6.3 per the readiness brief's task order).
+- **Not yet committed** — awaiting user approval (one commit per task).
+
+**Next:** Task 6.2 — `renderAmbiguityPrompt(candidates)` (r3 §3.2 shape; "describe what you want" escape; no preference markers — Pattern 7 / FM #7).
+
+---
+
 ## 8. Glossary / quick decision reference
 
 - **OVERDRIVE.md** — root plan tree file, human-readable Markdown, committed to git.
