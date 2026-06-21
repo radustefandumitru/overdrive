@@ -3654,6 +3654,12 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.6 — `MILESTONE CLOSE` cascade (`runMilestoneClose`): LEARNINGS EXTRACT → RELEASE PREP (if release milestone) → ARCHIVE (verbatim, no summarization per Q5.6/hard rule 7) → milestone summary to `.overdrive/reports/milestone-N-summary.md`. Then 5.2 HANDOFF composes everything.
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.6 COMPLETE — MILESTONE CLOSE cascade)
+
+**Task 5.6 — `milestone-close.js` (~290 lines), TDD (58 checks).** Pattern-1. PLAN (`buildMilestoneClosePlan`) resolves the depth-1 milestone, computes signals (leaf count + status breakdown, total iterations from `iterations[]` annotations, sessions mentioning skill-delta), detects release (`isReleaseMilestone`: `release: true` or version string), flags the **Q5.11 abandoned candidate** (all leaves blocked/skipped, none done → explicit abandoned/replan/hold options), and asks the agent for the learnings narrative + (if release) `pre-launch-checklist`/`jack-seo-launch-audit`. COMMIT (`applyMilestoneClose`) runs the cascade as distinct stages (FM #2): LEARNINGS + RELEASE PREP → summary report at `.overdrive/reports/milestone-<id>-summary.md`; **ARCHIVE** re-serializes the subtree **verbatim** via canonical `writer.writeNode` (Pattern 2 — local `isRoot=false` walk; lossless, statuses/annotations/children retained — Q5.6/hard rule 7, no summarization), appends to the managed `archive` section **without disturbing prior archived content** (migration-compat seam, Pattern 5), and removes the milestone from the active tree via the openState/commitState round-trip. `disposition` ∈ done/abandoned. Unknown/leaf milestone aborts before write. Wired internal `/ovd-log milestone-close <id>` + exported `runMilestoneClose` for HANDOFF step 7. New suite total **4650** ovd-plan checks.
+
+**Next:** Task 5.2 — `HANDOFF` 11-step pipeline (r3 §7.6), the final Phase 5 task. All dependencies now exist (5.1 state/session, 5.5 recursive close, 5.7 doc-update, 5.6 milestone-close, 5.8 commit). Land as slices A (steps 1–5), B (steps 6–10), C (step 11).
+
 ---
 
 ## 8. Glossary / quick decision reference
