@@ -3640,6 +3640,12 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.4 — `CONCERNS REVIEW` (Pattern-1 dispatch across 7 dimensions; persist to the node's `concerns` annotation — key already exists in parser/writer, additive per Q5.4; high-severity findings recommend `/ovd-plan idea`). Then 5.2 → 5.6 → 5.8.
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.4 COMPLETE — CONCERNS REVIEW)
+
+**Task 5.4 — `concerns.js` (~190 lines), TDD (61 checks).** Pattern-1 dispatch. PLAN (`buildConcernsPlan`) resolves the target node (active node, or `/ovd-log concerns <node-ref>`), surfaces its scope files, and emits the 7 dimensions (security / performance / persistence / fault_tolerance / accessibility / observability / scalability — r3 §7.2) + the `--entries-json` shape. COMMIT (`applyConcerns`) validates findings (Pattern 4: dimension ∈ 7-set, severity ∈ high/medium/low/n-a, finding non-empty) and persists them to the node's `concerns` annotation via the writer round-trip (Pattern 2 openState/commitState) — the **`concerns` key already existed** in parser.js/writer.js ANNOTATION_KEY_ORDER, so this is purely additive (Q5.4, zero migration impact). Each entry stamped `recorded_at`; a re-review **replaces** the prior concerns (field reflects the current assessment, stays bounded; history lives in the session capture). **High-severity findings → explicit `/ovd-plan idea` recommendation** in the result text. Unknown node aborts before write; existing annotations (e.g. `scope`) preserved across the concerns write (migration-compat seam, Pattern 5). **Test fixture lesson:** node IDs are position-derived, not parsed from heading text — a fixture that skips `II.1` makes "II.2 Stats" parse as `II.1`. Wired user-facing `/ovd-log concerns [<node-ref>]` in `index.js`. New suite total **4551** ovd-plan checks.
+
+**Next:** Task 5.2 — `HANDOFF` full 11-step pipeline (r3 §7.6), landed as slices A (steps 1–5: summarise → state → follow-ups → doc-update → handoff file), B (steps 6–10: recursive close + milestone close), C (step 11: commit). Consumes 5.1/5.5/5.7 + (for B) 5.6 + (for C) 5.8. Then 5.6 → 5.8.
+
 ---
 
 ## 8. Glossary / quick decision reference
