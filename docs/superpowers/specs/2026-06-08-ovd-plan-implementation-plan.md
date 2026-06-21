@@ -3660,6 +3660,10 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.2 — `HANDOFF` 11-step pipeline (r3 §7.6), the final Phase 5 task. All dependencies now exist (5.1 state/session, 5.5 recursive close, 5.7 doc-update, 5.6 milestone-close, 5.8 commit). Land as slices A (steps 1–5), B (steps 6–10), C (step 11).
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.2 Slice A COMPLETE — HANDOFF steps 1–5)
+
+**Task 5.2 Slice A — `handoff.js` (~250 lines so far), TDD (53 checks).** Pattern-1. `STEPS` declares all 11 (the contract ordering — hard rule 6); PLAN lists them + the full `--entries-json` shape. `applyHandoff` executes steps 1–5: **(1) SUMMARISE** + **(3) FOLLOW-UPS** are agent-side data carried in entries, persisted at step 5; **(2) STATE UPDATE** reuses `log-default.applyStateUpdate` + `appendDecision` (Pattern 2 — same primitive DEFAULT uses, no fork; a bad ref aborts before the file write — commit-safe boundary per Q5.2); **(4) DOC UPDATE** calls `runDocUpdate` (5.7), honoring its action-path threshold; **(5) WRITE HANDOFF FILE** writes a structured `# Handoff <stamp>` (summary + follow-ups subsections, empty ones omitted) to `.overdrive/handoffs/YYYY-MM-DD-HH-MM.md` (committed artifact). `steps_completed` tracked; result flags step 6 next. Migration-compat seam tested (legacy handoff preserved). Wired user-facing `/ovd-log handoff`. New suite total **4703** ovd-plan checks. **Slices B (steps 6–10: recursive close + milestone close) and C (step 11: commit) extend `applyHandoff` next.**
+
 ---
 
 ## 8. Glossary / quick decision reference
