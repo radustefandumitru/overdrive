@@ -192,6 +192,34 @@ function listHandoffs(p) { const d = handoffsDir(p); return fs.existsSync(d) ? f
   cleanup(tmpRoot);
 })();
 
+// --- F2: HANDOFF acquires the sentinel lock (concurrent /ovd-log guard) --
+(function () {
+  const { acquireLogLock, releaseLogLock } = require('../lib/ovd-plan/log-lock');
+  const { projectDir, tmpRoot } = makeProject('handoff-lock');
+  const before = readPlan(projectDir);
+  const lock = acquireLogLock(projectDir);
+  check('pre-acquired lock ok', lock.ok === true);
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['x'] },
+    state: { status_changes: [{ id: 'II.2.a', status: 'done' }] }
+  }, { now: '2026-06-21T16:00:00.000Z' });
+  check('handoff while locked → not ok', res.ok === false, JSON.stringify(res));
+  check('handoff locked reason locked', res.reason === 'locked', res.reason);
+  check('handoff locked surfaces recovery action', /_log\.lock/.test(res.text) && /delete/i.test(res.text), res.text);
+  check('handoff locked wrote no handoff file', listHandoffs(projectDir).length === 0);
+  check('handoff locked → OVERDRIVE.md unchanged', readPlan(projectDir) === before);
+  releaseLogLock(lock);
+  check('lock file removed after release', !fs.existsSync(path.join(projectDir, '.overdrive', '_log.lock')));
+  // after release, handoff succeeds and releases its own lock in finally
+  const res2 = applyHandoff(projectDir, {
+    summary: { highlights: ['y'] },
+    state: { status_changes: [{ id: 'II.2.a', status: 'done' }] }
+  }, { now: '2026-06-21T16:00:00.000Z' });
+  check('handoff after release ok', res2.ok === true, JSON.stringify(res2));
+  check('handoff released its own lock', !fs.existsSync(path.join(projectDir, '.overdrive', '_log.lock')));
+  cleanup(tmpRoot);
+})();
+
 // --- Slice B: step 6 recursive close check ------------------------------
 // Closing II.2.a → II.2 has all children done (II.2.b done) → II.2 closure
 // candidate; II has open sibling II.3 → walk stops at II.2 (a cluster, not a

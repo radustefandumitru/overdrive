@@ -3682,6 +3682,17 @@ All Phase 5 tasks done, each committed (one per task / per HANDOFF slice), full 
 
 **Ready for Phase 6 (Intent Detection Layer) in a fresh session.**
 
+### 2026-06-21 — Phase 5 review remediation (F1 + F2 — pre-Phase-6 cleanup)
+
+The Phase 5 retrospective review (`docs/superpowers/handoff/reviews/2026-06-21-phase-5-review.md`, gitignored) surfaced two PARTIALs from independent code reading. The user elected to remediate both before Phase 6 kickoff (rather than accept as §6 deferrals). Both fixed, TDD, full suite green.
+
+- **F1 — DEFAULT DOC UPDATE was a stub.** `log-default.js` step 4 carried a `{ applied:false, note:'…deferred to Task 5.7' }` placeholder even though `runDocUpdate` (5.7) shipped and HANDOFF wired it. **Fix:** DEFAULT now calls `runDocUpdate(rootDir, { entries: norm.docs, confirm })` when the agent proposes `docs.updates` (added `docs` to the PLAN `--entries-json` shape + `normalizeLogDefaultEntries`), honoring the Q5.3 action-path threshold; lightweight by default (no-op when no docs proposed). Mirrors `handoff.js` step 4 — same `doc-update.js` primitive, no fork. Task 5.1's "affected docs updated surgically" criterion now met for DEFAULT too.
+- **F2 — Q5.9 sentinel lock only guarded DEFAULT, not HANDOFF.** `handoff.applyHandoff` wrote state (`applyStateUpdate` + handoff file + archive) without acquiring `_log.lock`, so a concurrent `/ovd-log` + `/ovd-log handoff` could interleave. **Fix:** extracted the lock to a single shared module **`lib/ovd-plan/log-lock.js`** (`acquireLogLock`/`releaseLogLock`/`lockedResult`/`LOCK_REL` — Pattern 2, no fork); `log-default` imports it (re-exports preserved for API compat) and HANDOFF now wraps its state-writing section (`runHandoffSteps`) in the same acquire/`finally`-release, returning the identical recovery message on contention. The recursive-close / milestone-close / commit sub-calls don't re-acquire (no deadlock).
+- **Tests:** `log-default` 102→**109** (real doc-update wiring + no-op + load-bearing-threshold-honored cases replace the old stub assertion); `handoff` 89→**98** (concurrent-lock guard: locked→not-ok + recovery text + no write + releases own lock). Added `log-lock.js` to `package.json` `check`. **New suite total: 4739 → 4755 ovd-plan checks**; `test:workflow`, `eval:router` (269), `check` exit 0 all green.
+- **Still deferred (unchanged):** EDIT (Task 3.6) → `runDocUpdate` wiring (1-line swap, FM #8); Q5.9 sentinel TTL/PID auto-recovery → Phase 7; F3 (LEARNINGS does not pre-aggregate DECISION POINT `[kind]` / verify-fallback signals — agent-side narrative covers it) → Phase 6 enrichment.
+
+**Phase 5 review verdict upgraded to READY (F1/F2 closed). Ready for Phase 6 in a fresh session.**
+
 ---
 
 ## 8. Glossary / quick decision reference

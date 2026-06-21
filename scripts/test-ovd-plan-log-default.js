@@ -253,13 +253,45 @@ function nodeBy(p, id) {
   cleanup(tmpRoot);
 })();
 
-// --- DOC UPDATE stub present --------------------------------------------
+// --- DOC UPDATE wired into DEFAULT (F1: not a stub) ---------------------
 (function () {
-  const { projectDir, tmpRoot } = makeTempProject('docstub');
-  const res = applyLogDefault(projectDir, { capture: { modifications: ['x'] } }, { now: '2026-06-21T16:00:00.000Z' });
+  const { projectDir, tmpRoot } = makeTempProject('docwire');
+  fs.mkdirSync(path.join(projectDir, '.overdrive', 'codebase'), { recursive: true });
+  fs.writeFileSync(path.join(projectDir, '.overdrive', 'codebase', 'overview.md'), '# Overview\n\n## Summary\n\nold\n');
+  const res = applyLogDefault(projectDir, {
+    capture: { modifications: ['x'] },
+    docs: { updates: [{ doc: '.overdrive/codebase/overview.md', heading: 'Summary', body: 'new summary line' }] }
+  }, { now: '2026-06-21T16:00:00.000Z' });
+  check('docwire ok', res.ok === true, JSON.stringify(res));
   check('result carries doc_update field', res.doc_update && typeof res.doc_update === 'object');
-  check('doc_update is a deferred stub', res.doc_update.applied === false);
-  check('doc_update references Task 5.7', /5\.7|runDocUpdate/.test(res.doc_update.note || ''));
+  check('doc_update applied via runDocUpdate (not a stub)', /applied/.test(res.doc_update.mode || ''), JSON.stringify(res.doc_update));
+  check('doc section actually updated', fs.readFileSync(path.join(projectDir, '.overdrive', 'codebase', 'overview.md'), 'utf8').includes('new summary line'));
+  cleanup(tmpRoot);
+})();
+
+// --- DOC UPDATE no-op when no docs proposed (lightweight default) -------
+(function () {
+  const { projectDir, tmpRoot } = makeTempProject('docnoop');
+  const res = applyLogDefault(projectDir, { capture: { modifications: ['x'] } }, { now: '2026-06-21T16:00:00.000Z' });
+  check('no-docs ok', res.ok === true);
+  check('no-docs doc_update applied false', res.doc_update && res.doc_update.applied === false);
+  check('no-docs note says none proposed', /no doc changes/i.test(res.doc_update.note || ''), JSON.stringify(res.doc_update));
+  cleanup(tmpRoot);
+})();
+
+// --- DOC UPDATE non-trivial → preview, zero writes (F1 honors threshold) -
+(function () {
+  const { projectDir, tmpRoot } = makeTempProject('docthreshold');
+  fs.mkdirSync(path.join(projectDir, '.overdrive', 'codebase'), { recursive: true });
+  fs.writeFileSync(path.join(projectDir, '.overdrive', 'codebase', 'architecture.md'), '# Arch\n\n## Layers\n\nold\n');
+  const before = fs.readFileSync(path.join(projectDir, '.overdrive', 'codebase', 'architecture.md'), 'utf8');
+  const res = applyLogDefault(projectDir, {
+    capture: { modifications: ['x'] },
+    docs: { updates: [{ doc: '.overdrive/codebase/architecture.md', heading: 'Layers', body: 'rewritten' }] }
+  }, { now: '2026-06-21T16:00:00.000Z' });
+  check('threshold save still ok', res.ok === true);
+  check('load-bearing doc → preview not applied', res.doc_update.mode === 'doc-update-preview', JSON.stringify(res.doc_update));
+  check('load-bearing doc → no write without confirm', fs.readFileSync(path.join(projectDir, '.overdrive', 'codebase', 'architecture.md'), 'utf8') === before);
   cleanup(tmpRoot);
 })();
 
