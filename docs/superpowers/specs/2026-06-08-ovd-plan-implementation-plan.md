@@ -3668,6 +3668,20 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Task 5.2 Slice B — extended `applyHandoff` (handoff test now 73 checks).** **Step 6 RECURSIVE CLOSE CHECK** calls `runRecursiveCloseCheck` (5.5 shared util) with the handoff's `closed_leaf`; never auto-advances. **Steps 7–10 MILESTONE CLOSE** are conditional (hard rule 6): they run ONLY when the close check reaches a `closure-prompt` whose candidate is a top-level milestone AND the user pre-approved by including `milestone_close` entries in the handoff payload. The candidate id is passed to `runMilestoneClose` (5.6), which validates top-level-ness — a cluster candidate (e.g. II.2 with open milestone sibling II.3) is rejected, 7–10 are skipped, and the close prompt is surfaced for manual resolution. Tested: cluster-reach (prompt, no cascade), milestone-reach + approval (II archived + summary written, steps 7–10 logged), milestone-reach WITHOUT approval (prompt surfaced, II untouched), no-closure. `next_step` = 11 when the milestone cascade ran, else 6. New suite total **4723** ovd-plan checks. **Slice C (step 11 COMMIT) next.**
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.2 Slice C COMPLETE — HANDOFF step 11 → PHASE 5 DONE)
+
+**Task 5.2 Slice C — extended `applyHandoff` (handoff test now 89 checks).** **Step 11 COMMIT** is always offered, user-gated (5.8/`runCommit`): proposes by default, executes only when the payload's `commit.confirm` is set (= user approval); `runGit` injectable for tests (mock git, no real repo, asserted no `--no-verify`). Message context = `milestone-close` form when the cascade ran (`ovd-plan(milestone-II.close): …`), else `handoff` form; files = `OVERDRIVE.md` + the handoff file + (if milestone closed) the summary report. `steps_completed` gains 11 only on execution; `next_step` resolves to null when committed. New suite total **4739** ovd-plan checks.
+
+### 2026-06-21 — PHASE 5 WRAP-UP (`/ovd-log` complete — 8/8 tasks)
+
+All Phase 5 tasks done, each committed (one per task / per HANDOFF slice), full suite green at every step:
+- **5.3 CAPTURE** (`log-capture.js`, 60) · **5.1 DEFAULT** (`log-default.js`, 102) · **5.5 RECURSIVE CLOSE** (`closure.runRecursiveCloseCheck`, 19) · **5.7 DOC UPDATE** (`doc-update.js`, 65) · **5.4 CONCERNS** (`concerns.js`, 61) · **5.8 COMMIT** (`commit.js`, 41) · **5.6 MILESTONE CLOSE** (`milestone-close.js`, 58) · **5.2 HANDOFF** (`handoff.js`, 89 — slices A/B/C).
+- **Regression baseline:** 4244 (Phase 4 close) → **4739** ovd-plan checks; `test:workflow`, `eval:router` (269), `check` all green.
+- **Architectural invariants held:** CLI never makes LLM calls / never composes narratives (CONVO CAPTURE, HANDOFF SUMMARISE, LEARNINGS, CONCERNS are all agent-side via `--entries-json`); recursive close uses the SINGLE `closure.js` util (no fork); archive preserves verbatim (re-serialized via canonical `writer.writeNode`); commits always user-gated, hooks honored (no `--no-verify`); DOC UPDATE surgical (untouched sections verbatim); the 11-step HANDOFF ordering is the contract. Patterns 1–8 enforced; migration-compat seam (Pattern 5) tested on every handler that writes OVERDRIVE.md / sessions / handoffs / docs.
+- **Deferred (tracked, FM #8):** EDIT (Task 3.6) → `runDocUpdate` wiring is mechanical (build half done; consumption is a 1-line swap); Q5.9 sentinel TTL/PID auto-recovery → Phase 7.
+
+**Ready for Phase 6 (Intent Detection Layer) in a fresh session.**
+
 ---
 
 ## 8. Glossary / quick decision reference

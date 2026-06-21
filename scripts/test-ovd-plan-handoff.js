@@ -161,7 +161,7 @@ function listHandoffs(p) { const d = handoffsDir(p); return fs.existsSync(d) ? f
   check('handoff file has highlight', body.includes('shipped II.2.a'));
   check('handoff file has follow-up', body.includes('II.2.b') && body.includes('perf budget?'));
   check('result reports handoff_file', /handoffs/.test(res.handoff_file));
-  check('result ran close check inline (no closures here)', res.closure === 'no-closure' && /step 11/.test(res.text), JSON.stringify({ closure: res.closure }));
+  check('result ran close check inline (no closures here)', res.closure === 'no-closure' && /step 11/i.test(res.text), JSON.stringify({ closure: res.closure }));
   cleanup(tmpRoot);
 })();
 
@@ -268,6 +268,67 @@ const MS_FIXTURE = `${FRONT}# Test Project
   check('sliceB no-approve steps 7-10 skipped', !res.steps_completed.includes(7));
   check('sliceB no-approve II still in tree', nodeBy(projectDir, 'II') !== null);
   check('sliceB no-approve surfaces closure prompt', res.closure === 'closure-prompt');
+  cleanup(tmpRoot);
+})();
+
+// --- Slice C: step 11 commit (user-gated) -------------------------------
+function mockGit() {
+  const calls = [];
+  const fn = (args) => { calls.push(args); return { ok: true, code: 0, stdout: '', stderr: '' }; };
+  fn.calls = calls;
+  return fn;
+}
+
+// default: commit is PROPOSED (not executed) — always offered, user-gated.
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceC-propose');
+  const git = mockGit();
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['shipped widget'] },
+    state: { status_changes: [{ id: 'II.2.a', status: 'awaiting-review' }] }
+  }, { now: '2026-06-21T16:00:00.000Z', runGit: git });
+  check('sliceC propose ok', res.ok === true);
+  check('sliceC commit step present', res.commit && typeof res.commit === 'object');
+  check('sliceC commit proposed not executed', res.commit.mode === 'plan', res.commit.mode);
+  check('sliceC git NOT called (proposal only)', git.calls.length === 0);
+  check('sliceC step 11 not completed (pending approval)', !res.steps_completed.includes(11));
+  check('sliceC commit message handoff form', /ovd-plan\(phase-.*handoff\)|ovd-plan: handoff/.test(res.commit.message), res.commit.message);
+  check('sliceC commit files include OVERDRIVE.md', res.commit.files.includes('OVERDRIVE.md'));
+  check('sliceC commit files include handoff file', res.commit.files.some((f) => /handoffs/.test(f)));
+  cleanup(tmpRoot);
+})();
+
+// confirm: commit executed via mock git, no --no-verify
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceC-confirm');
+  const git = mockGit();
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['x'] },
+    state: { status_changes: [{ id: 'II.2.a', status: 'awaiting-review' }] },
+    commit: { confirm: true }
+  }, { now: '2026-06-21T16:00:00.000Z', runGit: git });
+  check('sliceC confirm ok', res.ok === true);
+  check('sliceC commit executed', res.commit.mode === 'commit-done', JSON.stringify(res.commit));
+  check('sliceC step 11 completed', res.steps_completed.includes(11));
+  check('sliceC git commit called', git.calls.some((c) => c[0] === 'commit'));
+  check('sliceC NEVER --no-verify', !git.calls.flat().includes('--no-verify'));
+  cleanup(tmpRoot);
+})();
+
+// milestone close → commit context is milestone-close form
+(function () {
+  const { projectDir, tmpRoot } = makeProject('sliceC-milestone', MS_FIXTURE);
+  const git = mockGit();
+  const res = applyHandoff(projectDir, {
+    summary: { highlights: ['done'] },
+    state: { status_changes: [{ id: 'II.2', status: 'done' }] },
+    closed_leaf: 'II.2',
+    milestone_close: { learnings: { what_worked: ['x'] } },
+    commit: { confirm: true }
+  }, { now: '2026-06-21T16:00:00.000Z', runGit: git });
+  check('sliceC milestone commit ok', res.ok === true);
+  check('sliceC milestone commit form', /ovd-plan\(milestone-II\.close\)/.test(res.commit.message), res.commit.message);
+  check('sliceC milestone commit includes report', res.commit.files.some((f) => /milestone-II-summary/.test(f)));
   cleanup(tmpRoot);
 })();
 
