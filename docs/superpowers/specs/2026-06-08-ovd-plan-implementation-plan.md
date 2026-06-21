@@ -3616,6 +3616,16 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.1 — DEFAULT lightweight save (consumes the session-file primitives from 5.3; adds CONVO CAPTURE Pattern-1 dispatch + STATE UPDATE + DOC UPDATE stub + recursive close check).
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.1 COMPLETE — DEFAULT lightweight save)
+
+**Pre-flight finding (active-node representation):** the active node is marked by an inline `← ACTIVE` suffix on the heading (`ACTIVE_PATTERN = /\s*←\s*ACTIVE\s*$/` in parser.js; writer emits from `node.active`). `findActiveNode` reads `node.active` — **the heading marker is canonical**; the root `active_node:` annotation in writer's `ANNOTATION_KEY_ORDER` is not the source of truth. **No `setActive`/`moveActive` helper existed** → Task 5.1 introduces the first active-marker mutation (clear `.active` on all flattened nodes, set on the target, inside the single openState/commitState round-trip). Reusable by Task 5.2 HANDOFF STATE UPDATE.
+
+**Refactor (Pattern 2):** extracted `ensureSessionFile(rootDir, opts)` from `log-capture.appendSessionEntry` (find-or-create the current session file with header). CAPTURE appends `[stamp] text` under `## Activity log`; DEFAULT appends a structured `## Save <stamp>` block to the SAME file — session-file shape defined once. 60 CAPTURE checks still green after refactor.
+
+**Task 5.1 — `log-default.js` (~290 lines), TDD (102 checks).** Pattern-1 dispatch. `buildLogDefaultPlan` emits the active leaf + the 8 CONVO CAPTURE dimensions (r3 §7.4) + the `--entries-json` shape — **CLI never composes the summary** (Pattern 1; CONVO CAPTURE is agent-side). `applyLogDefault` sequence (r3 §7.1): **STATE UPDATE** (status_changes + active-marker move via one writer round-trip; bad ref aborts before commit — no partial write) → **DECISION RECORD** (`appendDecision`, Pattern 2; permissive — malformed entries dropped) → **SESSION FILE** (structured save block via `ensureSessionFile`; sparse → "no detail captured", per Q5.1) → **DOC UPDATE** (one-line stub; `runDocUpdate` is Task 5.7) → **RECURSIVE CLOSE CHECK** (`closure.recursiveCloseFlow` — the SAME shared util /ovd-go uses, no fork; driven by `closed_leaf` or the last `status→done`). **Q5.9 sentinel lock** (`.overdrive/_log.lock`, atomic `fs.openSync(...,'wx')`, released in `finally`) guards the state-writing critical section; concurrent invocation fails fast with the explicit recovery action (`delete .overdrive/_log.lock and retry`). **Pattern 4** JSON guard at `index.js` dispatch; **Pattern 5** migration-compat seam tested (save on a migrated layout, legacy artifacts untouched). Wired bare `/ovd-log` (PLAN) + `--entries-json` (COMMIT) in `runLog`. New suite total **4406** ovd-plan checks. CLI dispatch smoke-tested end-to-end (PLAN/COMMIT/bad-JSON).
+
+**Next:** Task 5.5 — formalize `runRecursiveCloseCheck(rootDir)` thin wrapper (derives the just-closed node from active state; both DEFAULT + HANDOFF call it) — verify it stays identical to the /ovd-go walk. Then 5.7 → 5.4 → 5.2 → 5.6 → 5.8.
+
 ---
 
 ## 8. Glossary / quick decision reference
