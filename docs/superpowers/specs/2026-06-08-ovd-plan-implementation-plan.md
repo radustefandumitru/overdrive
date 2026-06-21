@@ -3632,6 +3632,14 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.7 — `runDocUpdate` surgical propagation via `doc-coauthoring` (the Q3.6.1 EDIT dependency; consumed by 5.1 + 5.2). Action-path threshold per Q5.3 (>1 section OR >50 lines OR load-bearing doc allow-list). Then 5.4 → 5.2 → 5.6 → 5.8.
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.7 COMPLETE — DOC UPDATE surgical propagation)
+
+**Task 5.7 — `doc-update.js` (~250 lines), TDD (65 checks).** Pattern-1 dispatch. PLAN (`buildDocUpdatePlan`) emits the change context + a **conservative** candidate-doc list (existing `.overdrive/codebase/*.md` + root README — FM #5, no over-flagging) and instructs the agent to use `doc-coauthoring` to pick exact sections. COMMIT (`applyDocUpdate`) persists section diffs via `--entries-json` **surgically**: `replaceOrAppendSection` replaces only the named section's body (sibling of `migrate.appendUnderHeader` but **replace, not append** — genuinely different op, so a new primitive, not a fork) — every untouched section preserved verbatim (tested incl. a migrated `## Discovered during execution` section). **Action-path (Q5.3):** `computeTriviality` = non-trivial when `>1 section OR >50 net lines OR load-bearing doc`; non-trivial + no `confirm` → preview prompt (Pattern 7 numbered options) with **zero writes**; trivial → silent apply. Per-section review = agent re-invokes with `only:[indices]` (stateless CLI — Pattern 1). Load-bearing = the Q5.3 hardcoded allow-list (`architecture.md`/`patterns.md`/`tech-stack.md`/root `README.md`) + `load_bearing: true` frontmatter; **no fuzzy matching**. **Pattern 4** JSON guard + **path-traversal guard** on `update.doc`. Wired internal `/ovd-log doc-update` (PLAN + `--entries-json` COMMIT + `--confirm`) in `index.js`; exported `runDocUpdate` for library consumption. New suite total **4490** ovd-plan checks.
+
+**Q3.6.1 status:** the *build* half is DONE — `runDocUpdate(rootDir, { changedNodes })` exists and accepts the Task 3.6 EDIT call shape. The *wiring* half (EDIT calling it post-apply; DEFAULT/HANDOFF step-4 consumption) is mechanical integration — HANDOFF step 4 lands in Task 5.2; the EDIT one-line stub→call swap is a tiny follow-up tracked here so it does not disappear (FM #8).
+
+**Next:** Task 5.4 — `CONCERNS REVIEW` (Pattern-1 dispatch across 7 dimensions; persist to the node's `concerns` annotation — key already exists in parser/writer, additive per Q5.4; high-severity findings recommend `/ovd-plan idea`). Then 5.2 → 5.6 → 5.8.
+
 ---
 
 ## 8. Glossary / quick decision reference
