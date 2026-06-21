@@ -20,7 +20,8 @@ const {
   summarizeState,
   buildClassificationPrompt,
   normalizeClassification,
-  classifyIntent
+  classifyIntent,
+  renderAmbiguityPrompt
 } = intent;
 
 const ovdPlan = require('../lib/ovd-plan');
@@ -213,10 +214,82 @@ check('rejects non-string args_hint', normalizeClassification({ route: '/ovd-pla
 }
 
 // ---------------------------------------------------------------------------
+// Task 6.2 — renderAmbiguityPrompt (r3 §3.2 shape; Pattern 7; Q6.8 cap)
+// ---------------------------------------------------------------------------
+check('renderAmbiguityPrompt is a function', typeof renderAmbiguityPrompt === 'function');
+
+{
+  // Exact snapshot for a concrete 2-candidate set (r3 §3.2 shape, no column align).
+  const snap = renderAmbiguityPrompt([
+    { route: '/ovd-plan idea', rationale: 'deliberate a new direction', args_hint: 'dark mode' },
+    { route: '/ovd-plan edit', rationale: 'adjust the existing tree directly' }
+  ]);
+  const expected = [
+    'I read your message a few ways. Pick one:',
+    '',
+    ' (1) /ovd-plan idea "dark mode" — deliberate a new direction',
+    ' (2) /ovd-plan edit — adjust the existing tree directly',
+    '',
+    ' Reply with the number, or describe what you want.'
+  ].join('\n');
+  check('renderAmbiguityPrompt snapshot matches r3 §3.2 shape', snap === expected, JSON.stringify(snap));
+}
+
+{
+  const three = renderAmbiguityPrompt([
+    { route: '/ovd-plan idea', rationale: 'deliberate', args_hint: 'adjust dashboard' },
+    { route: '/ovd-plan edit', rationale: 'adjust the tree directly' },
+    { route: '/ovd-go --small', rationale: 'surgical change', args_hint: 'adjust dashboard' }
+  ]);
+  check('prompt opens with the standard lead-in', three.startsWith('I read your message a few ways. Pick one:'));
+  check('prompt always includes the describe-other escape', three.includes('Reply with the number, or describe what you want.'));
+  check('prompt numbers options sequentially', three.includes(' (1) ') && three.includes(' (2) ') && three.includes(' (3) '));
+  check('prompt renders args_hint in quotes when present', three.includes('/ovd-go --small "adjust dashboard"'));
+  check('prompt omits quotes when no args_hint', three.includes('/ovd-plan edit — adjust the tree directly'));
+  check('prompt renders rationale after em dash', three.includes(' — deliberate'));
+  // Pattern 7 / FM #7: no implicit preference markers.
+  check('prompt has no preference markers', !/recommend|\bbest\b|preferred|suggested|★|\*\*/i.test(three));
+  check('prompt lists every candidate route', three.includes('/ovd-plan idea') && three.includes('/ovd-plan edit') && three.includes('/ovd-go --small'));
+}
+
+{
+  // 2 is the floor; 4 is the cap — both render all options.
+  const two = renderAmbiguityPrompt([
+    { route: '/ovd-log', rationale: 'save' },
+    { route: '/ovd-log handoff', rationale: 'full handoff' }
+  ]);
+  check('two candidates render two options', two.includes(' (1) ') && two.includes(' (2) ') && !two.includes(' (3) '));
+
+  const four = renderAmbiguityPrompt([
+    { route: '/ovd-plan idea', rationale: 'a' },
+    { route: '/ovd-plan edit', rationale: 'b' },
+    { route: '/ovd-go --small', rationale: 'c' },
+    { route: '/ovd-go', rationale: 'd' }
+  ]);
+  check('four candidates render four options', four.includes(' (4) ') && !four.includes(' (5) '));
+  check('four-option prompt still has the escape', four.includes('Reply with the number, or describe what you want.'));
+}
+
+{
+  // Q6.8 overflow: more than 4 candidates → top 3 + escape (clamps to §3.2 shape).
+  const overflow = renderAmbiguityPrompt([
+    { route: '/ovd-plan idea', rationale: 'a' },
+    { route: '/ovd-plan edit', rationale: 'b' },
+    { route: '/ovd-go --small', rationale: 'c' },
+    { route: '/ovd-go', rationale: 'd' },
+    { route: '/ovd-log', rationale: 'e' },
+    { route: '/ovd-log handoff', rationale: 'f' }
+  ]);
+  check('overflow caps at top 3 options', overflow.includes(' (3) ') && !overflow.includes(' (4) '));
+  check('overflow keeps the escape', overflow.includes('Reply with the number, or describe what you want.'));
+}
+
+// ---------------------------------------------------------------------------
 // Top-level + namespace exports
 // ---------------------------------------------------------------------------
 check('ovdPlan exposes intent module', ovdPlan.intent === intent);
 check('ovdPlan exposes classifyIntent', ovdPlan.classifyIntent === classifyIntent);
+check('ovdPlan exposes renderAmbiguityPrompt', ovdPlan.renderAmbiguityPrompt === renderAmbiguityPrompt);
 
 // ---------------------------------------------------------------------------
 // CLASSIFICATION MATRIX — 20+ message → expected-route pairs (contract fixture)

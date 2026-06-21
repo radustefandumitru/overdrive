@@ -3710,6 +3710,17 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 ---
 
+### 2026-06-21 — Session 21 continued (Phase 6 Task 6.2 COMPLETE — ambiguity prompt renderer)
+
+- **Task 6.2 — Action-path prompt template. COMPLETE (TDD).** Added `renderAmbiguityPrompt(candidates)` to `lib/ovd-plan/intent.js`. Produces the r3 §3.2 shape: lead-in "I read your message a few ways. Pick one:", blank line, numbered ` (N) route ["args_hint"] — rationale` options, blank line, then the mandatory trailing escape "Reply with the number, or describe what you want." (Pattern 7 — always present). **No preference markers** (no "recommended"/"best"/badges — FM #7 / confidence laundering; the user picks). `args_hint` rendered in quotes only when present (no empty quotes otherwise). **Q6.8 cap:** ≤4 candidates → all shown as numbered options; >4 → top 3 (clamps to the canonical §3.2 size). Defensive against non-array / missing fields.
+- **Tests:** +16 checks in `scripts/test-ovd-plan-intent.js` (102 → **118**), incl. an exact-string snapshot of a 2-candidate prompt, the escape-always-present + sequential-numbering + args-hint-quoting assertions, the no-preference-marker guard, and the floor(2)/cap(4)/overflow(>4→3) boundary cases. Namespace export added (`renderAmbiguityPrompt`).
+- **Verification:** ovd-plan **4857 → 4873**; `test:workflow`, `eval:router` (269), `check` exit 0 — all green. **No dispatch wiring yet** (lands in Task 6.3).
+- **Not yet committed** — awaiting user approval.
+
+**Next:** Task 6.3 — `routeOrPrompt(message, state)` (unambiguous → announce + execute; ambiguous 2+ → `renderAmbiguityPrompt`; very-low-confidence 0–1 → calibration-matched clarifying question; explicit `/ovd-*` bypass per Q6.9) **+ slash command body integration** (the `plan intent` subcommand dispatch in `index.js`/`installer.js` and the free-form preamble for the four command bodies).
+
+---
+
 ## 8. Glossary / quick decision reference
 
 - **OVERDRIVE.md** — root plan tree file, human-readable Markdown, committed to git.
