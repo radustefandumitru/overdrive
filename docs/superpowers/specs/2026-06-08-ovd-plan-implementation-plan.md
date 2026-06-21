@@ -3602,6 +3602,20 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Ready for Phase 5 (`/ovd-log` — lightweight save + recursive closure + handoff) in a fresh session.** Phase 5 Task 5.5 imports the Phase 4 `closure.js` (shared utility); Task 5.7 builds `runDocUpdate` (the Q3.6.1 EDIT dependency). Recommend a fresh-context handoff per the readiness-brief pattern.
 
+### 2026-06-21 — Session 20 (Phase 5 kickoff — design Q&A locked + Task 5.3 COMPLETE — CAPTURE)
+
+**Baseline confirmed green before any code:** 4244 ovd-plan checks, `test:workflow` pass, `eval:router` 269 checks, `check` exit 0. `closure.js` (Phase 4 Task 4.6) verified shipped → Task 5.5 has its shared utility. `concerns` annotation key found already present in `parser.js`/`writer.js` ANNOTATION_KEY_ORDER → Q5.4 schema extension is additive-only, zero migration impact.
+
+**Design Q&A (Q5.1–5.11) locked with user** (recorded to `.overdrive/decisions.md`):
+- Q5.1–5.2, 5.4–5.6, 5.8, 5.10–5.11 — readiness-brief recommendations accepted verbatim.
+- Q5.3 DOC UPDATE threshold — `>1 section OR >50 lines OR load-bearing doc`; load-bearing = hardcoded allow-list (`architecture.md`/`patterns.md`/`tech-stack.md`/root `README.md`) + `load_bearing: true` frontmatter escape hatch (no fuzzy matching).
+- Q5.7 — three-form commit convention (`checkpoint —` / `(phase-N.handoff)` / `(milestone-N.close)`).
+- **Q5.9 — pushback accepted:** lightweight sentinel lockfile (atomic `fs.openSync(...,'wx')`, release in `finally`), NOT a hand-rolled full lock; failure message must surface recovery (`delete .overdrive/_log.lock and retry`). TTL/PID auto-recovery scoped to Phase 7 (Failure Mode #8 discipline — concrete deferral).
+
+**Task 5.3 — `log-capture.js` (~120 lines), TDD (60 checks).** `runLogCapture(rootDir, text, opts)` appends `[YYYY-MM-DD HH:MM] <text>` to the current session file (creates `.overdrive/sessions/YYYY-MM-DD-HH-MM.md` with header if none). CAPTURE is **not** a Pattern-1 dispatch — CLI writes literal user text, no agent reasoning, no `--entries-json`. Atomic via `fs.appendFileSync` (no read-modify-write). Sentinel lock intentionally NOT wired here — CAPTURE never touches `plan.cache.json` (Q5.9 scope) and is spec'd zero-interruption (r3 §7.2/§7.3). **Session-file primitives exported for Task 5.1 reuse** (`formatStamp`, `findCurrentSessionFile`, `appendSessionEntry`, `LOG_SESSION_PATTERN`) — the session-file shape is defined once (Pattern 2 — no fork). `LOG_SESSION_PATTERN` (`/^\d{4}-\d{2}-\d{2}-\d{2}-\d{2}\.md$/`) discriminates plain log-session files from ISO-safe sub-files (`-research-`/`-execute-`/…) and Phase 2 migration artifacts → **migration-compat seam tested** (Pattern 5): capture on a migrated layout creates a fresh session file and never clobbers `_research_legacy.md`/legacy-state. Wired `/ovd-log capture "text"` in `index.js` `runLog`; added to `package.json` `check` + `test:ovd-plan` (new total **4304** ovd-plan checks). CLI dispatch smoke-tested end-to-end.
+
+**Next:** Task 5.1 — DEFAULT lightweight save (consumes the session-file primitives from 5.3; adds CONVO CAPTURE Pattern-1 dispatch + STATE UPDATE + DOC UPDATE stub + recursive close check).
+
 ---
 
 ## 8. Glossary / quick decision reference
