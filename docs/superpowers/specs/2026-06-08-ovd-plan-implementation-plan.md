@@ -3626,6 +3626,12 @@ Ready for Phase 4 (`/ovd-go`) in a fresh session.
 
 **Next:** Task 5.5 — formalize `runRecursiveCloseCheck(rootDir)` thin wrapper (derives the just-closed node from active state; both DEFAULT + HANDOFF call it) — verify it stays identical to the /ovd-go walk. Then 5.7 → 5.4 → 5.2 → 5.6 → 5.8.
 
+### 2026-06-21 — Session 20 continued (Phase 5 Task 5.5 COMPLETE — recursive close check, shared entry)
+
+**Task 5.5 — `closure.runRecursiveCloseCheck(rootDir, opts)` (added to closure.js, ~25 lines), TDD (19 checks).** The single recursive-close entry both /ovd-log DEFAULT and HANDOFF call — a thin wrapper over the Task 4.6 `recursiveCloseFlow` (no new module, no fork — FM #2). Centralizes (a) the `no-closure` result shape and (b) a best-effort `deriveJustClosedFromState` fallback (the active node iff it is itself closed). Callers from /ovd-log pass `justClosed` explicitly because the active marker has usually advanced to the next leaf by save time; bare /ovd-go-style checks use the derive fallback. **Parity is the contract:** tests assert the wrapper produces walks IDENTICAL to `recursiveCloseFlow` AND to the /ovd-go `runClose` plan entry (same mode/text/current/closures) for the same just-closed node — including the unknown-id path. **Refactored `log-default.js`** to call `runRecursiveCloseCheck` instead of inline `recursiveCloseFlow` + hand-built no-closure result (102 DEFAULT checks + 80 closure checks still green). New suite total **4425** ovd-plan checks.
+
+**Next:** Task 5.7 — `runDocUpdate` surgical propagation via `doc-coauthoring` (the Q3.6.1 EDIT dependency; consumed by 5.1 + 5.2). Action-path threshold per Q5.3 (>1 section OR >50 lines OR load-bearing doc allow-list). Then 5.4 → 5.2 → 5.6 → 5.8.
+
 ---
 
 ## 8. Glossary / quick decision reference
