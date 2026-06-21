@@ -10,6 +10,10 @@
 // routing and asserts the catalog covers every route the matrix expects — it is
 // NOT a keyword table and is NOT consumed by intent.js to classify.
 
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
 const intent = require('../lib/ovd-plan/intent');
 const {
   STATUS,
@@ -21,10 +25,25 @@ const {
   buildClassificationPrompt,
   normalizeClassification,
   classifyIntent,
-  renderAmbiguityPrompt
+  renderAmbiguityPrompt,
+  isExplicitCommand,
+  routeOrPrompt,
+  gatherProjectState,
+  runIntent
 } = intent;
 
 const ovdPlan = require('../lib/ovd-plan');
+
+function makeTempProject(name, planContent) {
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), `ovd-plan-intent-${name}-`));
+  const projectDir = path.join(tmpRoot, name);
+  fs.mkdirSync(projectDir, { recursive: true });
+  fs.writeFileSync(path.join(projectDir, 'package.json'), '{"name":"test"}\n');
+  fs.mkdirSync(path.join(projectDir, '.overdrive'), { recursive: true });
+  if (planContent) fs.writeFileSync(path.join(projectDir, 'OVERDRIVE.md'), planContent);
+  return { projectDir, tmpRoot };
+}
+function cleanup(tmpRoot) { fs.rmSync(tmpRoot, { recursive: true, force: true }); }
 
 const verbose = process.argv.includes('--verbose');
 let passed = 0;
@@ -282,6 +301,136 @@ check('renderAmbiguityPrompt is a function', typeof renderAmbiguityPrompt === 'f
   ]);
   check('overflow caps at top 3 options', overflow.includes(' (3) ') && !overflow.includes(' (4) '));
   check('overflow keeps the escape', overflow.includes('Reply with the number, or describe what you want.'));
+}
+
+// ---------------------------------------------------------------------------
+// Task 6.3 — isExplicitCommand (Q6.9 bypass detection)
+// ---------------------------------------------------------------------------
+check('isExplicitCommand is a function', typeof isExplicitCommand === 'function');
+check('isExplicitCommand true for /ovd-plan idea "x"', isExplicitCommand('/ovd-plan idea "x"'));
+check('isExplicitCommand true for /ovd-go', isExplicitCommand('/ovd-go'));
+check('isExplicitCommand true for /ovd-log handoff', isExplicitCommand('/ovd-log handoff'));
+check('isExplicitCommand true for /ovd-workflow', isExplicitCommand('/ovd-workflow'));
+check('isExplicitCommand trims leading whitespace', isExplicitCommand('   /ovd-go  '));
+// Q6.9: must START with / AND parse as a valid command.
+check('isExplicitCommand false when slash is mid-sentence', !isExplicitCommand('I think /ovd-plan idea is right'));
+check('isExplicitCommand false for free-form', !isExplicitCommand('I want dark mode'));
+check('isExplicitCommand false for unknown slash command', !isExplicitCommand('/ovd-bogus do things'));
+check('isExplicitCommand false for empty / non-string', !isExplicitCommand('') && !isExplicitCommand(null) && !isExplicitCommand(42));
+
+// ---------------------------------------------------------------------------
+// Task 6.3 — routeOrPrompt branching (announce / prompt / clarify / bypass)
+// ---------------------------------------------------------------------------
+check('routeOrPrompt is a function', typeof routeOrPrompt === 'function');
+
+{
+  // Bypass: explicit command short-circuits classification.
+  const bypass = routeOrPrompt('/ovd-plan idea "dark mode"', null);
+  check('routeOrPrompt bypasses explicit command', bypass.ok === true && bypass.decision === 'bypass');
+  check('routeOrPrompt bypass carries the leading command', bypass.route === '/ovd-plan');
+
+  // No classification supplied → needs the host agent to classify first.
+  const needAgent = routeOrPrompt('I want dark mode', null);
+  check('routeOrPrompt without classification requires host agent', needAgent.ok === false && needAgent.reason === 'requires-host-agent');
+
+  // Unambiguous → announce + execute.
+  const exec = routeOrPrompt('I want dark mode', null, { classification: unambig('/ovd-plan idea', 'dark mode') });
+  check('routeOrPrompt unambiguous → execute', exec.ok === true && exec.decision === 'execute');
+  check('routeOrPrompt execute carries route', exec.route === '/ovd-plan idea');
+  check('routeOrPrompt execute carries args_hint', exec.args_hint === 'dark mode');
+  check('routeOrPrompt execute announces the route', /reading this as/i.test(exec.text) && exec.text.includes('/ovd-plan idea'));
+  check('routeOrPrompt execute offers a correction affordance', /not what you meant|say so|correct/i.test(exec.text));
+
+  // Ambiguous with 2+ candidates → action-path prompt.
+  const promptResult = routeOrPrompt("let's adjust the dashboard", null, {
+    classification: {
+      route: '/ovd-plan idea',
+      confidence: 'ambiguous',
+      candidates: [
+        { route: '/ovd-plan idea', rationale: 'deliberate a new direction', args_hint: 'adjust dashboard' },
+        { route: '/ovd-plan edit', rationale: 'adjust the tree directly' },
+        { route: '/ovd-go --small', rationale: 'surgical change', args_hint: 'adjust dashboard' }
+      ]
+    }
+  });
+  check('routeOrPrompt ambiguous(2+) → prompt', promptResult.ok === true && promptResult.decision === 'prompt');
+  check('routeOrPrompt prompt renders the ambiguity prompt', promptResult.text.includes('I read your message a few ways'));
+  check('routeOrPrompt prompt carries candidates', Array.isArray(promptResult.candidates) && promptResult.candidates.length === 3);
+
+  // Very-low-confidence (0 candidates) → clarifying question (Q6.3).
+  const clarify0 = routeOrPrompt('hmm', null, { classification: { route: null, confidence: 'ambiguous', candidates: [] } });
+  check('routeOrPrompt ambiguous(0) → clarify', clarify0.ok === true && clarify0.decision === 'clarify');
+  check('routeOrPrompt clarify(0) asks a question', clarify0.text.includes('?'));
+  check('routeOrPrompt clarify(0) keeps a describe escape', /describe|say more|tell me more|more about/i.test(clarify0.text));
+
+  // Very-low-confidence (1 candidate) → clarifying question that names the candidate.
+  const clarify1 = routeOrPrompt('do the thing', null, {
+    classification: { route: '/ovd-go', confidence: 'ambiguous', candidates: [{ route: '/ovd-go', rationale: 'maybe continue current work' }] }
+  });
+  check('routeOrPrompt ambiguous(1) → clarify', clarify1.ok === true && clarify1.decision === 'clarify');
+  check('routeOrPrompt clarify(1) names the candidate', clarify1.text.includes('/ovd-go'));
+  check('routeOrPrompt clarify(1) keeps a describe escape', /describe|say more|tell me more|or/i.test(clarify1.text));
+
+  // Invalid classification → validation failure, no decision.
+  const bad = routeOrPrompt('hmm', null, { classification: { confidence: 'banana' } });
+  check('routeOrPrompt rejects invalid classification', bad.ok === false && bad.reason === 'validation-failed');
+}
+
+// Calibration-matched clarify (Q6.3 + Q6.7 — depth only, not route).
+{
+  const hi = routeOrPrompt('do something', { calibration: { technical: 'high' } }, { classification: { route: null, confidence: 'ambiguous', candidates: [] } });
+  check('clarify is technical when calibration is high', /\/ovd-/.test(hi.text));
+  const lo = routeOrPrompt('do something', { calibration: { technical: 'low' } }, { classification: { route: null, confidence: 'ambiguous', candidates: [] } });
+  check('clarify(low) still asks a question with an escape', lo.text.includes('?') && /describe|say more|tell me more|more about/i.test(lo.text));
+}
+
+// ---------------------------------------------------------------------------
+// Task 6.3 — gatherProjectState (best-effort, never throws)
+// ---------------------------------------------------------------------------
+check('gatherProjectState is a function', typeof gatherProjectState === 'function');
+{
+  const empty = makeTempProject('empty');
+  const s1 = gatherProjectState(empty.projectDir);
+  check('gatherProjectState tolerates a project with no plan', s1 && typeof s1 === 'object');
+  cleanup(empty.tmpRoot);
+
+  const PLAN = '---\novd-plan: true\nversion: 3\nproject: "Demo Project"\n---\n\n# Demo Project\n\n## I Foundation [done]\n### I.1 Scaffolding [done]\n';
+  const withPlan = makeTempProject('withplan', PLAN);
+  const s2 = gatherProjectState(withPlan.projectDir);
+  check('gatherProjectState reads project title', s2.projectTitle === 'Demo Project');
+  cleanup(withPlan.tmpRoot);
+}
+
+// ---------------------------------------------------------------------------
+// Task 6.3 — dispatch via runPlan({ subcommand: 'intent' })
+// ---------------------------------------------------------------------------
+check('ovdPlan exposes runIntent', typeof ovdPlan.runIntent === 'function');
+{
+  const proj = makeTempProject('dispatch', '---\novd-plan: true\nversion: 3\nproject: "Dispatch Demo"\n---\n\n# Dispatch Demo\n');
+
+  // Plan mode: builds the classification prompt for the agent.
+  const planRes = ovdPlan.runPlan({ subcommand: 'intent', text: 'I want dark mode', projectDir: proj.projectDir }, process.env);
+  check('dispatch plan mode is ok', planRes.ok === true && planRes.mode === 'plan');
+  check('dispatch plan mode returns the prompt as text', planRes.text.includes('I want dark mode') && planRes.text.includes('/ovd-plan idea'));
+
+  // Commit mode: routes the agent's classification.
+  const commitRes = ovdPlan.runPlan({
+    subcommand: 'intent',
+    text: 'I want dark mode',
+    entriesJson: JSON.stringify(unambig('/ovd-plan idea', 'I want dark mode')),
+    projectDir: proj.projectDir
+  }, process.env);
+  check('dispatch commit mode executes', commitRes.ok === true && commitRes.decision === 'execute' && commitRes.route === '/ovd-plan idea');
+
+  // Bad JSON → index.js parse guard (Pattern 4), no crash, no routing.
+  const badJson = ovdPlan.runPlan({ subcommand: 'intent', text: 'x', entriesJson: '{not json' }, process.env);
+  check('dispatch rejects bad --entries-json', badJson.ok === false && /json/i.test(`${badJson.text || ''} ${badJson.reason || ''}`));
+
+  // Bypass via dispatch.
+  const bypassRes = ovdPlan.runPlan({ subcommand: 'intent', text: '/ovd-go', projectDir: proj.projectDir }, process.env);
+  check('dispatch bypasses explicit command', bypassRes.ok === true && bypassRes.decision === 'bypass');
+
+  cleanup(proj.tmpRoot);
 }
 
 // ---------------------------------------------------------------------------

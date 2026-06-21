@@ -3721,6 +3721,21 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 ---
 
+### 2026-06-21 — Session 21 continued (Phase 6 Task 6.3 COMPLETE — confidence-based branching + integration)
+
+- **Task 6.3 — Confidence-based branching + slash-body integration. COMPLETE (TDD).** This is the integration task that makes the classifier reachable.
+  - **`intent.js` additions:** `KNOWN_COMMANDS` (the 4 stems) + `leadingCommand`/`isExplicitCommand` (Q6.9 bypass: message must START with `/ovd-{workflow,plan,go,log}` AND parse — a mid-sentence slash is free-form); `buildClarifyingQuestion(candidates, state)` (Q6.3 very-low-confidence: 0-candidate → calibration-gated examples, 1-candidate → names the single best-guess route; always ends with a describe escape — Pattern 7); `routeOrPrompt(message, state, options)` (bypass → execute as typed; unambiguous → announce `Reading this as \`route\` — continuing.` + correction affordance; ambiguous ≥2 → `renderAmbiguityPrompt`; ambiguous 0–1 → clarifying question; never silently routes); `gatherProjectState(rootDir)` (best-effort, never throws — title/deliberation-status/last-action/calibration from `openState`+`readCalibration`; active-node enrichment left to the agent's live context to avoid coupling to `orient.buildOrientation`); `runIntent(rootDir, {mode,text,entries})` (Pattern-1 dispatch: plan mode builds the prompt, commit mode routes the agent's classification).
+  - **Dispatch:** added the `intent` subcommand branch to `index.js` `plan()` (mirrors `idea`/`edit`/`research`: Pattern-4 JSON parse guard before any routing). No `installer.js` change needed — it already passes `subcommand`/`text`/`entriesJson` generically. Surface: `overdrive plan intent "<msg>"` (plan) / `--entries-json '{route,confidence,candidates}'` (commit). Exports `runIntent`, `routeOrPrompt` added.
+  - **Slash-body integration:** added an identical **"Intent routing (r3 §3.4)"** preamble to all four command bodies (`plugins/overdrive/commands/ovd-{plan,go,log,workflow}.md`): explicit commands run as typed (no re-classify); free-form messages classify first via `overdrive plan intent`. (Correction-recording note deferred to Task 6.4.) **Not `skills/*/SKILL.md`** — hard rule #3 respected.
+- **Q6.9 / Pattern-1 / Pattern-4 / Pattern-7 all honored;** calibration affects clarify depth only (Q6.7), never the route.
+- **Tests:** +40 checks (intent 118 → **158**): `isExplicitCommand` boundary cases (mid-sentence slash, unknown command, non-string); `routeOrPrompt` bypass/requires-agent/execute/prompt/clarify(0)/clarify(1)/validation-failed; calibration-matched clarify (high vs low depth); `gatherProjectState` best-effort (empty project + title read); end-to-end dispatch via `runPlan({subcommand:'intent'})` plan/commit/bad-JSON-guard/bypass. **Two RED→GREEN corrections:** 1-candidate clarify now always names the route (impl fix); bad-JSON assertion checks `reason` not just `text` (test fix — the Pattern-4 guard was correct).
+- **Verification:** ovd-plan **4873 → 4913**; `consistency` (1181, validates the command-body edits), `test:workflow`, `eval:router` (269), `check` exit 0 — all green.
+- **Not yet committed** — awaiting user approval.
+
+**Next:** Task 6.4 — mis-classification logging (`recordIntentCorrection` → session capture under an `## intent-corrections` section; migration-compat seam test with Phase 5's session-file format; aggregated at LEARNINGS EXTRACT; no auto-retune — Q6.10). Plus the correction-recording note in the command-body preamble.
+
+---
+
 ## 8. Glossary / quick decision reference
 
 - **OVERDRIVE.md** — root plan tree file, human-readable Markdown, committed to git.
