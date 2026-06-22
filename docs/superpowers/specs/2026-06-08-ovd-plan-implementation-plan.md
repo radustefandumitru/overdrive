@@ -3806,7 +3806,13 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Tests:** smoke test = **35 checks**. Wired into `check` parse chain + new `npm run test:smoke` script (Task 7.4 will fold it into the comprehensive runner). `check` exit 0; `test:smoke` pass; `test:ovd-plan` pass; `test:workflow` pass.
 
-**Committed:** pending. **Next:** Task 7.4 (comprehensive suite — `npm test` fast / `npm test:full` slow, Q7.4).
+**Committed:** `3c1aba8`. **Next:** Task 7.4.
+
+### 2026-06-22 — Session 22 continued (Task 7.4 COMPLETE — comprehensive test suite)
+
+**Task 7.4 done — `npm test` / `npm test:full` targets (Q7.4).** Implemented as npm-script composition reusing the existing chains (Pattern 2 — no new JS wrapper that would duplicate `test:ovd-plan`/`test:workflow`/`test:smoke`; deliberate, defensible deviation from the brief's literal `scripts/test-ovd-plan.js` filename). `npm test` (fast) = `check` → `consistency` → `test:workflow` → `test:ovd-plan` → `test:smoke`. `npm test:full` (slow) = `npm test` + `eval:router` (router benchmark). Both verified exit 0 end-to-end; `test:full` ends with "Router benchmark validation passed (269 checks)."
+
+**Committed:** pending. **Next:** Task 7.5 (README + docs update — keep v1 with "v2 active; v1 delegated" banner, Q7.5; document `npm test:full`).
 
 ---
 
