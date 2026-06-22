@@ -3762,6 +3762,24 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 ---
 
+### 2026-06-22 — Session 22 (PHASE 7 kickoff — design Q&A locked + Task 7.3 COMPLETE)
+
+**Resume baseline verified:** `check` exit 0; `test:ovd-plan` green (matches log: 4939); `test:workflow` pass; `eval:router` 269. Working tree clean except pre-existing untracked spec docs.
+
+**Phase 7 design Q&A (Q7.1–Q7.12) locked** to readiness-brief recommendations (Q7.6 flag `--install-local`; Q7.4 `npm test` fast / `npm test:full` slow; Q7.3 verify opt-in `--plan`; Q7.1 smoke includes non-happy paths; Q7.2/7.5/7.7/7.8/7.9/7.10/7.11/7.12 per brief).
+
+**Two material findings surfaced before coding (Methodology 2):** (1) legacy slash bodies live on *two* surfaces — 2 plugin files (`ovd-status.md`, `ovd-doctor.md`) + 5 installer canonical bodies in `lib/installer.js workflowCommandBodies()`; (2) two Task-2.9 delegation targets (`overdrive workflow doctor`, `overdrive workflow knowledge`) are stubs today. **User decisions:** Decision 1 → edit *both* surfaces, no new plugin files, single commit (Q7.8). Decision 2 → **reorder 7.3 before 2.9**; `/ovd-doctor` → `overdrive verify --plan` (v2-native, honors standing legacy policy "adapt, don't wrap"); `/ovd-knowledge` → new thin `overdrive workflow knowledge` → v1 `ovdWorkflow.knowledge()` (bounded preserve case). **Standing legacy-command policy recorded** in `.overdrive/decisions.md` + auto-memory.
+
+**New task order:** 7.3 → 2.9 → 7.2 → 7.1 → 7.4 → 7.5 → 7.6(A/B/C). Second data point for "dependency-first slice reordering" (n=2 with Phase 5's 5.8→5.6→5.2).
+
+**Task 7.3 done — `overdrive verify --plan` integration.** New module `lib/ovd-plan/verify-layout.js` (`verifyPlanLayout` + `renderVerifyLayout`), reuses parser.js + cache.js (Pattern 2), pure/no-LLM (Pattern 1). Checks: OVERDRIVE.md parses; cache↔tree consistency (orphan node = error; stale node / status-drift = warning; missing cache = warning); `.overdrive/` structure (missing dir/file = warning); orphan sketches; graceful no-layout / old-layout / pre-plan (`plan-not-created` warning) cases; cache-without-source = corruption error. Wired `overdrive verify --plan` (opt-in flag, Q7.3) in `lib/installer.js` (`runVerifyPlan`, `--plan` parse, defaults, help text); plain `overdrive verify` unchanged (no v1 regression). Added `verify-layout.js` + test to `check` chain and `test:ovd-plan` chain.
+
+**Tests:** new `scripts/test-ovd-plan-verify-layout.js` — **70 checks** (15 scenarios incl. non-happy paths). ovd-plan suite all green; `test:workflow` pass; `eval:router` 269; `check` exit 0. Functional CLI smoke: `verify --plan` renders findings + `--json` + exit code 1 on errors, confirmed on this repo's own `.overdrive/`.
+
+**Committed:** not yet — awaiting user approval. **Next:** Task 2.9 (legacy slash command repurposing, both surfaces, single commit) once 7.3 commit lands.
+
+---
+
 ## 8. Glossary / quick decision reference
 
 - **OVERDRIVE.md** — root plan tree file, human-readable Markdown, committed to git.
