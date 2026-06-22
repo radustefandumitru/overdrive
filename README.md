@@ -682,17 +682,58 @@ v0.12 adds native context-window guidance through [`docs/context-runtime-matrix.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-## Coming Next: Overdrive v2 (in development)
+## Overdrive v2 — Planning, Execution, and Record Pipeline
 
-Overdrive v1 is the execution layer — 137 specialist skills, `skill-router`, a global operating guide, and lightweight project state in `.overdrive/`. It's strong at *doing* the work agents need to do, but it doesn't structure projects beyond the request currently in front of it.
+> **v2 is the active surface.** The four commands below are the canonical way to plan and run a project. The pre-v2 slash commands (`/ovd-status`, `/ovd-doctor`, `/ovd-checkpoint`, `/ovd-resync`, `/ovd-knowledge`) still resolve — each now delegates to its v2 equivalent and prints a deprecation note.
 
-Overdrive v2 adds the missing structural layer: a planning, execution, and record pipeline that turns request-by-request agent work into a persistent, contract-driven project lifecycle. Four new commands (`/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`) with minimal flags layer on top of the existing skill catalog. Skills stay untouched; their use becomes pre-resolved at planning time, leaves carry self-contained contracts, and closure walks recursively up the tree with explicit user approval at every level.
+Overdrive v1 is the execution layer — 137 specialist skills, `skill-router`, a global operating guide, and lightweight project state in `.overdrive/`. Overdrive v2 adds the missing structural layer: a planning, execution, and record pipeline that turns request-by-request agent work into a persistent, contract-driven project lifecycle. The four commands layer on top of the existing skill catalog — skills stay untouched; their use is pre-resolved at planning time, leaves carry self-contained contracts, and closure walks recursively up the tree with explicit user approval at every level.
 
-The shape is designed to match GSD's planning rigor while remaining radically simpler to use — same power, roughly 10% of the user-side effort. The internal granularity is architect-level; the user surface is plain language and never has more than a handful of commands.
+### The four commands
 
-**Status:** active development on the `feature/ovd-plan` branch. Phase 1 of the implementation (parser, writer, hierarchical cache, skill-router helper, CLI command skeletons) is complete; 283 new tests pass with no regressions to the existing 269-check router benchmark or the existing `ovd-workflow` test suite. Phase 2 (the rebuilt `/ovd-workflow` command with codebase mapping and migration from the pre-v2 `.overdrive/` layout) is up next.
+- **`/ovd-workflow`** — initialize and maintain the project. Runs first-time setup (codebase mapping, preferences, requirements), refreshes the codebase map, and migrates a pre-v2 `.overdrive/` layout. Start here.
+- **`/ovd-plan`** — plan and shape the work. Bare `/ovd-plan` displays the current tree and state; `/ovd-plan deliberate` runs Socratic planning into a contract-bearing tree; `/ovd-plan idea "…"`, `/ovd-plan edit`, and `/ovd-plan research` evolve it.
+- **`/ovd-go`** — execute. Orients on the active node, executes leaves with an iteration loop (implement → verify → your review → done), and handles `--small` quick changes, FIX escalation, and decision points.
+- **`/ovd-log`** — save and hand off. Bare `/ovd-log` writes a lightweight checkpoint; `/ovd-log handoff` produces a full end-of-session handoff (with milestone-close cascade); `/ovd-log capture "…"` and `/ovd-log concerns` record notes and structured review.
 
-For a public-facing overview of what v2 changes for users, see [`docs/ovd-plan-v2.md`](docs/ovd-plan-v2.md). For the full design and implementation records, see [`docs/superpowers/specs/`](docs/superpowers/specs/).
+Plain free-form messages are classified by an intent layer and routed to the right command; explicit `/ovd-…` commands always run as typed.
+
+### File layout
+
+```text
+your-project/
+├── OVERDRIVE.md            # the plan tree (human-readable, committed to git)
+└── .overdrive/             # supporting context (mostly gitignored)
+    ├── plan.cache.json      # hierarchical cache of the tree
+    ├── codebase/            # codebase analysis (architecture, patterns, tech-stack)
+    ├── preferences.md       # user/team preferences and vetoes
+    ├── requirements.md      # functional / non-functional / out-of-scope
+    ├── decisions.md         # append-only decision log
+    ├── sessions/            # per-session working notes
+    ├── handoffs/            # end-of-session handoffs
+    ├── reports/             # milestone reports
+    └── sketches/approved/   # approved UI sketches referenced by leaves
+```
+
+### Quick start
+
+```bash
+overdrive workflow init     # or /ovd-workflow init — map the codebase, set preferences
+overdrive plan deliberate   # or /ovd-plan deliberate — build the tree
+overdrive go                # or /ovd-go — orient and execute the active leaf
+overdrive log handoff       # or /ovd-log handoff — save a full handoff at session end
+```
+
+Check project health at any time:
+
+```bash
+overdrive verify --plan     # OVERDRIVE.md parse, cache consistency, structure, orphans
+```
+
+### Testing (contributors)
+
+`npm test` runs the fast suite (parse check, consistency, workflow, ovd-plan units + integration, cross-pipeline smoke test). `npm run test:full` adds the slower router benchmark.
+
+For a public-facing overview of what v2 changes for users, see [`docs/ovd-plan-v2.md`](docs/ovd-plan-v2.md). For the full design and implementation records, see the [pipeline architecture spec](docs/superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r3.md) and the rest of [`docs/superpowers/specs/`](docs/superpowers/specs/).
 
 ## License
 

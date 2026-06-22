@@ -3812,7 +3812,13 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Task 7.4 done — `npm test` / `npm test:full` targets (Q7.4).** Implemented as npm-script composition reusing the existing chains (Pattern 2 — no new JS wrapper that would duplicate `test:ovd-plan`/`test:workflow`/`test:smoke`; deliberate, defensible deviation from the brief's literal `scripts/test-ovd-plan.js` filename). `npm test` (fast) = `check` → `consistency` → `test:workflow` → `test:ovd-plan` → `test:smoke`. `npm test:full` (slow) = `npm test` + `eval:router` (router benchmark). Both verified exit 0 end-to-end; `test:full` ends with "Router benchmark validation passed (269 checks)."
 
-**Committed:** pending. **Next:** Task 7.5 (README + docs update — keep v1 with "v2 active; v1 delegated" banner, Q7.5; document `npm test:full`).
+**Committed:** `68d9a38`. **Next:** Task 7.5.
+
+### 2026-06-22 — Session 22 continued (Task 7.5 COMPLETE — README + docs update)
+
+**Task 7.5 done — README + public docs updated for shipped v2.** Replaced the stale README "## Coming Next: Overdrive v2 (in development)" section with a real "## Overdrive v2" section: "v2 active; v1 delegated" banner (Q7.5), one paragraph per command (`/ovd-workflow`/`/ovd-plan`/`/ovd-go`/`/ovd-log` + intent layer), `.overdrive/` file-layout tree, quick-start example, `overdrive verify --plan` health-check, a contributor testing note (`npm test` / `npm test:full`), and a link to the r3 spec. Refreshed `docs/ovd-plan-v2.md` (the README-linked public intro): removed "(in development)", updated the status line + roadmap table (all 7 phases ✓) + "When v2 ships" to reflect implementation-complete-pending-audit. v1 README sections left intact (Q7.5). `consistency` 1181; `check` exit 0.
+
+**Committed:** pending. **Next:** Task 7.6 (install/uninstall hygiene — sliced A/B/C; the structurally novel piece).
 
 ---
 

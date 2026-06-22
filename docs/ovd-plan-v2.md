@@ -1,6 +1,6 @@
-# Overdrive v2: the structural layer (in development)
+# Overdrive v2: the structural layer
 
-> **Status:** Active development on `feature/ovd-plan`. Design locked; Phase 1 implementation complete; Phases 2–7 are next. Phase 1 ships the parser, writer, hierarchical cache, skill-router helper, and CLI command skeletons — 283 new tests pass with no regressions to the 269-check router benchmark or the existing `ovd-workflow` suite. This document is the **public-facing introduction**; full design records live in [`docs/superpowers/specs/`](superpowers/specs/).
+> **Status:** All seven implementation phases complete on `feature/ovd-plan` — the full pipeline (`/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent detection) plus `overdrive verify --plan`, the cross-pipeline smoke test, and global-instruction discoverability are shipped. The full v2 test suite (`npm test`) plus the 269-check router benchmark (`npm run test:full`) pass green. Pending an independent audit pass before merge to `main`. This document is the **public-facing introduction**; full design records live in [`docs/superpowers/specs/`](superpowers/specs/).
 
 ---
 
@@ -193,13 +193,13 @@ Implementation is laid out in seven phases, documented in [`docs/superpowers/spe
 
 | Phase | Scope | Status |
 |---|---|---|
-| 1 | Foundation: parser, writer, cache, skill-router helper, CLI skeletons, fixtures + 283 tests | ✓ done |
-| 2 | `/ovd-workflow` full repurpose: tutorial, init, 5 parallel codebase mappers, preferences, requirements, drift detection, migration | next |
-| 3 | `/ovd-plan`: Socratic deliberation, blind-spot expansion, idea / edit / research, plan-quality check, RESOLVE SKILLS sub-step | |
-| 4 | `/ovd-go`: orient default, awaiting-review state + iteration loop, recursive close, --small auto-detect, 2-attempt escalation | |
-| 5 | `/ovd-log`: lightweight save default, handoff full pipeline, capture, concerns, milestone close + learnings + release prep | |
-| 6 | Intent detection layer: free-form messages route to the right pipeline; action-path prompts on ambiguity | |
-| 7 | Polish: cross-pipeline smoke tests, global instruction note, `overdrive verify` extension, comprehensive test suite | |
+| 1 | Foundation: parser, writer, cache, skill-router helper, CLI skeletons, fixtures | ✓ done |
+| 2 | `/ovd-workflow` full repurpose: tutorial, init, 5 parallel codebase mappers, preferences, requirements, drift detection, migration | ✓ done |
+| 3 | `/ovd-plan`: Socratic deliberation, blind-spot expansion, idea / edit / research, plan-quality check, RESOLVE SKILLS sub-step | ✓ done |
+| 4 | `/ovd-go`: orient default, awaiting-review state + iteration loop, recursive close, --small auto-detect, 2-attempt escalation | ✓ done |
+| 5 | `/ovd-log`: lightweight save default, handoff full pipeline, capture, concerns, milestone close + learnings + release prep | ✓ done |
+| 6 | Intent detection layer: free-form messages route to the right pipeline; action-path prompts on ambiguity | ✓ done |
+| 7 | Polish: cross-pipeline smoke test, global instruction note, `overdrive verify --plan`, comprehensive test suite, README, install hygiene, legacy command repurposing | ✓ done |
 
 Each phase ends with a coherent commit; nothing ships piecemeal.
 
@@ -218,4 +218,4 @@ For the comprehensive context-handoff dossier (preserves conversation nuance acr
 
 ## When v2 ships
 
-When all seven phases are complete, verified, and reviewed. There's no scheduled date; this is a quality-driven release on the `feature/ovd-plan` branch. The current v1 surface remains the default in `main` until v2 is ready.
+All seven phases are complete and verified on the `feature/ovd-plan` branch. The remaining gate is an independent audit pass before merge to `main`; this is a quality-driven release with no fixed date. The current v1 surface remains the default in `main` until that merge lands — and stays available afterward, since the legacy commands delegate to their v2 equivalents.
