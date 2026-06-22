@@ -3836,7 +3836,33 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Tests:** extended `test-ovd-workflow.js` (+~16 checks): default→global + "no project-directory changes"; `--scope local` blocked (exits non-zero, no `.agents/`/`.cursor/` created); `--install-local`→local + opt-in message; pre-existing dir auto-opt-in; `assertLocalOptIn`/`hasPreexistingLocalSkills`/`parseArgs` unit checks. Updated the existing `--no-tool-install` local case to add `--install-local`. `check` exit 0; `test:workflow` pass; `npm test` green.
 
-**PHASE 7 DONE — v2 surface shipped.** Commits: 7.3 `0ffa57e`, 2.9 `f57abb6`, 7.2 `6d35250`, 7.1 `3c1aba8`, 7.4 `68d9a38`, 7.5 `7aa286f`, 7.6 (this). Next: independent audit pass per `17-audit-readiness.md` (separate session) before merge to `main`.
+**PHASE 7 DONE — v2 surface shipped.** Commits: 7.3 `0ffa57e`, 2.9 `f57abb6`, 7.2 `6d35250`, 7.1 `3c1aba8`, 7.4 `68d9a38`, 7.5 `7aa286f`, 7.6 `0bda4e0`. Next: independent audit pass per `17-audit-readiness.md` (separate session) before merge to `main`.
+
+### 2026-06-22 — PHASE 7 WRAP-UP (Polish + integration complete — 7/7 tasks → v2 SHIPPED)
+
+**Phase 7 done.** The v2 surface is complete end-to-end. Seven tasks landed this session (Session 22), one commit each, in dependency-first order (7.3 → 2.9 → 7.2 → 7.1 → 7.4 → 7.5 → 7.6):
+
+| Task | What shipped | Commit |
+|---|---|---|
+| 7.3 | `overdrive verify --plan` project-integrity verifier (`lib/ovd-plan/verify-layout.js`) | `0ffa57e` |
+| 2.9 | 5 legacy slash commands repurposed to v2 delegates (both surfaces) + thin `workflow knowledge` | `f57abb6` |
+| 7.2 | OVERDRIVE.md discoverability note in global-instructions managed block | `6d35250` |
+| 7.1 | cross-pipeline smoke test (full loop + 4 non-happy paths) + fixture | `3c1aba8` |
+| 7.4 | `npm test` (fast) / `npm test:full` (+ router) targets | `68d9a38` |
+| 7.5 | README "Overdrive v2" section + `docs/ovd-plan-v2.md` refresh | `7aa286f` |
+| 7.6 | install hygiene — default global-only, `--install-local` opt-in | `0bda4e0` |
+
+**Suite at Phase 7 close:** `test:ovd-plan` **5009** checks (4939 Phase-6 close + 70 verify-layout); smoke **35**; `test:workflow` pass (incl. +16 hygiene + 2.9 + 7.2 assertions); `consistency` 1181; `eval:router` 269; `check` exit 0. `npm test` (fast) and `npm test:full` (slow) both green.
+
+**Architectural invariants held:** no new dispatch surfaces; no Phase 1–6 primitive re-implementation (7.3 reuses parser/cache, 7.1 reuses real handlers, 7.4 reuses existing chains); legacy commands delegate (v2 primary); default install footprint is user-global only. Phase 2 patterns honored on all new code (Pattern 1 no-LLM verifier/smoke; Pattern 3/4 `--entries-json` guards exercised; Pattern 8 coverage).
+
+**Q&A locked at kickoff:** Q7.1–Q7.12 to readiness-brief recommendations. Two material findings surfaced before coding (legacy two-surface ambiguity; missing delegation targets) → user decisions recorded in `.overdrive/decisions.md` + auto-memory; drove the 7.3-before-2.9 reorder (2nd "dependency-first" data point).
+
+**Deviations (flagged):** (1) Task 7.4 implemented as npm-script composition, not a `scripts/test-ovd-plan.js` wrapper (Pattern 2 — reuse chains). (2) Task 7.6 A/B/C slices collapsed into one commit — the audit found default was already global, so the refactor was a focused opt-in gate, not a large rewrite; splitting would fragment coupled flag+gate+test. (3) Task 7.6 spec reconciliation: §(a)/(b) vs verification scenario 3 → implemented the strict-safe reading (default global-only; local needs explicit opt-in; pre-existing dir also opts in).
+
+**Branch state:** `feature/ovd-plan`, 7 new commits this session on top of Phase 6. Working tree clean except the two pre-existing untracked `docs/superpowers/specs/2026-06-06-*` docs (untouched, not part of v2 work).
+
+**Ready for the independent audit pass** per `17-audit-readiness.md` (separate session) before merge to `main`.
 
 ---
 
