@@ -3776,7 +3776,19 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Tests:** new `scripts/test-ovd-plan-verify-layout.js` — **70 checks** (15 scenarios incl. non-happy paths). ovd-plan suite all green; `test:workflow` pass; `eval:router` 269; `check` exit 0. Functional CLI smoke: `verify --plan` renders findings + `--json` + exit code 1 on errors, confirmed on this repo's own `.overdrive/`.
 
-**Committed:** not yet — awaiting user approval. **Next:** Task 2.9 (legacy slash command repurposing, both surfaces, single commit) once 7.3 commit lands.
+**Committed:** `0ffa57e`. User granted Phase 7 standing commit approval (one-per-task; Task 7.6 sliced A/B/C; Task 2.9 single per Q7.8) — recorded in `.overdrive/decisions.md`. **Next:** Task 2.9.
+
+### 2026-06-22 — Session 22 continued (Task 2.9 COMPLETE — legacy slash command repurposing)
+
+**Task 2.9 done — both surfaces, single commit (Q7.8).** Legacy ovd-workflow slash commands now delegate to the v2 surface with a uniform deprecation note. Mappings: `/ovd-status` → `overdrive plan` (DISPLAY); `/ovd-doctor` → `overdrive verify --plan` (v2-native, Task 7.3); `/ovd-checkpoint` → `overdrive log handoff`; `/ovd-resync` → `overdrive workflow map`; `/ovd-knowledge` → new thin `overdrive workflow knowledge`. `/ovd-install`, `/ovd-update`, `/ovd-usage` unchanged.
+
+**Surfaces edited:** (1) `lib/installer.js workflowCommandBodies()` canonical bodies for the 5 legacy commands (installer-managed surface, all agents); (2) plugin files `plugins/overdrive/commands/ovd-status.md` + `ovd-doctor.md` (Claude plugin surface). No new plugin files (Decision 1). (3) New thin `overdrive workflow knowledge` subcommand in `lib/ovd-plan/index.js runWorkflow` → preserved v1 `ovdWorkflow.knowledge()` (Decision 2 bounded-preserve case; honors standing legacy policy "adapt to v2 umbrella, don't rewrite"). `/ovd-doctor` points at `verify --plan` (the dependency-first reorder that put 7.3 first).
+
+**Tests:** extended `scripts/test-ovd-workflow.js` — 5 legacy managed bodies assert deprecation note + correct v2 target + no legacy subcommand call; `ovd-usage` asserts unchanged; both repurposed plugin files asserted. `test:workflow` pass; `test:ovd-plan` exit 0; `check` exit 0. Functional CLI: `overdrive workflow knowledge` resolves (not stub).
+
+**Methodology note:** the 7.3→2.9 reorder is the 2nd data point for "dependency-first slice reordering" (n=2 with Phase 5's 5.8→5.6→5.2).
+
+**Committed:** pending (single commit). **Next:** Task 7.2 (global instruction note).
 
 ---
 

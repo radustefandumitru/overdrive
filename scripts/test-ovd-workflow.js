@@ -436,6 +436,32 @@ check('Cursor receives rule fallback only', fs.existsSync(path.join(runtimeHome,
 for (const name of ['ovd-status', 'ovd-resync', 'ovd-knowledge', 'ovd-doctor', 'ovd-checkpoint', 'ovd-usage']) {
   check(`Claude command ${name} exists`, fs.existsSync(path.join(runtimeHome, `.claude/commands/${name}.md`)));
 }
+
+// Task 2.9 — legacy slash commands delegate to the v2 surface with a deprecation
+// note (installer-managed canonical bodies). ovd-usage is independent → unchanged.
+const legacyDelegation = {
+  'ovd-status': { target: 'plan', via: '/ovd-plan' },
+  'ovd-resync': { target: 'workflow map', via: '/ovd-workflow map' },
+  'ovd-knowledge': { target: 'workflow knowledge', via: '/ovd-workflow knowledge' },
+  'ovd-doctor': { target: 'verify --plan', via: 'overdrive verify --plan' },
+  'ovd-checkpoint': { target: 'log handoff', via: '/ovd-log handoff' }
+};
+for (const [name, { target, via }] of Object.entries(legacyDelegation)) {
+  const body = fs.readFileSync(path.join(runtimeHome, `.claude/commands/${name}.md`), 'utf8');
+  check(`${name} managed body has deprecation note`, /Deprecated:/.test(body));
+  check(`${name} managed body points users to ${via}`, body.includes(via));
+  check(`${name} managed body runs v2 target "${target}"`, body.includes(target));
+  check(`${name} managed body no longer runs legacy subcommand`, !new RegExp(`overdrive ${name.replace('ovd-', '')} `).test(body.replace(via, '')));
+}
+const usageBody = fs.readFileSync(path.join(runtimeHome, '.claude/commands/ovd-usage.md'), 'utf8');
+check('ovd-usage managed body unchanged (no deprecation)', !/Deprecated:/.test(usageBody));
+
+// Task 2.9 — plugin command files (repo surface) repurposed to match.
+const pluginCmdDir = path.resolve(__dirname, '..', 'plugins/overdrive/commands');
+const statusPlugin = fs.readFileSync(path.join(pluginCmdDir, 'ovd-status.md'), 'utf8');
+check('plugin ovd-status delegates to /ovd-plan', /Deprecated/.test(statusPlugin) && statusPlugin.includes('/ovd-plan') && /overdrive plan/.test(statusPlugin));
+const doctorPlugin = fs.readFileSync(path.join(pluginCmdDir, 'ovd-doctor.md'), 'utf8');
+check('plugin ovd-doctor delegates to verify --plan', /Deprecated/.test(doctorPlugin) && doctorPlugin.includes('overdrive verify --plan'));
 check('new overdrive shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/overdrive')));
 check('ovd shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/ovd')));
 const runtimeVersionDir = path.join(runtimeHome, `.overdrive/runtime/${pkg.version}`);
