@@ -3796,7 +3796,17 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Tests:** added a content check to `runVerify` (`overdrive verify` asserts installed instruction notes OVERDRIVE.md + /ovd-plan) and a fresh-install assertion to `test-ovd-workflow.js`. `check` exit 0; `consistency` 1181; `test:workflow` pass; `test:ovd-plan` pass.
 
-**Committed:** pending. **Next:** Task 7.1 (cross-pipeline smoke test — non-happy paths per Q7.1).
+**Committed:** `6d35250`. **Next:** Task 7.1.
+
+### 2026-06-22 — Session 22 continued (Task 7.1 COMPLETE — cross-pipeline smoke test)
+
+**Task 7.1 done — end-to-end cross-pipeline smoke test.** New `scripts/smoke-test-ovd-plan.js` drives the real v2 handlers (`runWorkflow`/`runPlan`/`runGo`/`runLog`) through the full session loop on a seeded fixture, exercising the plan↔go↔log↔cache↔parser seams. No LLM (Pattern 1) — every agent return is a canned `--entries-json` payload (Pattern 3/4). Committed fixture `scripts/fixtures/ovd-plan/smoke/OVERDRIVE.md` (2 milestones, 3 clusters, 8 leaves; validated parser-clean + cache-consistent).
+
+**Loop covered:** workflow init (pipeline responds) → plan display → go orient → complete milestone I (I.1–I.3 via execute→verify(pass)→review(approved→done)) → recursive close (`go close` node_id=I decision=close → I done) → **non-happy paths (Q7.1):** iteration loop (II.1.a), FIX escalation (II.1.b — 2-attempt cap → `mode:fix-escalate`, `escalated:true`), `--small` scope-growth (`go monitor` 5 files → `exceeded:true`), DECISION POINT (surface + resolve on II.2.a) → log default save (session file written) → resume orient (prior progress preserved) → log handoff (handoff file written) → milestone-close I (`ok:true`). **Final artifact validation reuses the Task 7.3 verifier** (`verifyPlanLayout` → 0 errors) plus parse + cache load — a nice 7.3↔7.1 cross-tie.
+
+**Tests:** smoke test = **35 checks**. Wired into `check` parse chain + new `npm run test:smoke` script (Task 7.4 will fold it into the comprehensive runner). `check` exit 0; `test:smoke` pass; `test:ovd-plan` pass; `test:workflow` pass.
+
+**Committed:** pending. **Next:** Task 7.4 (comprehensive suite — `npm test` fast / `npm test:full` slow, Q7.4).
 
 ---
 
