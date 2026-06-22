@@ -301,11 +301,11 @@ The *external* presentation is brief — one line per inserted node:
 ```
 "Items I'm adding to the tree (you can prune any):
 
- [agent] II.4 Accessibility pass — WCAG AA for internal tooling
- [agent] III.1 Security review — auth/session token storage
- [agent] III.2 Error states — empty/loading/failure UI
- [agent] III.3 Observability — request tracing
- [agent] III.4 Pre-launch checklist — meta tags, SEO basics
+ [proposed-by-agent: WCAG AA for internal tooling] II.4 Accessibility pass
+ [proposed-by-agent: auth/session token storage] III.1 Security review
+ [proposed-by-agent: empty/loading/failure UI] III.2 Error states
+ [proposed-by-agent: request tracing] III.3 Observability
+ [proposed-by-agent: meta tags, SEO basics] III.4 Pre-launch checklist
 
  Reply 'approved' to accept all, or list numbers to remove (e.g., 'remove II.4, III.4'),
  or describe other adjustments."
@@ -371,11 +371,11 @@ recommend /ovd-plan edit → DOC UPDATE → /ovd-go
 
 ### 5.6 Verification-criteria specification per leaf
 
-Each leaf at end of `CREATE` (or `EDIT`) gets:
-- `success_criteria: [strings]` — externally verifiable
-- `verification.method: <name>` — primary auto-verify
-- `verification.fallback: agent_self_check_against_success_criteria`
-- `verification.review_required: bool` — default `true`; `false` only for trivially-objective leaves
+Each leaf at end of `CREATE` (or `EDIT`) gets (writer-canonical field names per §10.1):
+- `success: [strings]` — externally verifiable
+- `verify.method: <name>` — primary auto-verify
+- `verify.fallback: agent_self_check_against_success_criteria`
+- `verify.review_required: bool` — default `true`; `false` only for trivially-objective leaves
 
 ### 5.7 Multi-session deliberation re-entry (resolved per Q12)
 
@@ -400,6 +400,18 @@ When the user re-enters `/ovd-plan` after a deliberation pause:
 ```
 
 Always summary → user confirmation → continue. Never silent resume.
+
+### 5.8 `/ovd-plan verify` — retrospective plan-quality audit
+
+> Added post-audit 2026-06-22 per FU-4 / Q3.3C to document a user-facing surface the code already ships. Distinct from `/ovd-go verify` (§6.6), which runs post-execution `LEAF VERIFY` / `CLUSTER VERIFY`.
+
+`/ovd-plan verify` runs a **retrospective audit of the plan tree itself** — coverage (every functional requirement traces to ≥1 leaf), leaf completeness (`scope` + `skills` + `success` + `verify` all present), and goal-backward soundness — without advancing any deliberation-state stage. It is read-and-report: it never mutates the tree.
+
+- **Tree source precedence:** audits the proposed tree if one is open, otherwise the committed tree (`resolveTreeFromOpened` — proposed-first, fallback-to-committed).
+- **Dispatch shape:** plan-mode (render the audit) vs commit-mode (persist the report), inheriting the Pattern 1 + Pattern 4 JSON-guard dispatch from the `plan-quality.js` helper.
+- **Action paths at close:** `(1) accept-and-commit`, `(2) iterate-via-deliberate`, `(3) describe-other`.
+
+The handler is the Stage-6 plan-quality check (`plan-quality.js`) exposed as a user-facing subcommand; the CLI is the custodian (it surfaces gaps), not the grader.
 
 ---
 
@@ -1012,6 +1024,8 @@ user_calibration:
 
 ### 10.1 Required fields per leaf
 
+> **Field names are writer-canonical** (matching the §9.3 fenced-YAML example and the Phase 1 parser/writer round-trip contract): `success`, `deps`, `verify`, and `scope.{in, read_only, out}`. (Corrected post-audit 2026-06-22 per FU-3 / Q3.3A.10 — earlier drafts of this example used the longer `success_criteria` / `dependencies` / `verification` / `scope.files_touched` names, which the code never adopted.)
+
 ```json
 {
   "id": "II.2.a",
@@ -1020,18 +1034,18 @@ user_calibration:
   "status": "pending | in-progress | awaiting-review | done | blocked | skipped",
   "inserted_by": "user | agent",
   "skills": ["design-taste-frontend", "impeccable"],
-  "success_criteria": [
+  "success": [
     "Grid renders at 768/1024/1440px without overflow",
     "Visual hierarchy matches the referenced sketch",
     "Three widget sizes implemented as composable components"
   ],
   "scope": {
-    "files_touched": ["src/components/Dashboard/", "src/styles/grid.css"],
-    "files_read_only": ["src/components/Card.tsx"],
-    "out_of_scope": ["Widget data fetching", "Widget animations"]
+    "in": ["src/components/Dashboard/", "src/styles/grid.css"],
+    "read_only": ["src/components/Card.tsx"],
+    "out": ["Widget data fetching", "Widget animations"]
   },
-  "dependencies": ["II.1"],
-  "verification": {
+  "deps": ["II.1"],
+  "verify": {
     "method": "playwright_visual_regression",
     "fallback": "agent_self_check_against_success_criteria",
     "review_required": true

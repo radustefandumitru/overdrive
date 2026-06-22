@@ -790,11 +790,14 @@ console.log('Locked-design pre-flight tripwires');
   check('Q3.6.6: proposed wins', r.source === 'proposed');
 }
 {
-  // Q3.6.8 DOC UPDATE stub recommendation present in apply output
-  const { projectDir, tmpRoot } = makeTempProject('q3.6.8');
+  // FU-1 (2026-06-22): after a committed EDIT, the apply output leads with doc
+  // propagation via /ovd-log (which owns DOC UPDATE), and must NOT recommend
+  // re-running the codebase mappers (/ovd-workflow refresh) — mappers run once.
+  const { projectDir, tmpRoot } = makeTempProject('fu1-doc-propagation');
   seedProposedTree(projectDir);
   const r = commitEdit(projectDir, { operations: [{ kind: 'patch', target_id: 'I', body: { title: 'X' } }], confirm: true }, { now: FIXED_NOW });
-  check('Q3.6.8: DOC UPDATE recommendation in apply text', r.text.includes('/ovd-workflow refresh'));
+  check('FU-1: EDIT apply recommends /ovd-log for doc propagation', r.text.includes('/ovd-log'));
+  check('FU-1: EDIT apply does NOT recommend a codebase-mapper refresh', !r.text.includes('/ovd-workflow refresh'));
   cleanup(tmpRoot);
 }
 {

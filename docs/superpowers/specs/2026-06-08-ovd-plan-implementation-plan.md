@@ -671,9 +671,9 @@ Output: log paragraph mapping our states to GSD's commands; note our divergences
 
 ##### Task 4.2 — `LEAF EXECUTE` with skill-router integration
 
-- **Deliverable:** `executeLeaf(rootDir, leafId)` — reads leaf's YAML annotations, invokes `skill-router.route()` with `prior_set` + `prior_confidence: "high"` (per r3 §11), executes the task, writes to disk.
+- **Deliverable:** `executeLeaf(rootDir, leafId)` — reads the leaf's pre-resolved `skills` annotation (the planning-time prior), loads the named SKILL.md files, executes the task, writes to disk. **No code-level `skill-router.route()` call on the canonical path** — per r3 §11.1/§11.2 the router is a SKILL.md document the agent reads, not a Node function; SKILL DELTA re-resolution is the exception, not the default. *(Wording corrected post-audit 2026-06-22 per FU-6 / Q4.2.1 — the original `skill-router.route()` phrasing predated the §11 refinement; the shipped `execute.js` reads the annotation as a Pattern-1 dispatch.)*
 - **Success criteria:**
-  - Skill-router called with correct prior set.
+  - Pre-resolved prior skills loaded from the annotation; no cold router consult on the canonical path.
   - Runtime deltas (if any) logged to session capture file, not silently rewritten into leaf annotations.
   - Files written only within leaf's `scope.in` paths (warn if outside).
 - **Verification:** unit test with mocked skill-router.
@@ -683,11 +683,11 @@ Output: log paragraph mapping our states to GSD's commands; note our divergences
 
 - **Deliverable:** `verifyLeaf(leaf, output)` — dispatches based on `verification.method` (playwright, security-review, react-doctor, api_response_check, agent_self_check_against_success_criteria, etc.).
 - **Success criteria:**
-  - Method dispatch correct per r3 §6.8 table.
+  - Method dispatch correct per the canonical v1 method set (`agent_self_check_against_success_criteria` always-available + `playwright_visual_regression` / `security-review` / `react-doctor` / `api_response_check` / `unit_test_run`), captured in `verify.js` `KNOWN_METHODS` with pass-through for non-standard methods. *(Citation corrected post-audit 2026-06-22 per FU-6 / Q4.3.1 — r3 §6.8 is "Task targeting", not a method-dispatch table; the method set is enumerated in readiness brief 13 Task 4.3 and r3 §5.6.)*
   - Fallback to agent-self-check if method unavailable.
   - Returns pass/fail + structured findings.
 - **Verification:** unit test each method dispatcher (mock the external tools).
-- **Reference:** r3 §6.8.
+- **Reference:** r3 §5.6 (verification-criteria per leaf) + readiness brief 13 Task 4.3 (method set).
 
 ##### Task 4.4 — `AWAITING REVIEW STATE` + approval signal recognition
 
@@ -1138,6 +1138,25 @@ All files moved to `_legacy/` land at `.overdrive/_legacy/YYYY-MM-DD-HH-MM/` (ti
 ## 6. Lower-priority follow-ups (from r3 §13.3)
 
 These are not blockers. Address after the 7 phases if the user wants them.
+
+> **Post-audit doc-sync (2026-06-22):** the documentation-only follow-ups surfaced by the v2 audit were resolved in place (code was already correct; only the spec/plan text trailed it): **Q3.3A.10 / FU-3** (r3 §10.1 + §5.6 field names → writer-canonical), **Q3.3C / FU-4** (r3 §5.8 added documenting `/ovd-plan verify`), **Q3.4.2 / FU-5** (r3 §5.3.4 example → `[proposed-by-agent: …]` tag), **Q4.2.1 + Q4.3.1 / FU-6** (§5 Task 4.2 `route()` wording + Task 4.3 method-set citation corrected). Still open (require product decisions, not text fixes): **Q8** (auto-route IDEA→EDIT — deliberately NOT shipped), **Q9** (configurable blind-spot categories), **Q3.7.1 / FU-2** (RESEARCH node attachment), **Q3.6.1 / FU-1** (EDIT auto-trigger DOC UPDATE), **Q14**, **Q17**, **Q3.4.1**, **Q4.4.1**. See `docs/superpowers/audits/2026-06-22-v2-shipped.md` for the audit record.
+
+### 6.1 Locked v1.0.x designs (decided with user 2026-06-22, post-audit)
+
+**FU-1 — EDIT → DOC UPDATE propagation (LOCKED design):**
+- After a *committed* EDIT (a real structural change, not an `IDEA`/brainstorm "analyse impact" pass), EDIT's terminal output presents an **action-path that leads with doc propagation**, e.g. `(1) /ovd-log — capture this edit and surgically update affected docs [recommended], (2) keep editing (run /ovd-log once at the end to capture all edits together), (3) other`.
+- **Reuse, don't fork:** doc propagation goes through the existing `runDocUpdate` internal state (`doc-update.js`), which `log-default.js` + `handoff.js` already call — *not* a re-implementation inside `edit.js` (Pattern 2). `ovd-log`'s pipeline is already internally separated into distinct callable states (CONVO CAPTURE / STATE UPDATE / **DOC UPDATE** / SESSION FILE / RECURSIVE CLOSE), so a future refinement can chain *just* the DOC UPDATE state rather than the whole save.
+- **Bug fixed alongside (user-confirmed):** the old EDIT recommendation pointed at `/ovd-workflow refresh` (re-runs the **codebase mappers**) — wrong. Mappers run **once** to understand the codebase; thereafter work proceeds on the agent's internal representation + the project docs, which are touched only by `ovd-log` / `ovd-plan` / `ovd-go`. EDIT must NOT recommend re-running mappers; it recommends doc propagation via `ovd-log`.
+- **Multi-edit batching (user intent):** if the user keeps editing, the single `/ovd-log` at the end captures all accumulated edits — no per-edit log required.
+- **v3 note (preference toggle):** action-paths at *every* step become friction in large/dynamic workflows. A `preferences.md` toggle (`auto-log after committed edit: true|false`, default = recommend) lets power users opt into natural chaining without per-step prompts. Necessary at scale; deferred to **v3**.
+
+**FU-2 — RESEARCH findings → leaf reference (LOCKED design):**
+- Substantive research **already writes** `.overdrive/sessions/<ts>-research-<slug>.md` and returns its path (`sessions_rel`). FU-2 adds an `attach_to_leaf: <node_id>` flag on research-commit that writes **that file path** into the leaf's `references.research[]` array (mirroring `references.sketches[]`, §10.5) — a **pointer, not a paste** (keeps `OVERDRIVE.md` lean; findings live in their file).
+- Scope: attach applies to **substantive (file-backed)** research only; one-liners stay in the inbox (no file to point at).
+- At execution, `/ovd-go` reads the leaf's `references.research[]` and surfaces the findings as context — the value is strongest **cross-session** (research today, execute after a context clear). Add `'research'` to `writer.js` `REFERENCES_KEY_ORDER` for stable serialization.
+- **Implementation note:** the attach writes a *committed* OVERDRIVE.md leaf back through the parser/writer round-trip (the load-bearing contract) — implement as a focused TDD pass, not bundled with unrelated work.
+
+**v2.5 architectural note (internal-state chaining — user-raised):** `ovd-log`'s DOC UPDATE is already a separable internal state (`runDocUpdate`), which is why FU-1 can chain it cleanly. **Audit the other multi-step commands** (`/ovd-go`, `/ovd-plan deliberate`, `/ovd-log handoff`) to confirm each internal state is independently callable, so pipelines can chain *internal* states, not just whole commands. Where a command does everything in one monolithic pass, refactor it to expose its states. Deferred to **v2.5**; document per-command findings when undertaken.
 
 - **Q8 follow-up:** auto-route from `IDEA` → `EDIT` for trivially small changes (≤2 leaves, no dependency impact). Currently §5.2 always requires explicit approval. Decide later if friction warrants the shortcut.
 - **Q9 follow-up:** make blind-spot expansion categories configurable per-project (some teams may skip categories like compliance).
