@@ -86,6 +86,11 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - Keep global context small. Put project facts in project files and detailed workflows in skills.
 - For codebase relationship/orientation questions, if a Graphify graph already exists in the project, prefer querying it before broad `rg`; if stale, recommend Graphify's own `--watch` or git-hook workflow. Do not start a background indexer from Overdrive.
 
+## ovd-plan
+
+- If `OVERDRIVE.md` exists in the project root, treat it as the primary project context and the current task source — read it before starting work, and check its `active_node` for the current focus.
+- Use `/ovd-workflow` to initialize, `/ovd-plan` to plan, `/ovd-go` to execute, and `/ovd-log` to save or hand off. See `OVERDRIVE.md` for full details.
+
 ## ovd-workflow
 
 - If `.overdrive/` exists in the project, treat it as local runtime state for project memory, active work, decisions, and handoffs.

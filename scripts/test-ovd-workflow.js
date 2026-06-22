@@ -462,6 +462,13 @@ const statusPlugin = fs.readFileSync(path.join(pluginCmdDir, 'ovd-status.md'), '
 check('plugin ovd-status delegates to /ovd-plan', /Deprecated/.test(statusPlugin) && statusPlugin.includes('/ovd-plan') && /overdrive plan/.test(statusPlugin));
 const doctorPlugin = fs.readFileSync(path.join(pluginCmdDir, 'ovd-doctor.md'), 'utf8');
 check('plugin ovd-doctor delegates to verify --plan', /Deprecated/.test(doctorPlugin) && doctorPlugin.includes('overdrive verify --plan'));
+
+// Task 7.2 — installed global instruction notes OVERDRIVE.md as primary context.
+const installedClaudeMd = path.join(runtimeHome, '.claude/CLAUDE.md');
+check('installed CLAUDE.md notes OVERDRIVE.md as primary context',
+  fs.existsSync(installedClaudeMd)
+  && fs.readFileSync(installedClaudeMd, 'utf8').includes('OVERDRIVE.md')
+  && fs.readFileSync(installedClaudeMd, 'utf8').includes('/ovd-plan'));
 check('new overdrive shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/overdrive')));
 check('ovd shim exists', fs.existsSync(path.join(runtimeHome, '.overdrive/bin/ovd')));
 const runtimeVersionDir = path.join(runtimeHome, `.overdrive/runtime/${pkg.version}`);

@@ -3788,7 +3788,15 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Methodology note:** the 7.3→2.9 reorder is the 2nd data point for "dependency-first slice reordering" (n=2 with Phase 5's 5.8→5.6→5.2).
 
-**Committed:** pending (single commit). **Next:** Task 7.2 (global instruction note).
+**Committed:** `f57abb6` (single commit, Q7.8). **Next:** Task 7.2.
+
+### 2026-06-22 — Session 22 continued (Task 7.2 COMPLETE — global instruction note)
+
+**Task 7.2 done — OVERDRIVE.md discoverability note.** Added a concise `## ovd-plan` section (2 bullets, ~3 lines, Q7.2) to the three managed-block source files `global-instructions/{CLAUDE,AGENTS,GEMINI}.md`, placed before the existing `## ovd-workflow` section (v2 leads, v1 follows — "v2 primary" policy). Note: treat `OVERDRIVE.md` as primary project context + current task source; v2 commands only (`/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`) — no legacy commands (FM #1). Rides the existing `overdrive:global-guidelines` managed block, so install/upsert idempotency + uninstall removal are already handled — **no new installer machinery** (extend what works). v1 `## ovd-workflow` section left untouched (surgical).
+
+**Tests:** added a content check to `runVerify` (`overdrive verify` asserts installed instruction notes OVERDRIVE.md + /ovd-plan) and a fresh-install assertion to `test-ovd-workflow.js`. `check` exit 0; `consistency` 1181; `test:workflow` pass; `test:ovd-plan` pass.
+
+**Committed:** pending. **Next:** Task 7.1 (cross-pipeline smoke test — non-happy paths per Q7.1).
 
 ---
 
