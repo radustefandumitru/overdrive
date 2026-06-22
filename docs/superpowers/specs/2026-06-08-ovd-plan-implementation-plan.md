@@ -3818,7 +3818,25 @@ Phase 6 (Intent Detection Layer) opened in a fresh session. Confirmed environmen
 
 **Task 7.5 done — README + public docs updated for shipped v2.** Replaced the stale README "## Coming Next: Overdrive v2 (in development)" section with a real "## Overdrive v2" section: "v2 active; v1 delegated" banner (Q7.5), one paragraph per command (`/ovd-workflow`/`/ovd-plan`/`/ovd-go`/`/ovd-log` + intent layer), `.overdrive/` file-layout tree, quick-start example, `overdrive verify --plan` health-check, a contributor testing note (`npm test` / `npm test:full`), and a link to the r3 spec. Refreshed `docs/ovd-plan-v2.md` (the README-linked public intro): removed "(in development)", updated the status line + roadmap table (all 7 phases ✓) + "When v2 ships" to reflect implementation-complete-pending-audit. v1 README sections left intact (Q7.5). `consistency` 1181; `check` exit 0.
 
-**Committed:** pending. **Next:** Task 7.6 (install/uninstall hygiene — sliced A/B/C; the structurally novel piece).
+**Committed:** `7aa286f`. **Next:** Task 7.6.
+
+### 2026-06-22 — Session 22 continued (Task 7.6 COMPLETE — install/uninstall hygiene → PHASE 7 DONE)
+
+**Task 7.6 done — CLI install hygiene (default global-only; project-local requires opt-in).**
+
+**Slice A (audit):** every installer write path inventoried. `buildGlobalPlan` → `$HOME/.{claude,codex,gemini,cursor,agents}/...` (clean); `buildLocalPlan` → cwd `.agents/skills`, `.cursor/skills`, `AGENTS.md/CLAUDE.md/GEMINI.md` (the pollution). **Default scope was already `global`** — the pollution only ever came from `scope==='local'` (explicit `--scope local` or interactive choice). So the fix is a focused opt-in gate, not a write-path rewrite.
+
+**Spec reconciliation:** impl-plan §Task 7.6 (a)/(b) lists "flag OR pre-existing dir" as triggers; the readiness-brief verification scenario 3 says "preserves existing pattern only on explicit opt-in." Implemented the safest reading satisfying both: **default = global-only; a local install requires opt-in = `--install-local` flag (Q7.6) OR interactive local choice OR a pre-existing `.agents/skills`/`.cursor/skills` dir; bare `--scope local` with none of these is blocked** with guidance.
+
+**Slice B (refactor + messaging):** added `--install-local` flag (implies `--scope local`); `assertLocalOptIn` + `hasPreexistingLocalSkills` helpers; gate wired into `resolveInteractiveOptions` for non-interactive paths (interactive local sets `installLocal` on the existing confirmation); `printInstallSummary` now states "user-global … (no project-directory changes)" vs "project directory (opted in via --install-local)"; help text + exports (`parseArgs`, `assertLocalOptIn`, `hasPreexistingLocalSkills`).
+
+**Slice C (uninstall + gitignore):** default `overdrive uninstall` = global (no project side effects), `--install-local` maps to local; uninstall stays permissive (ungated) so accidental pollution can be cleaned. `.gitignore` `.agents/` + `.cursor/` entries kept as belt-and-suspenders (Q7.7).
+
+**Slice collapse:** A/B/C committed as **one** commit (not the Q7.9-anticipated 3) — Slice A is pure audit (no code) and Slice C is no-op code-wise once B lands; splitting would fragment tightly-coupled flag+gate+test. Coherent-unit cleavage over literal 3-way split; flagged to user.
+
+**Tests:** extended `test-ovd-workflow.js` (+~16 checks): default→global + "no project-directory changes"; `--scope local` blocked (exits non-zero, no `.agents/`/`.cursor/` created); `--install-local`→local + opt-in message; pre-existing dir auto-opt-in; `assertLocalOptIn`/`hasPreexistingLocalSkills`/`parseArgs` unit checks. Updated the existing `--no-tool-install` local case to add `--install-local`. `check` exit 0; `test:workflow` pass; `npm test` green.
+
+**PHASE 7 DONE — v2 surface shipped.** Commits: 7.3 `0ffa57e`, 2.9 `f57abb6`, 7.2 `6d35250`, 7.1 `3c1aba8`, 7.4 `68d9a38`, 7.5 `7aa286f`, 7.6 (this). Next: independent audit pass per `17-audit-readiness.md` (separate session) before merge to `main`.
 
 ---
 

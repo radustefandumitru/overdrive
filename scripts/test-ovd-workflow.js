@@ -179,6 +179,7 @@ const noToolProject = tempProject('ovd-no-tool-install');
 const noToolResult = runNode([
   'bin/overdrive.js',
   '--scope', 'local',
+  '--install-local',
   '--project-dir', noToolProject,
   '--skills', 'graphify,design-extract,claude-video,media-download',
   '--no-tool-install',
@@ -186,6 +187,42 @@ const noToolResult = runNode([
   '--yes'
 ], { HOME: fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-no-tool-home-')), OVERDRIVE_KIT_DIR: path.resolve(__dirname, '..') });
 check('--no-tool-install emits no external installer command plan', !/\bnpx\b|\bpipx\b|\bbrew\b|\bwinget\b/.test(noToolResult.stdout));
+
+// Task 7.6 — install hygiene: default install is global-only; local needs opt-in.
+const hygieneHome = fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-hygiene-home-'));
+const hygieneEnv = { HOME: hygieneHome, OVERDRIVE_KIT_DIR: path.resolve(__dirname, '..') };
+// 1. default --dry-run is global-only and announces no project writes.
+const defaultDry = runNode(['bin/overdrive.js', '--dry-run', '--yes'], hygieneEnv);
+check('default install is global scope', /Scope: global/.test(defaultDry.stdout), defaultDry.stdout.slice(0, 200));
+check('default install announces no project-directory changes', /no project-directory changes/.test(defaultDry.stdout));
+// 2. --scope local without opt-in is blocked (exits non-zero — use spawnSync directly).
+const blockedProject = tempProject('ovd-hygiene-blocked');
+const blocked = spawnSync(process.execPath, ['bin/overdrive.js', '--scope', 'local', '--project-dir', blockedProject, '--dry-run', '--yes'], {
+  cwd: path.resolve(__dirname, '..'), env: { ...process.env, ...hygieneEnv }, encoding: 'utf8'
+});
+check('local install without --install-local exits non-zero', blocked.status !== 0, String(blocked.status));
+check('local install without --install-local is blocked', /requires explicit opt-in|--install-local/.test(blocked.stdout + blocked.stderr));
+check('blocked local install creates no .agents/ in project', !fs.existsSync(path.join(blockedProject, '.agents')));
+check('blocked local install creates no .cursor/ in project', !fs.existsSync(path.join(blockedProject, '.cursor')));
+// 3. --install-local opts in; plan reports local scope.
+const optInProject = tempProject('ovd-hygiene-optin');
+const optIn = runNode(['bin/overdrive.js', '--install-local', '--project-dir', optInProject, '--dry-run', '--yes'], hygieneEnv);
+check('--install-local plans a local scope install', /Scope: local/.test(optIn.stdout), optIn.stdout.slice(0, 200));
+check('--install-local announces opt-in', /opted in via --install-local/.test(optIn.stdout));
+// 4. pre-existing local skills dir auto-opts-in for --scope local.
+const preexistProject = tempProject('ovd-hygiene-preexist');
+fs.mkdirSync(path.join(preexistProject, '.agents', 'skills'), { recursive: true });
+const preexist = runNode(['bin/overdrive.js', '--scope', 'local', '--project-dir', preexistProject, '--dry-run', '--yes'], hygieneEnv);
+check('pre-existing local skills dir auto-opts-in', /Scope: local/.test(preexist.stdout), (preexist.stdout + preexist.stderr).slice(0, 200));
+// 5. helper unit checks.
+check('hasPreexistingLocalSkills true when .agents/skills exists', installer.hasPreexistingLocalSkills(preexistProject) === true);
+check('hasPreexistingLocalSkills false on clean dir', installer.hasPreexistingLocalSkills(blockedProject) === false);
+check('assertLocalOptIn throws for bare local', (() => { try { installer.assertLocalOptIn({ scope: 'local', projectDir: blockedProject }); return false; } catch (e) { return /opt-in/.test(e.message); } })());
+check('assertLocalOptIn passes with installLocal', (() => { try { installer.assertLocalOptIn({ scope: 'local', installLocal: true, projectDir: blockedProject }); return true; } catch (e) { return false; } })());
+check('assertLocalOptIn no-op for global scope', (() => { try { installer.assertLocalOptIn({ scope: 'global' }); return true; } catch (e) { return false; } })());
+// 6. parseArgs: --install-local implies local scope.
+check('parseArgs --install-local implies scope local', installer.parseArgs(['install', '--install-local']).options.scope === 'local');
+check('parseArgs default scope unset (global at plan time)', !installer.parseArgs(['install']).options.scope);
 
 const dryProject = tempProject('ovd-workflow-dry');
 workflow.resync({ projectDir: dryProject, apply: false });
