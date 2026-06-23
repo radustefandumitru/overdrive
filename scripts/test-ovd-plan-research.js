@@ -578,6 +578,84 @@ console.log('Locked-design pre-flight tripwires');
 }
 
 // ---------------------------------------------------------------------------
+// FU-2 (2026-06-23): attach substantive research findings to a leaf via
+// references.research[] (a pointer to the file, not a paste). Substantive only.
+// ---------------------------------------------------------------------------
+console.log('FU-2 attach_to_leaf');
+const { findNodeById } = require('../lib/ovd-plan/cache');
+function seedPlanWithLeaf(projectDir) {
+  writePlan(projectDir, FRONT + '# Test Project\n\n## I. Milestone\n\n### I.1 Data layer\n\n```yaml ovd-plan\nskills: [modern-web-guidance]\n```\n');
+}
+check('normalize accepts attach_to_leaf string',
+  normalizeResearchEntries({ topic: 't', kind: 'substantive', findings: 'f', attach_to_leaf: 'I.1' }).ok === true);
+check('normalize rejects empty attach_to_leaf',
+  normalizeResearchEntries({ topic: 't', kind: 'substantive', findings: 'f', attach_to_leaf: '  ' }).reason === 'invalid-values');
+check('attach_to_leaf rejected for one-liner kind',
+  normalizeResearchEntries({ topic: 't', kind: 'one-liner', findings: 'f', attach_to_leaf: 'I.1' }).reason === 'invalid-values');
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-happy');
+  seedPlanWithLeaf(projectDir);
+  const r = applyResearchSubstantive(projectDir, { topic: 'Caching', kind: 'substantive', findings: 'use SWR', attach_to_leaf: 'I.1' }, { now: FIXED_NOW });
+  check('attach → ok', r.ok === true);
+  check('attach → file written', fs.existsSync(r.sessions_path));
+  check('attach → attached_to reported', r.attached_to === 'I.1');
+  const found = findNodeById(openState(projectDir).parsed.tree, 'I.1');
+  const refs = found && found.node.annotations && found.node.annotations.references;
+  check('attach → leaf references.research[] holds the file path',
+    !!refs && Array.isArray(refs.research) && refs.research.includes(r.sessions_rel));
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-roundtrip');
+  seedPlanWithLeaf(projectDir);
+  applyResearchSubstantive(projectDir, { topic: 'Caching', kind: 'substantive', findings: 'x', attach_to_leaf: 'I.1' }, { now: FIXED_NOW });
+  check('attach → OVERDRIVE.md still parses (round-trip)', openState(projectDir).ok === true);
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-accumulate');
+  seedPlanWithLeaf(projectDir);
+  applyResearchSubstantive(projectDir, { topic: 'A', kind: 'substantive', findings: 'a', attach_to_leaf: 'I.1' }, { now: FIXED_NOW });
+  applyResearchSubstantive(projectDir, { topic: 'B', kind: 'substantive', findings: 'b', attach_to_leaf: 'I.1' }, { now: FIXED_NOW_2 });
+  const found = findNodeById(openState(projectDir).parsed.tree, 'I.1');
+  const accRems = found && found.node.annotations && found.node.annotations.references && found.node.annotations.references.research;
+  check('two attaches accumulate (append not overwrite)', Array.isArray(accRems) && accRems.length === 2);
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-unknown-leaf');
+  seedPlanWithLeaf(projectDir);
+  const r = applyResearchSubstantive(projectDir, { topic: 'X', kind: 'substantive', findings: 'x', attach_to_leaf: 'Z.9' }, { now: FIXED_NOW });
+  check('unknown leaf → not ok', r.ok === false);
+  check('unknown leaf → reason attach-leaf-not-found', r.reason === 'attach-leaf-not-found');
+  const sessionsDir = path.join(projectDir, SESSIONS_REL);
+  const files = fs.existsSync(sessionsDir) ? fs.readdirSync(sessionsDir) : [];
+  check('unknown leaf → no orphan research file (validated before write)', files.length === 0);
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-container');
+  seedPlanWithLeaf(projectDir);
+  const r = applyResearchSubstantive(projectDir, { topic: 'X', kind: 'substantive', findings: 'x', attach_to_leaf: 'I' }, { now: FIXED_NOW });
+  check('container attach → not ok', r.ok === false);
+  check('container attach → reason attach-not-a-leaf', r.reason === 'attach-not-a-leaf');
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-absent');
+  const r = applyResearchSubstantive(projectDir, { topic: 'X', kind: 'substantive', findings: 'x' }, { now: FIXED_NOW });
+  check('no attach_to_leaf → ok (unchanged behavior, no tree needed)', r.ok === true);
+  check('no attach_to_leaf → attached_to falsy', !r.attached_to);
+  cleanup(tmpRoot);
+}
+{
+  const { projectDir, tmpRoot } = makeTempProject('attach-plan-discoverability');
+  const r = research.buildResearchPlan(projectDir, { text: 'caching' });
+  check('plan-mode text documents attach_to_leaf', r.text.includes('attach_to_leaf'));
+  cleanup(tmpRoot);
+}
+
+// ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
 console.log(`\n${passed} checks passed.`);

@@ -1133,6 +1133,12 @@ Reconstructable across sessions; feeds `LEARNINGS EXTRACT`.
 }
 ```
 
+### 10.8 `references.research[]` field (FU-2, shipped 2026-06-23)
+
+Array of file paths to `.overdrive/sessions/<ts>-research-<slug>.md` findings files that inform this leaf — the research analogue of `references.sketches[]` (§10.5). A **pointer, not a paste**: the findings live in their file; the leaf carries only the path, keeping `OVERDRIVE.md` lean.
+
+Written by `/ovd-plan research` when a **substantive** commit includes `attach_to_leaf: <node-id>` — the handler validates the target is an existing leaf (not a container) *before* writing the file, then appends the file path to that leaf's `references.research[]` via the committed-tree round-trip. One-liner research stays in the inbox (no file to point at). At execution, `/ovd-go` reads the leaf's `references.research[]` and surfaces the findings as context — strongest value is **cross-session** (research one day, execute after a context clear). Serialization order is fixed by `writer.js` `REFERENCES_KEY_ORDER = [sketches, research, external]`.
+
 ---
 
 ## 11. Skill-router protocol (Q3 RESOLVED 2026-06-08, refined after codebase research)
