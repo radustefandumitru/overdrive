@@ -231,6 +231,27 @@ check('parseArgs default is non-verbose', !installer.parseArgs(['install']).opti
 // 6c. Install hygiene: default install is global-only (no project pollution).
 check('parseArgs default installLocal is false (global-only)', installer.parseArgs(['install']).options.installLocal === false);
 
+// 6d. Phase 1.5 S3 — vendored/authored gitignore carve-out for project installs.
+// Installer-vendored skills are gitignored (regenerable via `overdrive install`);
+// team-authored skills are NOT listed → stay tracked + shared via git.
+{
+  const skillRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-skillroot-'));
+  const file = installer.writeVendoredSkillsGitignore(skillRoot, ['design-taste-frontend', 'modern-web-guidance']);
+  const gi = fs.readFileSync(file, 'utf8');
+  check('S3: gitignore lives in the skill root', file === path.join(skillRoot, '.gitignore'));
+  check('S3: ignores vendored skill A', gi.includes('/design-taste-frontend/'));
+  check('S3: ignores vendored skill B', gi.includes('/modern-web-guidance/'));
+  check('S3: does NOT list an authored skill', !gi.includes('/my-custom-skill/'));
+  check('S3: documents that authored skills stay tracked', /authored/i.test(gi));
+  const giAgain = fs.readFileSync(installer.writeVendoredSkillsGitignore(skillRoot, ['modern-web-guidance', 'design-taste-frontend']), 'utf8');
+  check('S3: idempotent + order-stable', giAgain === gi);
+  check('S3: empty vendored list writes header only (no skill lines)', (() => {
+    const empty = fs.readFileSync(installer.writeVendoredSkillsGitignore(skillRoot, []), 'utf8');
+    return /authored/i.test(empty) && !/^\//m.test(empty);
+  })());
+  fs.rmSync(skillRoot, { recursive: true, force: true });
+}
+
 const dryProject = tempProject('ovd-workflow-dry');
 workflow.resync({ projectDir: dryProject, apply: false });
 check('resync dry-run does not initialize workflow', !fs.existsSync(path.join(dryProject, '.overdrive')));
