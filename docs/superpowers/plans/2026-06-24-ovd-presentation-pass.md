@@ -270,6 +270,67 @@ git commit -m "test(installer): guard default-global install (no project polluti
 
 ---
 
+## Phase 1.5 — Install scope selection (added 2026-06-25 per user)
+
+> **Refines Phase 7 Task 7.6.** 7.6 made install global-only-by-default to avoid *accidental* project pollution. This phase keeps that safety but adds an **explicit, offered** scope choice (global / project / cancel), and makes a project install git-clean *and* team-shareable via the vendored-vs-authored split (the `node_modules` model).
+
+**Design (locked with user 2026-06-25):**
+- **Interactive prompt, global default.** In a TTY with no `--scope`/`--install-local`/`--yes`, ask: `(1) Global [recommended]` / `(2) This project` / `(3) Cancel`. Flags + non-interactive/CI skip the prompt → global.
+- **Project footprint = conventional per-agent project dirs** (`.claude/skills`, `.cursor/skills`, `.agents/skills`, …) — agents auto-discover; least destructive; no new architecture.
+- **Skills git carve-out (vendored vs authored):** installer-vendored skills (carry the `.overdrive.json` marker) are **gitignored** and reproducible from the committed `manifest.json` + lockfile (run `overdrive install`); **team-authored skills are committed** and travel via git. "Everything installed by default is ignored; everything on top is shared."
+- **Project-state carve-out unchanged:** the v2 `.overdrive/` + `OVERDRIVE.md` already commit plan + codebase map + preferences/requirements/decisions (r3 §9.1); preserve it.
+
+**Open implementation choice (decide in TDD):** the exact gitignore mechanism for vendored-vs-authored. Candidate approaches, in preference order:
+1. Installer writes/refreshes a `.gitignore` *inside each project skill root* (e.g. `.claude/skills/.gitignore`) listing the vendored skill folder names it created (it has the list from the lockfile). Authored folders aren't listed → tracked. Deterministic, self-contained per dir, regenerated each install.
+2. A single carve-out block in the project root `.gitignore` (`/.claude/skills/**` ignored, `!` un-ignore authored) — harder to express per-skill.
+Pick #1 unless it proves unwieldy.
+
+### Task S1: Pure scope-decision helper
+
+**Files:**
+- Modify: `lib/installer.js` (add `resolveScopeChoice`)
+- Test: `scripts/test-ovd-workflow.js`
+
+**Interfaces:** Produces `resolveScopeChoice({ scope, installLocal, yes, isTty }, answer) => 'global' | 'local' | 'cancel'` — pure; encodes: explicit `scope`/`installLocal` wins; non-TTY or `--yes` → `'global'`; TTY with no scope → map `answer` (`'1'|'2'|'3'` / `'global'|'project'|'cancel'`).
+
+- [ ] **Step 1: Write failing test**
+
+```js
+// Scope decision is pure + testable without a real prompt.
+check('explicit --scope local wins', installer.resolveScopeChoice({ scope: 'local' }, null) === 'local');
+check('--install-local wins', installer.resolveScopeChoice({ installLocal: true }, null) === 'local');
+check('non-tty defaults global', installer.resolveScopeChoice({ isTty: false }, null) === 'global');
+check('--yes defaults global', installer.resolveScopeChoice({ yes: true, isTty: true }, null) === 'global');
+check('tty answer 2 → local', installer.resolveScopeChoice({ isTty: true }, '2') === 'local');
+check('tty answer 1 → global', installer.resolveScopeChoice({ isTty: true }, '1') === 'global');
+check('tty answer 3 → cancel', installer.resolveScopeChoice({ isTty: true }, '3') === 'cancel');
+check('tty word "project" → local', installer.resolveScopeChoice({ isTty: true }, 'project') === 'local');
+```
+
+- [ ] **Step 2: Run → FAIL** (`resolveScopeChoice` undefined).
+- [ ] **Step 3: Implement** the pure function + export it.
+- [ ] **Step 4: Run → PASS**; `npm run check`.
+- [ ] **Step 5: Commit** `feat(installer): pure scope-decision helper (global/project/cancel)`.
+
+### Task S2: Interactive prompt wired into install
+
+**Files:** Modify `lib/installer.js` (`resolveInteractiveOptions`/`runInstall`) to call `resolveScopeChoice` with a readline answer when interactive; `'cancel'` aborts cleanly with a message; otherwise set `options.scope`. Reuse the existing `readline/promises` already imported.
+
+- [ ] Steps: gate on `process.stdout.isTTY && !options.yes && !options.scope && !options.installLocal`; print the 3-option prompt; read; map via `resolveScopeChoice`; on `cancel` exit 0 with "Install cancelled."; manual TTY smoke + non-TTY (`--yes`) smoke; commit.
+- [ ] Test: assert non-interactive path is unchanged (existing `--dry-run`/`--yes` tests stay green); add an assertion that `--yes` never prompts (scope resolves global without reading stdin).
+
+### Task S3: Vendored-skills gitignore carve-out (project scope)
+
+**Files:** Modify `lib/installer.js` — after a project-scope copy, write/refresh `<projectSkillRoot>/.gitignore` listing the vendored skill folder names (from the install plan/lock); leave authored folders tracked. Test: `scripts/test-ovd-workflow.js` (seed a fake project skill root with one vendored + one authored folder; assert the generated `.gitignore` ignores the vendored, not the authored).
+
+- [ ] TDD per the plan's standard cycle. Commit `feat(installer): vendored-skill gitignore carve-out for project installs (authored skills shared)`.
+
+### Task S4: Docs note for scope model
+
+**Files:** Fold into the Phase 3 README task (a short "Where skills live (global vs project)" subsection) — vendored-ignored/authored-shared, reproducible via `overdrive install`. No separate commit.
+
+---
+
 ## Phase 2 — Command domain overviews
 
 ### Task 4: `overview.js` — shared compact dashboard header
