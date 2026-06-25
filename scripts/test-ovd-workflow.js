@@ -224,6 +224,13 @@ check('assertLocalOptIn no-op for global scope', (() => { try { installer.assert
 check('parseArgs --install-local implies scope local', installer.parseArgs(['install', '--install-local']).options.scope === 'local');
 check('parseArgs default scope unset (global at plan time)', !installer.parseArgs(['install']).options.scope);
 
+// 6b. parseArgs: --verbose flag (presentation pass — quiet-by-default install UX).
+check('parseArgs --verbose sets options.verbose', installer.parseArgs(['install', '--verbose']).options.verbose === true);
+check('parseArgs default is non-verbose', !installer.parseArgs(['install']).options.verbose);
+
+// 6c. Install hygiene: default install is global-only (no project pollution).
+check('parseArgs default installLocal is false (global-only)', installer.parseArgs(['install']).options.installLocal === false);
+
 const dryProject = tempProject('ovd-workflow-dry');
 workflow.resync({ projectDir: dryProject, apply: false });
 check('resync dry-run does not initialize workflow', !fs.existsSync(path.join(dryProject, '.overdrive')));
