@@ -682,20 +682,78 @@ v0.12 adds native context-window guidance through [`docs/context-runtime-matrix.
 
 Please support the original creators. Detailed attribution lives in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
-## Overdrive v2 — Planning, Execution, and Record Pipeline
+## Overdrive v2 — plan, execute, and remember your work
 
-> **v2 is the active surface.** The four commands below are the canonical way to plan and run a project. The pre-v2 slash commands (`/ovd-status`, `/ovd-doctor`, `/ovd-checkpoint`, `/ovd-resync`, `/ovd-knowledge`) still resolve — each now delegates to its v2 equivalent and prints a deprecation note.
+Overdrive v2 gives your AI coding agent a **memory and a method**: one human-readable plan (`OVERDRIVE.md`) plus four commands that carry a project from idea → shipped without losing context across sessions. It layers on top of the v1 skill catalog (137 specialist skills + `skill-router`) — skills stay untouched; v2 adds the structure that turns request-by-request work into a persistent, contract-driven lifecycle.
 
-Overdrive v1 is the execution layer — 137 specialist skills, `skill-router`, a global operating guide, and lightweight project state in `.overdrive/`. Overdrive v2 adds the missing structural layer: a planning, execution, and record pipeline that turns request-by-request agent work into a persistent, contract-driven project lifecycle. The four commands layer on top of the existing skill catalog — skills stay untouched; their use is pre-resolved at planning time, leaves carry self-contained contracts, and closure walks recursively up the tree with explicit user approval at every level.
+**The mental model — four commands:**
 
-### The four commands
+| Command | In one line | Start when… |
+|---|---|---|
+| **`/ovd-workflow`** | **Set up.** Map the codebase; capture preferences + requirements. | …a project is new (run once). |
+| **`/ovd-plan`** | **Decide what to build.** Socratic planning into a tree where every leaf is a complete, executable contract. | …you know the goal but not the steps. |
+| **`/ovd-go`** | **Do the work.** Execute one leaf at a time — implement → verify → your review → done; closures roll up the tree. | …the plan is ready. |
+| **`/ovd-log`** | **Save & hand off.** Capture the session, update docs, close milestones — resume cleanly later. | …context is filling or you're stopping. |
 
-- **`/ovd-workflow`** — initialize and maintain the project. Runs first-time setup (codebase mapping, preferences, requirements), refreshes the codebase map, and migrates a pre-v2 `.overdrive/` layout. Start here.
-- **`/ovd-plan`** — plan and shape the work. Bare `/ovd-plan` displays the current tree and state; `/ovd-plan deliberate` runs Socratic planning into a contract-bearing tree; `/ovd-plan idea "…"`, `/ovd-plan edit`, and `/ovd-plan research` evolve it.
-- **`/ovd-go`** — execute. Orients on the active node, executes leaves with an iteration loop (implement → verify → your review → done), and handles `--small` quick changes, FIX escalation, and decision points.
-- **`/ovd-log`** — save and hand off. Bare `/ovd-log` writes a lightweight checkpoint; `/ovd-log handoff` produces a full end-of-session handoff (with milestone-close cascade); `/ovd-log capture "…"` and `/ovd-log concerns` record notes and structured review.
+Type plainly — an **intent layer** classifies free-form messages and routes them; an explicit `/ovd-…` always runs as typed.
 
-Plain free-form messages are classified by an intent layer and routed to the right command; explicit `/ovd-…` commands always run as typed.
+### The four commands (with flags)
+
+| Command | Key forms |
+|---|---|
+| `/ovd-workflow` | `init` · `map` · `preferences` · `requirements` · `knowledge` |
+| `/ovd-plan` | *(bare = show the tree)* · `deliberate` · `idea "…"` · `edit` · `research "…"` *(opt. `attach_to_leaf`)* · `verify` |
+| `/ovd-go` | *(bare = orient)* · `<node-ref>` · `continue` · `--small` · `test <ref>` · `verify` |
+| `/ovd-log` | *(bare = quick save)* · `handoff` · `capture "…"` · `concerns` · `milestone-close` |
+
+The pre-v2 slash commands (`/ovd-status`, `/ovd-doctor`, `/ovd-checkpoint`, `/ovd-resync`, `/ovd-knowledge`) still resolve — each delegates to its v2 equivalent with a deprecation note.
+
+### What you'll see — the domain overview
+
+Bare commands **orient, they never silently execute.** Running `/ovd-go` opens with a compact dashboard, then numbered next steps:
+
+```text
+Overdrive · Foo Dashboard
+Milestone II. Dashboard  •  active: II.2.a [awaiting-review]
+3 done · 1 in-progress · 4 pending  •  1 awaiting your review
+→ Recommended: review II.2.a
+  (1) review II.2.a  (2) continue  (3) show plan  (4) other
+```
+
+You always get **where things stand + a recommendation + a choice** — never a surprise edit.
+
+### Internal states (what happens under the hood)
+
+You don't invoke these; they're the machinery each command runs. Handy for reading what the agent is doing:
+
+- **`/ovd-workflow`:** TUTORIAL+STATUS → INIT → CODEBASE MAP (5 mappers) → MAP REFRESH · PREFERENCES ELICIT · REQUIREMENTS DRAFT · DECISIONS LOG.
+- **`/ovd-plan`:** DISPLAY · DELIBERATE *(calibrate → elicit → blind-spot → spec → plan + resolve-skills → verify → present)* · IDEA · EDIT · RESEARCH · PLAN-QUALITY CHECK.
+- **`/ovd-go`:** ORIENT → LEAF EXECUTE → LEAF VERIFY → AWAITING REVIEW → *(ITERATE | FIX → escalate after 2 | DECISION POINT)* → recursive close.
+- **`/ovd-log`:** CONVO CAPTURE → STATE UPDATE → DOC UPDATE → SESSION FILE → RECURSIVE CLOSE → *(MILESTONE CLOSE → learnings · release · archive)* → COMMIT *(always your approval)*.
+
+### Typical developer workflows
+
+```text
+1. New project
+   /ovd-workflow init  →  /ovd-plan deliberate  →  /ovd-go  →  /ovd-log handoff
+
+2. Resume after a context clear
+   /ovd-go            # orients from the cache + last handoff, resumes mid-iteration
+   → "continue"       # picks up exactly where you left off
+
+3. A new idea mid-flight
+   /ovd-plan idea "add dark mode"   # analyses impact, never silently edits
+   → approve  →  (fresh chat)  →  /ovd-plan edit  →  /ovd-go
+```
+
+### Where skills live (global vs project)
+
+On install, Overdrive **asks where to put skills**:
+
+- **Global** *(recommended)* — into your per-agent home dirs (`~/.claude/skills`, `~/.cursor/skills`, …). Available in every project; nothing touches your repos.
+- **This project** — into the repo's conventional agent dirs so your agents auto-discover them. **Vendored skills are gitignored** (fully regenerable with `overdrive install`); **your own authored skills stay tracked** and ship to teammates through git. *Installed = ignored, authored = shared* — clone, run `overdrive install`, and everyone has the same setup.
+
+Installs show a single progress bar (use `--verbose` for full per-skill logs). Your plan and codebase map (`OVERDRIVE.md` + `.overdrive/codebase/`) are committed by default, so parallel collaborators share one live plan.
 
 ### File layout
 
