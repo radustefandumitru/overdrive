@@ -497,6 +497,33 @@ for (const rel of hookSettings) {
   }
   check(`${rel} has only canonical Overdrive hook commands`, !JSON.stringify(settings).includes('agentic'));
 }
+// Malformed user settings must abort the install untouched — never be replaced
+// with a fresh hooks-only file (silent settings loss). Regression for the
+// readUserSettingsFile guard in installWorkflowHookSettings/uninstall.
+const malformedHome = fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-malformed-settings-home-'));
+const malformedSettingsPath = path.join(malformedHome, '.claude/settings.json');
+fs.mkdirSync(path.dirname(malformedSettingsPath), { recursive: true });
+const malformedBody = '{\n  "model": "opus",\n  "hooks": {},\n}\n';
+fs.writeFileSync(malformedSettingsPath, malformedBody);
+const malformedInstall = spawnSync(process.execPath, [
+  'bin/overdrive.js',
+  '--scope', 'global',
+  '--tools', 'claude',
+  '--force-targets',
+  '--skip-upstream',
+  '--skip-official-installers',
+  '--skills', 'skill-router',
+  '--yes'
+], { cwd: path.resolve(__dirname, '..'), env: { ...process.env, HOME: malformedHome, OVERDRIVE_KIT_DIR: path.resolve(__dirname, '..') }, encoding: 'utf8' });
+check('install with malformed settings.json exits non-zero', malformedInstall.status !== 0, String(malformedInstall.status));
+check('install with malformed settings.json names the file and refuses', /not valid JSON/.test(malformedInstall.stdout + malformedInstall.stderr));
+check('malformed settings.json is left byte-identical', fs.readFileSync(malformedSettingsPath, 'utf8') === malformedBody);
+const malformedUninstall = spawnSync(process.execPath, [
+  'bin/overdrive.js', 'uninstall', '--scope', 'global', '--tools', 'claude', '--force-targets', '--yes'
+], { cwd: path.resolve(__dirname, '..'), env: { ...process.env, HOME: malformedHome, OVERDRIVE_KIT_DIR: path.resolve(__dirname, '..') }, encoding: 'utf8' });
+check('uninstall with malformed settings.json exits non-zero', malformedUninstall.status !== 0, String(malformedUninstall.status));
+check('uninstall leaves malformed settings.json byte-identical', fs.readFileSync(malformedSettingsPath, 'utf8') === malformedBody);
+
 check('Cursor receives rule fallback only', fs.existsSync(path.join(runtimeHome, '.cursor/rules/overdrive-workflow.mdc')) && !fs.existsSync(path.join(runtimeHome, '.cursor/settings.json')));
 for (const name of ['ovd-status', 'ovd-resync', 'ovd-knowledge', 'ovd-doctor', 'ovd-checkpoint', 'ovd-usage']) {
   check(`Claude command ${name} exists`, fs.existsSync(path.join(runtimeHome, `.claude/commands/${name}.md`)));

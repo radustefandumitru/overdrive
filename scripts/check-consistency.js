@@ -302,7 +302,7 @@ if (exists('evals/scorecard-results.json')) {
   check('scorecard results starts without invented scores', Array.isArray(scorecardResults.results) && scorecardResults.results.length === 0, `found ${scorecardResults.results ? scorecardResults.results.length : 0}`);
 }
 
-const skillSummary = read('SKILLS_SUMMARY.md');
+const skillSummary = read('docs/SKILLS_SUMMARY.md');
 for (const skillName of skills.local) {
   check(`SKILLS_SUMMARY includes local skill ${skillName}`, skillSummary.includes(`\`${skillName}\``));
 }
@@ -336,7 +336,7 @@ for (const file of globalInstructionFiles) {
   check(`${file} credits Boris/Anatoli prompt-line principles`, text.includes('Boris Cherny') && text.includes('@AnatoliKopadze'));
 }
 
-const verifiedSources = read('VERIFIED_SOURCES.md').replace(/\.git\b/gi, '').toLowerCase();
+const verifiedSources = read('docs/VERIFIED_SOURCES.md').replace(/\.git\b/gi, '').toLowerCase();
 for (const sourceEntry of manifest.sources || []) {
   check(
     `VERIFIED_SOURCES lists repo for ${sourceEntry.id}`,
@@ -348,7 +348,7 @@ for (const sourceEntry of manifest.sources || []) {
 for (const installer of manifest.officialInstallers || []) {
   check(`VERIFIED_SOURCES lists package for ${installer.id}`, verifiedSources.includes(String(installer.package).toLowerCase()));
 }
-const verifiedRaw = read('VERIFIED_SOURCES.md');
+const verifiedRaw = read('docs/VERIFIED_SOURCES.md');
 for (const link of [
   'https://react.doctor',
   'https://impeccable.style',
@@ -502,7 +502,7 @@ check('ovd-workflow has no obsolete project-state migration', !ovdWorkflow.inclu
 check('ovd-workflow uses only OVERDRIVE_WORKFLOW disable env', /OVERDRIVE_WORKFLOW/.test(ovdWorkflow) && !/AGENTIC_SUPERCHARGE_WORKFLOW/.test(ovdWorkflow));
 check('ovd-workflow statusline uses OVD label', /OVD: off/.test(ovdWorkflow) && /OVD:\$\{active\}/.test(ovdWorkflow));
 
-const mcpDocs = read('MCP_AND_CONNECTORS.md');
+const mcpDocs = read('docs/MCP_AND_CONNECTORS.md');
 check('MCP docs mention optional MarkItDown MCP', /markitdown/i.test(mcpDocs) && /optional/i.test(mcpDocs));
 check('MCP docs mention Browserbase as optional', /Browserbase/i.test(mcpDocs) && /not installed/i.test(mcpDocs));
 check('catalog health doc exists', exists('docs/catalog-health.md'));

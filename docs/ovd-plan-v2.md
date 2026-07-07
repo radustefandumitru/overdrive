@@ -1,6 +1,6 @@
 # Overdrive v2: the structural layer
 
-> **Status:** v2 release-candidate branch. All seven implementation phases are present on `feature/ovd-plan`: `/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent detection, `overdrive verify --plan`, cross-pipeline smoke coverage, and global-instruction discoverability. Merge/release should wait for local checks plus the independent Fable audit. This document is the public-facing introduction; full design records live in [`docs/superpowers/specs/`](superpowers/specs/).
+> **Status:** shipped in v2.0.0. All seven implementation phases are complete: `/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent detection, `overdrive verify --plan`, cross-pipeline smoke coverage, and global-instruction discoverability. The release passed local checks plus an independent pre-release audit. This document is the public-facing introduction; full design records live in [`docs/superpowers/specs/`](superpowers/specs/).
 
 ---
 
@@ -216,6 +216,6 @@ For the full design and discussion history:
 
 For the comprehensive context-handoff dossier (preserves conversation nuance across context clears), see [`docs/superpowers/handoff/`](superpowers/handoff/).
 
-## When v2 ships
+## Release status
 
-All seven phases are complete and verified on the `feature/ovd-plan` branch. The remaining gate is an independent audit pass before merge to `main`; this is a quality-driven release with no fixed date. The current v1 surface remains the default in `main` until that merge lands — and stays available afterward, since the legacy commands delegate to their v2 equivalents.
+v2.0.0 shipped after all seven phases were completed and an independent pre-release audit passed (installer safety, state semantics, packaging, licensing, and the full test suite). The v1 surface stays available: the legacy commands delegate to their v2 equivalents with deprecation notes, and existing `.overdrive/` layouts migrate only through the explicit opt-in flow.

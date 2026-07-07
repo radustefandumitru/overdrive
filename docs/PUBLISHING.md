@@ -189,16 +189,38 @@ Expected result: no matches from the inspection command.
 
 For a new release, replace `vX.Y.Z` with the package version in `package.json`:
 
-Treat `README.md`, `CHANGELOG.md`, `VERIFIED_SOURCES.md`, `THIRD_PARTY_NOTICES.md`, `docs/release-notes-v2.0.0.md` or the matching release-notes file, plugin metadata, and `Overdrive.zip` as required release artifacts. Every release should update them when skills, workflow capabilities, install behavior, positioning, compatibility, safety boundaries, or runtime dependencies change.
+Treat `README.md`, `CHANGELOG.md`, `docs/VERIFIED_SOURCES.md`, `THIRD_PARTY_NOTICES.md`, `docs/release-notes-v2.0.0.md` or the matching release-notes file, plugin metadata, and `Overdrive.zip` as required release artifacts. Every release should update them when skills, workflow capabilities, install behavior, positioning, compatibility, safety boundaries, or runtime dependencies change.
 
-For v2, do not merge to `main`, tag, publish npm, or create the GitHub release until the v2 branch has passed local checks and the independent Fable audit.
+Do not merge to `main`, tag, publish npm, or create the GitHub release until the release branch has passed local checks and an independent audit pass.
 
 ```bash
 git tag vX.Y.Z
+git push origin main
 git push origin vX.Y.Z
 gh release create vX.Y.Z ../Overdrive.zip --title "Overdrive vX.Y.Z" --notes-file docs/release-notes-vX.Y.Z.md
 gh repo edit radustefandumitru/overdrive --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
 ```
+
+## npm Publish
+
+The package publishes as [`overdrive-cli`](https://www.npmjs.com/package/overdrive-cli) with binaries `overdrive`, `ovd`, and `overdrive-cli`. Publish from a clean checkout of the tagged commit, never from a dirty working tree:
+
+```bash
+git status --short          # must be empty
+npm run test:full           # full local gate
+npm pack --dry-run          # inspect exact package contents one last time
+npm login                   # if not already authenticated
+npm publish                 # publishes the version in package.json
+```
+
+After publishing, verify from a clean machine or temp directory:
+
+```bash
+npx -y overdrive-cli@latest --dry-run
+npm view overdrive-cli version
+```
+
+If a publish goes wrong, prefer `npm deprecate` with a message over `npm unpublish`, which breaks existing installs and has strict registry limits.
 
 ## Attribution Notes
 

@@ -7,7 +7,7 @@ description: Use when the user wants to extract or approximate a design language
 
 Use this skill to turn an existing public or authorized website into a practical design-language brief for implementation.
 
-This is a local Overdrive compatibility skill. It preserves the useful workflow from the earlier Design Extract integration without depending on the now-unavailable upstream Git source. Do not claim that a tool extraction ran unless you actually ran one.
+This is a local Overdrive compatibility skill. It preserves the useful workflow from the earlier Design Extract integration without depending on any upstream Git source at install time. Do not claim that a tool extraction ran unless you actually ran one.
 
 ## Safety Rules
 

@@ -5,7 +5,12 @@
 - Added the v2 `ovd-plan` structural layer: `OVERDRIVE.md`, `/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent routing, recursive closure, and `overdrive verify --plan`.
 - Added parser/writer/cache/state modules under `lib/ovd-plan/` plus extensive unit and smoke coverage for the new project-management pipeline.
 - Reworked the README around the v2 mental model and public first-time-reader flow while keeping exact installed instructions available in advanced sections.
-- Moved `design-extract` to a local Overdrive compatibility skill because the previously pinned upstream Git source is no longer reachable.
+- Hardened hook setup after the independent pre-release audit: a malformed existing agent settings file (for example `~/.claude/settings.json`) now aborts install/uninstall with a clear message instead of being silently replaced, with a regression test covering install and uninstall.
+- Fixed `./update.sh` on stock macOS bash 3.2, where `set -u` plus empty argument arrays aborted the default invocation.
+- Uninstall now also removes the empty `~/.overdrive/` scaffolding directories it created, and slash-command docs no longer reference internal spec paths that public packages exclude.
+- Rebuilt all three README diagrams for the v2 architecture (flow, system, architecture) with the plan/state layer, review gates, the four commands, and the `.overdrive/` layout.
+- Reorganized the repository root: `SKILLS_SUMMARY.md`, `SKILLS_TLDR.md`, `MCP_AND_CONNECTORS.md`, `AGENTS_OPENAI_YAML.md`, `PUBLISHING.md`, and `VERIFIED_SOURCES.md` moved under `docs/`, with all code, package, and consistency-check references updated.
+- Moved `design-extract` to a local Overdrive compatibility skill so installs no longer depend on the upstream Git source, which was unreachable during v2 pin verification (upstream distribution has since moved to the `designlang` npm package).
 - Added local dependency preflight and runtime dependency copying for `js-yaml`, which powers `yaml ovd-plan` block parsing.
 - Updated CI, package metadata, plugin metadata, notices, release docs, and packaging checks for the v2 release candidate.
 

@@ -32,7 +32,7 @@ Antigravity uses the `.gemini` config convention for its agent shell. Even when 
 - Local public-safe skills such as `fluid-animations`, `emil-animation-polish`, and the `jack-*` premium 3D website workflow skills.
 - Managed global instruction templates in `global-instructions/`, including an explicit default instruction to consult `skill-router` as a lightweight preflight for non-trivial requests, with user-named skill overrides.
 - Context7 usage guidance and generic connector safety guidance.
-- `MCP_AND_CONNECTORS.md` as a public-safe Context7 and connector explainer.
+- `docs/MCP_AND_CONNECTORS.md` as a public-safe Context7 and connector explainer.
 - A lockfile of upstream source commits.
 - A verification script for all target roots.
 

@@ -111,19 +111,22 @@ if [[ "$SKIP_KIT" -eq 0 && "$DRY_RUN" -eq 0 && -t 0 && -t 1 ]]; then
   fi
 fi
 
+# NOTE: empty arrays are expanded with the ${arr[@]+"${arr[@]}"} guard because
+# macOS ships bash 3.2, where a bare "${arr[@]}" on an empty array trips
+# `set -u` ("unbound variable") and would abort a plain ./update.sh run.
 if [[ "$SKIP_KIT" -eq 0 ]]; then
   echo "Updating Overdrive itself..."
-  OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" self-update "${SELF_ARGS[@]}"
+  OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" self-update ${SELF_ARGS[@]+"${SELF_ARGS[@]}"}
   echo
 fi
 
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then
   if [[ "$ALL_SKILLS" -eq 1 ]]; then
     echo "Updating all matching skills from verified pinned sources with timestamped backups..."
-    OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills --all-skills "${SKILL_ARGS[@]}"
+    OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills --all-skills ${SKILL_ARGS[@]+"${SKILL_ARGS[@]}"}
   else
     echo "Updating Overdrive-managed skills from verified pinned sources..."
-    OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills "${SKILL_ARGS[@]}"
+    OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills ${SKILL_ARGS[@]+"${SKILL_ARGS[@]}"}
   fi
   echo
 fi

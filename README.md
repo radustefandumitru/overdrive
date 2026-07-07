@@ -1,4 +1,17 @@
-# Overdrive
+<div align="center">
+
+![Overdrive logo](assets/overdrive%20logo.png)
+
+**The operating layer for AI coding agents — 137 specialist skills, a router that picks them, and a project plan that survives sessions.**
+
+[![npm](https://img.shields.io/npm/v/overdrive-cli?color=2b3a44&label=npm)](https://www.npmjs.com/package/overdrive-cli)
+[![license](https://img.shields.io/badge/license-Apache--2.0-2b3a44)](LICENSE)
+[![node](https://img.shields.io/badge/node-%3E%3D18-2b3a44)](package.json)
+[![CI](https://github.com/radustefandumitru/overdrive/actions/workflows/ci.yml/badge.svg)](https://github.com/radustefandumitru/overdrive/actions/workflows/ci.yml)
+
+[Install](#install-in-60-seconds) · [How it works](#what-changes-after-install) · [v2 project state](#overdrive-v2-project-state-that-survives-sessions) · [Safety](#safety-privacy-and-updates) · [What's inside](#what-is-included) · [Docs](docs/) · [Credits](#credits)
+
+</div>
 
 > I built Overdrive over the years as my own daily AI coding-agent setup and I'm releasing it completely for free for the community to use. I've built many different websites, web-apps and mobile apps with it across Claude Code, Codex and Antigravity. If you build something with it, tag me on X [@editor_stefan](https://x.com/editor_stefan), send feedback on Reddit at [u/StefanDumitru](https://www.reddit.com/user/StefanDumitru/) or open an issue/PR.
 >
@@ -6,11 +19,11 @@
 >
 > - Stef
 
-![Overdrive logo](assets/overdrive%20logo.png)
-
 **Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with specialist skills, smarter routing, local project memory, and a v2 project-management layer.
 
 It works across Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents` roots. The current manifest contains 137 unique skills for web/app development, frontend polish, animation, SEO, product work, research, launch prep, security review, browser validation, prompt improvement, codebase intelligence, and project workflow state.
+
+![Overdrive flow diagram](assets/overdrive-flow-diagram@2x.png)
 
 Overdrive is not just another skill pack. It is the operating layer around the skills:
 
@@ -112,7 +125,32 @@ skill-router        chooses skill guidance at planning or execution time
 
 A leaf in `OVERDRIVE.md` is meant to be an executable contract: scope, skills, success criteria, dependencies, and verification. Leaves do not auto-complete. They move to `awaiting-review`, then close only after user approval or an equivalent clear signal.
 
-![Overdrive flow diagram](assets/overdrive-flow-diagram@2x.png)
+A real plan tree looks like this — plain Markdown you can read, diff, and commit:
+
+```markdown
+## II. Dashboard [in-progress]
+
+### II.2 Stats widgets [in-progress]
+
+#### II.2.a Widget layout design [awaiting-review] ← ACTIVE
+
+Design the grid layout and visual hierarchy. Three sizes, responsive breakpoints.
+
+​```yaml ovd-plan
+skills: [design-taste-frontend, impeccable]
+scope:
+  in: [src/components/Dashboard/]
+success:
+  - Grid renders at 768/1024/1440px without overflow
+verify:
+  method: playwright_visual_regression
+  review_required: true
+​```
+```
+
+When you approve a leaf, closure walks **up** the tree: "That closes II.2 — verify, close, or hold?" Each level asks. Nothing is marked done behind your back, at any level. The skill-router runs once per leaf at planning time, so execution starts warm instead of re-routing cold.
+
+If you have a v1 `.overdrive/` layout, `/ovd-workflow` detects it and offers a one-time, opt-in migration that archives your originals first. The v2 design is documented in [docs/ovd-plan-v2.md](docs/ovd-plan-v2.md).
 
 ## Common Workflows
 
@@ -230,6 +268,8 @@ Overdrive is conservative by default:
 - Uninstall removes only managed files and managed instruction blocks.
 - No telemetry is collected.
 - No API keys, OAuth state, browser profiles, cookies, MCP secrets, `.env` files, or account sessions are copied.
+- If an existing agent settings file (for example `~/.claude/settings.json`) is malformed, Overdrive refuses to touch it and tells you, instead of rewriting it and losing your settings.
+- Hook setup adds a statusline and session hooks for the ovd-workflow runtime; your own hooks and settings keys are preserved, and uninstall removes only the Overdrive-managed entries.
 - Cursor personal skills use `~/.cursor/skills`; Overdrive does not touch Cursor's reserved `~/.cursor/skills-cursor` folder.
 - Native skills, third-party plugin skills, or MCP servers remain separate from Overdrive-managed skills.
 
@@ -241,7 +281,7 @@ overdrive self-update --dry-run
 ./update.sh --dry-run
 ```
 
-Default installs and updates use the verified pinned sources listed in [VERIFIED_SOURCES.md](VERIFIED_SOURCES.md). If you intentionally want live tracking refs or latest installer packages instead of this release's verified pins, use `--allow-upstream-drift` and review the warning output before applying changes.
+Default installs and updates use the verified pinned sources listed in [docs/VERIFIED_SOURCES.md](docs/VERIFIED_SOURCES.md). If you intentionally want live tracking refs or latest installer packages instead of this release's verified pins, use `--allow-upstream-drift` and review the warning output before applying changes.
 
 Context guidance is documented in [docs/prompt-caching.md](docs/prompt-caching.md) and [docs/context-runtime-matrix.md](docs/context-runtime-matrix.md).
 
@@ -262,6 +302,27 @@ npm test
 npm run test:full
 ./verify.sh
 npm pack --dry-run
+```
+
+## Repository Layout
+
+```
+overdrive/
+├── README.md · CHANGELOG.md · SECURITY.md      start here
+├── LICENSE · NOTICE · THIRD_PARTY_NOTICES.md   licensing and attribution
+├── install.sh · update.sh · uninstall.sh
+├── verify.sh · check-updates.sh                thin wrappers around bin/overdrive.js
+├── manifest.json                               the skill catalog: sources, pins, policies
+├── bin/ · lib/                                 the CLI and installer/runtime code
+│   └── lib/ovd-plan/                           the v2 planning engine
+├── skills/                                     locally authored skills (incl. skill-router)
+├── global-instructions/                        the operating guide that gets installed
+├── plugins/ · .claude-plugin/                  thin Claude Code plugin wrapper
+├── scripts/                                    tests, consistency checks, benchmarks
+├── evals/                                      router benchmark data
+├── docs/                                       everything else: v2 design, sources,
+│                                               skills summary, publishing, MCP guidance
+└── assets/                                     logo and diagrams
 ```
 
 ## Advanced: Exact Installed Instructions
@@ -554,7 +615,7 @@ When `confidence: low` or the annotation is missing, perform full routing per th
 
 ## Credits
 
-Overdrive is built from original local skills, safety transforms, installer/runtime code, and a curated set of public third-party skills. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [VERIFIED_SOURCES.md](VERIFIED_SOURCES.md) for the full source map.
+Overdrive is built from original local skills, safety transforms, installer/runtime code, and a curated set of public third-party skills. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [docs/VERIFIED_SOURCES.md](docs/VERIFIED_SOURCES.md) for the full source map.
 
 Key credits include:
 
@@ -580,13 +641,15 @@ Key credits include:
 
 ## Honest Assessment
 
-Overdrive is useful when the router stays selective and the project-state layer stays lightweight. It gives agents better defaults, better specialist guidance, and a better memory shape for multi-session work. That should improve output quality on many real coding/design/release tasks, especially when the alternative is one generic prompt and no project state.
+I audited this codebase before release — installer, state engine, tests, packaging, licensing — reran its full test suite, reproduced its safety claims against real scenarios, and fixed the bugs I found. So this is an informed opinion, but it is also a reviewed party's opinion: I contributed fixes to this release, and you should weigh that the way you'd weigh any code review written by someone who has skin in the codebase.
 
-The risk is bloat. If an agent loads too many skills, treats `.overdrive/` as a dumping ground, or follows the workflow mechanically, it can slow down and become worse. There is also no universal benchmark claim yet; the router benchmark checks routing quality, not a measured percentage improvement in final products.
+What genuinely impressed me: the safety engineering is real, not marketing. Unmanaged files are actually preserved (I tested the edge cases, including hostile ones). Uninstall actually removes only what Overdrive added. Sources are actually pinned to commit SHAs with attribution that names what is *not* redistributed — a level of licensing care most hobby projects skip. The consistency checker holds the docs to the code with over a thousand assertions, which is why this README can make specific claims without drifting. And v2's `awaiting-review` gate addresses the single most common failure of autonomous agents — declaring victory on work you haven't accepted — with a mechanism, not a vibe.
 
-My recommendation: use Overdrive as a disciplined operating layer, not magic. Keep simple tasks simple, let the router stay quiet when nothing special is needed, and use v2 planning for work that actually benefits from durable structure.
+What I'd be skeptical of, in your position: there is no measured evidence that Overdrive improves final output quality. The router benchmark measures routing quality — whether the right skills load — not whether shipped products get better; nobody has run that experiment yet. The v2 planning loop has a real ceremony cost: on one-shot tasks it is overhead, and it only pays for itself on work that spans sessions. 137 skills is a curation, which means opinions — some will not be your opinions. And a system this instruction-heavy depends on the agent actually following instructions; stronger models follow them better, so your results will vary with your model.
 
-- Codex, GPT-5-based coding agent, Extra High reasoning effort.
+My advice: install globally, ignore the plan layer at first, and just let the router work for a week — that alone is most of the value for most people. Reach for `/ovd-plan` the first time a project outgrows one session. If it doesn't earn its ceremony on your real work, drop that layer and keep the skills; the design decision I most respect here is that the layers are separable.
+
+— Claude Fable 5 (Anthropic), max effort, after a full pre-release audit of this repository.
 
 ## Contributing
 
