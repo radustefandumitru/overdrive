@@ -2,7 +2,7 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-06-05
+Verified on: 2026-07-07
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|
@@ -22,7 +22,6 @@ Verified on: 2026-06-05
 | Layers of Product Design by Jamie Mill / @jamiemill | Git | `64b9202bf0506ad1418b9975681c95798725e25a` | `main` | https://github.com/jamiemill/layers-skills |
 | Graphify by Safi Shamsi | Git | `91f4d120b630ee35c79bf3c75ccd186870a808f9` | `main` | https://github.com/safishamsi/graphify |
 | Claude Video by Brad Bonanno / @bradautomates | Git | `c333c2289e57bf040b32846f18d669e3f8edad9b` | `main` | https://github.com/bradautomates/claude-video |
-| Design Extract by Manav Arya Singh / @Manavarya09 | Git | `82b20dbe5a0e17f1f9153def04af8279f5672e3c` (`v12.15.0`) | `main` | https://github.com/Manavarya09/design-extract |
 | Humanizer by Siqi Chen / @blader | Git | `a2ace14a88a6746f64f1f53ed8272d6788828038` | `main` | https://github.com/blader/humanizer |
 | Prompt Master by Nidhin J S / @nidhinjs | Git | `7a02ddd31bad3056cc3ccf0af2b23d7b30d4abc2` | `main` | https://github.com/nidhinjs/prompt-master |
 | Anthropic example skills | Git | `690f15cac7f7b4c055c5ab109c79ed9259934081` | `main` | https://github.com/anthropics/skills |
@@ -30,6 +29,14 @@ Verified on: 2026-06-05
 | Vercel Labs Skills | Git | `e4243fbf7d9398722024f62850ece90fa0d5c693` | `main` | https://github.com/vercel-labs/skills |
 | Composio Awesome Claude Skills | Git | `92568c1edaff1bde5371154f036d959346c145a8` | `master` | https://github.com/ComposioHQ/awesome-claude-skills |
 | Playwright CLI installer | npm | `@playwright/cli@0.1.13` | `@playwright/cli@latest` | https://github.com/microsoft/playwright-cli |
+
+## Runtime Dependencies
+
+These are npm dependencies used by Overdrive itself, not installed skills.
+
+| Package | Use | Version policy | Upstream |
+|---|---|---|---|
+| js-yaml | Parses and writes `yaml ovd-plan` blocks in `OVERDRIVE.md` | `^4.1.0` in `package.json`; installed by npm/npx or the local dependency preflight for clone/zip users | https://github.com/nodeca/js-yaml |
 
 ## Optional Helper Tooling
 
@@ -61,7 +68,7 @@ The links below are credited sources and provenance references for local skills,
 | Graphify | Safi Shamsi / @safishamsi | https://github.com/safishamsi/graphify · https://graphify.net |
 | Prompt Master | Nidhin J S / @nidhinjs | https://github.com/nidhinjs/prompt-master |
 | Humanizer | Siqi Chen / @blader | https://github.com/blader/humanizer |
-| Design Extract / designlang | Manav Arya Singh / @Manavarya09 | https://github.com/Manavarya09/design-extract · https://designlang.manavaryasingh.com |
+| Design Extract / designlang inspiration | Manav Arya Singh / @Manavarya09 | https://designlang.manavaryasingh.com |
 | Claude Video | Brad Bonanno / @bradautomates | https://github.com/bradautomates/claude-video |
 | Pretext | Cheng Lou / @_chenglou | https://github.com/chenglou/pretext · npm `@chenglou/pretext` |
 | Usage command inspiration | AgentSeal codeburn; ryoppippi ccusage | https://github.com/getagentseal/codeburn · https://github.com/ryoppippi/ccusage |

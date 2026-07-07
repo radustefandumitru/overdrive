@@ -1,0 +1,9 @@
+name: design-extract
+description: Extract or approximate a design language from a public or authorized website, with safe tooling checks and manual fallbacks.
+metadata:
+  source: local
+  overdrive: true
+  recommendedWhen:
+    - The user wants colors, typography, spacing, components, or tokens from a reference website.
+    - A redesign or implementation should be informed by an existing public design language.
+    - Optional extraction tooling may be available but must be checked safely first.

@@ -2,5 +2,5 @@
   "name": "ovd-plan-legacy-fixture",
   "version": "0.0.0",
   "private": true,
-  "description": "Committed fixture representing a pre-v2 .overdrive/ layout for Task 2.2.5 migration tests."
+  "description": "Committed fixture representing a pre-v2 ovd-workflow state layout for migration tests."
 }

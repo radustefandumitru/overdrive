@@ -8,4 +8,6 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
-OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" "$@"
+"$KIT_DIR/scripts/ensure-runtime-deps.sh" "$KIT_DIR"
+
+OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" "$@"

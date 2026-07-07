@@ -42,6 +42,8 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
+"$KIT_DIR/scripts/ensure-runtime-deps.sh" "$KIT_DIR"
+
 ALL_SKILLS=0
 SKIP_KIT=0
 SKIP_SKILLS=0
@@ -88,7 +90,7 @@ done
 
 if [[ "$SKIP_KIT" -eq 0 && "$DRY_RUN" -eq 0 && -t 0 && -t 1 ]]; then
   set +e
-  CHECK_OUTPUT="$(OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" check-updates 2>/dev/null)"
+  CHECK_OUTPUT="$(OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" check-updates 2>/dev/null)"
   CHECK_STATUS=$?
   set -e
   if [[ "$CHECK_STATUS" -eq 1 && "$CHECK_OUTPUT" == *"A newer Overdrive version is available"* ]]; then
@@ -111,17 +113,17 @@ fi
 
 if [[ "$SKIP_KIT" -eq 0 ]]; then
   echo "Updating Overdrive itself..."
-  OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" self-update "${SELF_ARGS[@]}"
+  OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" self-update "${SELF_ARGS[@]}"
   echo
 fi
 
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then
   if [[ "$ALL_SKILLS" -eq 1 ]]; then
     echo "Updating all matching skills from verified pinned sources with timestamped backups..."
-    OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills --all-skills "${SKILL_ARGS[@]}"
+    OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills --all-skills "${SKILL_ARGS[@]}"
   else
     echo "Updating Overdrive-managed skills from verified pinned sources..."
-    OVERDRIVE_KIT_DIR="$KIT_DIR" AGENTIC_SUPERCHARGE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills "${SKILL_ARGS[@]}"
+    OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" update-skills "${SKILL_ARGS[@]}"
   fi
   echo
 fi

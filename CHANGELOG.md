@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.0.0 - 2026-07-07
+
+- Added the v2 `ovd-plan` structural layer: `OVERDRIVE.md`, `/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent routing, recursive closure, and `overdrive verify --plan`.
+- Added parser/writer/cache/state modules under `lib/ovd-plan/` plus extensive unit and smoke coverage for the new project-management pipeline.
+- Reworked the README around the v2 mental model and public first-time-reader flow while keeping exact installed instructions available in advanced sections.
+- Moved `design-extract` to a local Overdrive compatibility skill because the previously pinned upstream Git source is no longer reachable.
+- Added local dependency preflight and runtime dependency copying for `js-yaml`, which powers `yaml ovd-plan` block parsing.
+- Updated CI, package metadata, plugin metadata, notices, release docs, and packaging checks for the v2 release candidate.
+
 ## v1.0.2 - 2026-06-06
 
 - Removed pre-launch compatibility surfaces so the public package uses only canonical Overdrive names: `overdrive`, `ovd`, `overdrive-cli`, `.overdrive/`, `.overdrive.json`, `OVERDRIVE_WORKFLOW`, `/ovd-*`, and `ovd-workflow`.

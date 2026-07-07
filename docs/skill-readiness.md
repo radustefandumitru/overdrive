@@ -1,15 +1,15 @@
 # Skill Readiness Audit
 
-Overdrive is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v1, it also documents native context-window behavior by runtime and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
+Overdrive is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v2, it also includes the `ovd-plan` project-management layer, documents native context-window behavior by runtime, and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
 
 ## Default Install Summary
 
 - Unique skills in the current manifest: 137
-- Locally authored Overdrive skills: 18
-- Upstream GitHub-sourced skills: 118
+- Locally authored Overdrive skills: 19
+- Upstream GitHub-sourced skills: 117
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
-- ovd-workflow runtime: installed under `~/.overdrive/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, preferences, route traces, and checkpoints.
+- ovd-workflow runtime: installed under `~/.overdrive/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, preferences, route traces, checkpoints, and v2 `ovd-plan` commands.
 
 Claude Code receives one fewer local skill because `security-review` is skipped there by policy in favor of Claude Code's native `/security-review` command.
 
@@ -32,6 +32,7 @@ These work immediately after install and agent reload because they are instructi
 - `reddit-research` guidance, with public Reddit access treated as best-effort
 - `prompt-master` prompt-writing guidance
 - `humanizer` meaning-preserving voice cleanup guidance
+- `design-extract` safe design-language extraction guidance, with optional tooling checks and manual fallbacks
 - Jack Roberts inspired `jack-*` workflow skills when used as planning/build guidance
 - Jamie Mill `layers-*` product-design reasoning skills
 - Taste, Impeccable, Emil, Modern Web Guidance, Remotion guidance, Stop Slop, most MarketingSkills, Context Engineering guidance, Anthropic example skills, and OpenAI/Vercel routing guidance
@@ -47,7 +48,7 @@ These work immediately after install and agent reload because they are instructi
 | `playwright-cli` | Node/npm and browser binaries | The official installer provides the skill; browser install may happen on first real use depending on the user's environment. |
 | `playwright` | Playwright CLI/runtime | OpenAI wrapper around Playwright-style automation; prefer `playwright-cli` for normal validation. |
 | `graphify` | Python 3.10-3.12 preferred for the pinned `graphifyy==0.1.14` dependency tree; optional PDF support | Installer attempts `pipx install --python python3.12 graphifyy==0.1.14` when a compatible interpreter is available, or a managed user-space virtualenv. It never uses global `pip`, `sudo`, or `--break-system-packages`. Agents should check availability and fall back to normal `rg`/file reads if unavailable. |
-| `design-extract` | Node/designlang, Chrome/Chromium or Playwright, and public page access | Installer prefers an existing system Chrome/Chromium/Edge and only attempts Playwright Chromium when no system browser is found. Agents should check availability, prefer `--system-chrome`, avoid extensions/MCP/cookies/auth state, and fall back to screenshots/source inspection or user-provided brand details. |
+| `design-extract` | Optional designlang-compatible tooling, Chrome/Chromium or Playwright, and public page access | The skill is local and works as guidance without the unavailable upstream Git source. Installer browser setup is optional. Agents should check availability, prefer `--system-chrome`, avoid extensions/MCP/cookies/auth state, and fall back to screenshots/source inspection or user-provided brand details. |
 | `claude-video` | ffmpeg/ffprobe, yt-dlp, and optional Groq/OpenAI Whisper key for transcription | Installer attempts non-privileged `ffmpeg`/`yt-dlp` setup through Homebrew, winget, pipx, or managed venv paths where possible. Agents should run preflight checks, never write API keys from chat, and fall back to frames-only/captions-only when needed. |
 | `liquid-glass-web` Tier 3 | WebGL support and any adopted WebGL glass library license review | Tier 1 CSS works broadly; Tier 2 is Chromium-specific; Tier 3 needs browser/device testing and permissive license review. |
 | `pretext` | `@chenglou/pretext` installed in the user's web app project | No global installer setup. Agents should add it through the project's package manager only when text measurement/layout performance is the actual task. |

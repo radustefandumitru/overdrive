@@ -563,21 +563,6 @@
       ]
     },
     {
-      "id": "design-extract",
-      "repo": "https://github.com/Manavarya09/design-extract.git",
-      "ref": "82b20dbe5a0e17f1f9153def04af8279f5672e3c",
-      "trackingRef": "main",
-      "includes": [
-        {
-          "from": "skills/extract-design",
-          "to": "design-extract",
-          "transforms": [
-            "agentic-design-extract-safe"
-          ]
-        }
-      ]
-    },
-    {
       "id": "humanizer",
       "repo": "https://github.com/blader/humanizer.git",
       "ref": "a2ace14a88a6746f64f1f53ed8272d6788828038",
@@ -1081,6 +1066,10 @@
     {
       "from": "skills/security-review",
       "to": "security-review"
+    },
+    {
+      "from": "skills/design-extract",
+      "to": "design-extract"
     },
     {
       "from": "skills/pre-launch-checklist",

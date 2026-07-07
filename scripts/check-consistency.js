@@ -100,7 +100,7 @@ const retiredSlashStatus = ['as', 'status'].join('-');
 console.log('Overdrive consistency check');
 
 check('package is overdrive-cli', pkg.name === 'overdrive-cli', `found ${pkg.name}`);
-check('package version is on the 1.0.x line', /^1\.0\.\d+$/.test(pkg.version), `found ${pkg.version}`);
+check('package version is 2.0.0', pkg.version === '2.0.0', `found ${pkg.version}`);
 check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pkg.license}`);
 check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
 check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');
@@ -110,8 +110,8 @@ check('manifest schema version is 6', manifest.version === 6, `found ${manifest.
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes ovd-workflow metadata', manifest.ovdWorkflow?.projectStateDir === '.overdrive' && /OVERDRIVE_WORKFLOW/.test(manifest.ovdWorkflow?.disableEnv || ''));
 check('manifest no longer uses asWorkflow key', !Object.prototype.hasOwnProperty.call(manifest, 'asWorkflow'));
-check('manifest has 18 local skills', skills.local.length === 18, `found ${skills.local.length}`);
-check('manifest has 118 upstream GitHub skills', skills.source.length === 118, `found ${skills.source.length}`);
+check('manifest has 19 local skills', skills.local.length === 19, `found ${skills.local.length}`);
+check('manifest has 117 upstream GitHub skills', skills.source.length === 117, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
 check('manifest has 137 unique skills', uniqueSkills.size === 137, `found ${uniqueSkills.size}`);
 check('manifest skill names are unique', uniqueSkills.size === skills.all.length);
@@ -143,9 +143,6 @@ for (const sourceEntry of manifest.sources || []) {
     if (include.to === 'graphify') {
       check('graphify source normalizes lowercase skill file', include.skillFile === 'skill.md');
       check('graphify source has safe transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-graphify-safe'));
-    }
-    if (include.to === 'design-extract') {
-      check('design-extract source has safe transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-design-extract-safe'));
     }
     if (include.to === 'claude-video') {
       check('claude-video source has safe transform', Array.isArray(include.transforms) && include.transforms.includes('agentic-claude-video-safe'));
@@ -241,7 +238,7 @@ if (exists('.claude-plugin/marketplace.json')) {
 }
 if (exists('plugins/overdrive/.claude-plugin/plugin.json')) {
   const plugin = readJson('plugins/overdrive/.claude-plugin/plugin.json');
-  check('Claude plugin wrapper is overdrive v1', plugin.name === 'overdrive' && /^1\.0\.\d+$/.test(plugin.version || ''));
+  check('Claude plugin wrapper is overdrive v2', plugin.name === 'overdrive' && plugin.version === '2.0.0');
   check('Claude plugin wrapper uses Apache license', plugin.license === 'Apache-2.0');
 }
 check('Claude plugin helper skill exists', exists('plugins/overdrive/skills/overdrive/SKILL.md'));
@@ -282,7 +279,7 @@ check('README credits v0.6 motion provenance links', readme.includes('https://x.
 check('README credits v0.7 sources', readme.includes('https://github.com/microsoft/markitdown') && readme.includes('https://github.com/browserbase/skills'));
 check('README credits prompt-caching sources', readme.includes('https://kreidemann.com/blog/prompt-caching') && readme.includes('https://sankalp.bearblog.dev/how-prompt-caching-works/') && readme.includes('https://ngrok.com/blog/prompt-caching'));
 check('README credits Graphify source links', readme.includes('https://github.com/safishamsi/graphify') && readme.includes('https://graphify.net'));
-check('README credits v0.10 source links', readme.includes('https://github.com/nidhinjs/prompt-master') && readme.includes('https://github.com/blader/humanizer') && readme.includes('https://github.com/Manavarya09/design-extract') && readme.includes('https://designlang.manavaryasingh.com') && readme.includes('https://github.com/bradautomates/claude-video'));
+check('README credits v0.10 source links', readme.includes('https://github.com/nidhinjs/prompt-master') && readme.includes('https://github.com/blader/humanizer') && readme.includes('https://designlang.manavaryasingh.com') && readme.includes('https://github.com/bradautomates/claude-video'));
 check('README credits usage inspiration links', readme.includes('https://github.com/getagentseal/codeburn') && readme.includes('https://github.com/ryoppippi/ccusage'));
 check('prompt caching doc exists', exists('docs/prompt-caching.md'));
 check('context runtime matrix doc exists', exists('docs/context-runtime-matrix.md'));
@@ -371,7 +368,6 @@ for (const link of [
   'https://graphify.net',
   'https://github.com/nidhinjs/prompt-master',
   'https://github.com/blader/humanizer',
-  'https://github.com/Manavarya09/design-extract',
   'https://designlang.manavaryasingh.com',
 	  'https://github.com/bradautomates/claude-video',
 	  'https://github.com/chenglou/pretext',
@@ -417,7 +413,6 @@ for (const link of [
   'https://graphify.net',
   'https://github.com/nidhinjs/prompt-master',
   'https://github.com/blader/humanizer',
-  'https://github.com/Manavarya09/design-extract',
   'https://designlang.manavaryasingh.com',
 	  'https://github.com/bradautomates/claude-video',
 	  'https://github.com/chenglou/pretext',

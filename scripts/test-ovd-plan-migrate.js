@@ -27,6 +27,7 @@ const fsHelpers = require('../lib/ovd-plan/fs');
 const { parseOverdriveMd } = require('../lib/ovd-plan/parser');
 
 const FIXTURE_DIR = path.resolve(__dirname, 'fixtures/ovd-plan/legacy-project');
+const FIXTURE_LEGACY_STATE_DIR = path.join(FIXTURE_DIR, 'legacy-overdrive-state');
 
 const verbose = process.argv.includes('--verbose');
 let passed = 0;
@@ -57,6 +58,7 @@ function makeLegacyTempProject(name) {
   const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), `ovd-plan-migrate-${name}-`));
   const projectDir = path.join(tmpRoot, name);
   copyDir(FIXTURE_DIR, projectDir);
+  fs.renameSync(path.join(projectDir, 'legacy-overdrive-state'), path.join(projectDir, '.overdrive'));
   return { projectDir, tmpRoot };
 }
 
@@ -482,10 +484,10 @@ function readIfExists(p) {
 {
   check('fixture: legacy-project dir exists', fs.existsSync(FIXTURE_DIR));
   check('fixture: has package.json (project signal)', fs.existsSync(path.join(FIXTURE_DIR, 'package.json')));
-  check('fixture: has .overdrive/project.md', fs.existsSync(path.join(FIXTURE_DIR, '.overdrive', 'project.md')));
-  check('fixture: has .overdrive/state.md', fs.existsSync(path.join(FIXTURE_DIR, '.overdrive', 'state.md')));
-  check('fixture: has .overdrive/.overdrive.json marker', fs.existsSync(path.join(FIXTURE_DIR, '.overdrive', '.overdrive.json')));
-  check('fixture: has .overdrive/work/_active.json', fs.existsSync(path.join(FIXTURE_DIR, '.overdrive', 'work', '_active.json')));
+  check('fixture: has legacy-overdrive-state/project.md', fs.existsSync(path.join(FIXTURE_LEGACY_STATE_DIR, 'project.md')));
+  check('fixture: has legacy-overdrive-state/state.md', fs.existsSync(path.join(FIXTURE_LEGACY_STATE_DIR, 'state.md')));
+  check('fixture: has legacy-overdrive-state/.overdrive.json marker', fs.existsSync(path.join(FIXTURE_LEGACY_STATE_DIR, '.overdrive.json')));
+  check('fixture: has legacy-overdrive-state/work/_active.json', fs.existsSync(path.join(FIXTURE_LEGACY_STATE_DIR, 'work', '_active.json')));
 }
 
 // --- Report ---

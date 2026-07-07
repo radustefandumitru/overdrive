@@ -1,6 +1,6 @@
 # Overdrive Source Fidelity Report
 
-Generated: 2026-06-06T15:23:46.642Z
+Generated: 2026-07-07T14:37:45.944Z
 
 This report clones pinned upstream sources and compares included skill folders with the Overdrive-installed output after safety transforms. It is a maintainer audit aid, not a runtime dependency.
 
@@ -1094,24 +1094,6 @@ This report clones pinned upstream sources and compares included skill folders w
 - Added file(s): none
 - Omitted file count: 1
 - Install/setup string hits: `SKILL.md: brew install`; `SKILL.md: winget install`; `scripts/download.py: brew install`; `scripts/frames.py: brew install`; `scripts/setup.py: brew install`; `scripts/setup.py: winget install`; `scripts/whisper.py: pip install`; `scripts/whisper.py: brew install`
-
-## design-extract
-
-- Repo: https://github.com/Manavarya09/design-extract.git
-- Ref: 82b20dbe5a0e17f1f9153def04af8279f5672e3c
-- Tracking ref: main
-- License: MIT (LICENSE)
-
-### design-extract
-
-- Source: design-extract
-- Include path: `skills/extract-design`
-- Transform(s): agentic-design-extract-safe
-- Copied file count: 1
-- Modified file(s): none
-- Added file(s): none
-- Omitted file count: 0
-- Install/setup string hits: `SKILL.md: npx`
 
 ## humanizer
 

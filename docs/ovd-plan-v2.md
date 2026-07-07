@@ -1,6 +1,6 @@
 # Overdrive v2: the structural layer
 
-> **Status:** All seven implementation phases complete on `feature/ovd-plan` — the full pipeline (`/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent detection) plus `overdrive verify --plan`, the cross-pipeline smoke test, and global-instruction discoverability are shipped. The full v2 test suite (`npm test`) plus the 269-check router benchmark (`npm run test:full`) pass green. Pending an independent audit pass before merge to `main`. This document is the **public-facing introduction**; full design records live in [`docs/superpowers/specs/`](superpowers/specs/).
+> **Status:** v2 release-candidate branch. All seven implementation phases are present on `feature/ovd-plan`: `/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent detection, `overdrive verify --plan`, cross-pipeline smoke coverage, and global-instruction discoverability. Merge/release should wait for local checks plus the independent Fable audit. This document is the public-facing introduction; full design records live in [`docs/superpowers/specs/`](superpowers/specs/).
 
 ---
 
@@ -16,7 +16,7 @@ Overdrive v1 is the **execution layer** for AI coding agents:
 
 This is excellent at *doing* the work in front of the agent. What it doesn't do: **structure a project beyond the current request**. There's no milestone, no phase, no contract, no recursive closure, no handoff that survives a context clear with intent intact. Each session is mostly request-scoped; project memory exists but is unstructured prose.
 
-The closest comparable is GSD (Get Stuff Done), which provides ~50 slash commands for project / milestone / phase / task hierarchies with rigid structure. GSD has structure but no skills. Overdrive has skills but no structure. **v2 is the synthesis.**
+The closest comparable pattern is a structured project/milestone/phase/task hierarchy. Overdrive already has skills and routing; v2 adds the durable project structure around them.
 
 ## What v2 adds (in one paragraph)
 
@@ -33,10 +33,10 @@ Four user-facing commands, each a state machine with many internal states. A rec
 
 Default form of each command is the most-used path:
 
-- `/ovd-workflow` (bare) → tutorial + status + action-path next steps. On a fresh project, walks you through codebase mapping (5 parallel mapper agents producing the kind of analysis [`gsd-map-codebase`](https://github.com/open-gsd/gsd-core) does) + preferences + requirements with explicit approval at each step.
+- `/ovd-workflow` (bare) → tutorial + status + action-path next steps. On a fresh project, walks you through codebase mapping, preferences, and requirements with explicit approval at each step.
 - `/ovd-plan` (bare) → visual tree display + state + action-path next steps. Specific flags enter deliberation, research, structural edit, or idea analysis.
-- `/ovd-go` (bare) → orient + continue. Reads the active leaf and the most recent session/handoff file, presents an overview of where you were, lists the directions you can take, and waits for your reply. Modeled on `gsd-resume-work`.
-- `/ovd-log` (bare) → lightweight save. Captures the active conversation, updates state and docs, writes a session file, walks the closure tree asking your approval at every level. Modeled on `gsd-pause-work`. `/ovd-log handoff` runs the full end-of-session pipeline with milestone-close detection.
+- `/ovd-go` (bare) → orient + continue. Reads the active leaf and the most recent session/handoff file, presents an overview of where you were, lists the directions you can take, and waits for your reply.
+- `/ovd-log` (bare) → lightweight save. Captures the active conversation, updates state and docs, writes a session file, walks the closure tree asking your approval at every level. `/ovd-log handoff` runs the full end-of-session pipeline with milestone-close detection.
 
 The full design lives in [`docs/superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r3.md`](superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r3.md).
 
@@ -144,7 +144,7 @@ When you approve a leaf, the system walks up the tree:
 2. If you close the cluster, check the grandparent (the milestone). Same prompt.
 3. Continue until a parent has open siblings, OR you reach the project root.
 
-Each level requires explicit approval. The pattern mirrors `gsd-complete-milestone` but extends it to every level of the tree, not just milestones.
+Each level requires explicit approval. The same closure pattern applies to every level of the tree, not just milestones.
 
 ## The skill-router becomes a planning-time consultant
 

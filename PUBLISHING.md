@@ -54,10 +54,13 @@ Before pushing, run:
 
 ```bash
 bash -n install.sh verify.sh check-updates.sh update.sh uninstall.sh
-node --check lib/installer.js
-node --check bin/overdrive.js
+npm install --omit=dev --ignore-scripts --no-package-lock
+npm run check
 npm run consistency
 npm run eval:router
+npm run test:workflow
+npm run test:ovd-plan
+npm run test:smoke
 npm run analyze:routes
 ./install.sh --dry-run
 ./install.sh --list-targets
@@ -72,7 +75,7 @@ Clone:
 
 ```bash
 git clone https://github.com/radustefandumitru/overdrive.git
-cd Overdrive
+cd overdrive
 ./install.sh --dry-run
 ./install.sh
 ```
@@ -186,14 +189,14 @@ Expected result: no matches from the inspection command.
 
 For a new release, replace `vX.Y.Z` with the package version in `package.json`:
 
-Treat `README.md` as a required release artifact, not static background material. Every release should update the README when skills, workflow capabilities, install behavior, positioning, compatibility, or safety boundaries change.
+Treat `README.md`, `CHANGELOG.md`, `VERIFIED_SOURCES.md`, `THIRD_PARTY_NOTICES.md`, `docs/release-notes-v2.0.0.md` or the matching release-notes file, plugin metadata, and `Overdrive.zip` as required release artifacts. Every release should update them when skills, workflow capabilities, install behavior, positioning, compatibility, safety boundaries, or runtime dependencies change.
 
-For v1 launch, rename or create the public GitHub repo at `radustefandumitru/overdrive` and create the matching tag/release before promoting `npx github:radustefandumitru/overdrive` commands or relying on `overdrive check-updates`.
+For v2, do not merge to `main`, tag, publish npm, or create the GitHub release until the v2 branch has passed local checks and the independent Fable audit.
 
 ```bash
 git tag vX.Y.Z
 git push origin vX.Y.Z
-gh release create vX.Y.Z ../Overdrive.zip --title "Overdrive vX.Y.Z" --notes-file CHANGELOG.md
+gh release create vX.Y.Z ../Overdrive.zip --title "Overdrive vX.Y.Z" --notes-file docs/release-notes-vX.Y.Z.md
 gh repo edit radustefandumitru/overdrive --add-topic claude-code --add-topic codex --add-topic agent-skills --add-topic mcp --add-topic cursor --add-topic gemini-cli --add-topic ai-coding-agents
 ```
 
