@@ -245,7 +245,7 @@ check('Claude plugin helper skill exists', exists('plugins/overdrive/skills/over
 check('Claude plugin wrapper stays thin', !exists('plugins/overdrive/skills/skill-router') && !exists('plugins/overdrive/skills/playwright-cli'));
 
 const readme = read('README.md');
-check('README says current manifest contains 137 unique skills', /current manifest contains 137 unique skills/i.test(readme));
+check('README states the 137-skill catalog count', /curated catalog of 137 of the top skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
 check('README explains ovd-workflow', /ovd-workflow/i.test(readme) && /\.overdrive/.test(readme));

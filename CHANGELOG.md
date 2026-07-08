@@ -4,12 +4,14 @@
 
 Docs and branding only. No installer, CLI, or `ovd-plan` behavior changed.
 
-- Reworked all three README diagrams to match the Overdrive logo: true-black
-  backgrounds, a silver brushed-metal edge on every content box, the logo's
-  lens-flare treatment on headline wordmarks, and correct wordmark alignment.
-- Rewrote the README hero copy and system-overview language around the actual
-  pipeline (global instructions, curated skills, skill router, project state
-  management system) and dropped inaccurate "operating layer" phrasing.
+- Rebuilt all three README diagrams to match the Overdrive logo exactly: flat
+  black backgrounds and content boxes (no gradients), a flat silver border on
+  every box, and a real cinematic lens flare on the headline wordmarks.
+- New hero tagline, rewritten intro paragraph, and a new paragraph on who
+  Overdrive is for, built around the actual pipeline (global instructions,
+  curated skills, skill router, project state management system). Dropped
+  inaccurate "operating layer" phrasing.
+- Added small X/LinkedIn/GitHub icon links near the top of the README.
 - Named `ovd-workflow`/`ovd-plan` consistently as the project state
   management system across the README and docs.
 - Added a "Why leaf?" explanation of `ovd-plan` node naming to the README and

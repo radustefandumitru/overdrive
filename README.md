@@ -2,12 +2,16 @@
 
 ![Overdrive logo](assets/overdrive%20logo.png)
 
-**Karpathy-based global instructions, 137 curated skills, a router that picks the right ones, and a project state management system that survives sessions. One install for your AI coding agents.**
+**Accelerate your agents into overdrive with Karpathy-based global instructions, 137 curated skills, a router that picks the right ones, and a project state management system that survives sessions. Simple to install for everyone.**
 
 [![npm](https://img.shields.io/npm/v/overdrive-cli?color=2b3a44&label=npm)](https://www.npmjs.com/package/overdrive-cli)
 [![license](https://img.shields.io/badge/license-Apache--2.0-2b3a44)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D18-2b3a44)](package.json)
 [![CI](https://github.com/radustefandumitru/overdrive/actions/workflows/ci.yml/badge.svg)](https://github.com/radustefandumitru/overdrive/actions/workflows/ci.yml)
+
+[![X](https://img.shields.io/badge/X-@StefanDumitruX-2b3a44?logo=x&logoColor=white)](https://x.com/StefanDumitruX)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Radu%20Stefan%20Dumitru-2b3a44?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/radustefandumitru/)
+[![GitHub](https://img.shields.io/badge/GitHub-radustefandumitru-2b3a44?logo=github&logoColor=white)](https://github.com/radustefandumitru)
 
 [Install](#install-in-60-seconds) · [How it works](#what-changes-after-install) · [v2 project state](#project-state-management-system) · [Safety](#safety-privacy-and-updates) · [What's inside](#what-is-included) · [Docs](docs/) · [Credits](#credits)
 
@@ -21,9 +25,9 @@
 >
 > - Stef
 
-**Overdrive** is a complete, plug-and-play system for upgrading AI coding agents. It layers global instructions built on Karpathy's system prompt, a curated skill catalog, a skill router, and a project state management system on top of the agents you already use.
+**Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with global instructions built on Karpathy's system prompt, a curated catalog of 137 of the top skills as of 2026 plus custom skills built specifically for Overdrive, a skill router that picks only the right skills for the job, and a project state management system that keeps track of your decisions and progress across long-running sessions. It works across Claude Code, Codex, Gemini CLI, Antigravity, and Cursor on macOS and Linux, with Windows support coming soon.
 
-It works across Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents` roots. The current manifest contains 137 unique skills for web/app development, frontend polish, animation, SEO, product work, research, launch prep, security review, browser validation, prompt improvement, codebase intelligence, and project workflow state.
+Overdrive is built for any skill level. It installs in about a minute and runs quietly in the background, so most people get the value from the skill router alone with nothing new to learn. For people who want more control, the `ovd` commands were deliberately kept simple, four commands instead of a sprawling surface, because a system only pays off if you actually keep using it. Modern models are already good at planning and reasoning on their own, so Overdrive doesn't try to override that. It adds structure and memory around what the model already does well, built to hold up over long-running projects instead of getting in the way.
 
 ![Overdrive flow diagram](assets/overdrive-flow-diagram@2x.png)
 
@@ -215,7 +219,7 @@ Skills answer **how should the agent do this kind of task?**
 
 `skill-router` answers **which specialist guidance is relevant now?**
 
-`ovd-workflow` and `ovd-plan` answer **what is already happening in this project?**
+`ovd-workflow` and `ovd-plan` answer **what should be happening in this project?**
 
 ## What Is Included
 

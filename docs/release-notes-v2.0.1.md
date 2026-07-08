@@ -4,12 +4,14 @@ Docs and branding patch. No installer, CLI, or `ovd-plan` behavior changed from 
 
 ## Why This Patch Exists
 
-v2.0.0 shipped correct but unpolished: an early README draft with placeholder-feeling copy, diagrams with a blue-tinted background instead of the logo's black/white/silver palette, and a couple of stale links. This patch brings the published package in line with what the project actually looks and reads like today.
+v2.0.0 shipped correct but unpolished: an early README draft with placeholder-feeling copy, diagrams with a blue-tinted background and gradient panels instead of the logo's flat black-and-silver palette, and a couple of stale links. This patch brings the published package in line with what the project actually looks and reads like today.
 
 ## Highlights
 
-- Reworked all three README diagrams to match the Overdrive logo: true-black backgrounds, a silver brushed-metal edge on every content box, the logo's lens-flare treatment on headline wordmarks, and corrected wordmark alignment.
-- Rewrote the README hero copy and system-overview language around the actual pipeline: global instructions, curated skills, the skill router, and the project state management system. Dropped inaccurate "operating layer" phrasing.
+- Rebuilt all three README diagrams to match the Overdrive logo exactly: flat black backgrounds and content boxes (no gradients), a flat silver border on every box, and a real cinematic lens flare (bright core, crisp streak, soft glow) on the headline wordmarks instead of a faint line.
+- New hero tagline and rewritten intro paragraph describing the actual pipeline: global instructions built on Karpathy's system prompt, the 137-skill catalog, the skill router, and the project state management system. Dropped inaccurate "operating layer" phrasing.
+- Added a paragraph on who Overdrive is for: simple to install, runs quietly in the background, `ovd` commands kept deliberately small, and designed to build on top of what modern models already do well rather than override it.
+- Added small icon links (X, LinkedIn, GitHub) near the top of the README for easy access to Stefan's profiles.
 - Named `ovd-workflow` and `ovd-plan` consistently as the project state management system across the README and docs, replacing inconsistent "project-state layer" / "project-management layer" phrasing.
 - Added a "Why leaf?" explanation of `ovd-plan` node naming to the README and [docs/ovd-plan-v2.md](ovd-plan-v2.md): a leaf is the smallest implementable unit, deliberately not called a task, step, phase, or action, so the plan tree can take whatever shape a project needs.
 - Added a skills-provenance section: 22 pinned upstream open-source sources plus the 19 skills built specifically for Overdrive, counted directly from `manifest.json`. Added a [docs/README.md](README.md) index grouping the rest of the documentation by what a reader is trying to do.
@@ -30,4 +32,4 @@ v2.0.0 shipped correct but unpolished: an early README draft with placeholder-fe
 
 - `npm run consistency` (1176 checks), `npm run check`, `npm run test:smoke`, `npm run test:workflow`, `npm run eval:router`
 - `npm pack --dry-run`
-- Diagram renders visually inspected against the logo asset; corner pixels sampled to confirm true-black backgrounds.
+- Diagram renders visually compared against the logo asset side by side; every gradient reference in the diagram SVGs confirmed to resolve (no missing defs).
