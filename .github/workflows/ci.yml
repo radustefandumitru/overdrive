@@ -52,15 +52,15 @@ jobs:
       - name: Installer dry runs
         run: |
           ./install.sh --list-targets
-          ./install.sh --scope local --project-dir /tmp/test-overdrive-default --dry-run --skip-upstream --skip-official-installers
+          ./install.sh --scope local --install-local --project-dir /tmp/test-overdrive-default --dry-run --skip-upstream --skip-official-installers
           ./install.sh --scope global --tools agents --force-targets --conflict preserve --dry-run --skip-upstream --skip-official-installers
-          ./install.sh --scope local --project-dir /tmp/test-overdrive-local --conflict preserve --dry-run --skip-upstream --skip-official-installers
+          ./install.sh --scope local --install-local --project-dir /tmp/test-overdrive-local --conflict preserve --dry-run --skip-upstream --skip-official-installers
           test -z "$(find /tmp/test-overdrive-local -type f 2>/dev/null || true)"
           ./uninstall.sh --scope global --tools agents --force-targets --dry-run
 
       - name: Local temp install and verify
         run: |
-          ./install.sh --scope local --project-dir /tmp/test-overdrive-verify --conflict preserve --skip-upstream --skip-official-installers --yes
+          ./install.sh --scope local --install-local --project-dir /tmp/test-overdrive-verify --conflict preserve --skip-upstream --skip-official-installers --yes
           ./verify.sh --scope local --project-dir /tmp/test-overdrive-verify --skip-upstream --skip-official-installers
 
       - name: Secret and local-path scan
