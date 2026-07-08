@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.0.2 - 2026-07-08
+
+Focused skill-intake release. No `ovd-plan` state semantics changed.
+
+- Added Addy Osmani's pinned `agent-skills` source: `interview-me`, `doubt-driven-development`, `source-driven-development`, `api-and-interface-design`, `code-simplification`, `documentation-and-adrs`, `performance-optimization`, `test-driven-development`, and `debugging-and-error-recovery`.
+- Added Matt Pocock's pinned `grill-me` and `grilling` skills for hard upfront idea interrogation.
+- Updated Muratcan Koylan's context-engineering source and added `harness-engineering` and `self-improvement-loops`.
+- Expanded the official Anthropic skills source with `algorithmic-art`, `canvas-design`, `claude-api`, `skill-creator`, `web-artifacts-builder`, `webapp-testing`, and the official `theme-factory`; removed the older Composio-sourced `theme-factory` include.
+- Added four Overdrive-authored safe wrapper skills: `brag-video`, `autoresearch-harness`, `clone-website-guide`, and `fact-checker`.
+- Kept unlicensed or non-skill-template sources as inspiration/link-only: raw `latent-spaces/brag`, `karpathy/autoresearch`, `JCodesMore/ai-website-cloner-template`, `hesreallyhim/awesome-claude-code`, and the unavailable Reddit-linked fact-checker path are not copied into the package.
+- Updated `skill-router`, router smoke checks, benchmark cases, source maps, docs, README copy, and diagrams for the 160-skill manifest.
+
 ## v2.0.1 - 2026-07-08
 
 Docs and branding only. No installer, CLI, or `ovd-plan` behavior changed.

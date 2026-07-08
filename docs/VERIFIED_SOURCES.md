@@ -2,7 +2,7 @@
 
 These are the upstream refs and package versions verified for this release. Default installs use the pinned value. Use `--allow-upstream-drift` only when you intentionally want the tracking branch or latest package instead.
 
-Verified on: 2026-07-07
+Verified on: 2026-07-08
 
 | Source | Type | Pinned value | Tracking value | Upstream |
 |---|---|---|---|---|
@@ -12,7 +12,7 @@ Verified on: 2026-07-07
 | Emil Kowalski skill | Git | `ecf66bbd1fb33c25332b6b0e454d08049978284c` | `main` | https://github.com/emilkowalski/skill |
 | Modern Web Guidance | Git | `65d7f20ac85517a362107ce89b7be7f905105fd3` | `main` | https://github.com/GoogleChrome/modern-web-guidance |
 | Remotion Skills | Git | `277510e78245ac0fa275d7cb6520d52e0ac2e212` | `main` | https://github.com/remotion-dev/skills |
-| Agent Skills for Context Engineering | Git | `61f38ffc0ff3ae83adcf2fe011f3b751105add6d` | `main` | https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering |
+| Agent Skills for Context Engineering | Git | `1acd6681ced81f74625096a1b6c8426404b25e26` | `main` | https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering |
 | MarketingSkills | Git | `0f39e12b76457c3463a7eba1d22c658de5886b8b` | `main` | https://github.com/coreyhaines31/marketingskills |
 | Stop Slop | Git | `8da1f030185bdfe8471220585162991eaeb970e9` | `main` | https://github.com/hardikpandya/stop-slop |
 | Banana Claude | Git | `a4b5a7e4f592029886a379496cf29980fb6b8824` | `main` | https://github.com/AgriciDaniel/banana-claude |
@@ -24,7 +24,9 @@ Verified on: 2026-07-07
 | Claude Video by Brad Bonanno / @bradautomates | Git | `c333c2289e57bf040b32846f18d669e3f8edad9b` | `main` | https://github.com/bradautomates/claude-video |
 | Humanizer by Siqi Chen / @blader | Git | `a2ace14a88a6746f64f1f53ed8272d6788828038` | `main` | https://github.com/blader/humanizer |
 | Prompt Master by Nidhin J S / @nidhinjs | Git | `7a02ddd31bad3056cc3ccf0af2b23d7b30d4abc2` | `main` | https://github.com/nidhinjs/prompt-master |
-| Anthropic example skills | Git | `690f15cac7f7b4c055c5ab109c79ed9259934081` | `main` | https://github.com/anthropics/skills |
+| Addy Osmani Agent Skills | Git | `70b7506ce90e200cb47645ddb3f6b8e84fecc047` | `main` | https://github.com/addyosmani/agent-skills |
+| Matt Pocock Skills | Git | `d574778f94cf620fcc8ce741584093bc650a61d3` | `main` | https://github.com/mattpocock/skills |
+| Anthropic example skills | Git | `9d2f1ae187231d8199c64b5b762e1bdf2244733d` | `main` | https://github.com/anthropics/skills |
 | OpenAI Skills Catalog | Git | `b0401f07213a66414d84a65cb50c1d226f99485a` | `main` | https://github.com/openai/skills |
 | Vercel Labs Skills | Git | `e4243fbf7d9398722024f62850ece90fa0d5c693` | `main` | https://github.com/vercel-labs/skills |
 | Composio Awesome Claude Skills | Git | `92568c1edaff1bde5371154f036d959346c145a8` | `master` | https://github.com/ComposioHQ/awesome-claude-skills |
@@ -72,6 +74,13 @@ The links below are credited sources and provenance references for local skills,
 | Claude Video | Brad Bonanno / @bradautomates | https://github.com/bradautomates/claude-video |
 | Pretext | Cheng Lou / @_chenglou | https://github.com/chenglou/pretext · npm `@chenglou/pretext` |
 | Usage command inspiration | AgentSeal codeburn; ryoppippi ccusage | https://github.com/getagentseal/codeburn · https://github.com/ryoppippi/ccusage |
+| Addy Osmani engineering skills | Addy Osmani | https://github.com/addyosmani/agent-skills |
+| Matt Pocock grilling skills | Matt Pocock | https://github.com/mattpocock/skills |
+| Brag video inspiration | latent-spaces | https://github.com/latent-spaces/brag |
+| Autoresearch inspiration | Andrej Karpathy | https://github.com/karpathy/autoresearch |
+| Website cloner template inspiration | JCodesMore | https://github.com/JCodesMore/ai-website-cloner-template |
+| Awesome Claude Code research list | hesreallyhim | https://github.com/hesreallyhim/awesome-claude-code |
+| Fact-checker idea reference | Shubham Saboo / awesome-llm-apps | https://github.com/Shubhamsaboo/awesome-llm-apps |
 | Liquid Glass inspiration | Andrew Prifer / @AndrewPrifer | https://github.com/AndrewPrifer/liquid-dom · https://x.com/AndrewPrifer/status/2056923983581446529 |
 | Liquid Glass CSS/SVG technique | kube.io | https://kube.io/blog/liquid-glass-css-svg/ |
 | Liquid Glass implementation references | nikdelvin, rizroze, Z1Code, naughtyduk, dashersw | https://github.com/nikdelvin/liquid-glass · https://github.com/rizroze/liquid-glass · https://github.com/Z1Code/glass-refraction · https://github.com/naughtyduk/liquidGL · https://github.com/dashersw/liquid-glass-js |

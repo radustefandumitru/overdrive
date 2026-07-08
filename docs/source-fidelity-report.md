@@ -1,6 +1,6 @@
 # Overdrive Source Fidelity Report
 
-Generated: 2026-07-07T14:37:45.944Z
+Generated: 2026-07-08T20:32:11.552Z
 
 This report clones pinned upstream sources and compares included skill folders with the Overdrive-installed output after safety transforms. It is a maintainer audit aid, not a runtime dependency.
 
@@ -247,7 +247,7 @@ This report clones pinned upstream sources and compares included skill folders w
 ## context-engineering
 
 - Repo: https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering.git
-- Ref: 61f38ffc0ff3ae83adcf2fe011f3b751105add6d
+- Ref: 1acd6681ced81f74625096a1b6c8426404b25e26
 - Tracking ref: main
 - License: MIT (LICENSE)
 
@@ -400,6 +400,28 @@ This report clones pinned upstream sources and compares included skill folders w
 - Include path: `skills/tool-design`
 - Transform(s): none
 - Copied file count: 4
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### harness-engineering
+
+- Source: context-engineering
+- Include path: `skills/harness-engineering`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### self-improvement-loops
+
+- Source: context-engineering
+- Include path: `skills/self-improvement-loops`
+- Transform(s): none
+- Copied file count: 2
 - Modified file(s): none
 - Added file(s): none
 - Omitted file count: 0
@@ -910,12 +932,12 @@ This report clones pinned upstream sources and compares included skill folders w
 
 - Source: obsidian-skills
 - Include path: `skills/defuddle`
-- Transform(s): none
+- Transform(s): overdrive-defuddle-safe
 - Copied file count: 1
 - Modified file(s): none
 - Added file(s): none
 - Omitted file count: 0
-- Install/setup string hits: `SKILL.md: npm install -g`
+- Install/setup string hits: none
 
 ## last30days-skill
 
@@ -1134,7 +1156,7 @@ This report clones pinned upstream sources and compares included skill folders w
 ## anthropic-example-skills
 
 - Repo: https://github.com/anthropics/skills.git
-- Ref: 690f15cac7f7b4c055c5ab109c79ed9259934081
+- Ref: 9d2f1ae187231d8199c64b5b762e1bdf2244733d
 - Tracking ref: main
 - License: not detected
 
@@ -1181,6 +1203,83 @@ This report clones pinned upstream sources and compares included skill folders w
 - Added file(s): none
 - Omitted file count: 0
 - Install/setup string hits: `SKILL.md: pip install`
+
+### algorithmic-art
+
+- Source: anthropic-example-skills
+- Include path: `skills/algorithmic-art`
+- Transform(s): none
+- Copied file count: 4
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### canvas-design
+
+- Source: anthropic-example-skills
+- Include path: `skills/canvas-design`
+- Transform(s): none
+- Copied file count: 83
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### claude-api
+
+- Source: anthropic-example-skills
+- Include path: `skills/claude-api`
+- Transform(s): none
+- Copied file count: 66
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: `SKILL.md: AskUserQuestion`; `python/claude-api/README.md: pip install`; `python/claude-api/tool-use.md: pip install`; `python/managed-agents/README.md: pip install`; `shared/anthropic-cli.md: brew install`; `shared/claude-platform-on-aws.md: pip install`; `shared/tool-use-concepts.md: pip install`
+
+### skill-creator
+
+- Source: anthropic-example-skills
+- Include path: `skills/skill-creator`
+- Transform(s): none
+- Copied file count: 18
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### web-artifacts-builder
+
+- Source: anthropic-example-skills
+- Include path: `skills/web-artifacts-builder`
+- Transform(s): overdrive-web-artifacts-safe
+- Copied file count: 5
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### webapp-testing
+
+- Source: anthropic-example-skills
+- Include path: `skills/webapp-testing`
+- Transform(s): none
+- Copied file count: 6
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### theme-factory
+
+- Source: anthropic-example-skills
+- Include path: `skills/theme-factory`
+- Transform(s): none
+- Copied file count: 13
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
 
 ## openai-skills-curated
 
@@ -1229,12 +1328,12 @@ This report clones pinned upstream sources and compares included skill folders w
 
 - Source: awesome-claude-skills-curated
 - Include path: `artifacts-builder`
-- Transform(s): none
+- Transform(s): overdrive-web-artifacts-safe
 - Copied file count: 5
 - Modified file(s): none
 - Added file(s): none
 - Omitted file count: 0
-- Install/setup string hits: `scripts/init-artifact.sh: npm install -g`
+- Install/setup string hits: none
 
 ### changelog-generator
 
@@ -1423,21 +1522,145 @@ This report clones pinned upstream sources and compares included skill folders w
 - Omitted file count: 0
 - Install/setup string hits: none
 
-### theme-factory
+### twitter-algorithm-optimizer
 
 - Source: awesome-claude-skills-curated
-- Include path: `theme-factory`
+- Include path: `twitter-algorithm-optimizer`
 - Transform(s): none
-- Copied file count: 13
+- Copied file count: 1
 - Modified file(s): none
 - Added file(s): none
 - Omitted file count: 0
 - Install/setup string hits: none
 
-### twitter-algorithm-optimizer
+## addy-agent-skills
 
-- Source: awesome-claude-skills-curated
-- Include path: `twitter-algorithm-optimizer`
+- Repo: https://github.com/addyosmani/agent-skills.git
+- Ref: 70b7506ce90e200cb47645ddb3f6b8e84fecc047
+- Tracking ref: main
+- License: MIT (LICENSE)
+
+### interview-me
+
+- Source: addy-agent-skills
+- Include path: `skills/interview-me`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### doubt-driven-development
+
+- Source: addy-agent-skills
+- Include path: `skills/doubt-driven-development`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### source-driven-development
+
+- Source: addy-agent-skills
+- Include path: `skills/source-driven-development`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### api-and-interface-design
+
+- Source: addy-agent-skills
+- Include path: `skills/api-and-interface-design`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### code-simplification
+
+- Source: addy-agent-skills
+- Include path: `skills/code-simplification`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### documentation-and-adrs
+
+- Source: addy-agent-skills
+- Include path: `skills/documentation-and-adrs`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### performance-optimization
+
+- Source: addy-agent-skills
+- Include path: `skills/performance-optimization`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: `SKILL.md: npx`
+
+### test-driven-development
+
+- Source: addy-agent-skills
+- Include path: `skills/test-driven-development`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### debugging-and-error-recovery
+
+- Source: addy-agent-skills
+- Include path: `skills/debugging-and-error-recovery`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+## mattpocock-skills
+
+- Repo: https://github.com/mattpocock/skills.git
+- Ref: d574778f94cf620fcc8ce741584093bc650a61d3
+- Tracking ref: main
+- License: MIT (LICENSE)
+
+### grill-me
+
+- Source: mattpocock-skills
+- Include path: `skills/productivity/grill-me`
+- Transform(s): none
+- Copied file count: 1
+- Modified file(s): none
+- Added file(s): none
+- Omitted file count: 0
+- Install/setup string hits: none
+
+### grilling
+
+- Source: mattpocock-skills
+- Include path: `skills/productivity/grilling`
 - Transform(s): none
 - Copied file count: 1
 - Modified file(s): none

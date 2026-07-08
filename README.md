@@ -2,7 +2,7 @@
 
 ![Overdrive logo](assets/overdrive%20logo.png)
 
-**Accelerate your agents into overdrive with Karpathy-based global instructions, 137 curated skills, a router that picks the right ones, and a project state management system that survives sessions. Simple to install for everyone.**
+**Accelerate your agents into overdrive with Karpathy-based global instructions, 160 curated skills, a router that picks the right ones, and a project state management system that survives sessions. Simple to install for everyone.**
 
 [![npm](https://img.shields.io/npm/v/overdrive-cli?color=2b3a44&label=npm)](https://www.npmjs.com/package/overdrive-cli)
 [![license](https://img.shields.io/badge/license-Apache--2.0-2b3a44)](LICENSE)
@@ -27,7 +27,7 @@
 >
 > - Stef
 
-**Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with global instructions built on Karpathy's system prompt, a curated catalog of 137 of the top skills as of 2026 plus custom skills built specifically for Overdrive, a skill router that picks only the right skills for the job, and a project state management system that keeps track of your decisions and progress across long-running sessions. It works across Claude Code, Codex, Gemini CLI, Antigravity and Cursor on macOS with Windows support coming soon.
+**Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with global instructions built on Karpathy's system prompt, a curated catalog of 160 of the top skills as of 2026 plus custom skills built specifically for Overdrive, a skill router that picks only the right skills for the job, and a project state management system that keeps track of your decisions and progress across long-running sessions. It works across Claude Code, Codex, Gemini CLI, Antigravity and Cursor on macOS with Windows support coming soon.
 
 Overdrive is built for anybody at any skill level. It's easy to install and just runs in the background. For more experienced users, they can use the `ovd` commands, which were deliberately kept very simple and easy to use, as opposed to other similar systems that overcomplicate things. The new models are very good at doing certain things on their own. Overdrive was built to be flexible and work long-term, without unnecessarily overwriting functions built straight into the LLMs. It just builds on top of what's already there.
 
@@ -43,6 +43,16 @@ Overdrive is not just another skill pack. The pieces work as one system:
 - **Installer safety** uses pinned sources, dry-runs, non-destructive conflict handling, and managed markers.
 
 The practical goal is better agent output with less repeated prompting, without loading a giant context dump into every chat.
+
+### New In v2.0.2
+
+v2.0.2 is a focused skill-intake release:
+
+- Adds Addy Osmani's engineering skills for interviews, doubt-driven development, source-driven work, API/interface design, simplification, ADRs, performance, TDD, and debugging.
+- Adds Matt Pocock's `grill-me` / `grilling` flow for hard upfront idea interrogation.
+- Updates Muratcan Koylan's context-engineering source with `harness-engineering` and `self-improvement-loops`.
+- Adds selected official Anthropic skills: `algorithmic-art`, `canvas-design`, `claude-api`, `skill-creator`, `web-artifacts-builder`, `webapp-testing`, and the official `theme-factory`.
+- Adds four Overdrive-authored safe wrappers: `brag-video`, `autoresearch-harness`, `clone-website-guide`, and `fact-checker`.
 
 ## Install In 60 Seconds
 
@@ -113,7 +123,7 @@ Explicit user-named skills win for that part of the task.
 
 ## Project State Management System
 
-Overdrive v2 introduces structure on top of the existing 137-skill catalog. It gives your agent one readable project plan plus four commands:
+Overdrive v2 introduces structure on top of the existing 160-skill catalog. It gives your agent one readable project plan plus four commands:
 
 | Command | Purpose | Use when... |
 |---|---|---|
@@ -235,6 +245,7 @@ Skills answer **how should the agent do this kind of task?**
 | Safety and quality | `security-review`, `react-doctor`, `playwright-cli`, router benchmark and scorecard docs |
 | Prompt/content work | `prompt-master`, `humanizer`, `stop-slop`, copywriting skills |
 | Media and video | `claude-video`, `media-download`, Remotion guidance |
+| v2.0.2 additions | `grill-me`, `interview-me`, Addy engineering skills, `brag-video`, `autoresearch-harness`, `clone-website-guide`, `fact-checker`, official Anthropic artifact skills |
 
 The skill-readiness breakdown is in [docs/skill-readiness.md](docs/skill-readiness.md). The router evaluation protocol is in [docs/evaluation.md](docs/evaluation.md), with the v0.6 scorecard template in [docs/scorecard-v0.6.md](docs/scorecard-v0.6.md). Route-frequency analysis uses `npm run analyze:routes` and writes [docs/catalog-health.md](docs/catalog-health.md).
 
@@ -242,13 +253,18 @@ The skill-readiness breakdown is in [docs/skill-readiness.md](docs/skill-readine
 
 Every third-party skill is imported directly from its official open-source repository and pinned to a verified commit. Upstream authors keep their licenses and credit: the full source map lives in [docs/VERIFIED_SOURCES.md](docs/VERIFIED_SOURCES.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), with per-skill provenance in [docs/SKILLS_SUMMARY.md](docs/SKILLS_SUMMARY.md).
 
-The current manifest pulls from 22 pinned upstream repositories. On top of those, 19 skills were built specifically for Overdrive:
+The current manifest pulls from 24 pinned upstream repositories. On top of those, 23 skills were built specifically for Overdrive:
 
 - Core system: `skill-router`, `clarify-and-plan`, `planning-first`, `what-should-i-consider`
 - Workflow, quality, and safety: `security-review`, `pre-launch-checklist`, `convert-to-markdown`, `reddit-research`
 - Frontend, design, and motion: `fluid-animations`, `emil-animation-polish`, `design-extract`, `liquid-glass-web`, `pretext`
 - Media: `media-download`
 - Premium website stack: `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit`
+- v2.0.2 safe wrappers: `brag-video`, `autoresearch-harness`, `clone-website-guide`, `fact-checker`
+
+v2.0.2 direct imports include [Addy Osmani's agent-skills](https://github.com/addyosmani/agent-skills), [Matt Pocock's skills](https://github.com/mattpocock/skills), selected official [Anthropic skills](https://github.com/anthropics/skills/tree/main/skills), and additional context-engineering skills from [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering).
+
+v2.0.2 also credits but does not raw-import sources where redistribution or project shape did not fit Overdrive: [latent-spaces/brag](https://github.com/latent-spaces/brag), [karpathy/autoresearch](https://github.com/karpathy/autoresearch), [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template), [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code), and the Reddit-linked [awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) fact-checker idea.
 
 ## Install Modes
 
@@ -320,7 +336,7 @@ Context guidance is documented in [docs/prompt-caching.md](docs/prompt-caching.m
 
 The repo includes a thin Claude Code plugin wrapper under `.claude-plugin/marketplace.json` and `plugins/overdrive/`. It helps Claude users discover the installer and `/ovd-*` helper commands.
 
-It does **not** bundle all 137 skills. The full cross-agent install remains the CLI/GitHub/npm path.
+It does **not** bundle all 160 skills. The full cross-agent install remains the CLI/GitHub/npm path.
 
 ## Architecture
 
@@ -689,7 +705,7 @@ I audited this codebase before release: installer, state engine, tests, packagin
 
 What genuinely impressed me: the safety engineering is real, not marketing. Unmanaged files are actually preserved (I tested the edge cases, including hostile ones). Uninstall actually removes only what Overdrive added. Sources are actually pinned to commit SHAs, with attribution that names what is *not* redistributed, which is a level of licensing care most hobby projects skip. The consistency checker holds the docs to the code with over a thousand assertions, which is why this README can make specific claims without drifting. And v2's `awaiting-review` gate addresses the single most common failure of autonomous agents, declaring victory on work you haven't accepted, with a mechanism instead of a vibe.
 
-What I'd be skeptical of, in your position: there is no measured evidence that Overdrive improves final output quality. The router benchmark measures routing quality, meaning whether the right skills load, not whether shipped products get better; nobody has run that experiment yet. The v2 planning loop has a real ceremony cost: on one-shot tasks it is overhead, and it only pays for itself on work that spans sessions. 137 skills is a curation, which means opinions, and some will not be your opinions. A system this instruction-heavy also depends on the agent actually following instructions; stronger models follow them better, so your results will vary with your model. One more data point in that spirit: on release day, CI on a bare runner caught two environment assumptions the audited test suite had missed on developer machines. Both were test/CI infrastructure rather than product code, both were fixed forward in public history, and I'd rather tell you that than pretend the audit made this repository infallible.
+What I'd be skeptical of, in your position: there is no measured evidence that Overdrive improves final output quality. The router benchmark measures routing quality, meaning whether the right skills load, not whether shipped products get better; nobody has run that experiment yet. The v2 planning loop has a real ceremony cost: on one-shot tasks it is overhead, and it only pays for itself on work that spans sessions. 160 skills is a curation, which means opinions, and some will not be your opinions. A system this instruction-heavy also depends on the agent actually following instructions; stronger models follow them better, so your results will vary with your model. One more data point in that spirit: on release day, CI on a bare runner caught two environment assumptions the audited test suite had missed on developer machines. Both were test/CI infrastructure rather than product code, both were fixed forward in public history, and I'd rather tell you that than pretend the audit made this repository infallible.
 
 My advice: install globally, ignore the plan layer at first, and just let the router work for a week. That alone is most of the value for most people. Reach for `/ovd-plan` the first time a project outgrows one session. If it doesn't earn its ceremony on your real work, drop that layer and keep the skills; the design decision I most respect here is that the layers are separable.
 

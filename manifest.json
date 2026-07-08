@@ -194,7 +194,7 @@
     {
       "id": "context-engineering",
       "repo": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering.git",
-      "ref": "61f38ffc0ff3ae83adcf2fe011f3b751105add6d",
+      "ref": "1acd6681ced81f74625096a1b6c8426404b25e26",
       "trackingRef": "main",
       "includes": [
         {
@@ -252,6 +252,14 @@
         {
           "from": "skills/tool-design",
           "to": "tool-design"
+        },
+        {
+          "from": "skills/harness-engineering",
+          "to": "harness-engineering"
+        },
+        {
+          "from": "skills/self-improvement-loops",
+          "to": "self-improvement-loops"
         }
       ]
     },
@@ -459,7 +467,10 @@
         },
         {
           "from": "skills/defuddle",
-          "to": "defuddle"
+          "to": "defuddle",
+          "transforms": [
+            "overdrive-defuddle-safe"
+          ]
         }
       ]
     },
@@ -592,7 +603,7 @@
     {
       "id": "anthropic-example-skills",
       "repo": "https://github.com/anthropics/skills.git",
-      "ref": "690f15cac7f7b4c055c5ab109c79ed9259934081",
+      "ref": "9d2f1ae187231d8199c64b5b762e1bdf2244733d",
       "trackingRef": "main",
       "includes": [
         {
@@ -610,6 +621,37 @@
         {
           "from": "skills/slack-gif-creator",
           "to": "slack-gif-creator"
+        },
+        {
+          "from": "skills/algorithmic-art",
+          "to": "algorithmic-art"
+        },
+        {
+          "from": "skills/canvas-design",
+          "to": "canvas-design"
+        },
+        {
+          "from": "skills/claude-api",
+          "to": "claude-api"
+        },
+        {
+          "from": "skills/skill-creator",
+          "to": "skill-creator"
+        },
+        {
+          "from": "skills/web-artifacts-builder",
+          "to": "web-artifacts-builder",
+          "transforms": [
+            "overdrive-web-artifacts-safe"
+          ]
+        },
+        {
+          "from": "skills/webapp-testing",
+          "to": "webapp-testing"
+        },
+        {
+          "from": "skills/theme-factory",
+          "to": "theme-factory"
         }
       ]
     },
@@ -645,7 +687,10 @@
       "includes": [
         {
           "from": "artifacts-builder",
-          "to": "artifacts-builder"
+          "to": "artifacts-builder",
+          "transforms": [
+            "overdrive-web-artifacts-safe"
+          ]
         },
         {
           "from": "changelog-generator",
@@ -716,12 +761,68 @@
           "to": "tailored-resume-generator"
         },
         {
-          "from": "theme-factory",
-          "to": "theme-factory"
-        },
-        {
           "from": "twitter-algorithm-optimizer",
           "to": "twitter-algorithm-optimizer"
+        }
+      ]
+    },
+    {
+      "id": "addy-agent-skills",
+      "repo": "https://github.com/addyosmani/agent-skills.git",
+      "ref": "70b7506ce90e200cb47645ddb3f6b8e84fecc047",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/interview-me",
+          "to": "interview-me"
+        },
+        {
+          "from": "skills/doubt-driven-development",
+          "to": "doubt-driven-development"
+        },
+        {
+          "from": "skills/source-driven-development",
+          "to": "source-driven-development"
+        },
+        {
+          "from": "skills/api-and-interface-design",
+          "to": "api-and-interface-design"
+        },
+        {
+          "from": "skills/code-simplification",
+          "to": "code-simplification"
+        },
+        {
+          "from": "skills/documentation-and-adrs",
+          "to": "documentation-and-adrs"
+        },
+        {
+          "from": "skills/performance-optimization",
+          "to": "performance-optimization"
+        },
+        {
+          "from": "skills/test-driven-development",
+          "to": "test-driven-development"
+        },
+        {
+          "from": "skills/debugging-and-error-recovery",
+          "to": "debugging-and-error-recovery"
+        }
+      ]
+    },
+    {
+      "id": "mattpocock-skills",
+      "repo": "https://github.com/mattpocock/skills.git",
+      "ref": "d574778f94cf620fcc8ce741584093bc650a61d3",
+      "trackingRef": "main",
+      "includes": [
+        {
+          "from": "skills/productivity/grill-me",
+          "to": "grill-me"
+        },
+        {
+          "from": "skills/productivity/grilling",
+          "to": "grilling"
         }
       ]
     }
@@ -1040,6 +1141,115 @@
       "expected": [
         "claude-video"
       ]
+    },
+    {
+      "prompt": "Grill me hard before I start building this product idea",
+      "expected": [
+        "grill-me",
+        "grilling"
+      ]
+    },
+    {
+      "prompt": "Interview me to clarify the requirements before writing code",
+      "expected": [
+        "interview-me"
+      ]
+    },
+    {
+      "prompt": "Use doubt-driven development to challenge this implementation plan",
+      "expected": [
+        "doubt-driven-development"
+      ]
+    },
+    {
+      "prompt": "Design a stable API and interface boundary for this module",
+      "expected": [
+        "api-and-interface-design"
+      ]
+    },
+    {
+      "prompt": "Simplify this code without changing behavior",
+      "expected": [
+        "code-simplification"
+      ]
+    },
+    {
+      "prompt": "Use source-driven development to ground this change in docs and code",
+      "expected": [
+        "source-driven-development"
+      ]
+    },
+    {
+      "prompt": "Write ADRs and documentation for this architecture decision",
+      "expected": [
+        "documentation-and-adrs"
+      ]
+    },
+    {
+      "prompt": "Optimize the performance of this slow page without guessing",
+      "expected": [
+        "performance-optimization"
+      ]
+    },
+    {
+      "prompt": "Debug this flaky error and build a recovery path",
+      "expected": [
+        "debugging-and-error-recovery"
+      ]
+    },
+    {
+      "prompt": "Create algorithmic art as a browser artifact",
+      "expected": [
+        "algorithmic-art",
+        "web-artifacts-builder"
+      ]
+    },
+    {
+      "prompt": "Build and test a web artifact canvas prototype",
+      "expected": [
+        "canvas-design",
+        "web-artifacts-builder",
+        "webapp-testing"
+      ]
+    },
+    {
+      "prompt": "Help me create a new portable skill for this workflow",
+      "expected": [
+        "skill-creator"
+      ]
+    },
+    {
+      "prompt": "Create a launch brag video storyboard for this feature",
+      "expected": [
+        "brag-video"
+      ]
+    },
+    {
+      "prompt": "Set up a safe autonomous research harness with clear budget limits",
+      "expected": [
+        "autoresearch-harness",
+        "harness-engineering"
+      ]
+    },
+    {
+      "prompt": "Clone this public website into a fresh project without impersonating it",
+      "expected": [
+        "clone-website-guide",
+        "design-extract"
+      ]
+    },
+    {
+      "prompt": "Fact-check every claim in this article and flag weak sources",
+      "expected": [
+        "fact-checker"
+      ]
+    },
+    {
+      "prompt": "Improve this context engineering harness over repeated eval loops",
+      "expected": [
+        "harness-engineering",
+        "self-improvement-loops"
+      ]
     }
   ],
   "localSkills": [
@@ -1118,6 +1328,22 @@
     {
       "from": "skills/reddit-research",
       "to": "reddit-research"
+    },
+    {
+      "from": "skills/brag-video",
+      "to": "brag-video"
+    },
+    {
+      "from": "skills/autoresearch-harness",
+      "to": "autoresearch-harness"
+    },
+    {
+      "from": "skills/clone-website-guide",
+      "to": "clone-website-guide"
+    },
+    {
+      "from": "skills/fact-checker",
+      "to": "fact-checker"
     }
   ],
   "officialInstallers": [

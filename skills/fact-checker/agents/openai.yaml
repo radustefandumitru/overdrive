@@ -1,0 +1,13 @@
+name: fact-checker
+description: Extract factual claims, verify them against credible sources, rate support levels, and suggest safer wording or citations.
+triggers:
+  - fact check
+  - fact-check
+  - verify claims
+  - check claims
+  - source check
+  - citation check
+  - is this accurate
+  - validate this article
+prompt:
+  default_prompt: "Use $fact-checker to extract claims, verify them with credible sources, rate support, and suggest safer wording."

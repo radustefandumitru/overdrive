@@ -518,6 +518,125 @@
         "Uses frames, captions, or fallback analysis appropriately.",
         "Reports concrete timestamps/visual moments when available."
       ]
+    },
+    {
+      "id": "grill-me-before-product-build",
+      "prompt": "Grill me hard before I build this app idea. I want you to challenge every assumption first.",
+      "expectedSkills": [
+        "grill-me",
+        "grilling"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant."
+      ]
+    },
+    {
+      "id": "interview-me-requirements-brief",
+      "prompt": "Interview me and turn my answers into requirements before we write code.",
+      "expectedSkills": [
+        "interview-me"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant."
+      ]
+    },
+    {
+      "id": "doubt-driven-plan-review",
+      "prompt": "Use doubt-driven development to challenge this implementation plan before I start coding.",
+      "expectedSkills": [
+        "doubt-driven-development"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant."
+      ]
+    },
+    {
+      "id": "clone-public-website-safely",
+      "prompt": "Clone this public website into a fresh project, but make sure we do it safely and do not impersonate the brand.",
+      "expectedSkills": [
+        "clone-website-guide",
+        "design-extract"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant.",
+        "Explicitly requires authorization/public-only scope and rejects phishing or credential collection."
+      ]
+    },
+    {
+      "id": "launch-brag-video",
+      "prompt": "Create a short brag video storyboard and captions for this feature launch.",
+      "expectedSkills": [
+        "brag-video"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant."
+      ]
+    },
+    {
+      "id": "safe-autoresearch-loop",
+      "prompt": "Set up an autonomous research harness that can iterate on experiments, but keep budget and stop conditions explicit.",
+      "expectedSkills": [
+        "autoresearch-harness",
+        "harness-engineering"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant.",
+        "Does not start long-running or costly loops without explicit approval."
+      ]
+    },
+    {
+      "id": "fact-check-article-claims",
+      "prompt": "Fact-check every claim in this article and tell me which sources are weak or unverifiable.",
+      "expectedSkills": [
+        "fact-checker"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant.",
+        "Uses claim-level ratings and distinguishes source quality from truth."
+      ]
+    },
+    {
+      "id": "official-anthropic-web-artifact",
+      "prompt": "Build a polished web artifact and test the interactions before I share it.",
+      "expectedSkills": [
+        "web-artifacts-builder",
+        "webapp-testing"
+      ],
+      "controlPrompt": "Respond to the user request directly.",
+      "routedPrompt": "Use skill-router to select the best skill sequence, then answer using the selected skill guidance.",
+      "rubric": [
+        "Routes to the narrow skill family without loading the full catalog.",
+        "Explains why overlapping skills were not chosen.",
+        "Keeps safety, permissions, or verification constraints explicit when relevant."
+      ]
     }
   ]
 }

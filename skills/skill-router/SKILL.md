@@ -23,13 +23,31 @@ Use this skill to choose the right installed skill or skill sequence without loa
 12. For questionnaire-style onboarding flows for web/mobile/subscription apps, use `app-onboarding-questionnaire`. Pair with design or frontend implementation skills only after the flow strategy is clear.
 13. For launch readiness, shipping checklists, beta/public release, Product Hunt, App Store, SaaS launch, client handoff, monitoring, billing, privacy, or rollback preparation, use `pre-launch-checklist`. Pair with `security-review`, `jack-seo-launch-audit`, or marketing skills only for the relevant slice.
 14. For prompt writing, prompt improvement, meta-prompts, reusable AI instructions, or "make this prompt better" requests, use `prompt-master`. Use `clarify-and-plan` when the actual project requirements are ambiguous; use `prompt-master` when the deliverable is the prompt itself.
-15. For Jack Roberts inspired premium 3D/scroll websites, route to the narrow Jack skill first, then add the normal design/web validation stack:
+15. For deep interrogation before a project starts, use `grill-me`/`grilling` or `interview-me` based on the user's desired style. Use `grill-me`/`grilling` when the user wants a hard challenge, many clarifying questions, or to pressure-test their own thinking before any plan is written. Use `interview-me` when they want a structured requirements interview that becomes a brief. Use `clarify-and-plan` after either one when the next deliverable is an implementation plan.
+16. For engineering method choices, use Addy Osmani's engineering skills narrowly:
+   - `doubt-driven-development` when the user wants assumptions challenged, design risks exposed, or a plan stress-tested before implementation.
+   - `source-driven-development` when work must be grounded in existing source, docs, tests, or upstream references before coding.
+   - `api-and-interface-design` for module boundaries, API contracts, public interfaces, schema shape, and backwards compatibility.
+   - `code-simplification` for reducing complexity without behavior drift.
+   - `documentation-and-adrs` for ADRs, decision records, architecture docs, and durable technical documentation.
+   - `performance-optimization` for evidence-led profiling, bottleneck isolation, and optimization plans.
+   - `test-driven-development` when the user explicitly wants TDD or when a safe failing-test-first loop is the right implementation strategy.
+   - `debugging-and-error-recovery` for flaky failures, error-path design, and recovery-oriented debugging.
+17. For autonomous or repeated research/experiment loops, distinguish:
+   - `autoresearch-harness` for setting up a safe, explicit-budget research or experiment harness inspired by Karpathy's autoresearch pattern.
+   - `harness-engineering` for designing robust evaluation harnesses and test loops.
+   - `self-improvement-loops` for controlled iterative improvement workflows. Do not run long or costly loops without explicit user approval.
+18. For website cloning/rebuild requests, use `clone-website-guide` when the user wants to start from or be guided through the JCodesMore website-cloner template, or when cloning ethics/permission need to be made explicit. Use `design-extract` to extract design language from public/authorized URLs, and `redesign-existing-projects` when the user already has a codebase to redesign. Do not help with phishing, impersonation, credential collection, or brand misuse.
+19. For launch/demo brag videos, use `brag-video` when the output is a launch video concept, demo storyboard, motion beat sheet, captions, or share copy. Pair with `claude-video` only when analyzing existing video footage; pair with `launch` only when the broader launch plan is in scope.
+20. For factual claim checking, citation quality, or publication risk, use `fact-checker`. Pair with `last30days` for current/unstable claims, `reddit-research` for community claims, and official docs or primary sources when claims are technical, legal, medical, financial, or safety-relevant.
+21. For official Anthropic example skills, route narrowly: `algorithmic-art` for generative visual/artifact sketches, `canvas-design` for canvas-based design artifacts, `claude-api` for Claude API usage, `skill-creator` for creating portable skills, `web-artifacts-builder` for web artifact construction, `webapp-testing` for web app testing, and `theme-factory` for reusable themes.
+22. For Jack Roberts inspired premium 3D/scroll websites, route to the narrow Jack skill first, then add the normal design/web validation stack:
    - `jack-premium-site-system` for the full brand -> asset prompts -> scroll site -> SEO -> optional launch workflow.
    - `jack-website-intelligence` for brand extraction, competitor research, client-facing strategy, and build briefs.
    - `jack-scroll-asset-prompts` for assembled/exploded, before/after, or transition prompts for AI image/video generators.
    - `jack-scroll-3d-sites` for video-on-scroll, frame-sequence canvas, GSAP/Framer Motion/Three.js scroll experiences.
    - `jack-seo-launch-audit` for multi-page SEO, metadata, structured data, responsive checks, and launch readiness.
-16. For product-design layer reasoning, use Jamie Mill's Layers skills. Always include `layers-intro` before a layer-specific skill because it explains the framework dependency model.
+23. For product-design layer reasoning, use Jamie Mill's Layers skills. Always include `layers-intro` before a layer-specific skill because it explains the framework dependency model.
    - `layers-orient` when the user does not know where the product/design problem lives.
    - `layers-observed-behaviour` for user behavior evidence, job-story candidates, and confidence.
    - `layers-domain` for domain terminology, concept maps, nouns, and language conflicts.
@@ -38,7 +56,7 @@ Use this skill to choose the right installed skill or skill sequence without loa
    - `layers-conceptual-model` for objects, states, relationships, vocabulary, and product model coherence.
    - `layers-interaction-flow` for flows, breadboards, edge cases, and open interaction decisions.
    - `layers-surface` for surface decision inventory only after lower layers are reasonably clear.
-17. For visual/frontend work, prefer the community design stack over generic design defaults:
+24. For visual/frontend work, prefer the community design stack over generic design defaults:
    - Taste skills by default for real design references, premium visual direction, anti-slop landing pages, image-first frontend workflows, brand kits, and stronger style variants.
    - `emil-design-eng` by default for buttons, hover/focus states, transitions, animations, micro-interactions, easing, component feel, and UI that should not feel static.
    - `emil-animation-polish` for practical Emil-inspired web animation implementation: CSS transitions, custom easing, duration tuning, press feedback, hover/touch behavior, tooltip timing, origin-aware popovers, and smooth animation audits.
@@ -48,26 +66,26 @@ Use this skill to choose the right installed skill or skill sequence without loa
 	   - `design-extract` when the user wants to extract colors, fonts, spacing, components, Tailwind/shadcn tokens, or a design language from a public website URL. Treat the tool as optional: Overdrive attempts browser setup during install, the agent checks availability first, and extraction stays limited to public/authorized pages.
    - `impeccable` mostly as an end-of-development polish, audit, critique, spacing, and typography pass. Ask for user feedback before broad font, hierarchy, or visual-identity changes unless the user explicitly asks the agent to decide.
    - Anthropic/Claude `frontend-design` only as fallback if the community stack fails, is unavailable, or the user rejects the direction.
-18. Add implementation support skills only when the task needs them:
+25. Add implementation support skills only when the task needs them:
    - `modern-web-guidance` for modern HTML/CSS/browser APIs, accessibility, forms, dialogs, popovers, performance, and Baseline compatibility.
    - `playwright-cli` for official Playwright CLI browser validation, screenshots, snapshots, flows, data extraction, and debugging.
    - `playwright` only as the pinned OpenAI wrapper/fallback when that specific wrapper is useful; otherwise prefer `playwright-cli`.
-19. Use Context Engineering skills when context quality, compression, prompt-cache hygiene, multi-agent architecture, memory, tool design, long-thread continuity, or evaluation is the problem. `context-optimization`, `context-compression`, and `clarify-and-plan` are situational tools, not always-on skills; use `context-compression` only when the user asks for compaction or accepts a context-budget reminder.
-20. Use Corey Haines marketing skills for SEO, CRO, copywriting, launches, pricing, ads, customer research, and growth strategy. Add `stop-slop` for public-facing prose and AI-tell cleanup. Use `humanizer` when the user gives existing text and asks to preserve meaning/facts while making it sound more natural, personal, or voice-matched; do not use it to fake authorship, fabricate lived experience, or remove required AI disclosure.
-21. Use `banana` for image-generation requests when its Claude Code/Gemini setup is available. In runtimes without Banana/API setup, route to the native image tool or ask for setup.
-22. Use Kepano's retained Obsidian-adjacent skills narrowly: `json-canvas` for JSON Canvas files and `defuddle` for clean web-to-markdown extraction when available. For broader Obsidian vault editing, proceed with normal Markdown/file tooling or ask the user to install a dedicated Obsidian workflow; snapshot real vaults before broad edits.
-23. Use `claude-video` for understanding videos, screen recordings, product demos, visual regressions in recordings, or `/watch`-style analysis. Overdrive attempts non-privileged ffmpeg/yt-dlp setup during install; Whisper keys remain user-configured and must never be collected from chat. Use `media-download` for downloading or extracting media files, not for comprehension.
-24. Use `media-download` for user-requested local media downloads, MP3 extraction, highest-quality MP4 downloads, or yt-dlp workflows. Respect platform terms and confirm permissions for restricted/copyrighted material.
-25. Use Anthropic example skills for their narrow official domains:
+26. Use Context Engineering skills when context quality, compression, prompt-cache hygiene, multi-agent architecture, memory, tool design, long-thread continuity, or evaluation is the problem. `context-optimization`, `context-compression`, and `clarify-and-plan` are situational tools, not always-on skills; use `context-compression` only when the user asks for compaction or accepts a context-budget reminder.
+27. Use Corey Haines marketing skills for SEO, CRO, copywriting, launches, pricing, ads, customer research, and growth strategy. Add `stop-slop` for public-facing prose and AI-tell cleanup. Use `humanizer` when the user gives existing text and asks to preserve meaning/facts while making it sound more natural, personal, or voice-matched; do not use it to fake authorship, fabricate lived experience, or remove required AI disclosure.
+28. Use `banana` for image-generation requests when its Claude Code/Gemini setup is available. In runtimes without Banana/API setup, route to the native image tool or ask for setup.
+29. Use Kepano's retained Obsidian-adjacent skills narrowly: `json-canvas` for JSON Canvas files and `defuddle` for clean web-to-markdown extraction when available. For broader Obsidian vault editing, proceed with normal Markdown/file tooling or ask the user to install a dedicated Obsidian workflow; snapshot real vaults before broad edits.
+30. Use `claude-video` for understanding videos, screen recordings, product demos, visual regressions in recordings, or `/watch`-style analysis. Overdrive attempts non-privileged ffmpeg/yt-dlp setup during install; Whisper keys remain user-configured and must never be collected from chat. Use `media-download` for downloading or extracting media files, not for comprehension.
+31. Use `media-download` for user-requested local media downloads, MP3 extraction, highest-quality MP4 downloads, or yt-dlp workflows. Respect platform terms and confirm permissions for restricted/copyrighted material.
+32. Use Anthropic example skills for their narrow official domains:
    - `brand-guidelines` only when Anthropic branding, colors, typography, or company style guidelines are explicitly requested or appropriate.
    - `doc-coauthoring` for substantial docs, proposals, PRDs, RFCs, technical specs, and decision docs.
    - `mcp-builder` for MCP server design, tool schemas, API/service integrations, and MCP evaluation. Use Context7/current docs for SDK specifics.
    - `slack-gif-creator` for Slack-ready GIFs, animated emoji, and short workspace reaction loops. Approval-gate any actual Slack upload/post.
-26. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
-27. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
-28. Use Vercel Labs `find-skills` only when the user wants to discover, compare, or install new skills. Do not run broad skill discovery for normal implementation tasks.
-29. Keep context small: route to the minimum sufficient skill sequence, state the order, and load only the reference needed for the conflict. Prefer stable, deterministic ordering: clarify/planning first, then product/domain reasoning, implementation, validation, launch/handoff, and context-management skills only when needed. There is no hard cap: genuinely complex tasks may use more skills when they are phased and each skill has a clear job.
-30. If `.overdrive/` exists and the runtime command is available, append a short route trace after choosing skills:
+33. Use Composio/connect-style action skills reluctantly and only after explicit user approval before sending, posting, creating, deleting, authenticating, spending credits, or touching external accounts.
+34. Treat MCPs/connectors as tools, not skills. The shareable kit only assumes Context7 for current documentation lookup; other MCPs are user/project-specific and should not be assumed.
+35. Use Vercel Labs `find-skills` only when the user wants to discover, compare, or install new skills. Do not run broad skill discovery for normal implementation tasks.
+36. Keep context small: route to the minimum sufficient skill sequence, state the order, and load only the reference needed for the conflict. Prefer stable, deterministic ordering: clarify/planning first, then product/domain reasoning, implementation, validation, launch/handoff, and context-management skills only when needed. There is no hard cap: genuinely complex tasks may use more skills when they are phased and each skill has a clear job.
+37. If `.overdrive/` exists and the runtime command is available, append a short route trace after choosing skills:
    `overdrive route --skills "skill-a,skill-b" --reason "short reason"`.
    Skip this silently if the command is unavailable or the workflow folder is absent.
 
@@ -81,8 +99,15 @@ Use this skill to choose the right installed skill or skill sequence without loa
 - `layers-*` vs `clarify-and-plan`/`planning-first`: use Layers for product-design substance: observed behavior, domain language, user needs, strategy, conceptual model, interaction flow, and surface decisions. Use planning skills for process, implementation phases, and execution discipline.
 - `layers-surface` vs visual polish skills: use `layers-surface` to inventory surface-level product/design decisions. Use Taste, Emil, Impeccable, and `liquid-glass-web` for actual visual direction, motion, polish, and implementation.
 - `prompt-master` vs `clarify-and-plan`: use `prompt-master` when the output is an improved AI prompt, reusable instruction, or prompt template. Use `clarify-and-plan` when the agent needs to clarify the actual product/code requirements before doing work.
+- `grill-me`/`grilling` vs `interview-me` vs `clarify-and-plan`: use `grill-me`/`grilling` for aggressive idea interrogation and hidden-assumption surfacing before planning. Use `interview-me` for structured requirements gathering. Use `clarify-and-plan` when the next artifact is an implementation plan with options and phases.
+- `doubt-driven-development` vs `what-should-i-consider`: use `doubt-driven-development` when the critique should feed an engineering workflow or code plan. Use `what-should-i-consider` for broader strategic, product, or architecture pressure tests.
+- `source-driven-development` vs `last30days`/Context7: use `source-driven-development` to ground implementation in local source, tests, and cited docs. Use `last30days` for recent external sentiment and Context7 for current library/API documentation.
 - `humanizer` vs `stop-slop`: use `humanizer` for preserving facts and meaning while adapting existing text to a human voice. Use `stop-slop` for broader AI-tell cleanup, punchier public prose, and generic writing removal.
 - `design-extract` vs design-generation/polish skills: use `design-extract` to extract a design language from an existing public URL. Feed the findings into Taste/Impeccable/Emil when implementing or polishing a new UI.
+- `clone-website-guide` vs `design-extract`/`redesign-existing-projects`: use `clone-website-guide` when the user explicitly wants a clone/rebuild workflow or a fresh JCodesMore template flow. Use `design-extract` for authorized design-language extraction from a URL. Use `redesign-existing-projects` when the user already has an app/codebase to improve rather than a fresh clone.
+- `brag-video` vs `launch`/`claude-video`: use `brag-video` for launch/demo video storyboards and social-ready scripts. Use `launch` for the broader go-to-market plan. Use `claude-video` to understand or critique existing video footage.
+- `autoresearch-harness` vs `harness-engineering`/`self-improvement-loops`: use `autoresearch-harness` for safe autonomous research-loop setup and guardrails. Use `harness-engineering` for eval/test harness design. Use `self-improvement-loops` for controlled iteration over an existing harness.
+- `fact-checker` vs `last30days`/`reddit-research`: use `fact-checker` to verify claims and source quality. Add `last30days` for unstable current claims and `reddit-research` only when community/Reddit claims are part of the evidence.
 - `liquid-glass-web` vs `emil-animation-polish`/`fluid-animations`: use `liquid-glass-web` for glass/refraction tier selection and implementation. Use Emil/Fluid for how it moves, responds, and feels.
 - `pretext` vs design-generation/polish skills: use `pretext` for text layout math, measurement, virtualization, and reflow avoidance. Use Taste/Impeccable/Emil/Layers for visual direction, typography taste, product reasoning, and interaction polish.
 - `claude-video` vs `media-download`: use `claude-video` to understand a video or screen recording. Use `media-download` when the requested action is saving, extracting, or downloading media.

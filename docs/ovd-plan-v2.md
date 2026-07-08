@@ -8,7 +8,7 @@
 
 Overdrive v1 is the **execution layer** for AI coding agents:
 
-- 137 specialist skills covering frontend design, animation, security, SEO, research, launch, prompt engineering, codebase intelligence, and more.
+- 160 specialist skills covering frontend design, animation, security, SEO, research, launch, prompt engineering, codebase intelligence, and more.
 - `skill-router` chooses the right skills per request without loading the whole catalog.
 - Global operating guide, based on Andrej Karpathy's Claude system prompt and adapted to fit Overdrive, instructs agents to plan, verify, watch context budget, use current docs.
 - `ovd-workflow`, the project state management system, persists project state (`.overdrive/project.md`, `state.md`, `decisions.md`, etc.) so agents remember active work, decisions, and constraints.
@@ -184,7 +184,7 @@ Your existing `/ovd-status`, `/ovd-doctor`, `/ovd-checkpoint`, `/ovd-resync`, `/
 
 ## What's untouched
 
-- **The 137 skill files** in `skills/*/SKILL.md` and their references. Hard rule: v2 does not modify any skill.
+- **The 160 skill files** in `skills/*/SKILL.md` and their references. Hard rule: v2 does not modify any skill.
 - **`skill-router`'s existing routing rules.** The new section is purely additive.
 - **The installer.** v2 adds new CLI subcommands; nothing existing changes behavior.
 - **The hook integration.** New commands can register hooks via the same mechanism.

@@ -4,9 +4,9 @@ Overdrive is plug-and-play for installation: the installer can place skills and 
 
 ## Default Install Summary
 
-- Unique skills in the current manifest: 137
-- Locally authored Overdrive skills: 19
-- Upstream GitHub-sourced skills: 117
+- Unique skills in the current manifest: 160
+- Locally authored Overdrive skills: 23
+- Upstream GitHub-sourced skills: 136
 - Official installer-backed skills: 1 (`playwright-cli`)
 - Global roots supported: Claude Code, Codex, Gemini CLI, Antigravity, Cursor, and shared `.agents`
 - ovd-workflow runtime: installed under `~/.overdrive/runtime/current/` for hooks, status, doctor, resync, knowledge-vault indexing, preferences, route traces, checkpoints, and v2 `ovd-plan` commands.
@@ -33,6 +33,10 @@ These work immediately after install and agent reload because they are instructi
 - `prompt-master` prompt-writing guidance
 - `humanizer` meaning-preserving voice cleanup guidance
 - `design-extract` safe design-language extraction guidance, with optional tooling checks and manual fallbacks
+- `grill-me` / `grilling` and `interview-me` for upfront interrogation and requirements gathering
+- Addy Osmani engineering-method skills such as `doubt-driven-development`, `source-driven-development`, `api-and-interface-design`, `code-simplification`, `documentation-and-adrs`, `performance-optimization`, `test-driven-development`, and `debugging-and-error-recovery`
+- `brag-video`, `autoresearch-harness`, `clone-website-guide`, and `fact-checker` local Overdrive wrapper skills
+- Official Anthropic `algorithmic-art`, `canvas-design`, `claude-api`, `skill-creator`, `web-artifacts-builder`, `webapp-testing`, and `theme-factory` skills
 - Jack Roberts inspired `jack-*` workflow skills when used as planning/build guidance
 - Jamie Mill `layers-*` product-design reasoning skills
 - Taste, Impeccable, Emil, Modern Web Guidance, Remotion guidance, Stop Slop, most MarketingSkills, Context Engineering guidance, Anthropic example skills, and OpenAI/Vercel routing guidance

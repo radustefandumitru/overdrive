@@ -68,6 +68,15 @@ function collectManifestSkills(manifest) {
   return { local, source, official, all: [...local, ...source, ...official] };
 }
 
+function findManifestInclude(skillName) {
+  for (const sourceEntry of manifest.sources || []) {
+    for (const include of sourceEntry.includes || []) {
+      if (include.to === skillName) return { source: sourceEntry, include };
+    }
+  }
+  return null;
+}
+
 function parseBenchmark() {
   const benchmarkPath = 'evals/router-benchmark.json';
   if (!exists(benchmarkPath)) return null;
@@ -100,7 +109,7 @@ const retiredSlashStatus = ['as', 'status'].join('-');
 console.log('Overdrive consistency check');
 
 check('package is overdrive-cli', pkg.name === 'overdrive-cli', `found ${pkg.name}`);
-check('package version is 2.0.1', pkg.version === '2.0.1', `found ${pkg.version}`);
+check('package version is 2.0.2', pkg.version === '2.0.2', `found ${pkg.version}`);
 check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pkg.license}`);
 check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
 check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');
@@ -110,10 +119,10 @@ check('manifest schema version is 6', manifest.version === 6, `found ${manifest.
 check('manifest schema description mentions version 6', /version 6/i.test(manifest.schemaDescription || ''));
 check('manifest includes ovd-workflow metadata', manifest.ovdWorkflow?.projectStateDir === '.overdrive' && /OVERDRIVE_WORKFLOW/.test(manifest.ovdWorkflow?.disableEnv || ''));
 check('manifest no longer uses asWorkflow key', !Object.prototype.hasOwnProperty.call(manifest, 'asWorkflow'));
-check('manifest has 19 local skills', skills.local.length === 19, `found ${skills.local.length}`);
-check('manifest has 117 upstream GitHub skills', skills.source.length === 117, `found ${skills.source.length}`);
+check('manifest has 23 local skills', skills.local.length === 23, `found ${skills.local.length}`);
+check('manifest has 136 upstream GitHub skills', skills.source.length === 136, `found ${skills.source.length}`);
 check('manifest has 1 installer-backed skill', skills.official.length === 1, `found ${skills.official.length}`);
-check('manifest has 137 unique skills', uniqueSkills.size === 137, `found ${uniqueSkills.size}`);
+check('manifest has 160 unique skills', uniqueSkills.size === 160, `found ${uniqueSkills.size}`);
 check('manifest skill names are unique', uniqueSkills.size === skills.all.length);
 check('manifest includes react-doctor', uniqueSkills.has('react-doctor'));
 check('manifest includes what-should-i-consider', uniqueSkills.has('what-should-i-consider'));
@@ -127,6 +136,14 @@ check('manifest includes prompt-master', uniqueSkills.has('prompt-master'));
 check('manifest includes humanizer', uniqueSkills.has('humanizer'));
 check('manifest includes design-extract', uniqueSkills.has('design-extract'));
 check('manifest includes claude-video', uniqueSkills.has('claude-video'));
+check('manifest includes v2.0.2 local wrappers', ['brag-video', 'autoresearch-harness', 'clone-website-guide', 'fact-checker'].every((skill) => uniqueSkills.has(skill)));
+check('manifest includes Addy Osmani engineering skills', ['interview-me', 'doubt-driven-development', 'source-driven-development', 'api-and-interface-design', 'code-simplification', 'documentation-and-adrs', 'performance-optimization', 'test-driven-development', 'debugging-and-error-recovery'].every((skill) => uniqueSkills.has(skill)));
+check('manifest includes Matt Pocock grilling skills', uniqueSkills.has('grill-me') && uniqueSkills.has('grilling'));
+check('manifest includes new context-engineering skills', uniqueSkills.has('harness-engineering') && uniqueSkills.has('self-improvement-loops'));
+check('manifest includes official Anthropic additions', ['algorithmic-art', 'canvas-design', 'claude-api', 'skill-creator', 'web-artifacts-builder', 'webapp-testing', 'theme-factory'].every((skill) => uniqueSkills.has(skill)));
+check('manifest safety-transforms defuddle', (findManifestInclude('defuddle')?.include.transforms || []).includes('overdrive-defuddle-safe'));
+check('manifest safety-transforms artifacts-builder', (findManifestInclude('artifacts-builder')?.include.transforms || []).includes('overdrive-web-artifacts-safe'));
+check('manifest safety-transforms web-artifacts-builder', (findManifestInclude('web-artifacts-builder')?.include.transforms || []).includes('overdrive-web-artifacts-safe'));
 check('manifest includes layers-intro', uniqueSkills.has('layers-intro'));
 check('manifest includes layers-orient', uniqueSkills.has('layers-orient'));
 check('manifest includes layers-conceptual-model', uniqueSkills.has('layers-conceptual-model'));
@@ -238,14 +255,14 @@ if (exists('.claude-plugin/marketplace.json')) {
 }
 if (exists('plugins/overdrive/.claude-plugin/plugin.json')) {
   const plugin = readJson('plugins/overdrive/.claude-plugin/plugin.json');
-  check('Claude plugin wrapper is overdrive v2', plugin.name === 'overdrive' && plugin.version === '2.0.0');
+  check('Claude plugin wrapper is overdrive v2.0.2', plugin.name === 'overdrive' && plugin.version === '2.0.2');
   check('Claude plugin wrapper uses Apache license', plugin.license === 'Apache-2.0');
 }
 check('Claude plugin helper skill exists', exists('plugins/overdrive/skills/overdrive/SKILL.md'));
 check('Claude plugin wrapper stays thin', !exists('plugins/overdrive/skills/skill-router') && !exists('plugins/overdrive/skills/playwright-cli'));
 
 const readme = read('README.md');
-check('README states the 137-skill catalog count', /curated catalog of 137 of the top skills/i.test(readme));
+check('README states the 160-skill catalog count', /curated catalog of 160 of the top skills/i.test(readme));
 check('README links to router evaluation docs', /docs\/evaluation\.md/.test(readme));
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
 check('README explains ovd-workflow', /ovd-workflow/i.test(readme) && /\.overdrive/.test(readme));
@@ -262,7 +279,7 @@ check('README explains knowledge vault', /knowledge vault/i.test(readme) && /kno
 check('README embeds repo-local Overdrive assets', /assets\/overdrive%20logo\.png/.test(readme) && /assets\/overdrive-flow-diagram@2x\.png/.test(readme) && /assets\/overdrive-system-diagram@2x\.png/.test(readme) && /assets\/overdrive-architecture-diagram@2x\.png/.test(readme));
 check('README documents canonical ovd aliases only', /ovd --help/.test(readme) && !readme.includes(`${retiredHyphenBrand} --help`));
 check('README exposes global guide and router in collapsible sections', /<summary>Installed global operating guide<\/summary>/.test(readme) && /<summary>Installed skill-router<\/summary>/.test(readme));
-check('README documents Claude plugin wrapper', /Claude Plugin Wrapper/.test(readme) && /\.claude-plugin\/marketplace\.json/.test(readme) && /does \*\*not\*\* bundle all 137 skills/.test(readme));
+check('README documents Claude plugin wrapper', /Claude Plugin Wrapper/.test(readme) && /\.claude-plugin\/marketplace\.json/.test(readme) && /does \*\*not\*\* bundle all 160 skills/.test(readme));
 check('README mentions MarkItDown token pipeline', /MarkItDown/i.test(readme) && /convert-to-markdown/.test(readme));
 check('README mentions route analysis', /analyze:routes/.test(readme) && /catalog-health/.test(readme));
 check('README links prompt caching doc', /docs\/prompt-caching\.md/.test(readme));
@@ -271,6 +288,7 @@ check('README mentions pretext skill', /pretext/i.test(readme) && /@chenglou\/pr
 check('README mentions v0.11 optional tool setup', /--no-tool-install/.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /non-privileged/i.test(readme));
 check('README mentions Graphify optional code intelligence', /Graphify/i.test(readme) && /graphifyy==0\.1\.14/.test(readme) && /managed user-space virtualenv/i.test(readme));
 check('README mentions v0.10 skills', /prompt-master/.test(readme) && /humanizer/.test(readme) && /design-extract/.test(readme) && /claude-video/.test(readme));
+check('README mentions v2.0.2 skills', /brag-video/.test(readme) && /autoresearch-harness/.test(readme) && /clone-website-guide/.test(readme) && /fact-checker/.test(readme) && /grill-me/.test(readme) && /interview-me/.test(readme));
 check('README documents usage command privacy', /overdrive usage/.test(readme) && /prints no prompt or message content/i.test(readme));
 check('README shows varied router examples', /security-review/.test(readme) && /react-doctor/.test(readme) && /jack-seo-launch-audit/.test(readme));
 check('README credits Layers source links', readme.includes('https://github.com/jamiemill/layers-skills') && readme.includes('https://layers.jamiemill.com'));
@@ -281,6 +299,7 @@ check('README credits prompt-caching sources', readme.includes('https://kreidema
 check('README credits Graphify source links', readme.includes('https://github.com/safishamsi/graphify') && readme.includes('https://graphify.net'));
 check('README credits v0.10 source links', readme.includes('https://github.com/nidhinjs/prompt-master') && readme.includes('https://github.com/blader/humanizer') && readme.includes('https://designlang.manavaryasingh.com') && readme.includes('https://github.com/bradautomates/claude-video'));
 check('README credits usage inspiration links', readme.includes('https://github.com/getagentseal/codeburn') && readme.includes('https://github.com/ryoppippi/ccusage'));
+check('README credits v2.0.2 source links', readme.includes('https://github.com/addyosmani/agent-skills') && readme.includes('https://github.com/mattpocock/skills') && readme.includes('https://github.com/karpathy/autoresearch') && readme.includes('https://github.com/latent-spaces/brag') && readme.includes('https://github.com/JCodesMore/ai-website-cloner-template'));
 check('prompt caching doc exists', exists('docs/prompt-caching.md'));
 check('context runtime matrix doc exists', exists('docs/context-runtime-matrix.md'));
 if (exists('docs/context-runtime-matrix.md')) {
@@ -291,7 +310,7 @@ if (exists('docs/context-runtime-matrix.md')) {
 }
 
 const skillReadiness = read('docs/skill-readiness.md');
-check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 137/.test(skillReadiness));
+check('skill readiness doc uses current manifest wording', /Unique skills in the current manifest: 160/.test(skillReadiness));
 check('skill readiness doc explains Graphify setup', /graphifyy/.test(skillReadiness) && /optional/i.test(skillReadiness));
 check('skill readiness doc explains v0.11 optional setup', /design-extract/.test(skillReadiness) && /claude-video/.test(skillReadiness) && /--no-tool-install/.test(skillReadiness) && /non-privileged/.test(skillReadiness));
 check('scorecard doc exists', exists('docs/scorecard-v0.6.md'));
@@ -373,6 +392,13 @@ for (const link of [
 	  'https://github.com/chenglou/pretext',
 	  'https://github.com/getagentseal/codeburn',
   'https://github.com/ryoppippi/ccusage',
+  'https://github.com/addyosmani/agent-skills',
+  'https://github.com/mattpocock/skills',
+  'https://github.com/karpathy/autoresearch',
+  'https://github.com/latent-spaces/brag',
+  'https://github.com/JCodesMore/ai-website-cloner-template',
+  'https://github.com/hesreallyhim/awesome-claude-code',
+  'https://github.com/Shubhamsaboo/awesome-llm-apps',
   'https://github.com/pypa/pipx',
   'https://github.com/Homebrew/brew',
   'https://github.com/microsoft/winget-cli',
@@ -418,6 +444,13 @@ for (const link of [
 	  'https://github.com/chenglou/pretext',
 	  'https://github.com/getagentseal/codeburn',
   'https://github.com/ryoppippi/ccusage',
+  'https://github.com/addyosmani/agent-skills',
+  'https://github.com/mattpocock/skills',
+  'https://github.com/karpathy/autoresearch',
+  'https://github.com/latent-spaces/brag',
+  'https://github.com/JCodesMore/ai-website-cloner-template',
+  'https://github.com/hesreallyhim/awesome-claude-code',
+  'https://github.com/Shubhamsaboo/awesome-llm-apps',
   'https://github.com/pypa/pipx',
   'https://github.com/Homebrew/brew',
   'https://github.com/microsoft/winget-cli',
@@ -448,6 +481,7 @@ check('skill-router documents convert-to-markdown routing', /convert-to-markdown
 check('skill-router documents reddit-research routing', /reddit-research/.test(routerSkill));
 check('skill-router documents graphify routing', /graphify/.test(routerSkill) && /ovd-workflow knowledge vault/.test(routerSkill));
 check('skill-router documents v0.10 routing', /prompt-master/.test(routerSkill) && /humanizer/.test(routerSkill) && /design-extract/.test(routerSkill) && /claude-video/.test(routerSkill));
+check('skill-router documents v2.0.2 routing', /grill-me/.test(routerSkill) && /interview-me/.test(routerSkill) && /clone-website-guide/.test(routerSkill) && /brag-video/.test(routerSkill) && /autoresearch-harness/.test(routerSkill) && /fact-checker/.test(routerSkill));
 for (const skillName of skills.local) {
   check(`router catalog lists local skill ${skillName}`, routerCatalog.includes(`\`${skillName}\``));
 }
@@ -461,6 +495,8 @@ check('installer uses only Overdrive managed instruction blocks', /managedBlockS
 check('installer installs canonical ovd slash commands only', /ovd-status/.test(installer) && !installer.includes(retiredSlashStatus));
 check('installer installs persistent overdrive and ovd shims', /writeWorkflowShim\(shim/.test(installer) && /writeWorkflowShim\(ovdShim/.test(installer));
 check('installer does not install obsolete CLI shims', !/managed legacy CLI shim/.test(installer));
+check('installer safety-transforms web-artifacts-builder global installs', /applyWebArtifactsSafeTransform/.test(installer) && /hasUnsafeWebArtifactsInstallInstruction/.test(installer));
+check('installer safety-transforms defuddle global install guidance', /applyDefuddleSafeTransform/.test(installer));
 check('installer copies package payload into persistent runtime', /function copyRuntimePayload/.test(installer) && /pkg\.files/.test(installer) && /manifest\.json/.test(installer));
 check('installer supports exact Graphify lowercase skill.md normalization', /function normalizeSkillFileCase/.test(installer) && /hasExactDirEntry/.test(installer) && /agentic-graphify-safe/.test(installer));
 check('installer supports v0.11 no-tool-install flag for helper and official installers', /--no-tool-install/.test(installer) && /options\.noToolInstall/.test(installer) && /Skipping official installer-backed sources because --no-tool-install/.test(installer));

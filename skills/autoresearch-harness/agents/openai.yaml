@@ -1,0 +1,13 @@
+name: autoresearch-harness
+description: Design safe bounded autonomous research and experiment loops with explicit budget, evaluation, logging, rollback, and approval gates.
+triggers:
+  - autoresearch
+  - autonomous research
+  - experiment loop
+  - optimization loop
+  - overnight experiment
+  - repeated benchmark
+  - research harness
+  - self-improving experiment
+prompt:
+  default_prompt: "Use $autoresearch-harness to design a bounded, logged, approval-gated research or experiment loop before running anything long or costly."

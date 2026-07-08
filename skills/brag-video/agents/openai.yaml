@@ -1,0 +1,13 @@
+name: brag-video
+description: Plan concise product brag/demo videos, launch clips, and social cutdowns from a product, feature, or release without assuming any specific video tool.
+triggers:
+  - brag video
+  - product demo video
+  - launch video
+  - feature teaser
+  - product clip
+  - social launch clip
+  - demo storyboard
+  - product trailer
+prompt:
+  default_prompt: "Use $brag-video to turn this product or release into a concise, verified, publishable demo/storyboard/caption plan."

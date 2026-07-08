@@ -1,6 +1,6 @@
 {
   "name": "overdrive-cli",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Overdrive installs and routes portable AI coding-agent skills across Claude Code, Codex, Gemini, Antigravity, Cursor, and local projects.",
   "license": "Apache-2.0",
   "bin": {

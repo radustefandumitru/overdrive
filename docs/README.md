@@ -27,6 +27,8 @@ Start with the [main README](../README.md) for install and the mental model. Thi
 
 ## Releases and maintenance
 
+- [release-notes-v2.0.2.md](release-notes-v2.0.2.md): focused skill-intake release with 160 skills.
+- [release-notes-v2.0.1.md](release-notes-v2.0.1.md): docs and diagram polish patch.
 - [release-notes-v2.0.0.md](release-notes-v2.0.0.md): what shipped in v2.0.0, including audit fixes and credits.
 - [PUBLISHING.md](PUBLISHING.md): the release checklist. How versions are verified, packaged, and published.
 

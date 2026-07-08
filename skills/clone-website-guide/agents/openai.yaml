@@ -1,0 +1,13 @@
+name: clone-website-guide
+description: Guide safe authorized website rebuilds from URLs, including when to use a fresh cloner template versus Overdrive's normal design/rebuild skills.
+triggers:
+  - clone this website
+  - clone a website
+  - replicate this website
+  - rebuild this website
+  - recreate this landing page
+  - make a site like this
+  - website cloner
+  - ai website cloner
+prompt:
+  default_prompt: "Use $clone-website-guide to choose a safe, authorized website rebuild path before extracting, cloning, or recreating a site."
