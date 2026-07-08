@@ -9,9 +9,11 @@
 [![node](https://img.shields.io/badge/node-%3E%3D18-2b3a44)](package.json)
 [![CI](https://github.com/radustefandumitru/overdrive/actions/workflows/ci.yml/badge.svg)](https://github.com/radustefandumitru/overdrive/actions/workflows/ci.yml)
 
-[![X](https://img.shields.io/badge/X-@StefanDumitruX-2b3a44?logo=x&logoColor=white)](https://x.com/StefanDumitruX)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Radu%20Stefan%20Dumitru-2b3a44?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/radustefandumitru/)
-[![GitHub](https://img.shields.io/badge/GitHub-radustefandumitru-2b3a44?logo=github&logoColor=white)](https://github.com/radustefandumitru)
+[![X](https://img.shields.io/badge/X-Stefan-2b3a44?logo=x&logoColor=white)](https://x.com/StefanDumitruX)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Stefan-2b3a44?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/radustefandumitru/)
+[![GitHub](https://img.shields.io/badge/GitHub-Stefan-2b3a44?logo=github&logoColor=white)](https://github.com/radustefandumitru)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Eugen-2b3a44?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eugenbulboaca/)
+[![GitHub](https://img.shields.io/badge/GitHub-Eugen-2b3a44?logo=github&logoColor=white)](https://github.com/BulboacaEugen)
 
 [Install](#install-in-60-seconds) · [How it works](#what-changes-after-install) · [v2 project state](#project-state-management-system) · [Safety](#safety-privacy-and-updates) · [What's inside](#what-is-included) · [Docs](docs/) · [Credits](#credits)
 
@@ -25,9 +27,9 @@
 >
 > - Stef
 
-**Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with global instructions built on Karpathy's system prompt, a curated catalog of 137 of the top skills as of 2026 plus custom skills built specifically for Overdrive, a skill router that picks only the right skills for the job, and a project state management system that keeps track of your decisions and progress across long-running sessions. It works across Claude Code, Codex, Gemini CLI, Antigravity, and Cursor on macOS and Linux, with Windows support coming soon.
+**Overdrive** is a complete, plug-and-play system for upgrading AI coding agents with global instructions built on Karpathy's system prompt, a curated catalog of 137 of the top skills as of 2026 plus custom skills built specifically for Overdrive, a skill router that picks only the right skills for the job, and a project state management system that keeps track of your decisions and progress across long-running sessions. It works across Claude Code, Codex, Gemini CLI, Antigravity and Cursor on macOS with Windows support coming soon.
 
-Overdrive is built for any skill level. It installs in about a minute and runs quietly in the background, so most people get the value from the skill router alone with nothing new to learn. For people who want more control, the `ovd` commands were deliberately kept simple, four commands instead of a sprawling surface, because a system only pays off if you actually keep using it. Modern models are already good at planning and reasoning on their own, so Overdrive doesn't try to override that. It adds structure and memory around what the model already does well, built to hold up over long-running projects instead of getting in the way.
+Overdrive is built for anybody at any skill level. It's easy to install and just runs in the background. For more experienced users, they can use the `ovd` commands, which were deliberately kept very simple and easy to use, as opposed to other similar systems that overcomplicate things. The new models are very good at doing certain things on their own. Overdrive was built to be flexible and work long-term, without unnecessarily overwriting functions built straight into the LLMs. It just builds on top of what's already there.
 
 ![Overdrive flow diagram](assets/overdrive-flow-diagram@2x.png)
 
