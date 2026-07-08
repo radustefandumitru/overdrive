@@ -100,7 +100,7 @@ const retiredSlashStatus = ['as', 'status'].join('-');
 console.log('Overdrive consistency check');
 
 check('package is overdrive-cli', pkg.name === 'overdrive-cli', `found ${pkg.name}`);
-check('package version is 2.0.0', pkg.version === '2.0.0', `found ${pkg.version}`);
+check('package version is 2.0.1', pkg.version === '2.0.1', `found ${pkg.version}`);
 check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pkg.license}`);
 check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
 check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');

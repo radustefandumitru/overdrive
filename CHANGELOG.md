@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.0.1 - 2026-07-08
+
+Docs and branding only. No installer, CLI, or `ovd-plan` behavior changed.
+
+- Reworked all three README diagrams to match the Overdrive logo: true-black
+  backgrounds, a silver brushed-metal edge on every content box, the logo's
+  lens-flare treatment on headline wordmarks, and correct wordmark alignment.
+- Rewrote the README hero copy and system-overview language around the actual
+  pipeline (global instructions, curated skills, skill router, project state
+  management system) and dropped inaccurate "operating layer" phrasing.
+- Named `ovd-workflow`/`ovd-plan` consistently as the project state
+  management system across the README and docs.
+- Added a "Why leaf?" explanation of `ovd-plan` node naming to the README and
+  `docs/ovd-plan-v2.md`.
+- Added a skills-provenance section (22 pinned upstream open-source sources
+  plus the 19 skills built specifically for Overdrive) and a `docs/README.md`
+  index.
+- Credited Eugen Bulboaca for designing `ovd-workflow`; credited Andrej
+  Karpathy's Claude system prompt as the basis for the global operating
+  guide, consistent with the existing THIRD_PARTY_NOTICES.md entry.
+- Updated Stefan's contact links (X handle, GitHub) and removed em dashes
+  from public-facing prose.
+- Fixed two dead documentation links and restored an uninstall command block
+  that had been dropped from the v2.0.0 README rework.
+
 ## v2.0.0 - 2026-07-07
 
 - Added the v2 `ovd-plan` structural layer: `OVERDRIVE.md`, `/ovd-workflow`, `/ovd-plan`, `/ovd-go`, `/ovd-log`, intent routing, recursive closure, and `overdrive verify --plan`.
