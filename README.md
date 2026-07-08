@@ -44,16 +44,6 @@ Overdrive is not just another skill pack. The pieces work as one system:
 
 The practical goal is better agent output with less repeated prompting, without loading a giant context dump into every chat.
 
-### New In v2.0.2
-
-v2.0.2 is a focused skill-intake release:
-
-- Adds Addy Osmani's engineering skills for interviews, doubt-driven development, source-driven work, API/interface design, simplification, ADRs, performance, TDD, and debugging.
-- Adds Matt Pocock's `grill-me` / `grilling` flow for hard upfront idea interrogation.
-- Updates Muratcan Koylan's context-engineering source with `harness-engineering` and `self-improvement-loops`.
-- Adds selected official Anthropic skills: `algorithmic-art`, `canvas-design`, `claude-api`, `skill-creator`, `web-artifacts-builder`, `webapp-testing`, and the official `theme-factory`.
-- Adds four Overdrive-authored safe wrappers: `brag-video`, `autoresearch-harness`, `clone-website-guide`, and `fact-checker`.
-
 ## Install In 60 Seconds
 
 Preview first. This prints the install plan without changing files:
@@ -243,9 +233,11 @@ Skills answer **how should the agent do this kind of task?**
 | Research and docs | `last30days`, `reddit-research`, `convert-to-markdown`, MarkItDown guidance, Graphify optional code intelligence |
 | Launch and growth | Corey Haines marketing skills, `seo-audit`, `jack-seo-launch-audit`, `pre-launch-checklist` |
 | Safety and quality | `security-review`, `react-doctor`, `playwright-cli`, router benchmark and scorecard docs |
-| Prompt/content work | `prompt-master`, `humanizer`, `stop-slop`, copywriting skills |
-| Media and video | `claude-video`, `media-download`, Remotion guidance |
-| v2.0.2 additions | `grill-me`, `interview-me`, Addy engineering skills, `brag-video`, `autoresearch-harness`, `clone-website-guide`, `fact-checker`, official Anthropic artifact skills |
+| Prompt/content work | `prompt-master`, `humanizer`, `stop-slop`, `fact-checker`, copywriting skills |
+| Media and video | `claude-video`, `media-download`, `brag-video`, Remotion guidance |
+| Engineering methods and intake | `grill-me`, `interview-me`, Addy Osmani's engineering skills such as `doubt-driven-development` and `test-driven-development` |
+| Agent and harness engineering | `autoresearch-harness`, `harness-engineering`, `self-improvement-loops`, context-engineering skills |
+| Artifacts and creative coding | `web-artifacts-builder`, `webapp-testing`, `canvas-design`, `algorithmic-art`, `theme-factory`, `clone-website-guide` |
 
 The skill-readiness breakdown is in [docs/skill-readiness.md](docs/skill-readiness.md). The router evaluation protocol is in [docs/evaluation.md](docs/evaluation.md), with the v0.6 scorecard template in [docs/scorecard-v0.6.md](docs/scorecard-v0.6.md). Route-frequency analysis uses `npm run analyze:routes` and writes [docs/catalog-health.md](docs/catalog-health.md).
 
@@ -260,11 +252,11 @@ The current manifest pulls from 24 pinned upstream repositories. On top of those
 - Frontend, design, and motion: `fluid-animations`, `emil-animation-polish`, `design-extract`, `liquid-glass-web`, `pretext`
 - Media: `media-download`
 - Premium website stack: `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit`
-- v2.0.2 safe wrappers: `brag-video`, `autoresearch-harness`, `clone-website-guide`, `fact-checker`
+- Safety wrappers around credited ideas: `brag-video`, `autoresearch-harness`, `clone-website-guide`, `fact-checker`
 
-v2.0.2 direct imports include [Addy Osmani's agent-skills](https://github.com/addyosmani/agent-skills), [Matt Pocock's skills](https://github.com/mattpocock/skills), selected official [Anthropic skills](https://github.com/anthropics/skills/tree/main/skills), and additional context-engineering skills from [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering).
+The pinned sources include [Addy Osmani's agent-skills](https://github.com/addyosmani/agent-skills), [Matt Pocock's skills](https://github.com/mattpocock/skills), selected official [Anthropic skills](https://github.com/anthropics/skills/tree/main/skills), and context-engineering skills from [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering).
 
-v2.0.2 also credits but does not raw-import sources where redistribution or project shape did not fit Overdrive: [latent-spaces/brag](https://github.com/latent-spaces/brag), [karpathy/autoresearch](https://github.com/karpathy/autoresearch), [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template), [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code), and the Reddit-linked [awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) fact-checker idea.
+Some sources are credited but not raw-imported, because redistribution or project shape did not fit Overdrive: [latent-spaces/brag](https://github.com/latent-spaces/brag), [karpathy/autoresearch](https://github.com/karpathy/autoresearch), [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template), [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code), and the Reddit-linked [awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) fact-checker idea.
 
 ## Install Modes
 

@@ -2,7 +2,7 @@
 
 Use this as the quick map. `SKILLS_SUMMARY.md` remains the deep reference.
 
-Overdrive v2.0.2 includes 160 unique skills around `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, and `OVERDRIVE_WORKFLOW`. The installer may attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
+Overdrive v2.0.2 includes 160 unique skills under the `overdrive`, `ovd`, `ovd-workflow`, `.overdrive/`, and `OVERDRIVE_WORKFLOW` branding. The installer may attempt safe non-privileged setup for Graphify, `yt-dlp`, `ffmpeg`, and Design Extract browser support. Use `--no-tool-install` to skip helper setup.
 
 | Goal | Start With | Add When Needed |
 |---|---|---|
