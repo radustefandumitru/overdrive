@@ -10,7 +10,7 @@ Overdrive v1 is the **execution layer** for AI coding agents:
 
 - 137 specialist skills covering frontend design, animation, security, SEO, research, launch, prompt engineering, codebase intelligence, and more.
 - `skill-router` chooses the right skills per request without loading the whole catalog.
-- Global operating guide instructs agents to plan, verify, watch context budget, use current docs.
+- Global operating guide — based on Andrej Karpathy's Claude system prompt, adapted to fit Overdrive — instructs agents to plan, verify, watch context budget, use current docs.
 - `ovd-workflow` persists lightweight project state (`.overdrive/project.md`, `state.md`, `decisions.md`, etc.) so agents remember active work, decisions, and constraints.
 - Installer keeps sources pinned and updates safe.
 
@@ -214,7 +214,7 @@ For the full design and discussion history:
 - **[`2026-06-08-ovd-plan-pipeline-architecture-r3.md`](superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r3.md)** — current converged spec (the canonical reference)
 - [`2026-06-08-ovd-plan-implementation-plan.md`](superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md) — phased implementation plan with running session log
 
-For the comprehensive context-handoff dossier (preserves conversation nuance across context clears), see [`docs/superpowers/handoff/`](superpowers/handoff/).
+For the comprehensive context-handoff design (preserves conversation nuance across context clears), see [`docs/superpowers/specs/2026-06-06-ovd-plan-handoff.md`](superpowers/specs/2026-06-06-ovd-plan-handoff.md).
 
 ## Release status
 

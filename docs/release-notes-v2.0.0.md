@@ -26,6 +26,11 @@ An independent pre-release audit (Claude Fable 5) reviewed installer safety, v2 
 - Uninstall removes the empty `~/.overdrive/` scaffolding directories it created.
 - Stale "upstream unavailable" wording for `design-extract` was corrected across docs and notices.
 
+## Credits
+
+- The `ovd-workflow` project-context layer was designed by [Eugen Bulboaca](https://www.linkedin.com/in/eugenbulboaca/) ([GitHub](https://github.com/BulboacaEugen)).
+- The installed global operating guide is based on Andrej Karpathy's Claude system prompt, adapted to fit Overdrive, via [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
+
 ## Safety Notes
 
 - No telemetry.
