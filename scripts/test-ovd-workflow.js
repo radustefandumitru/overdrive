@@ -190,6 +190,9 @@ check('--no-tool-install emits no external installer command plan', !/\bnpx\b|\b
 
 // Task 7.6 — install hygiene: default install is global-only; local needs opt-in.
 const hygieneHome = fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-hygiene-home-'));
+// Seed a detectable agent config dir so target detection does not depend on the
+// host having `claude` on PATH (CI runners have no agents installed).
+fs.mkdirSync(path.join(hygieneHome, '.claude'), { recursive: true });
 const hygieneEnv = { HOME: hygieneHome, OVERDRIVE_KIT_DIR: path.resolve(__dirname, '..') };
 // 1. default --dry-run is global-only and announces no project writes.
 const defaultDry = runNode(['bin/overdrive.js', '--dry-run', '--yes'], hygieneEnv);
