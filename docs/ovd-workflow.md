@@ -1,6 +1,6 @@
 # ovd-workflow
 
-ovd-workflow is Overdrive's lightweight project-state layer.
+ovd-workflow is Overdrive's project state management system, designed by [Eugen Bulboaca](https://github.com/BulboacaEugen).
 
 Skills teach agents how to do specialist work. ovd-workflow helps them remember what is happening in the current project without loading a giant pile of context.
 

@@ -1,6 +1,6 @@
 # Skill Readiness Audit
 
-Overdrive is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v2, it also includes the `ovd-plan` project-management layer, documents native context-window behavior by runtime, and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
+Overdrive is plug-and-play for installation: the installer can place skills and global instructions without account setup. As of v2, it also includes the `ovd-plan` project state management system, documents native context-window behavior by runtime, and attempts safe, non-privileged setup for selected optional helpers when relevant skills are installed. Some workflows still need user-owned accounts, credentials, app permissions, or manual setup before they can execute fully.
 
 ## Default Install Summary
 

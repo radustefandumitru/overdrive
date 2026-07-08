@@ -250,7 +250,7 @@ check('README links to router evaluation docs', /docs\/evaluation\.md/.test(read
 check('README links to v0.6 scorecard docs', /docs\/scorecard-v0\.6\.md/.test(readme));
 check('README explains ovd-workflow', /ovd-workflow/i.test(readme) && /\.overdrive/.test(readme));
 check('README positions Overdrive as a complete system', /complete,\s*plug-and-play system/i.test(readme) && /not just another skill pack/i.test(readme));
-check('README includes Stefan origin/contact note', /own daily AI coding-agent setup/i.test(readme) && /@editor_stefan/.test(readme) && /buymeacoffee/.test(readme));
+check('README includes Stefan origin/contact note', /own daily AI coding-agent setup/i.test(readme) && /@StefanDumitruX/.test(readme) && /buymeacoffee/.test(readme));
 check('README clarifies managed vs native/plugin layers', /managed skills/i.test(readme) && /native skills, third-party plugin skills, or MCP servers/i.test(readme));
 check('README documents Cursor reserved folder boundary', /~\/\.cursor\/skills-cursor/.test(readme) && /does not touch Cursor's reserved/i.test(readme));
 check('README states no telemetry', /no telemetry/i.test(readme));

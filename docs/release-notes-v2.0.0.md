@@ -1,6 +1,6 @@
 # Overdrive v2.0.0
 
-Overdrive v2 adds a project-management/state layer on top of the existing skill installer and router.
+Overdrive v2 adds a project state management system on top of the existing skill installer and router.
 
 ## Highlights
 
@@ -28,7 +28,7 @@ An independent pre-release audit (Claude Fable 5) reviewed installer safety, v2 
 
 ## Credits
 
-- The `ovd-workflow` project-context layer was designed by [Eugen Bulboaca](https://www.linkedin.com/in/eugenbulboaca/) ([GitHub](https://github.com/BulboacaEugen)).
+- `ovd-workflow`, the project state management system, was designed by [Eugen Bulboaca](https://www.linkedin.com/in/eugenbulboaca/) ([GitHub](https://github.com/BulboacaEugen)).
 - The installed global operating guide is based on Andrej Karpathy's Claude system prompt, adapted to fit Overdrive, via [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
 
 ## Safety Notes

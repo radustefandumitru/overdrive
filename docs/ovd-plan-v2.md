@@ -10,8 +10,8 @@ Overdrive v1 is the **execution layer** for AI coding agents:
 
 - 137 specialist skills covering frontend design, animation, security, SEO, research, launch, prompt engineering, codebase intelligence, and more.
 - `skill-router` chooses the right skills per request without loading the whole catalog.
-- Global operating guide — based on Andrej Karpathy's Claude system prompt, adapted to fit Overdrive — instructs agents to plan, verify, watch context budget, use current docs.
-- `ovd-workflow` persists lightweight project state (`.overdrive/project.md`, `state.md`, `decisions.md`, etc.) so agents remember active work, decisions, and constraints.
+- Global operating guide, based on Andrej Karpathy's Claude system prompt and adapted to fit Overdrive, instructs agents to plan, verify, watch context budget, use current docs.
+- `ovd-workflow`, the project state management system, persists project state (`.overdrive/project.md`, `state.md`, `decisions.md`, etc.) so agents remember active work, decisions, and constraints.
 - Installer keeps sources pinned and updates safe.
 
 This is excellent at *doing* the work in front of the agent. What it doesn't do: **structure a project beyond the current request**. There's no milestone, no phase, no contract, no recursive closure, no handoff that survives a context clear with intent intact. Each session is mostly request-scoped; project memory exists but is unstructured prose.
@@ -20,7 +20,7 @@ The closest comparable pattern is a structured project/milestone/phase/task hier
 
 ## What v2 adds (in one paragraph)
 
-Four user-facing commands, each a state machine with many internal states. A recursive tree at the project root (`OVERDRIVE.md`) where every leaf is a self-contained **contract** — scope, skills, success criteria, dependencies, verification method, optional sketches. Planning consults the skill-router once per leaf so execution never re-routes cold. Leaves never auto-complete — explicit user approval (or equivalent signal) closes a leaf. Closure walks recursively up the tree, asking the user at every level. Context persistence is invisible: a lightweight save before context clear; an orient-and-continue on resume. The user types four commands; the agent absorbs the complexity.
+Four user-facing commands, each a state machine with many internal states. A recursive tree at the project root (`OVERDRIVE.md`) where every leaf is a self-contained **contract**: scope, skills, success criteria, dependencies, verification method, optional sketches. Planning consults the skill-router once per leaf so execution never re-routes cold. Leaves never auto-complete; explicit user approval (or equivalent signal) closes a leaf. Closure walks recursively up the tree, asking the user at every level. Context persistence is invisible: a lightweight save before context clear; an orient-and-continue on resume. The user types four commands; the agent absorbs the complexity.
 
 ## The four commands
 
@@ -123,16 +123,18 @@ inserted_by: user
 
 Tree depth is unbounded. IDs are position-derived using a hierarchical short notation: Roman → Arabic → lowercase letter → lowercase Roman → uppercase letter (`I` → `II.3` → `II.3.b` → `II.3.b.iv` → `II.3.b.iv.A`). Status markers in `[brackets]` after the title; `← ACTIVE` flags the current execution position. Structured fields live in a fenced `yaml ovd-plan` block per node, with deterministic field ordering for diff-friendly output.
 
+A note on naming: a **leaf** is the smallest meaningful modular unit of work in the current plan, the bottom-level implementable node. Overdrive avoids words like task, step, phase, or action because they imply a fixed hierarchy. The structure above a leaf is yours to shape: features, milestones, systems, pages, user flows, bugs, experiments. v2 is a flexible project state management system, not a rigid task manager.
+
 ## The new statuses
 
 Leaves move through six possible statuses:
 
-- **pending** — not yet started (rendered as `[]`).
-- **in-progress** — actively being worked on.
-- **awaiting-review** — implementation complete + auto-verify passed, but no user approval yet. The leaf is held here until you reply `approved` (or equivalent: `ship`, `done`, `next`) or describe changes to iterate.
-- **done** — user has explicitly approved.
-- **blocked** — can't proceed (missing input, external dependency, planned approach fails).
-- **skipped** — user opted out.
+- **pending**: not yet started (rendered as `[]`).
+- **in-progress**: actively being worked on.
+- **awaiting-review**: implementation complete + auto-verify passed, but no user approval yet. The leaf is held here until you reply `approved` (or equivalent: `ship`, `done`, `next`) or describe changes to iterate.
+- **done**: user has explicitly approved.
+- **blocked**: can't proceed (missing input, external dependency, planned approach fails).
+- **skipped**: user opted out.
 
 The `awaiting-review` state is the operational heart of v2. Iteration is the default; auto-completion is never assumed. The agent works autonomously through implementation + verification, then pauses for explicit user confirmation. This eliminates the "the agent thinks it's done but the user hates the result" failure mode that plagues fast-autonomous setups.
 
@@ -148,7 +150,7 @@ Each level requires explicit approval. The same closure pattern applies to every
 
 ## The skill-router becomes a planning-time consultant
 
-In v1, every non-trivial request consults `skill-router` cold — the 21KB `SKILL.md` is loaded and the agent uses it to pick the right skills per task. In v2, the consultation happens **once per leaf during planning**. The planner asks the router for the prior skill set, the agent confirms confidence (high/medium/low), and the result writes into the leaf's YAML annotation as a `skills:` list.
+In v1, every non-trivial request consults `skill-router` cold: the 21KB `SKILL.md` is loaded and the agent uses it to pick the right skills per task. In v2, the consultation happens **once per leaf during planning**. The planner asks the router for the prior skill set, the agent confirms confidence (high/medium/low), and the result writes into the leaf's YAML annotation as a `skills:` list.
 
 At execution time:
 - `confidence: high` → no router consultation. Agent loads the named skills and executes.
@@ -178,7 +180,7 @@ If you have an existing `.overdrive/` layout from v1 (`project.md`, `state.md`, 
 
 Migration is **one-time and opt-in**. Nothing is silently rewritten. The migration map (which old file maps where in the new structure, what gets archived, what gets discarded with archive backup) is documented in `docs/superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md` §5A.
 
-Your existing `/ovd-status`, `/ovd-doctor`, `/ovd-checkpoint`, `/ovd-resync`, `/ovd-knowledge` slash commands continue to resolve in v2 — they delegate to the new handlers with a one-line deprecation note pointing at the replacement. Muscle memory doesn't break.
+Your existing `/ovd-status`, `/ovd-doctor`, `/ovd-checkpoint`, `/ovd-resync`, `/ovd-knowledge` slash commands continue to resolve in v2; they delegate to the new handlers with a one-line deprecation note pointing at the replacement. Muscle memory doesn't break.
 
 ## What's untouched
 
@@ -207,12 +209,12 @@ Each phase ends with a coherent commit; nothing ships piecemeal.
 
 For the full design and discussion history:
 
-- [`2026-06-06-ovd-plan-design.md`](superpowers/specs/2026-06-06-ovd-plan-design.md) — original decisions and ambiguities record
-- [`2026-06-06-ovd-plan-handoff.md`](superpowers/specs/2026-06-06-ovd-plan-handoff.md) — first detailed handoff doc
-- [`2026-06-07-ovd-plan-pipeline-architecture.md`](superpowers/specs/2026-06-07-ovd-plan-pipeline-architecture.md) — first converged architecture
-- [`2026-06-08-ovd-plan-pipeline-architecture-r2.md`](superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r2.md) — second revision
-- **[`2026-06-08-ovd-plan-pipeline-architecture-r3.md`](superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r3.md)** — current converged spec (the canonical reference)
-- [`2026-06-08-ovd-plan-implementation-plan.md`](superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md) — phased implementation plan with running session log
+- [`2026-06-06-ovd-plan-design.md`](superpowers/specs/2026-06-06-ovd-plan-design.md): original decisions and ambiguities record
+- [`2026-06-06-ovd-plan-handoff.md`](superpowers/specs/2026-06-06-ovd-plan-handoff.md): first detailed handoff doc
+- [`2026-06-07-ovd-plan-pipeline-architecture.md`](superpowers/specs/2026-06-07-ovd-plan-pipeline-architecture.md): first converged architecture
+- [`2026-06-08-ovd-plan-pipeline-architecture-r2.md`](superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r2.md): second revision
+- **[`2026-06-08-ovd-plan-pipeline-architecture-r3.md`](superpowers/specs/2026-06-08-ovd-plan-pipeline-architecture-r3.md)**: current converged spec (the canonical reference)
+- [`2026-06-08-ovd-plan-implementation-plan.md`](superpowers/specs/2026-06-08-ovd-plan-implementation-plan.md): phased implementation plan with running session log
 
 For the comprehensive context-handoff design (preserves conversation nuance across context clears), see [`docs/superpowers/specs/2026-06-06-ovd-plan-handoff.md`](superpowers/specs/2026-06-06-ovd-plan-handoff.md).
 
