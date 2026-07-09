@@ -299,7 +299,8 @@ check('README credits prompt-caching sources', readme.includes('https://kreidema
 check('README credits Graphify source links', readme.includes('https://github.com/safishamsi/graphify') && readme.includes('https://graphify.net'));
 check('README credits v0.10 source links', readme.includes('https://github.com/nidhinjs/prompt-master') && readme.includes('https://github.com/blader/humanizer') && readme.includes('https://designlang.manavaryasingh.com') && readme.includes('https://github.com/bradautomates/claude-video'));
 check('README credits usage inspiration links', readme.includes('https://github.com/getagentseal/codeburn') && readme.includes('https://github.com/ryoppippi/ccusage'));
-check('README credits v2.0.2 source links', readme.includes('https://github.com/addyosmani/agent-skills') && readme.includes('https://github.com/mattpocock/skills') && readme.includes('https://github.com/karpathy/autoresearch') && readme.includes('https://github.com/latent-spaces/brag') && readme.includes('https://github.com/JCodesMore/ai-website-cloner-template'));
+const thirdPartyNoticesEarly = read('THIRD_PARTY_NOTICES.md');
+check('THIRD_PARTY_NOTICES credits v2.0.2 source links', thirdPartyNoticesEarly.includes('https://github.com/addyosmani/agent-skills') && thirdPartyNoticesEarly.includes('https://github.com/mattpocock/skills') && thirdPartyNoticesEarly.includes('https://github.com/karpathy/autoresearch') && thirdPartyNoticesEarly.includes('https://github.com/latent-spaces/brag') && thirdPartyNoticesEarly.includes('https://github.com/JCodesMore/ai-website-cloner-template'));
 check('prompt caching doc exists', exists('docs/prompt-caching.md'));
 check('context runtime matrix doc exists', exists('docs/context-runtime-matrix.md'));
 if (exists('docs/context-runtime-matrix.md')) {

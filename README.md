@@ -254,10 +254,6 @@ The current manifest pulls from 24 pinned upstream repositories. On top of those
 - Premium website stack: `jack-premium-site-system`, `jack-website-intelligence`, `jack-scroll-asset-prompts`, `jack-scroll-3d-sites`, `jack-seo-launch-audit`
 - Safety wrappers around credited ideas: `brag-video`, `autoresearch-harness`, `clone-website-guide`, `fact-checker`
 
-The pinned sources include [Addy Osmani's agent-skills](https://github.com/addyosmani/agent-skills), [Matt Pocock's skills](https://github.com/mattpocock/skills), selected official [Anthropic skills](https://github.com/anthropics/skills/tree/main/skills), and context-engineering skills from [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering).
-
-Some sources are credited but not raw-imported, because redistribution or project shape did not fit Overdrive: [latent-spaces/brag](https://github.com/latent-spaces/brag), [karpathy/autoresearch](https://github.com/karpathy/autoresearch), [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template), [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code), and the Reddit-linked [awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) fact-checker idea.
-
 ## Install Modes
 
 Global install is the default:
