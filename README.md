@@ -679,6 +679,10 @@ Key credits include:
 - Prompt caching references: [Andre Kreidemann](https://kreidemann.com/blog/prompt-caching), [Sankalp Shubham](https://sankalp.bearblog.dev/how-prompt-caching-works/), and [ngrok](https://ngrok.com/blog/prompt-caching).
 - Liquid Glass provenance: [Andrew Prifer / liquid-dom](https://github.com/AndrewPrifer/liquid-dom), [kube.io CSS/SVG technique](https://kube.io/blog/liquid-glass-css-svg/), [naughtyduk/liquidGL](https://github.com/naughtyduk/liquidGL), plus related implementation references [nikdelvin](https://github.com/nikdelvin/liquid-glass), [rizroze](https://github.com/rizroze/liquid-glass), [Z1Code](https://github.com/Z1Code/glass-refraction), and [dashersw](https://github.com/dashersw/liquid-glass-js).
 - Motion patterns: [@gabriell_lab](https://x.com/gabriell_lab/status/2060336070059864461), [@baptistebriel](https://x.com/baptistebriel/status/2060351541345681851), [@mannupaaji](https://x.com/mannupaaji/status/2060025609867387239), and Chrome's [CSS scroll-state queries](https://developer.chrome.com/blog/css-scroll-state-queries).
+- Engineering-method skills: [Addy Osmani's agent-skills](https://github.com/addyosmani/agent-skills).
+- Idea interrogation: [Matt Pocock's grill-me and grilling skills](https://github.com/mattpocock/skills).
+- Context-engineering additions: `harness-engineering` and `self-improvement-loops` via [muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering).
+- Wrapper skill inspiration: [latent-spaces/brag](https://github.com/latent-spaces/brag), [karpathy/autoresearch](https://github.com/karpathy/autoresearch), [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template), and the Reddit-linked [awesome-llm-apps](https://github.com/Shubhamsaboo/awesome-llm-apps) fact-checker idea. No code is reused.
 
 ## What This Is Not
 
