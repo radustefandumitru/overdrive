@@ -119,13 +119,19 @@ Do not use it for secrets, credentials, private personal data, temporary mood, o
 
 ## Disable It
 
-Set:
+From the project root:
 
 ```bash
-OVERDRIVE_WORKFLOW=disabled
+ovd workflow disable
+ovd status
+ovd workflow enable
 ```
 
-This disables workflow hook/init behavior for that process.
+Use `--project-dir PATH` to manage another project. The switch saves `workflow_enabled` in the local, gitignored `.overdrive/config.json`. A project without workflow state gets only that file and a Git ignore entry. Existing state is left intact, and enabling does not initialize it. This does not change teammates' settings or uninstall any skills.
+
+For a temporary opt-out, set `OVERDRIVE_WORKFLOW=disabled` in the agent's environment. It overrides the project setting, even after running `ovd workflow enable`. Without that environment override, a missing or invalid setting leaves the workflow enabled. The toggle commands refuse to overwrite malformed config files. `ovd status` and `ovd doctor` report whether the opt-out comes from the project or environment, including in `--json` output.
+
+While disabled, Overdrive's hooks stop initializing, syncing, or injecting normal workflow context. Claude Code, Codex, and [Gemini CLI](https://geminicli.com/docs/hooks/reference/#sessionstart) can signal the opt-out through their session-start hooks; Cursor and Antigravity rely on their managed guidance noticing the config. The managed guide skips automatic skill routing, Overdrive context-budget reminders, and project-state reads and writes. Explicitly requested skills still work. Restart or reload your agent after changing the setting so its session-start context reflects the change.
 
 ## What It Is Not
 

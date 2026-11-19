@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added `ovd workflow disable` and `ovd workflow enable` for a local, per-project opt-out that preserves existing state and installed skills. Status and doctor report why the workflow is off.
+
 ## v2.0.2 - 2026-07-08
 
 Focused skill-intake release. No `ovd-plan` state semantics changed.

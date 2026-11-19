@@ -1,6 +1,6 @@
 ---
 description: ovd-workflow — initialize the project (tutorial, codebase map, preferences, requirements)
-argument-hint: "[init|map|preferences|requirements] (optional)"
+argument-hint: "[init|map|preferences|requirements|disable|enable] (optional)"
 ---
 
 Run:
@@ -10,6 +10,8 @@ overdrive workflow ${ARGUMENTS:-} --project-dir "$PWD"
 ```
 
 Then act on the output. Bare `/ovd-workflow` shows tutorial + status + action-path next steps. `/ovd-workflow init` runs the initialization flow (codebase mapping, preferences, requirements) with explicit user approval at each step; on projects with the pre-r3 `.overdrive/` layout it detects and offers migration. `/ovd-workflow map` refreshes the codebase analysis. See r3 §4 for full semantics.
+
+`/ovd-workflow disable` turns off Overdrive's workflow for this project without removing existing state. `/ovd-workflow enable` restores it unless the environment still disables it. If the CLI reports the workflow is disabled, stop rather than running planning commands or intent classification.
 
 **Intent routing (r3 §3.4):** This is an explicit `/ovd-...` command — run it as typed; do **not** re-classify. When the user sends a *free-form* message instead (no leading `/ovd-`), classify it first with `overdrive plan intent "<message>" --project-dir "$PWD"`, then follow the routing decision (announce + execute, a numbered options prompt, or a clarifying question). Explicit commands always bypass classification. If the user corrects a route you announced ("that's not what I meant"), log it: `overdrive plan intent --entries-json '{"action":"correction","original_message":"...","classified_as":"...","corrected_to":"..."}'` (r3 §3.5).
 

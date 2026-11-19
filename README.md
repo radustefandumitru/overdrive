@@ -122,6 +122,8 @@ Overdrive v2 introduces structure on top of the existing 160-skill catalog. It g
 | `/ovd-go` | Orient and continue the active leaf of work. | You want the agent to pick up where it left off. |
 | `/ovd-log` | Save progress, capture concerns, create handoffs, and close approved work. | You are pausing, finishing a milestone, or handing off context. |
 
+Prefer another workflow in this repo? Run `ovd workflow disable` to pause Overdrive here without deleting state or uninstalling skills. Run `ovd workflow enable` to turn it back on. [Details](docs/ovd-workflow.md#disable-it).
+
 The mental model is simple:
 
 ```text
@@ -442,6 +444,8 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 - Never expose API keys, OAuth tokens, MCP secrets, service-role keys, connection strings, or personal app-session data.
 
 ## Skills And Context
+
+Before applying the Overdrive-specific guidance below, check whether this project has opted out. If the session-start context or `overdrive status` reports that Overdrive is disabled, `OVERDRIVE_WORKFLOW=disabled` is set, or the project root's `.overdrive/config.json` contains `"workflow_enabled": false`, skip automatic `skill-router` preflight, Overdrive context-budget reminders, `ovd-*` planning and state reads, writes, or logging. Follow the project's own instructions. Explicitly requested skills still work; users can still inspect or change the setting.
 
 - At the start of each non-trivial user request, consult `skill-router` as the default lightweight preflight to check whether any installed skills apply.
 - If the user explicitly names one or more skills, use those skills for the relevant part of the task and skip router selection for that part unless another unspecified part still needs routing.

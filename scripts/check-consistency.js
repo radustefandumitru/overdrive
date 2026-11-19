@@ -329,6 +329,10 @@ for (const skillName of skills.local) {
 }
 
 const globalInstructionFiles = ['global-instructions/CLAUDE.md', 'global-instructions/AGENTS.md', 'global-instructions/GEMINI.md'];
+const globalGuide = read('global-instructions/AGENTS.md');
+check('installed global guides match across agents', globalInstructionFiles.every((file) => read(file) === globalGuide));
+const optOutGuide = globalGuide.split('\n').find((line) => line.startsWith('Before applying the Overdrive-specific guidance'));
+check('global guide and README explain the workflow opt-out', !!optOutGuide && optOutGuide.includes('"workflow_enabled": false') && readme.includes(optOutGuide));
 for (const file of globalInstructionFiles) {
   const text = read(file);
   check(`${file} includes objectivity guidance`, text.includes('Default to objective, evidence-based reasoning'));

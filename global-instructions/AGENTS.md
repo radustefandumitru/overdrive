@@ -73,6 +73,8 @@ Tradeoff: bias toward caution, clarity, and small diffs on non-trivial work. For
 
 ## Skills And Context
 
+Before applying the Overdrive-specific guidance below, check whether this project has opted out. If the session-start context or `overdrive status` reports that Overdrive is disabled, `OVERDRIVE_WORKFLOW=disabled` is set, or the project root's `.overdrive/config.json` contains `"workflow_enabled": false`, skip automatic `skill-router` preflight, Overdrive context-budget reminders, `ovd-*` planning and state reads, writes, or logging. Follow the project's own instructions. Explicitly requested skills still work; users can still inspect or change the setting.
+
 - At the start of each non-trivial user request, consult `skill-router` as the default lightweight preflight to check whether any installed skills apply.
 - If the user explicitly names one or more skills, use those skills for the relevant part of the task and skip router selection for that part unless another unspecified part still needs routing.
 - If `skill-router` finds no useful match, proceed normally without loading extra skills.

@@ -379,6 +379,13 @@ check('usage aggregates Claude Code token totals', usage.totals.total === 170 &&
 check('usage records cache-hit percentage', usage.cacheHitPercent === 28.6);
 check('usage records top tool without prompt content', usage.topTools.some((entry) => entry.name === 'Bash') && !usageText.includes('SECRET PROMPT CONTENT'));
 check('usage attributes tokens to route skills when timestamps match', usage.bySkill.some((entry) => entry.name === 'prompt-master' && entry.total === 170));
+workflow.setWorkflowEnabled({ projectDir: usageProject }, false);
+const optedOutUsage = workflow.usage({
+  projectDir: usageProject,
+  days: 1,
+  env: { ...process.env, CLAUDE_CONFIG_DIR: usageConfigDir, CODEX_HOME: usageCodexHome }
+});
+check('usage still reports tokens but does not consult project route state while opted out', optedOutUsage.totals.total === 170 && optedOutUsage.bySkill.every((entry) => entry.name === 'unattributed'));
 const emptyUsage = workflow.usage({
   projectDir: usageProject,
   days: 1,
@@ -452,6 +459,101 @@ const disabledRoute = workflow.recordRoute({
   env: { ...process.env, OVERDRIVE_WORKFLOW: 'disabled' }
 });
 check('disabled route does not write route trace', disabledRoute.disabled === true && fs.readFileSync(path.join(disabledRouteProject, '.overdrive/routes.jsonl'), 'utf8') === '');
+
+const optOutProject = tempProject('ovd-project-opt-out');
+const optOutEnv = { OVERDRIVE_WORKFLOW: '' };
+const callOptOut = (args, env = {}) => runNode([
+  'bin/overdrive.js', ...args, '--project-dir', optOutProject
+], { ...optOutEnv, ...env }).stdout.trim();
+const optOutDir = path.join(optOutProject, '.overdrive');
+const optOutConfig = path.join(optOutDir, 'config.json');
+const optOutIgnore = path.join(optOutProject, '.gitignore');
+const treeSnapshot = (dir) => Object.fromEntries(fs.readdirSync(dir).sort().map((name) => {
+  const file = path.join(dir, name);
+  return [name, fs.statSync(file).isDirectory() ? treeSnapshot(file) : fs.readFileSync(file, 'utf8')];
+}));
+try {
+  const opts = { projectDir: optOutProject, env: optOutEnv };
+  check('missing project config defaults to enabled', !workflow.workflowDisabledState(optOutProject, optOutEnv).disabled);
+  callOptOut(['workflow', 'disable', '--dry-run']);
+  check('disable dry run creates no files', !fs.existsSync(optOutDir) && !fs.existsSync(optOutIgnore));
+
+  const disabled = JSON.parse(callOptOut(['workflow', 'disable', '--json']));
+  const configOnly = treeSnapshot(optOutDir);
+  check('disable reports the project as the source', disabled.disabled && disabled.source === 'project');
+  check('disable before init writes only config with the opt-out key', Object.keys(configOnly).join() === 'config.json' && JSON.stringify(JSON.parse(configOnly['config.json'])) === '{"workflow_enabled":false}');
+  check('disable before init adds the ignore entry', fs.readFileSync(optOutIgnore, 'utf8') === '.overdrive/\n');
+  check('env override wins even when the project opts out', workflow.workflowDisabledState(optOutProject, { OVERDRIVE_WORKFLOW: 'disabled' }).source === 'env');
+  check('opting out does not report an initialized workflow', !workflow.status(opts).initialized && !workflow.doctor(opts).initialized);
+  for (const command of ['status', 'doctor']) {
+    const report = JSON.parse(callOptOut([command, '--json']));
+    check(`${command} JSON reports the opt-out source`, report.disabled && report.source === 'project' && !report.initialized);
+    check(`${command} text reports the opt-out source`, callOptOut([command]).includes('disabled (project)'));
+  }
+
+  const nestedDir = path.join(optOutProject, 'src');
+  const otherProject = path.join(optOutProject, 'other');
+  fs.mkdirSync(nestedDir);
+  fs.mkdirSync(otherProject);
+  fs.writeFileSync(path.join(otherProject, 'package.json'), '{}');
+  const input = JSON.stringify({ cwd: nestedDir, prompt: 'Build a reasonably complex feature and verify that it works.', tool_name: 'Write' });
+  const before = treeSnapshot(optOutProject);
+  for (const target of ['claude', 'codex', 'gemini', 'antigravity', 'cursor']) {
+    const hookOptions = { target, stdin: input, env: optOutEnv };
+    const start = workflow.hook({ ...hookOptions, event: 'session-start' });
+    const notice = JSON.parse(start.output).hookSpecificOutput;
+    if (['claude', 'codex', 'gemini'].includes(target)) {
+      check(`${target} gets exactly one session-start opt-out line`, notice?.hookEventName === 'SessionStart' && /^Overdrive is disabled for this project\.[^\n]+$/.test(notice.additionalContext));
+    } else {
+      check(`${target} gets no unsupported session-start context`, start.output === '{}');
+    }
+    for (const event of ['prompt-submit', 'post-tool-use', 'session-end', 'statusline']) {
+      const result = workflow.hook({ ...hookOptions, event });
+      check(`${target} disabled ${event} hook stays quiet`, result.disabled && (event === 'statusline' ? result.text === 'OVD: off' : result.output === '{}'));
+    }
+  }
+  const init = workflow.initWorkflow(opts);
+  check('init skips the opted-out project', !init.initialized && init.skipped && init.reason === 'disabled');
+  check('resync, knowledge, checkpoint, route and decision respect the opt-out', [
+    workflow.resync({ ...opts, apply: true }), workflow.knowledge({ ...opts, apply: true }),
+    workflow.checkpoint(opts), workflow.recordRoute(opts), workflow.recordDecision({ ...opts, decision: 'must not write' })
+  ].every((result) => result.disabled && result.source === 'project'));
+  for (const args of [['workflow', 'init'], ['plan', 'intent', 'build it'], ['go'], ['log', 'capture', 'must not write'], ['verify', '--plan']]) {
+    const result = JSON.parse(callOptOut([...args, '--json']));
+    check(`${args.join(' ')} cannot bypass opt-out`, result.skipped && result.source === 'project');
+  }
+  check('disabled hooks and commands leave the entire tree unchanged', JSON.stringify(treeSnapshot(optOutProject)) === JSON.stringify(before));
+  check('separate project remains enabled', !workflow.status({ ...opts, projectDir: otherProject }).disabled);
+
+  const overriddenEnable = JSON.parse(callOptOut(['workflow', 'enable', '--json'], { OVERDRIVE_WORKFLOW: 'disabled' }));
+  check('enable saves the preference but reports the env override', overriddenEnable.enabled && overriddenEnable.disabled && overriddenEnable.source === 'env');
+  check('enable is not init and does not look like legacy state', Object.keys(treeSnapshot(optOutDir)).join() === 'config.json' && !workflow.status(opts).initialized && !require('../lib/ovd-plan/fs').detectOldLayout(optOutProject));
+  check('bare v2 workflow detects an uninitialized project after re-enable', JSON.parse(callOptOut(['workflow', '--json'])).state === 'uninitialized');
+  const active = workflow.hook({ event: 'prompt-submit', target: 'codex', stdin: input, env: optOutEnv });
+  check('enabled hook resumes initialization and context', /ovd-workflow is active/.test(active.output) && workflow.status(opts).initialized);
+  const initialized = treeSnapshot(optOutDir);
+  callOptOut(['workflow', 'disable']);
+  const paused = treeSnapshot(optOutDir);
+  const updatedConfig = JSON.parse(paused['config.json']);
+  check('disable updates only the preference in an initialized project', JSON.stringify(paused) === JSON.stringify({
+    ...initialized, 'config.json': JSON.stringify({ ...JSON.parse(initialized['config.json']), workflow_enabled: false }, null, 2) + '\n'
+  }) && updatedConfig.workflow_enabled === false);
+  check('repeated toggles do not duplicate gitignore entries', fs.readFileSync(optOutIgnore, 'utf8') === '.overdrive/\n');
+
+  for (const body of ['', '{ invalid', '{"workflow_enabled":"false"}', 'null']) {
+    fs.writeFileSync(optOutConfig, body);
+    check(`invalid or non-boolean preference stays enabled (${body || 'empty'})`, !workflow.workflowDisabledState(optOutProject, optOutEnv).disabled);
+  }
+  fs.writeFileSync(optOutConfig, '{ broken');
+  try {
+    workflow.setWorkflowEnabled(opts, false);
+    check('toggle refuses malformed JSON rather than replacing it', false);
+  } catch (error) {
+    check('toggle refuses malformed JSON rather than replacing it', /valid JSON object/.test(error.message) && fs.readFileSync(optOutConfig, 'utf8') === '{ broken');
+  }
+} finally {
+  fs.rmSync(optOutProject, { recursive: true, force: true });
+}
 
 const runtimeHome = fs.mkdtempSync(path.join(os.tmpdir(), 'ovd-workflow-runtime-home-'));
 const retiredSkill = path.join(runtimeHome, '.claude/skills/video-downloader');
