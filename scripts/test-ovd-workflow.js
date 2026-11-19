@@ -474,6 +474,7 @@ const treeSnapshot = (dir) => Object.fromEntries(fs.readdirSync(dir).sort().map(
 }));
 try {
   const opts = { projectDir: optOutProject, env: optOutEnv };
+  runCommand('git', ['init', '-q', optOutProject], optOutEnv);
   check('missing project config defaults to enabled', !workflow.workflowDisabledState(optOutProject, optOutEnv).disabled);
   callOptOut(['workflow', 'disable', '--dry-run']);
   check('disable dry run creates no files', !fs.existsSync(optOutDir) && !fs.existsSync(optOutIgnore));
@@ -493,9 +494,13 @@ try {
 
   const nestedDir = path.join(optOutProject, 'src');
   const otherProject = path.join(optOutProject, 'other');
+  const packageDir = path.join(optOutProject, 'packages', 'app');
   fs.mkdirSync(nestedDir);
   fs.mkdirSync(otherProject);
+  fs.mkdirSync(packageDir, { recursive: true });
   fs.writeFileSync(path.join(otherProject, 'package.json'), '{}');
+  fs.writeFileSync(path.join(packageDir, 'package.json'), '{}');
+  runCommand('git', ['init', '-q', otherProject], optOutEnv);
   const input = JSON.stringify({ cwd: nestedDir, prompt: 'Build a reasonably complex feature and verify that it works.', tool_name: 'Write' });
   const before = treeSnapshot(optOutProject);
   for (const target of ['claude', 'codex', 'gemini', 'antigravity', 'cursor']) {
@@ -523,14 +528,33 @@ try {
     check(`${args.join(' ')} cannot bypass opt-out`, result.skipped && result.source === 'project');
   }
   check('disabled hooks and commands leave the entire tree unchanged', JSON.stringify(treeSnapshot(optOutProject)) === JSON.stringify(before));
-  check('separate project remains enabled', !workflow.status({ ...opts, projectDir: otherProject }).disabled);
+  check('separate nested Git repository remains enabled', !workflow.status({ ...opts, projectDir: otherProject }).disabled);
+  const packageHook = workflow.hook({ target: 'claude', event: 'prompt-submit', stdin: JSON.stringify({ ...JSON.parse(input), cwd: packageDir }), env: optOutEnv });
+  check('workspace package respects its Git checkout opt-out', packageHook.disabled && !fs.existsSync(path.join(packageDir, '.overdrive')));
 
-  const overriddenEnable = JSON.parse(callOptOut(['workflow', 'enable', '--json'], { OVERDRIVE_WORKFLOW: 'disabled' }));
+  const overriddenEnable = JSON.parse(runNode(['bin/overdrive.js', 'workflow', 'enable', '--project-dir', packageDir, '--json'], { OVERDRIVE_WORKFLOW: 'disabled' }).stdout);
   check('enable saves the preference but reports the env override', overriddenEnable.enabled && overriddenEnable.disabled && overriddenEnable.source === 'env');
+  check('enable from a workspace package toggles the Git checkout', JSON.parse(fs.readFileSync(optOutConfig)).workflow_enabled === true && !fs.existsSync(path.join(packageDir, '.overdrive')) && !workflow.status({ ...opts, projectDir: packageDir }).disabled);
+  const afterEnable = workflow.hook({
+    event: 'post-tool-use', target: 'claude', env: optOutEnv,
+    stdin: JSON.stringify({ cwd: packageDir, tool_name: 'Bash', tool_input: { command: 'ovd workflow enable' } })
+  });
+  check('a shell hook after enable does not initialize workspace state', afterEnable.output === '{}' && !fs.existsSync(path.join(packageDir, '.overdrive')));
+  const afterRootEnable = workflow.hook({
+    event: 'post-tool-use', target: 'claude', env: optOutEnv,
+    stdin: JSON.stringify({ cwd: optOutProject, tool_name: 'Bash', tool_input: { command: 'ovd workflow enable' } })
+  });
+  check('a shell hook after enable does not initialize checkout state', afterRootEnable.output === '{}' && Object.keys(treeSnapshot(optOutDir)).join() === 'config.json');
   check('enable is not init and does not look like legacy state', Object.keys(treeSnapshot(optOutDir)).join() === 'config.json' && !workflow.status(opts).initialized && !require('../lib/ovd-plan/fs').detectOldLayout(optOutProject));
   check('bare v2 workflow detects an uninitialized project after re-enable', JSON.parse(callOptOut(['workflow', '--json'])).state === 'uninitialized');
   const active = workflow.hook({ event: 'prompt-submit', target: 'codex', stdin: input, env: optOutEnv });
   check('enabled hook resumes initialization and context', /ovd-workflow is active/.test(active.output) && workflow.status(opts).initialized);
+  runNode(['bin/overdrive.js', 'workflow', 'enable', '--project-dir', packageDir, '--json'], optOutEnv);
+  const initializedRootHook = workflow.hook({
+    event: 'post-tool-use', target: 'claude', env: optOutEnv,
+    stdin: JSON.stringify({ cwd: packageDir, tool_name: 'Bash', tool_input: { command: 'ovd workflow enable' } })
+  });
+  check('enable from a fresh package does not initialize it even with existing checkout state', initializedRootHook.output === '{}' && !fs.existsSync(path.join(packageDir, '.overdrive')));
   const initialized = treeSnapshot(optOutDir);
   callOptOut(['workflow', 'disable']);
   const paused = treeSnapshot(optOutDir);

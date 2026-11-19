@@ -6,8 +6,14 @@ KIT_DIR="${1:?kit directory required}"
 if node - "$KIT_DIR" <<'NODE'
 const kitDir = process.argv[2];
 try {
-  require.resolve('js-yaml/package.json', { paths: [kitDir] });
-  process.exit(0);
+  const installed = require(require.resolve('js-yaml/package.json', { paths: [kitDir] })).version;
+  const range = require(require('path').join(kitDir, 'package.json')).dependencies['js-yaml'];
+  const actual = /^(\d+)\.(\d+)\.(\d+)$/.exec(installed);
+  const minimum = /^\^(\d+)\.(\d+)\.(\d+)$/.exec(range);
+  // Match the stable caret range for Overdrive's js-yaml dependency.
+  const compatible = actual && minimum && actual[1] === minimum[1] &&
+    (+actual[2] > +minimum[2] || (actual[2] === minimum[2] && +actual[3] >= +minimum[3]));
+  process.exit(compatible ? 0 : 1);
 } catch (_error) {
   process.exit(1);
 }

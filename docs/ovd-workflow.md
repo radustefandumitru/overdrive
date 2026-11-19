@@ -127,7 +127,7 @@ ovd status
 ovd workflow enable
 ```
 
-Use `--project-dir PATH` to manage another project. The switch saves `workflow_enabled` in the local, gitignored `.overdrive/config.json`. A project without workflow state gets only that file and a Git ignore entry. Existing state is left intact, and enabling does not initialize it. This does not change teammates' settings or uninstall any skills.
+Use `--project-dir PATH` to manage another project. The switch saves `workflow_enabled` in the local, gitignored `.overdrive/config.json`. Inside Git, the setting applies to the nearest checkout, including its workspace packages but not separately nested repositories. A project without workflow state gets only that file and a Git ignore entry. Existing state is left intact, and enabling does not initialize it. This does not change teammates' settings or uninstall any skills.
 
 For a temporary opt-out, set `OVERDRIVE_WORKFLOW=disabled` in the agent's environment. It overrides the project setting, even after running `ovd workflow enable`. Without that environment override, a missing or invalid setting leaves the workflow enabled. The toggle commands refuse to overwrite malformed config files. `ovd status` and `ovd doctor` report whether the opt-out comes from the project or environment, including in `--json` output.
 

@@ -109,7 +109,7 @@ const retiredSlashStatus = ['as', 'status'].join('-');
 console.log('Overdrive consistency check');
 
 check('package is overdrive-cli', pkg.name === 'overdrive-cli', `found ${pkg.name}`);
-check('package version is 2.0.2', pkg.version === '2.0.2', `found ${pkg.version}`);
+check('package version is 2.0.3', pkg.version === '2.0.3', `found ${pkg.version}`);
 check('package license is Apache-2.0', pkg.license === 'Apache-2.0', `found ${pkg.license}`);
 check('package exposes overdrive bin', pkg.bin?.overdrive === 'bin/overdrive.js');
 check('package exposes ovd bin alias', pkg.bin?.ovd === 'bin/overdrive.js');
@@ -252,10 +252,11 @@ if (exists('.claude-plugin/marketplace.json')) {
   const marketplace = readJson('.claude-plugin/marketplace.json');
   check('Claude marketplace is named overdrive-marketplace', marketplace.name === 'overdrive-marketplace');
   check('Claude marketplace references thin Overdrive plugin', Array.isArray(marketplace.plugins) && marketplace.plugins.some((plugin) => plugin.name === 'overdrive' && plugin.source === './plugins/overdrive'));
+  check('Claude marketplace and plugin entry versions match package', marketplace.version === pkg.version && marketplace.plugins?.find((plugin) => plugin.name === 'overdrive')?.version === pkg.version);
 }
 if (exists('plugins/overdrive/.claude-plugin/plugin.json')) {
   const plugin = readJson('plugins/overdrive/.claude-plugin/plugin.json');
-  check('Claude plugin wrapper is overdrive v2.0.2', plugin.name === 'overdrive' && plugin.version === '2.0.2');
+  check('Claude plugin wrapper version matches package', plugin.name === 'overdrive' && plugin.version === pkg.version);
   check('Claude plugin wrapper uses Apache license', plugin.license === 'Apache-2.0');
 }
 check('Claude plugin helper skill exists', exists('plugins/overdrive/skills/overdrive/SKILL.md'));

@@ -38,7 +38,7 @@ These are npm dependencies used by Overdrive itself, not installed skills.
 
 | Package | Use | Version policy | Upstream |
 |---|---|---|---|
-| js-yaml | Parses and writes `yaml ovd-plan` blocks in `OVERDRIVE.md` | `^4.1.0` in `package.json`; installed by npm/npx or the local dependency preflight for clone/zip users | https://github.com/nodeca/js-yaml |
+| js-yaml | Parses and writes `yaml ovd-plan` blocks in `OVERDRIVE.md` | `^4.3.2` in `package.json`; installed by npm/npx or the local dependency preflight for clone/zip users | https://github.com/nodeca/js-yaml |
 
 ## Optional Helper Tooling
 

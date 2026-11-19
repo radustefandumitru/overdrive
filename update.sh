@@ -42,8 +42,6 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
-"$KIT_DIR/scripts/ensure-runtime-deps.sh" "$KIT_DIR"
-
 ALL_SKILLS=0
 SKIP_KIT=0
 SKIP_SKILLS=0
@@ -118,6 +116,10 @@ if [[ "$SKIP_KIT" -eq 0 ]]; then
   echo "Updating Overdrive itself..."
   OVERDRIVE_KIT_DIR="$KIT_DIR" node "$KIT_DIR/bin/overdrive.js" self-update ${SELF_ARGS[@]+"${SELF_ARGS[@]}"}
   echo
+fi
+
+if [[ "$DRY_RUN" -eq 0 ]]; then
+  "$KIT_DIR/scripts/ensure-runtime-deps.sh" "$KIT_DIR"
 fi
 
 if [[ "$SKIP_SKILLS" -eq 0 ]]; then

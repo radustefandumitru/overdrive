@@ -1,8 +1,11 @@
 # Changelog
 
-## Unreleased
+## v2.0.3 - 2026-11-19
 
-- Added `ovd workflow disable` and `ovd workflow enable` for a local, per-project opt-out that preserves existing state and installed skills. Status and doctor report why the workflow is off.
+- Added `ovd workflow disable` and `ovd workflow enable` for a local, per-project opt-out. The switch preserves existing state and installed skills.
+- Paused automatic routing, workflow hooks, and planning or state updates in opted-out projects. Explicitly requested skills still work.
+- Updated `ovd status` and `ovd doctor` to show whether the opt-out comes from the project setting or `OVERDRIVE_WORKFLOW=disabled`.
+- Raised the minimum `js-yaml` version to 4.3.2 to pick up two denial-of-service fixes. Clone and ZIP installs now refresh an outdated copy before use.
 
 ## v2.0.2 - 2026-07-08
 
